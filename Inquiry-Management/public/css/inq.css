@@ -1,0 +1,386 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    }
+
+body{
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    position: relative;
+}
+
+
+.top {
+    display: flex;
+    flex-direction: row;
+}
+
+.header {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    width: 400px;
+    height: 70px;
+    justify-content: space-between;
+    border: 2px solid #f0ecec;
+}
+
+.logo {
+    width: 170px;
+    height: 50px;
+    margin: 10px 0 0 10px;
+}
+
+.fa-bars {
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: large;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.fa-bars:hover {
+    background-color: rgb(212, 208, 207);
+    transition: 0.3s;
+    border-radius: 50%;
+}
+ 
+
+.toast-container{
+    position: absolute;
+    top: 100px;
+    bottom: 0;
+} 
+.tick{
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+}
+.main-container{
+    display: flex;
+    flex-direction: row;
+    max-width: 100% !important;
+    justify-content: space-between; 
+}
+
+.session {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-right: 45px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.select {
+    width: 120px;
+    height: 30px;
+    border: 2px solid rgb(233, 96, 47);
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    height: 100vh;
+}
+.accordion button{
+padding: 10px !important;
+}
+.accordion-flush, .accordion-header{
+    border: none;
+    justify-content: flex-start;
+    align-items: center;
+    height: 40px;
+    width: 290px;
+    font-size: 17px;
+}
+.menu li {
+    list-style: none;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 17px;
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-start;
+}
+.menu li a{
+    text-decoration: none;
+    color: #000;
+}
+.accordion-body, .menu{
+    padding: 0 !important;
+    margin-left: 5px;
+}
+.admin {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.admin h2 {
+    font-size: 17px;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.admin h4 {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.fa-solid, .fa-regular{
+    font-size: 15px;
+    margin-right: 15px;
+}
+.fa-chevron-down {
+    font-size: 12px;
+}
+#toggle-btn{
+    background-color: transparent;
+    justify-content: center;
+    display: flex;
+    border: none;
+    cursor: pointer;
+}
+.dropdown-item{
+    height: 20px;
+    width: 70px;
+    margin: 15px;
+    border-radius: 5px;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    display: flex;
+}
+ 
+.right {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(246, 242, 242);
+    width: 80%;
+    height: 100vh;
+    font-size: 20px;
+}
+.right h1{
+   color: rgb(233, 96, 47);
+    font-weight: bold;
+    font-size: 23px;
+    justify-content: flex-start;
+    margin: 25px 0 0 20px;
+}
+
+.btns{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 20px 15px 10px 20px;
+    gap: 20px;
+    width: 100%;
+    font-size: 17px;
+    align-items: center;
+}
+.create{
+background-color: rgb(233, 96, 47);
+color: white;
+width: 160px;
+border: none;
+padding: 10px;
+border-radius: 5px;
+
+}
+.upload{
+background-color: rgb(14, 129, 12);
+color: white;
+width: 80px;
+border: none;
+padding: 10px;
+border-radius: 5px;
+}
+.onboard{
+ background-color: rgb(233, 96, 47);
+ color: white;
+ width: 100px;
+ border: none;
+ padding: 10px;
+border-radius: 5px;
+}
+.up{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.card{
+    width: 96%;
+    height: 100%;
+    margin: 20px 0 0 30px;
+    padding: 20px;
+    justify-content: center;
+    gap: 25px;
+
+}
+ .filter{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+#dropdown{
+    display: flex;
+    flex-direction: row;
+    font-size: 17px;
+    margin-right: 20px;   
+    justify-content: center;
+    gap: 10px;
+}  
+#dropdown-toggle{
+    background-color: transparent;
+display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    width: 70px;
+    justify-content: space-between;
+    color: black;
+    height: 27px;
+    align-items: center;
+    border-color: #f0ecec; }
+    
+    .search-input {
+  border: 1px solid rgb(233, 96, 47);
+  border-radius: 5px;
+  width: 200px;
+  height: 35px;
+  padding: 5px;
+  outline: none;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 5px 0 rgb(233, 96, 47);
+  border: 1px solid rgb(233, 96, 47);
+  outline: none;
+}
+ #one{
+    font-size: 12px;
+    color:  rgb(233, 96, 47);
+ }   
+
+.search{
+    flex-direction: row;
+    display: flex;
+    width: 300px;
+}
+#search-button{
+    background-color: rgb(233, 96, 47);
+    color: white;
+    width: 43px;
+    height: 35px;
+    border: none;
+    border-radius: 5px;
+    justify-content: flex-end;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    margin-left: 5px;
+}
+#table{
+    font-size: 13px;
+}
+.footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 15px;
+}
+
+#page-item1{
+    text-decoration: none;
+    background-color: white;
+    color: rgb(0, 0, 0);
+    width: 70px;
+    cursor: pointer;
+    border: 1px solid rgb(226, 221, 220);
+    display: flex;
+justify-content: center;
+align-items: center;
+} 
+#page-item1:hover{
+    background-color: rgb(0, 0, 0);
+    transition: 0.3s;
+}
+
+.page-link1{
+    text-decoration: none;
+    color: #ada7a7;}
+
+#btn-one{
+background-color:rgb(233, 96, 47);
+color: white;
+align-items: center;
+display: flex;
+justify-content: center;
+border: none;
+cursor: pointer;
+}
+
+#ellipsis{
+    background-color: transparent;
+    color: rgb(0, 0, 0);
+    border: none;
+    cursor: pointer;
+    width: 30px;    
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+#ellipsis:hover{
+    background-color: rgb(205, 200, 199);
+    color: rgb(0, 0, 0);
+}
+
+.sampleFile{
+    width: 200px;
+    height: 35px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(233, 96, 47);
+    color: white;
+    text-align: center;
+    justify-items: center;
+    margin-bottom: 17px;
+    margin-left: 130px;
+}
+#onboardToast{
+    background-color: rgb(255, 245, 245);
+    width: 400px;
+    height: 70px;
+    font-size: 20px;
+    color: #b93131;
+    border-radius: 1px;
+    border-left: 5px solid rgb(233, 96, 47);
+}
+#xmark{
+    font-size: 40px;
+}
+
+#onboardToastBody{
+    
+    justify-content: center;
+    align-items: center;
+    display: flex;  
+    flex-direction: row;
+}
