@@ -112,7 +112,7 @@
           <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/session mana/session/session.html"><i class="fa-solid fa-calendar-day"
+                <li><a class="item" href="{{ route ('session') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
                 <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
                       id="side-icon"></i> Calendar</a></li>
@@ -129,13 +129,13 @@
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
               id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-
             </button>
           </h2>
+          
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/student management/inq/inq.html"><i class="fa-solid fa-circle-info"
+                <li><a class="item" href="{{ route ('inquiry') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry
                     Management</a></li>
                 <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"

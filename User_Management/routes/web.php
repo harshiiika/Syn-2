@@ -6,6 +6,7 @@ use App\Http\Controllers\Student\InquiryController;
 use App\Http\Controllers\Session\SessionController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\BatchesController;
+
  
 /*
 |--------------------------------------------------------------------------
@@ -88,5 +89,14 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 | Batches Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/batches', [BatchesController::class, 'showBatches'])->name('batches');
-Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
+// Route::get('/batches', [BatchesController::class, 'showBatches'])->name('batches');
+// Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
+
+Route::prefix('batches')->name('batches.')->group(function () {
+    Route::get('/', [BatchesController::class, 'showBatches'])->name('index');
+    Route::post('/add', [BatchesController::class, 'addBatch'])->name('add');
+    Route::post('/{id}/update-status', [BatchesController::class, 'updateStatus'])->name('updateStatus');
+    Route::get('/{id}/edit', [BatchesController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [BatchesController::class, 'update'])->name('update');
+    Route::delete('/{id}', [BatchesController::class, 'destroy'])->name('destroy');
+});
