@@ -66,7 +66,7 @@
                       id="side-icon"></i> Batches
                     Assignment</a></li> -->
                    <li>
-    <a class="item" href="{{ route('user.emp.emp') }}">y
+    <a class="item" href="{{ route('user.emp.emp') }}">
         <i class="fa-solid fa-user" id="side-icon"></i> Employee
     </a>
 </li>
@@ -120,7 +120,7 @@
           <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/session mana/session/session.html"><i class="fa-solid fa-calendar-day"
+                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
                 <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
                       id="side-icon"></i> Calendar</a></li>
@@ -143,7 +143,7 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/student management/inq/inq.html"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry
+                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry
                     Management</a></li>
                 <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
                 </li>

@@ -8,7 +8,7 @@
   <title>Session</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('css/session.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/session.css') }}">
 
 
 </head>
@@ -30,7 +30,7 @@
     @endif
   </div>
 
-  
+
   <div class="header">
     <div class="logo">
       <img src="logo-big.png" class="img">
@@ -51,7 +51,7 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item"  href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
@@ -65,7 +65,7 @@
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-  <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -76,9 +76,9 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/user management/emp/emp.html "> <i class="fa-solid fa-user"
+                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user"
                       id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="/user management/batches a/batchesa.html"><i class="fa-solid fa-user-group"
+                <li>><a class="item" href="{{ route('batches') }}"><i class="fa-solid fa-user-group"
                       id="side-icon"></i> Batches
                     Assignment</a></li>
               </ul>
@@ -149,13 +149,17 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/student management/inq/inq.html"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry
+                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry
                     Management</a></li>
-                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
+                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Student Onboard</a>
                 </li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees
+                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Pending Fees
                     Students</a></li>
-                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>
@@ -171,7 +175,8 @@
           <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a>
+                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card"
+                      id="side-icon"></i> Fees Collection</a>
                 </li>
               </ul>
             </div>
@@ -188,8 +193,10 @@
           <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Student</a></li>
-                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Employee</a></li>
+                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Student</a></li>
+                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Employee</a></li>
               </ul>
             </div>
           </div>
@@ -205,8 +212,10 @@
           <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Units</a></li>
-                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Dispatch Material</a></li>
+                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon">
+                    </i>Units</a></li>
+                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Dispatch Material</a></li>
               </ul>
             </div>
           </div>
@@ -222,7 +231,8 @@
           <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test Master</i></a></li>
+                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test
+                    Master</i></a></li>
               </ul>
             </div>
           </div>
@@ -238,12 +248,17 @@
           <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Walk In</a></li>
-                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a>
+                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon">
+                    </i>Walk In</a></li>
+                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days"
+                      id="side-icon"></i> Attendance</a>
                 </li>
-                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
+                    Series</a></li>
+                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
+                    History</a></li>
+                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
+                      id="side-icon"></i>Onboard History</a></li>
               </ul>
             </div>
           </div>
@@ -256,18 +271,8 @@
           <h4>Sessions</h4>
         </div>
 
-        <button type="button" class="btn btn-primary" id="liveToastBtn" data-bs-toggle="modal" data-bs-target="#createSessionModal">Create Session</button>
-       
-            @if($errors->any())
-              <div class="alert alert-danger">
-                <ul class="mb-0">
-                  @foreach($errors->all() as $err)
-                    <li>{{ $err }}</li>
-                  @endforeach
-                </ul>
-              </div>
-            @endif
-
+        <button type="button" class="btn btn-primary" id="liveToastBtn" data-bs-toggle="modal"
+          data-bs-target="#createSessionModal">Create Session</button>
 
         <div class="toast-container end-0 p-3">
           <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -301,96 +306,110 @@
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
-
         <table class="table table-hover" id="table">
-  <thead>
-    <tr>
-      <th>Serial No.</th>
-      <th>Session Name</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-<tbody>
-  @foreach($sessions as $index => $session)
-    @php
-      // Debug: determine what ID to use
-      $sessionId = $session->_id ?? $session->id ?? null;
-      if (is_object($sessionId)) {
-          $sessionId = (string) $sessionId;
-      }
-    @endphp
-    <tr>
-      <td>{{ $loop->iteration }}</td>
-      <td>{{ $session->name }}</td>
-      <td>{{ \Carbon\Carbon::parse($session->start_date)->format('Y-m-d') }}</td>
-      <td>{{ \Carbon\Carbon::parse($session->end_date)->format('Y-m-d') }}</td>
-      <td>
-       @if($session->status === 'active')
-         <span class="text-success">active</span>
-       @else
-         <span class="text-danger">deactive</span>
-       @endif
-      </td>
-      <td>
-        <div class="dropdown">
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
-            </button>
-            <ul class="dropdown-menu">
-                {{-- Always show View --}}
-                <li>
-                   <button type="button" class="dropdown-item"
-                        onclick="viewSession('{{ $sessionId }}')"
-                        data-bs-toggle="modal" data-bs-target="#viewSessionModal">
-                        View Details
+          <thead>
+            <tr>
+              <th scope="col" id="one">Serial No.</th>
+              <th scope="col" id="one">Session Name</th>
+              <th scope="col" id="one">Start Date</th>
+              <th scope="col" id="one">End Date</th>
+              <th scope="col" id="one">Status</th>
+              <th scope="col" id="one">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($sessions as $index => $session)
+              @php
+                $sessionId = $session->_id ?? $session->id ?? null;
+                if (is_object($sessionId)) {
+                  $sessionId = (string) $sessionId;
+                }
+              @endphp
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $session->name }}</td>
+                <td>{{ \Carbon\Carbon::parse($session->start_date)->format('Y-m-d') }}</td>
+                <td>{{ \Carbon\Carbon::parse($session->end_date)->format('Y-m-d') }}</td>
+                <td>
+                  <span class="badge {{ $session->status === 'active' ? 'bg-success' : 'bg-danger' }}">
+                    {{ ucfirst($session->status) }}
+                  </span>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
                     </button>
-                </li>
-
-                {{-- Show Edit + End only if active --}}
-                @if($session->status === 'active')
-                <li>
-                  <button type="button" class="dropdown-item"
-                      onclick="editSession('{{ $sessionId }}')"
-                      data-bs-toggle="modal" data-bs-target="#editSessionModal">
-                      Edit
-                  </button>
-                </li>
-                <li>
-                    <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
-                        @csrf
-                        <button class="dropdown-item text-danger" type="submit">
-                            End Session
+                    <!-- <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+                      <li>
+                        <button class="dropdown-item" data-bs-toggle="modal"
+                          data-bs-target="#viewSessionModal{{ $sessionId }}">
+                          View Details
                         </button>
-                    </form>
-                </li>
-            @endif
-            </ul>
-        </div>
-      </td>
-    </tr>
-  @endforeach
-</tbody>
+                      </li>
+                      <li>
+                        <button class="dropdown-item" data-bs-toggle="modal"
+                          data-bs-target="#editSessionModal{{ $sessionId }}">
+                          Edit Details
+                        </button>
+                      </li>
+                      <li>
+                        <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
+                          @csrf
+                          <button type="submit" class="dropdown-item">
+                            {{ $session->status === 'active' ? 'End Session' : 'Reactivate' }}
+                          </button>
+                        </form>
+                      </li>
+                      
+                    </ul> -->
+                    <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+  {{-- View is always available --}}
+  <li>
+    <button class="dropdown-item" data-bs-toggle="modal"
+      data-bs-target="#viewSessionModal{{ $sessionId }}">
+      View Details
+    </button>
+  </li>
 
-</table>
-        
-        <p class="show">Showing 1 of 3 Enteries</p>
-      </div>
-      <nav aria-label="Page navigation example" id="bottom">
-        <ul class="pagination" id="pagination">
-          <li class="page-item"><a class="page-link" href id="pg1">Previous</a></li>
-          <li class="page-item"><a class="page-link" href="#" id="pg2">1</a></li>
-          <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-  </div>
+  @if($session->status === 'active')
+    {{-- Show Edit only for active --}}
+    <li>
+      <button class="dropdown-item" data-bs-toggle="modal"
+        data-bs-target="#editSessionModal{{ $sessionId }}">
+        Edit Details
+      </button>
+    </li>
 
+    {{-- Show End Session only for active --}}
+    <li>
+      <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
+        @csrf
+        <button type="submit" class="dropdown-item">
+          End Session
+        </button>
+      </form>
+    </li>
+  @endif
+</ul>
+                  </div>
+              
 
-  <!-- Create Session Modal -->
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+
+        <!-- Create Session Modal -->
+         @foreach($sessions as $session)
+          @php
+            $sessionId = $session->_id ?? $session->id ?? null;
+            if (is_object($sessionId)) {
+              $sessionId = (string) $sessionId;
+            }
+          @endphp
 <div class="modal fade" id="createSessionModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <form action="{{ route('sessions.store') }}" method="POST" class="modal-content">
@@ -399,29 +418,29 @@
         <h5 class="modal-title">Create Session</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-
+ 
       <div class="modal-body">
         <div class="mb-3">
           <label class="form-label">Session Name</label>
           <input type="text" name="name" class="form-control" required value="{{ old('name') }}">
         </div>
-
+ 
         <div class="mb-3">
           <label class="form-label">Start Date</label>
           <input type="date" name="start_date" class="form-control" required value="{{ old('start_date') }}">
         </div>
-
+ 
         <div class="mb-3">
           <label class="form-label">End Date</label>
           <input type="date" name="end_date" class="form-control" required value="{{ old('end_date') }}">
         </div>
-
+ 
         <div class="form-text">
           New sessions are created with status <strong>active</strong>. If an active session already exists,
           you will get an error and creation will be blocked.
         </div>
       </div>
-
+ 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-primary">Create Session</button>
@@ -429,81 +448,104 @@
     </form>
   </div>
 </div>
-<!-- ================= View Session Modal ================= -->
-<div class="modal fade" id="viewSessionModal" tabindex="-1" aria-labelledby="viewSessionLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content shadow-lg rounded-3">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="viewSessionLabel">Session Details</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>Name:</strong> <span id="viewName"></span></li>
-          <li class="list-group-item"><strong>Start Date:</strong> <span id="viewStart"></span></li>
-          <li class="list-group-item"><strong>End Date:</strong> <span id="viewEnd"></span></li>
-          <li class="list-group-item"><strong>Status:</strong> <span id="viewStatus"></span></li>
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Edit Session Modal -->
-<div class="modal fade" id="editSessionModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content shadow">
-      <div class="modal-header bg-warning">
-        <h5 class="modal-title">Edit Session</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <form id="editSessionForm" class="modal-body">
-        @csrf
-        <input type="hidden" name="_method" value="PUT">
-        <input type="hidden" id="editSessionId" name="id">
-
-        <div class="mb-3">
-          <label class="form-label">Session Name</label>
-          <input type="text" id="editName" name="name" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Start Date</label>
-          <input type="date" id="editStart" name="start_date" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">End Date</label>
-          <input type="date" id="editEnd" name="end_date" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Status</label>
-          <select id="editStatus" name="status" class="form-select">
-            <option value="Active">Active</option>
-            <option value="Deactive">Deactive</option>
-          </select>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-warning">Save Changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+ 
+@endforeach
 
 
+        <!-- View Modal -->
+        @foreach($sessions as $session)
+          @php
+            $sessionId = $session->_id ?? $session->id ?? null;
+            if (is_object($sessionId)) {
+              $sessionId = (string) $sessionId;
+            }
+          @endphp
+          <div class="modal fade" id="viewSessionModal{{ $sessionId }}" tabindex="-1"
+            aria-labelledby="viewSessionLabel{{ $sessionId }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="viewSessionLabel{{ $sessionId }}">Session Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">Session Name</label>
+                    <input type="text" class="form-control" value="{{ $session->name }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Start Date</label>
+                    <input type="text" class="form-control" value="{{ $session->start_date }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">End Date</label>
+                    <input type="text" class="form-control" value="{{ $session->end_date }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <input type="text" class="form-control" value="{{ ucfirst($session->status) }}" readonly>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        @endforeach
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-    crossorigin="anonymous"></script>
-<script src="{{ asset('js/session.js') }}"></script>
+        <!-- Edit Modal -->
+        @foreach($sessions as $session)
+          @php
+            $sessionId = $session->_id ?? $session->id ?? null;
+            if (is_object($sessionId)) {
+              $sessionId = (string) $sessionId;
+            }
+          @endphp
+          <div class="modal fade" id="editSessionModal{{ $sessionId }}" tabindex="-1"
+            aria-labelledby="editSessionLabel{{ $sessionId }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                <form method="POST" action="{{ route('sessions.update', $sessionId) }}">
+                  @csrf
+                  <!-- @method('PUT') -->
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editSessionLabel{{ $sessionId }}">Edit Session</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Session Name</label>
+                      <input type="text" class="form-control" name="name" value="{{ $session->name }}" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Start Date</label>
+                      <input type="date" class="form-control" name="start_date" value="{{ $session->start_date }}"
+                        required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">End Date</label>
+                      <input type="date" class="form-control" name="end_date" value="{{ $session->end_date }}" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Status</label>
+                      <select class="form-select" name="status">
+                        <option value="active" {{ $session->status === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ $session->status === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        @endforeach
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+          crossorigin="anonymous"></script>
+        <!-- <script src="{{ asset('js/Session_js/session.js') }}"></script> -->
 </body>
 
 </html>
