@@ -1,155 +1,90 @@
 <?php
+
 namespace App\Http\Controllers\Session;
 
-use App\Models\Session;
+use App\Models\Session\AcademicSession;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Session\AcademicSession;
-
 
 class SessionController extends Controller
 {
-    // Show all sessions
+    /** GET /sessions */
     public function index()
     {
-        // order by created_at descending so newest appear first
-        $sessions = AcademicSession::orderBy('created_at', 'desc')->get();
-
-        // pass to view 'session' (resources/views/session.blade.php)
+        $sessions = AcademicSession::orderByDesc('created_at')->get();
         return view('session.session', compact('sessions'));
     }
- public function create()
+
+    /** GET /sessions/create */
+    public function create()
     {
-        // Make sure you have resources/views/inquiries/create.blade.php
         return view('session.create', ['session' => new AcademicSession()]);
     }
-    // Add session from modal form
+
+    /** POST /sessions */
     public function store(Request $request)
     {
-        // check if any active session already exists
-        $activeExists = AcademicSession::where('status', 'active')->exists();
+        $validated = $request->validate([
+            'name'       => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date'   => 'required|date|after_or_equal:start_date',
+        ]);
 
-        if ($activeExists) {
+        // Only one active session allowed
+        if (AcademicSession::where('status', 'active')->exists()) {
             return back()->with('error', 'Cannot create session: Limit of 1 active session reached.');
         }
 
-        AcademicSession::create([
-            'name'       => $request->name,
-            'start_date' => $request->start_date,
-            'end_date'   => $request->end_date,
-            'status'     => 'active', // default active on creation
+        $validated['status'] = 'active'; // default status
+        AcademicSession::create($validated);
+
+        return redirect()->route('sessions.index')->with('success', 'Session created successfully.');
+    }
+
+    /** GET /sessions/{session} */
+    public function show(AcademicSession $session)
+    {
+        return response()->json([
+            'id'         => $session->_id ?? $session->id,
+            'name'       => $session->name,
+            'start_date' => $session->start_date,
+            'end_date'   => $session->end_date,
+            'status'     => $session->status,
+        ]);
+    }
+
+    /** PUT /sessions/{session} */
+    public function update(Request $request, AcademicSession $session)
+    {
+        $validated = $request->validate([
+            'name'       => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date'   => 'required|date|after_or_equal:start_date',
+            'status'     => 'required|in:active,deactive',
         ]);
 
-        return back()->with('success', 'Session created successfully.');
+        // If setting active, ensure no other active session exists
+        if ($validated['status'] === 'active') {
+            $query = AcademicSession::where('status', 'active')->where('id', '!=', $session->id);
+            if ($query->exists()) {
+                return back()->with('error', 'Another active session already exists. Deactivate it first.');
+            }
+        }
+
+        $session->update($validated);
+        return redirect()->route('sessions.index')->with('success', 'Session updated successfully.');
     }
 
-    // Show details
-    public function show($id)
+    /** DELETE /sessions/{session} */
+    public function destroy(AcademicSession $session)
     {
-        \Log::info('Show session called with ID: ' . $id);
-        
-        // Try finding by standard id first
-        $session = AcademicSession::find($id);
-        
-        // If not found, try finding by MongoDB _id
-        if (!$session) {
-            $session = AcademicSession::where('_id', $id)->first();
-        }
-
-        if (!$session) {
-            \Log::error('Session not found with ID: ' . $id);
-            return response()->json(['success' => false, 'error' => 'Session not found'], 404);
-        }
-
-        // Convert to array and normalize the ID
-        $data = $session->toArray();
-        
-        \Log::info('Session found, raw data:', $data);
-        
-        // Ensure we always have an 'id' field for JavaScript
-        if (isset($data['_id'])) {
-            if (is_array($data['_id']) && isset($data['_id']['$oid'])) {
-                $data['id'] = $data['_id']['$oid'];
-            } elseif (is_object($data['_id'])) {
-                // Handle MongoDB ObjectId object
-                $data['id'] = (string) $data['_id'];
-            } else {
-                $data['id'] = (string) $data['_id'];
-            }
-        } elseif (!isset($data['id'])) {
-            // Fallback: use the passed ID
-            $data['id'] = $id;
-        }
-        
-        \Log::info('Final data being returned:', $data);
-
-        return response()->json($data);
+        $session->delete();
+        return redirect()->route('sessions.index')->with('success', 'Session deleted successfully.');
     }
 
-    // Update session
-    public function update(Request $request, $id)
+    /** POST /sessions/{session}/end */
+    public function end(AcademicSession $session)
     {
-        try {
-            // Try finding by standard id first
-            $session = AcademicSession::find($id);
-            
-            // If not found, try finding by MongoDB _id
-            if (!$session) {
-                $session = AcademicSession::where('_id', $id)->first();
-            }
-            
-            if (!$session) {
-                return response()->json(['success' => false, 'error' => 'Session not found.'], 404);
-            }
-
-            $data = $request->only(['name', 'start_date', 'end_date', 'status']);
-
-            // Normalize status to lowercase for consistency
-            if (isset($data['status'])) {
-                $data['status'] = strtolower($data['status']); // active / deactive
-            }
-
-            // If trying to set active, ensure no other session is active
-            if (isset($data['status']) && $data['status'] === 'active') {
-                $query = AcademicSession::where('status', 'active');
-                
-                // Exclude current session from the check
-                if (isset($session->_id)) {
-                    $query->where('_id', '!=', $session->_id);
-                } else {
-                    $query->where('id', '!=', $session->id);
-                }
-
-                if ($query->exists()) {
-                    return response()->json(['success' => false, 'error' => 'Another active session already exists. Deactivate it first.'], 422);
-                }
-            }
-
-            $session->update($data);
-
-            return response()->json(['success' => true, 'msg' => 'Session updated successfully.']);
-            
-        } catch (\Throwable $e) {
-            \Log::error('Session update error: '.$e->getMessage().' at '.$e->getFile().':'.$e->getLine());
-            return response()->json(['success' => false, 'error' => 'Server error: '.$e->getMessage()], 500);
-        }
-    }
-
-    // End session
-    public function end($id)
-    {
-        // Try finding by standard id first
-        $session = AcademicSession::find($id);
-        
-        // If not found, try finding by MongoDB _id
-        if (!$session) {
-            $session = AcademicSession::where('_id', $id)->first();
-        }
-
-        if (!$session) {
-            return redirect()->route('sessions.index')->with('error', 'Session not found.');
-        }
-
         $session->status = 'deactive';
         $session->save();
 

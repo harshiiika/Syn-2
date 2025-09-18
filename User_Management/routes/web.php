@@ -54,16 +54,28 @@ $idPattern = '([0-9]+|[0-9a-fA-F]{24})';
 | Session Management Routes
 |--------------------------------------------------------------------------
 */
+//     Route::prefix('session')->group(function () {
+//     Route::get('/', [SessionController::class, 'index'])->name('sessions.create');
+//     Route::get('/', [SessionController::class, 'index'])->name('sessions.index');
+//     Route::post('/',       [SessionController::class, 'store'])->name('sessions.store');
+//     Route::get('/{id}',    [SessionController::class, 'show'])->name('sessions.show');
+//     Route::put('/{id}',    [SessionController::class, 'update'])->name('sessions.update');
+//     Route::post('/{id}',   [SessionController::class, 'update'])->name('sessions.update'); // for method spoofing
+//     Route::post('/{id}/end', [SessionController::class, 'end'])->name('sessions.end');
+// });
+
 Route::prefix('session')->group(function () {
-    Route::get('/',        [SessionController::class, 'index'])->name('sessions.create');
-    Route::get('/',        [SessionController::class, 'index'])->name('sessions.index');
-    Route::post('/',       [SessionController::class, 'store'])->name('sessions.store');
-    Route::get('/{id}',    [SessionController::class, 'show'])->name('sessions.show');
-    Route::put('/{id}',    [SessionController::class, 'update'])->name('sessions.update');
-    Route::post('/{id}',   [SessionController::class, 'update'])->name('sessions.update'); // for method spoofing
-    Route::post('/{id}/end', [SessionController::class, 'end'])->name('sessions.end');
+    
+    Route::get('/', [SessionController::class, 'index'])->name('sessions.index');
+    Route::get('/create', [SessionController::class, 'create'])->name('sessions.create');
+    Route::post('/', [SessionController::class, 'store'])->name('sessions.store');
+    
+    // update session using POST (instead of PUT)
+    Route::post('/update/{session}', [SessionController::class, 'update'])->name('sessions.update');
+
+    Route::post('/end/{session}', [SessionController::class, 'end'])->name('sessions.end');
+    Route::delete('/{session}', [SessionController::class, 'destroy'])->name('sessions.destroy');
 });
- 
 /*
 |--------------------------------------------------------------------------
 | User Routes

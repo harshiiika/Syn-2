@@ -19,7 +19,12 @@ class AcademicSession extends Eloquent
         'status'
     ];
 
-    // enable timestamps  (created_at/updated_at saved)
+    protected $casts = [
+    '_id' => 'string',
+];
+
+
+    // enable timestamps  (created_at/updated_at saved) for future use idea
     // public $timestamps = true;
 
 }
