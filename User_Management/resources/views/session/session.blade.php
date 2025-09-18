@@ -341,7 +341,7 @@
                       data-bs-toggle="dropdown" aria-expanded="false">
                       <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+                    <!-- <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
                       <li>
                         <button class="dropdown-item" data-bs-toggle="modal"
                           data-bs-target="#viewSessionModal{{ $sessionId }}">
@@ -362,8 +362,40 @@
                           </button>
                         </form>
                       </li>
-                    </ul>
+                      
+                    </ul> -->
+                    <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+  {{-- View is always available --}}
+  <li>
+    <button class="dropdown-item" data-bs-toggle="modal"
+      data-bs-target="#viewSessionModal{{ $sessionId }}">
+      View Details
+    </button>
+  </li>
+
+  @if($session->status === 'active')
+    {{-- Show Edit only for active --}}
+    <li>
+      <button class="dropdown-item" data-bs-toggle="modal"
+        data-bs-target="#editSessionModal{{ $sessionId }}">
+        Edit Details
+      </button>
+    </li>
+
+    {{-- Show End Session only for active --}}
+    <li>
+      <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
+        @csrf
+        <button type="submit" class="dropdown-item">
+          End Session
+        </button>
+      </form>
+    </li>
+  @endif
+</ul>
                   </div>
+              
+
                 </td>
               </tr>
             @endforeach
@@ -371,53 +403,53 @@
         </table>
 
         <!-- Create Session Modal -->
-<div class="modal fade" id="createSessionModal" tabindex="-1" aria-labelledby="createSessionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            
-            <div class="modal-header">
-                <h5 class="modal-title" id="createSessionModalLabel">Create Session</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            
-            <form method="POST" action="{{ route('sessions.store') }}">
-                @csrf
-                <div class="modal-body">
-                    
-                    <div class="mb-3">
-                        <label for="sessionName" class="form-label">Session Name</label>
-                        <input type="text" class="form-control" id="sessionName" name="name" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="sessionStartDate" class="form-label">Start Date</label>
-                        <input type="date" class="form-control" id="sessionStartDate" name="start_date" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="sessionEndDate" class="form-label">End Date</label>
-                        <input type="date" class="form-control" id="sessionEndDate" name="end_date" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="sessionStatus" class="form-label">Status</label>
-                        <select class="form-control" id="sessionStatus" name="status" required>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-                    
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Session</button>
-                </div>
-            </form>
-            
+         @foreach($sessions as $session)
+          @php
+            $sessionId = $session->_id ?? $session->id ?? null;
+            if (is_object($sessionId)) {
+              $sessionId = (string) $sessionId;
+            }
+          @endphp
+<div class="modal fade" id="createSessionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form action="{{ route('sessions.store') }}" method="POST" class="modal-content">
+      @csrf
+      <div class="modal-header">
+        <h5 class="modal-title">Create Session</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+ 
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Session Name</label>
+          <input type="text" name="name" class="form-control" required value="{{ old('name') }}">
         </div>
-    </div>
+ 
+        <div class="mb-3">
+          <label class="form-label">Start Date</label>
+          <input type="date" name="start_date" class="form-control" required value="{{ old('start_date') }}">
+        </div>
+ 
+        <div class="mb-3">
+          <label class="form-label">End Date</label>
+          <input type="date" name="end_date" class="form-control" required value="{{ old('end_date') }}">
+        </div>
+ 
+        <div class="form-text">
+          New sessions are created with status <strong>active</strong>. If an active session already exists,
+          you will get an error and creation will be blocked.
+        </div>
+      </div>
+ 
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create Session</button>
+      </div>
+    </form>
+  </div>
 </div>
+ 
+@endforeach
 
 
         <!-- View Modal -->
