@@ -80,7 +80,8 @@ class UserController extends Controller
 
     /**
      * Show employees
-     */ public function addUser(Request $request)
+     */
+     public function addUser(Request $request)
     {
         // Debugging: uncomment if needed
         // dd($request->all());

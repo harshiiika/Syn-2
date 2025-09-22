@@ -1,121 +1,93 @@
-    :root{
-      --syn-orange:#ea6a1a;
-      --syn-orange-hover:#cf5c13;
-      --panel:#ffffff;
-      --border:#e9ecef;
-      --text:#111827;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;
-      color:var(--text);
-      background:#fff;
-    }
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+ 
+body{
+    font-family: Arial, sans-serif;
+}
+ 
+.signin{
+    width: 100vw;
+    height: 100vh;
+    background-image: url("https://synthesisbikaner.org/synthesistest/motion%20graphic%20background_12.0de2e3ff0dd28bfa.png");
+    display: flex;
+    justify-content: center;
+}
+ 
+.container{
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ 
+}
+.logo{
+    width: 500px;
+    height: 500px;
+    margin: 50px;
+}
+ 
+ 
+.card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: white;
+    border: none;
+    border-width: 2px;
+    height: 450px;
+    width: 600px;
+    margin: 40px;
+   
+}
+.login-form{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    text-align: start;
+}
+ 
+input[type= "text"], input[type="password"]{
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    text-align: left;
+    padding-left: 10px;
+    background-color: rgb(205, 227, 251);
+}
+ 
+h3{
+    font-size: 37px;
+    color: orangered;
+    text-decoration: underline;
+    text-underline-offset: 10px;
+}
 
-    .page {
-      min-height:100vh;
-      display:grid;
-      grid-template-columns: 1fr minmax(320px,720px) 1fr;
-      align-content:center;
-      justify-items:center;
-      gap:16px;
-      padding:24px 12px;
-    }
-
-    .logo-wrap {
-      grid-column: 1 / 2;
-      justify-self:start;
-      width: 180px;
-      margin-right: 24px;
-    }
-    .logo {
-      width:100%;
-      height:auto;
-      display:block;
-    }
-    .card {
-      grid-column: 2 / 3;
-      width:100%;
-      max-width: 720px;
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:8px;
-      padding:28px 28px 32px;
-      box-shadow:0 2px 12px rgba(0,0,0,.05);
-    }
-
-    .title {
-      margin:4px 0 22px;
-      text-align:center;
-      font-size:28px;
-      font-weight:800;
-      color:var(--syn-orange);
-      text-decoration: underline;
-      text-underline-offset: 6px;
-    }
-
-    .form-grid{
-      display:grid;
-      gap:14px;
-      margin-bottom:18px;
-    }
-    label{
-      font-weight:600;
-    }
-    .input{
-      width:100%;
-      height:40px;
-      padding:0 12px;
-      border:1px solid #cfd4dc;
-      border-radius:4px;
-      background:#fff;
-      outline:none;
-    }
-    .input:focus{
-      border-color:#94a3b8;
-      box-shadow:0 0 0 3px rgba(148,163,184,.25);
-    }
-    .input-blue{
-      background:#dbeafe;
-      border-color:#c7dbff;
-    }
-
-    .btn{
-      display:block;
-      width:100%;
-      height:46px;
-      border:none;
-      border-radius:4px;
-      background:var(--syn-orange);
-      color:#fff;
-      font-weight:700;
-      font-size:16px;
-      cursor:pointer;
-    }
-    .btn:hover{ background:var(--syn-orange-hover); }
-
-    .alert{
-      grid-column: 2 / 3;
-      width:100%;
-      max-width:720px;
-      color:#b00020;
-      background:#fde8ea;
-      border:1px solid #f7c6cc;
-      border-radius:6px;
-      padding:10px 14px;
-    }
-
-    @media (max-width: 980px){
-      .page{
-        grid-template-columns: 12px 1fr 12px;
-      }
-      .logo-wrap{
-        grid-column: 2 / 3;      
-        justify-self:start;
-        width:140px;
-        margin:0 0 8px 0;
-      }
-    }
-  
+label{
+   font-size: 20px;
+   margin-left: 19px;
+   margin-top: 5px;
+}
+.username{
+    width: 500px;
+    height: 40px;
+    margin: 15px;
+    text-align: center;
+}
+ 
+.btn{
+    width: 85%;
+    height: 45px;
+    margin: 20px;
+    background-color: rgb(255, 69, 2);
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor:pointer;
+}
+ 
