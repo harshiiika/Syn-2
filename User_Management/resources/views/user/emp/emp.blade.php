@@ -127,7 +127,7 @@
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
+              id="accordion-button"> 
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
 
             </button>
@@ -147,7 +147,7 @@
                       id="side-icon"></i>Students</a></li>
               </ul>
             </div>
-          </div>
+          </div>  
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header">
