@@ -15,7 +15,7 @@ class BatchesController extends Controller
     {
         // fetch all batches
         $batches = BatchAssignment::all();
-        return view('batches', compact('batches'));
+        return view('user.batches.batches', compact('batches'));
     }
 
     /**

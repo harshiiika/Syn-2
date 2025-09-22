@@ -71,7 +71,7 @@
     </a>
 </li>
 <li>
-    <a class="item" href="{{ route('batches') }}">
+    <a class="item" href="{{ route('user.batches.batches') }}">
         <i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment
     </a>
 </li>
