@@ -12,7 +12,9 @@ Next Steps:
 Integrate all the separate folders into one and test if they're working well together.
 Test main for bugs
 Project Flow:
-LOGIN -> DASHBOARD -> 
+LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY
+
+
 Project Structure:
 1. User Management (Priyanshi)
    - Employee
