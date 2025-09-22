@@ -89,5 +89,6 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 | Batches Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/batches', [BatchesController::class, 'showBatches'])->name('batches');
+Route::get('/batches', [BatchesController::class, 'showBatches'])
+    ->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');

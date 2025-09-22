@@ -63,9 +63,9 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/user management/emp/emp.html "> <i class="fa-solid fa-user"
+                <li><a class="item" href="{{ route('emp') }}"> <i class="fa-solid fa-user"
                       id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="{{ route('batches') }}"><i class="fa-solid fa-user-group"
+                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
                       id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
