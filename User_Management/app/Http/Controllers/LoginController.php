@@ -31,7 +31,7 @@ public function login(Request $request)
 
     if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
         Log::info('Admin login successful');
-        return redirect()->route('emp');
+        return redirect()->route('dashboard');
     }
 
     Log::warning('Admin login failed: invalid credentials');
