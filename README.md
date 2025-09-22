@@ -1,7 +1,7 @@
 SYNTHESIS PROJECT
 @priyanshiii7, @harshiiika, @tisha-dhamu
 
-16-09-25
+18-09-25
 Integrated User Management, Session Management, and Student Management, where:
 1. User Management - Employee ✅ CRUD operations all working
 2. Session management - Session ✅ CRUD all working
@@ -56,3 +56,5 @@ Project Structure:
     - Test Series
     - Inquiry History
     - Onboard History
+    - 
+      
