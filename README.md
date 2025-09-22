@@ -11,6 +11,7 @@ Integrated User Management, Session Management, and Student Management, where:
 Next Steps:
 Integrate all the separate folders into one and test if they're working well together.
 Test main for bugs
+
 Project Flow:
 LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY
 
