@@ -492,62 +492,7 @@
 </div>
 
 <!-- Modal to assign batches -->
-<!-- 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content" id="content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Batches</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-  <label for="basic-url" class="form-label">Select Role</label>
-  <div class="input-group">
  
-   <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle"  id="list"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
-   Select Floor Incharge
-  </button>
-  <ul class="dropdown-menu" id="select-menu">
-    <li><a class="dropdown-item" id="select-item">Floor Inch Evng (UG)</a></li>
-    <li><a class="dropdown-item" id="select-item">Floor Inch Mrng(UG)</a></li> 
-    <li><a class="dropdown-item" id="select-item">Preeti Acharya</a></li>
-    <li><a class="dropdown-item" id="select-item">Rajendra Kumar</a></li> 
-    <li><a class="dropdown-item" id="select-item">Omprakash Jyani</a></li>
-    <li><a class="dropdown-item" id="select-item">Test Series Executive</a></li> 
-    <li><a class="dropdown-item" id="select-item">Omprakash Jyani</a></li>
-    <li><a class="dropdown-item" id="select-item">Test Series Executive</a></li> 
-  </ul>
-</div>
-  </div>
-</div>
-
-        <div class="mb-3">
-  <label for="basic-url" class="form-label">Select Branch Name</label>
-  <div class="input-group">
- 
-   <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" id="list"   type="button" data-bs-toggle="dropdown" aria-expanded="false">
-   Select Batch
-  </button>
-  <ul class="dropdown-menu">
-    <li><a class="dropdown-item">Select Batch</a></li>
-    <li><a class="dropdown-item">M2</a></li> 
-  </ul>
-</div>
-  </div>
-
-</div>
-  
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submit">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="add">Assign</button>
-      </div>
-    </div>
-  </div>
-</div> -->
        <!-- Assign Batch Modal -->
         <div class="modal fade" id="assignBatchModal" tabindex="-1" aria-labelledby="assignBatchModalLabel" data-bs-target="#assignBatchModal" aria-hidden="true">
           <div class="modal-dialog">
