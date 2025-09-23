@@ -8,16 +8,16 @@ use App\Models\User\Role;
 
 class BatchAssignment extends Model
 {
-    protected $connection = 'mongodb';  // Important: specify MongoDB connection
+    protected $connection = 'mongodb'; 
     protected $collection = 'batches';
 
     //fields to be filled same as in db
     protected $fillable = [
-        'Batch_Code', 
-        'Start_Date', 
-        'Username', 
-        'Shift', 
-        'Status', 
+        'batch_id', 
+        'start_date', 
+        'username', 
+        'shift', 
+        'status', 
         'Action']; // Fields are different from that of Employee
 
 }
