@@ -129,9 +129,9 @@
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
               id="accordion-button"> 
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-
             </button>
           </h2>
+          
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">

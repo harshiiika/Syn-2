@@ -578,9 +578,10 @@
                     <div class="input-group">
                       <select name="batch" class="form-select" required>
                         <option value="">Select Batch</option>
-                        @foreach($batches as $batch)
-                          <option value="{{ $batch->id }}">{{ $batch->code }}</option>
-                        @endforeach
+                        <option value="Floor Inch Evng (UG)">L1</option>
+                        <option value="Floor Inch Mrng(UG)">L2</option>
+                        <option value="Floor Inch Evng (UG)">L3</option>
+                        <option value="Floor Inch Mrng(UG)">L4</option>
                       </select>
                     </div>
                   </div>
