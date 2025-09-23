@@ -1,7 +1,7 @@
 SYNTHESIS PROJECT
 @priyanshiii7, @harshiiika, @tisha-dhamu
 
-16-09-25
+18-09-25
 Integrated User Management, Session Management, and Student Management, where:
 1. User Management - Employee ✅ CRUD operations all working
 2. Session management - Session ✅ CRUD all working
@@ -11,6 +11,10 @@ Integrated User Management, Session Management, and Student Management, where:
 Next Steps:
 Integrate all the separate folders into one and test if they're working well together.
 Test main for bugs
+
+Project Flow:
+LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY
+
 
 Project Structure:
 1. User Management (Priyanshi)

@@ -12,6 +12,16 @@
     flex-direction: row;
 }
 
+#toggle-btn {
+    margin: 10px;
+    color: #838383;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    height: 40px;
+    width: 40px;
+    font-size: 20px;
+}
+
 .pfp {
     justify-content: center;
     flex-direction: row;
@@ -175,8 +185,8 @@
     background-color: #ffffff;
     border: 1px solid #d6d6d6;
 }
-.right h1 {
-    color: rgb(190, 51, 0);
+.right h2 , .right p{
+    color: rgb(224, 83, 1);
     margin: 10px;
 }
 
