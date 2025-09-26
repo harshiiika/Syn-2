@@ -16,24 +16,21 @@
 <body>
   <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
     @if(session('success'))
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <div class="alert alert-success alert-dismissible" role="alert">
         {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     @endif
 
     @if(session('error'))
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <div class="alert alert-danger alert-dismissible" role="alert">
         {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     @endif
   </div>
 
-
   <div class="header">
     <div class="logo">
-      <img src="logo-big.png" class="img">
+      <img src="{{ asset('images/logo.png.jpg') }}" class="img">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -76,8 +73,8 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user"
-                      id="side-icon"></i> Employee</a></li>
+                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i>
+                    Employee</a></li>
                 <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
                       id="side-icon"></i> Batches
                     Assignment</a></li>
@@ -320,10 +317,10 @@
           <tbody>
             @foreach($sessions as $index => $session)
               @php
-                $sessionId = $session->_id ?? $session->id ?? null;
-                if (is_object($sessionId)) {
-                  $sessionId = (string) $sessionId;
-                }
+  $sessionId = $session->_id ?? $session->id ?? null;
+  if (is_object($sessionId)) {
+    $sessionId = (string) $sessionId;
+  }
               @endphp
               <tr>
                 <td>{{ $index + 1 }}</td>
@@ -342,59 +339,59 @@
                       <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
                     </button>
                     <!-- <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+                            <li>
+                              <button class="dropdown-item" data-bs-toggle="modal"
+                                data-bs-target="#viewSessionModal{{ $sessionId }}">
+                                View Details
+                              </button>
+                            </li>
+                            <li>
+                              <button class="dropdown-item" data-bs-toggle="modal"
+                                data-bs-target="#editSessionModal{{ $sessionId }}">
+                                Edit Details
+                              </button>
+                            </li>
+                            <li>
+                              <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item">
+                                  {{ $session->status === 'active' ? 'End Session' : 'Reactivate' }}
+                                </button>
+                              </form>
+                            </li>
+
+                          </ul> -->
+                    <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+                      {{-- View is always available --}}
                       <li>
                         <button class="dropdown-item" data-bs-toggle="modal"
                           data-bs-target="#viewSessionModal{{ $sessionId }}">
                           View Details
                         </button>
                       </li>
-                      <li>
-                        <button class="dropdown-item" data-bs-toggle="modal"
-                          data-bs-target="#editSessionModal{{ $sessionId }}">
-                          Edit Details
-                        </button>
-                      </li>
-                      <li>
-                        <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
-                          @csrf
-                          <button type="submit" class="dropdown-item">
-                            {{ $session->status === 'active' ? 'End Session' : 'Reactivate' }}
+
+                      @if($session->status === 'active')
+                        {{-- Show Edit only for active --}}
+                        <li>
+                          <button class="dropdown-item" data-bs-toggle="modal"
+                            data-bs-target="#editSessionModal{{ $sessionId }}">
+                            Edit Details
                           </button>
-                        </form>
-                      </li>
-                      
-                    </ul> -->
-                    <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-  {{-- View is always available --}}
-  <li>
-    <button class="dropdown-item" data-bs-toggle="modal"
-      data-bs-target="#viewSessionModal{{ $sessionId }}">
-      View Details
-    </button>
-  </li>
+                        </li>
 
-  @if($session->status === 'active')
-    {{-- Show Edit only for active --}}
-    <li>
-      <button class="dropdown-item" data-bs-toggle="modal"
-        data-bs-target="#editSessionModal{{ $sessionId }}">
-        Edit Details
-      </button>
-    </li>
-
-    {{-- Show End Session only for active --}}
-    <li>
-      <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
-        @csrf
-        <button type="submit" class="dropdown-item">
-          End Session
-        </button>
-      </form>
-    </li>
-  @endif
-</ul>
+                        {{-- Show End Session only for active --}}
+                        <li>
+                          <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
+                            @csrf
+                            <button type="submit" class="dropdown-item">
+                              End Session
+                            </button>
+                          </form>
+                        </li>
+                      @endif
+                    </ul>
                   </div>
-              
+
 
                 </td>
               </tr>
@@ -403,62 +400,62 @@
         </table>
 
         <!-- Create Session Modal -->
-         @foreach($sessions as $session)
+        @foreach($sessions as $session)
           @php
-            $sessionId = $session->_id ?? $session->id ?? null;
-            if (is_object($sessionId)) {
-              $sessionId = (string) $sessionId;
-            }
+  $sessionId = $session->_id ?? $session->id ?? null;
+  if (is_object($sessionId)) {
+    $sessionId = (string) $sessionId;
+  }
           @endphp
-<div class="modal fade" id="createSessionModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <form action="{{ route('sessions.store') }}" method="POST" class="modal-content">
-      @csrf
-      <div class="modal-header">
-        <h5 class="modal-title">Create Session</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
- 
-      <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label">Session Name</label>
-          <input type="text" name="name" class="form-control" required value="{{ old('name') }}">
-        </div>
- 
-        <div class="mb-3">
-          <label class="form-label">Start Date</label>
-          <input type="date" name="start_date" class="form-control" required value="{{ old('start_date') }}">
-        </div>
- 
-        <div class="mb-3">
-          <label class="form-label">End Date</label>
-          <input type="date" name="end_date" class="form-control" required value="{{ old('end_date') }}">
-        </div>
- 
-        <div class="form-text">
-          New sessions are created with status <strong>active</strong>. If an active session already exists,
-          you will get an error and creation will be blocked.
-        </div>
-      </div>
- 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Create Session</button>
-      </div>
-    </form>
-  </div>
-</div>
- 
-@endforeach
+          <div class="modal fade" id="createSessionModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+              <form action="{{ route('sessions.store') }}" method="POST" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                  <h5 class="modal-title">Create Session</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">Session Name</label>
+                    <input type="text" name="name" class="form-control" required value="{{ old('name') }}">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" name="start_date" class="form-control" required value="{{ old('start_date') }}">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">End Date</label>
+                    <input type="date" name="end_date" class="form-control" required value="{{ old('end_date') }}">
+                  </div>
+
+                  <div class="form-text">
+                    New sessions are created with status <strong>active</strong>. If an active session already exists,
+                    you will get an error and creation will be blocked.
+                  </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Create Session</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        @endforeach
 
 
         <!-- View Modal -->
         @foreach($sessions as $session)
           @php
-            $sessionId = $session->_id ?? $session->id ?? null;
-            if (is_object($sessionId)) {
-              $sessionId = (string) $sessionId;
-            }
+  $sessionId = $session->_id ?? $session->id ?? null;
+  if (is_object($sessionId)) {
+    $sessionId = (string) $sessionId;
+  }
           @endphp
           <div class="modal fade" id="viewSessionModal{{ $sessionId }}" tabindex="-1"
             aria-labelledby="viewSessionLabel{{ $sessionId }}" aria-hidden="true">
@@ -494,10 +491,10 @@
         <!-- Edit Modal -->
         @foreach($sessions as $session)
           @php
-            $sessionId = $session->_id ?? $session->id ?? null;
-            if (is_object($sessionId)) {
-              $sessionId = (string) $sessionId;
-            }
+  $sessionId = $session->_id ?? $session->id ?? null;
+  if (is_object($sessionId)) {
+    $sessionId = (string) $sessionId;
+  }
           @endphp
           <div class="modal fade" id="editSessionModal{{ $sessionId }}" tabindex="-1"
             aria-labelledby="editSessionLabel{{ $sessionId }}" aria-hidden="true">
@@ -545,7 +542,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
           crossorigin="anonymous"></script>
-        <!-- <script src="{{ asset('js/Session_js/session.js') }}"></script> -->
+        <script src="{{ asset('js/session.js') }}"></script>
 </body>
 
 </html>

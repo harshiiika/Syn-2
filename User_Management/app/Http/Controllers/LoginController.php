@@ -1,43 +1,45 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-
 class LoginController extends Controller
 {
-    /**
-     * Show the login form
-     */
     public function showLoginForm()
     {
         return view('auth.login'); 
     }
 
-    /**
-     * Handle the login request
-     * Checks Login info, credentials, and redirects accordingly.
-     */
-public function login(Request $request)
-{
-    Log::info('Login attempt started');
+    public function login(Request $request)
+    {
+        Log::info('Login attempt started');
 
-    $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-    if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
-        Log::info('Admin login successful');
-        return redirect()->route('dashboard');
+        // Use default guard with your Login model
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate(); // important
+            Log::info('Login successful');
+            return redirect()->route('dashboard');
+        }
+
+        Log::warning('Login failed: invalid credentials');
+        return back()->withErrors([
+            'email' => 'Invalid email or password.',
+        ]);
     }
 
-    Log::warning('Admin login failed: invalid credentials');
-    return back()->withErrors([
-        'email' => 'Invalid email or password.',
-    ]);
-}
-
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login');
+    }
 }

@@ -381,58 +381,23 @@ height: 30px;
 
 /* Modal overall background */
 .modal-content {
-    background-color: #000 !important; /* black background */
-    color: #fff !important; /* white text */
-    border-radius: 10px !important;
-    border: 2px solid rgb(224, 83, 1) !important; /* accent border */
-}
-
-/* Modal header */
-.modal-header {
-    background-color: #111 !important; /* slightly lighter black */
-    border-bottom: 2px solid rgb(224, 83, 1) !important;
-}
-
-/* Modal title */
-.modal-title {
-    color: #fff !important;
-}
-
-/* Modal body */
-.modal-body {
-    background-color:  rgb(224, 83, 1) !important;
-    color: #fff !important;
-}
-
-/* Modal footer */
-.modal-footer {
-    background-color: 111 !important;
-    border-top: 2px solid rgb(224, 83, 1) !important;
-}
+    color: rgb(224, 83, 1) !important; 
+    border-radius: 10px !important;}
+    
 
 /* Buttons inside modal */
-.modal-footer .btn-primary {
-    background-color: rgb(224, 83, 1) !important; /* your accent color */
+ .modal-footer .btn-primary { 
+    background-color: rgb(224, 83, 1) !important; 
     border-color: rgb(224, 83, 1) !important;
-    color: #fff !important;
-}
+} 
 
-.modal-footer .btn-secondary {
-    background-color: #fff !important; /* white button */
-    color: #000 !important; /* black text */
-    border-color: rgb(224, 83, 1) !important; /* accent border */
-}
+ .modal-footer .btn-secondary {
+    background-color: #fff !important;
+    color: #000 !important; 
+    border-color: rgb(224, 83, 1) !important; 
+} 
 
-/* Close button */
-.btn-close {
-    filter: invert(1) !important; /* white close button for dark bg */
-}
-
-/* Optional hover effects */
-.modal-footer .btn-primary:hover {
-    background-color: rgb(255, 100, 20) !important; /* brighter accent on hover */
-}
-
-.modal-footer .btn-secondary:hover {
-    background-color: #ddd !important; /* light hover for white button */
+/* Force Bootstrap modal close button to black */
+.close-btn {
+  filter: invert(1); 
 }
