@@ -24,6 +24,7 @@ Route::get('/', function () {
 // -------------------------
 // Routes that require login
 // -------------------------
+<<<<<<< HEAD
 $idPattern = '([0-9]+|[0-9a-fA-F]{24})';
 
 Route::middleware('auth')->group(function () use ($idPattern) {
@@ -78,3 +79,74 @@ Route::middleware('auth')->group(function () use ($idPattern) {
     Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
 
 });
+=======
+
+Route::get('/dashboard', function () {
+    return view('auth.dashboard');   // make sure you have resources/views/auth/dashboard.blade.php
+})->name('dashboard');
+
+
+/*
+|--------------------------------------------------------------------------
+| Inquiry Routes (requires authentication)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->prefix('inquiries')->group(function () {
+    $idPattern = '([0-9]+|[0-9a-fA-F]{24})';
+
+    Route::get('/', [InquiryController::class, 'index'])->name('inquiries.index');
+    Route::get('/list', [InquiryController::class, 'list'])->name('inquiries.list');
+    Route::get('/create', [InquiryController::class, 'create'])->name('inquiries.create');
+    Route::post('/', [InquiryController::class, 'store'])->name('inquiries.store');
+    Route::get('/{inquiry}/edit', [InquiryController::class, 'edit'])->where('inquiry', $idPattern)->name('inquiries.edit');
+    Route::put('/{inquiry}', [InquiryController::class, 'update'])->where('inquiry', $idPattern)->name('inquiries.update');
+    Route::delete('/{inquiry}', [InquiryController::class, 'destroy'])->where('inquiry', $idPattern)->name('inquiries.destroy');
+    Route::get('/{inquiry}', [InquiryController::class, 'show'])->where('inquiry', $idPattern)->name('inquiries.show');
+    Route::post('/{inquiry}/status', [InquiryController::class, 'setStatus'])->where('inquiry', $idPattern)->name('inquiries.setStatus');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Session Management Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('session')->group(function () {
+
+    Route::get('/', [SessionController::class, 'index'])->name('sessions.index');
+    Route::get('/create', [SessionController::class, 'create'])->name('sessions.create');
+    Route::post('/', [SessionController::class, 'store'])->name('sessions.store');
+
+    // update session using POST (instead of PUT)
+    Route::post('/update/{session}', [SessionController::class, 'update'])->name('sessions.update');
+
+    Route::post('/end/{session}', [SessionController::class, 'end'])->name('sessions.end');
+    Route::delete('/{session}', [SessionController::class, 'destroy'])->name('sessions.destroy');
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| User Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/emp', [UserController::class, 'index'])->name('emp');
+Route::get('/emp/list', [UserController::class, 'showUser'])->name('user.emp.emp');
+Route::post('/users/add', [UserController::class, 'addUser'])->name('users.add');
+Route::put('/users/update/{id}', [UserController::class, 'updateUser'])->name('users.update');
+Route::put('/users/update-password/{id}', [UserController::class, 'updatePassword'])->name('users.password.update');
+Route::post('/users/toggle-status/{id}', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+Route::post('/users/store', [UserController::class, 'addUser'])->name('users.store');
+
+/*
+|--------------------------------------------------------------------------
+| Batches Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/batches', [BatchesController::class, 'showBatches'])
+    ->name('user.batches.batches');
+Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
+Route::post('/batches/{id}/toggle', [BatchesController::class, 'updateStatus'])->name('batches.toggleStatus');
+>>>>>>> 1095840a9e3ecb90517995297c37bd40d3ffdb25

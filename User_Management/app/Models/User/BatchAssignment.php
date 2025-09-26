@@ -2,24 +2,19 @@
 
 namespace App\Models\User;
 
-use MongoDB\Laravel\Eloquent\Model; 
-use App\Models\User\Department;
-use App\Models\User\Role;
+use MongoDB\Laravel\Eloquent\Model;
 
 class BatchAssignment extends Model
 {
-    protected $connection = 'mongodb';  // Important: specify MongoDB connection
-    protected $collection = 'batches';
+    protected $connection = 'mongodb';
+    protected $collection = 'batches_assignment';
 
     //fields to be filled same as in db
     protected $fillable = [
-        'Batch_Code', 
-        'Start_Date', 
-        'Username', 
-        'Shift', 
-        'Status', 
-        'Action']; // Fields are different from that of Employee
-
+        'batch_id',
+        'start_date',
+        'username',
+        'shift',
+        'status', // Fields are different from that of Employee
+    ];
 }
-
-

@@ -10,9 +10,16 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Handle the login request
+     * Checks Login info, credentials, and redirects accordingly.
+     */
+>>>>>>> 1095840a9e3ecb90517995297c37bd40d3ffdb25
     public function login(Request $request)
     {
         Log::info('Login attempt started');
@@ -22,6 +29,7 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
+<<<<<<< HEAD
         // Use default guard with your Login model
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate(); // important
@@ -30,11 +38,20 @@ class LoginController extends Controller
         }
 
         Log::warning('Login failed: invalid credentials');
+=======
+        if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
+            Log::info('Admin login successful');
+            return redirect()->route('dashboard');
+        }
+
+        Log::warning('Admin login failed: invalid credentials');
+>>>>>>> 1095840a9e3ecb90517995297c37bd40d3ffdb25
         return back()->withErrors([
             'email' => 'Invalid email or password.',
         ]);
     }
 
+<<<<<<< HEAD
     public function logout(Request $request)
     {
         Auth::logout();
@@ -43,3 +60,6 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 }
+=======
+}
+>>>>>>> 1095840a9e3ecb90517995297c37bd40d3ffdb25
