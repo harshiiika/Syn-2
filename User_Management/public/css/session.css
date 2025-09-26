@@ -184,7 +184,8 @@
 }
 
 #table{
-    font-size: 12px;
+    font-size: 14px;
+    width: 100%;
     flex-direction: row;  
 }
 
@@ -250,7 +251,7 @@
 
 }
 
-#toggle-btn, #ellipsis {
+#toggle-btn{
     background-color: transparent;
     justify-content: center;
     display: flex;
@@ -268,16 +269,6 @@
 }
 #serial{
     margin-left: 15px;
-}
-.dropdown-item {
-    height: 20px;
-    width: 30px;
-    margin: 15px;
-    border-radius: 5px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    cursor: pointer;
 }
 
 .line {
@@ -354,21 +345,26 @@ height: 30px;
 }
 
 .toast-container {
-    position: absolute;
-    right: 0;
-    top: 100px;
-
+    position: fixed !important;  /* Fixed, not absolute */
+    right: 20px;
+    top: 20px;
+    z-index: 1060;
 }
-#toast{
-     justify-content: center;
+
+#toast {
+    justify-content: flex-start;  /* Changed from center */
     display: flex;
     align-items: center;
     border-left: 5px solid red;
     background-color: #fff;
-    font-size: 17px;
-    height: 90px;
-    width: 800px;
+    font-size: 14px;             /* Reduced from 17px */
+    min-height: 50px;            /* Changed from fixed height */
+    max-width: 400px;            /* Reduced from 800px */
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 #liveToastBtn{
     background-color: rgb(224, 83, 1);
     border: none;
@@ -381,23 +377,102 @@ height: 30px;
 
 /* Modal overall background */
 .modal-content {
-    color: rgb(224, 83, 1) !important; 
-    border-radius: 10px !important;}
-    
+    color: rgb(224, 83, 1) !important;
+    border-radius: 10px !important;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
 
 /* Buttons inside modal */
- .modal-footer .btn-primary { 
+ .modal-footer 
+ .btn-primary
+  { 
     background-color: rgb(224, 83, 1) !important; 
     border-color: rgb(224, 83, 1) !important;
 } 
-
- .modal-footer .btn-secondary {
-    background-color: #fff !important;
-    color: #000 !important; 
-    border-color: rgb(224, 83, 1) !important; 
-} 
-
 /* Force Bootstrap modal close button to black */
 .close-btn {
   filter: invert(1); 
+}
+
+.dropdown-toggle::after {
+  display: none !important; /* Remove default Bootstrap arrow */
+}
+
+/* Ensure dropdown menu appears above table */
+.dropdown-menu {
+  z-index: 1055 !important;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Fix dropdown positioning in table */
+.table .dropdown {
+  position: relative;
+}
+
+.table .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    margin-top: 0.125rem;
+    min-width: 150px;            /* Ensure minimum width */
+}
+
+/* Style dropdown items */
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Fix button group alignment if using alternative */
+.btn-group .btn {
+  margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+  margin-right: 0;
+}
+
+#ellipsis, [id^="actionDropdown"] {
+    background-color: transparent;
+    color: #6c757d;
+    border: none;
+    font-size: 0.875rem;
+}
+
+#ellipsis:hover, [id^="actionDropdown"]:hover {
+    background-color: #e9ecef;
+    color: #495057;
+    cursor: pointer;
+    border: none!important;
+    text-decoration: none;
+}
+
+#ellipsis:focus, [id^="actionDropdown"]:focus {
+    box-shadow: none!important;
+    outline: none!important;
+    border: none!important;
+    text-decoration: none !important;
 }

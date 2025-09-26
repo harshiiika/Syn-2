@@ -333,34 +333,68 @@
                   </span>
                 </td>
                 <td>
+  <div class="dropdown">
+    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+            type="button" 
+            id="actionDropdown{{ $sessionId }}" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
+    
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown{{ $sessionId }}">
+      {{-- View is always available --}}
+      <li>
+        <button class="dropdown-item" 
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#viewSessionModal{{ $sessionId }}">
+                View Details
+        </button>
+      </li>
+
+      @if($session->status === 'active')
+        {{-- Show Edit only for active --}}
+        <li>
+          <button class="dropdown-item" 
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editSessionModal{{ $sessionId }}">
+                  Edit Details
+          </button>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        {{-- Show End Session only for active --}}
+        <li>
+          <form method="POST" action="{{ route('sessions.end', $sessionId) }}" class="d-inline w-100">
+            @csrf
+            <button type="submit" 
+                    class="dropdown-item text-danger" 
+                    onclick="return confirm('Are you sure you want to end this session?')">
+                    End Session
+            </button>
+          </form>
+        </li>
+      @else
+        {{-- For inactive sessions --}}
+        <li>
+          <span class="dropdown-item-text text-muted">
+            <i class="fas fa-info-circle me-2"></i> Session Ended
+          </span>
+        </li>
+      @endif
+    </ul>
+  </div>
+</td>
+
+                <!-- <td>
                   <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
                       data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+                      <i class="fa-solid fa-ellipsis-vertical" style="color: #000;"></i>
                     </button>
-                    <!-- <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-                            <li>
-                              <button class="dropdown-item" data-bs-toggle="modal"
-                                data-bs-target="#viewSessionModal{{ $sessionId }}">
-                                View Details
-                              </button>
-                            </li>
-                            <li>
-                              <button class="dropdown-item" data-bs-toggle="modal"
-                                data-bs-target="#editSessionModal{{ $sessionId }}">
-                                Edit Details
-                              </button>
-                            </li>
-                            <li>
-                              <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item">
-                                  {{ $session->status === 'active' ? 'End Session' : 'Reactivate' }}
-                                </button>
-                              </form>
-                            </li>
-
-                          </ul> -->
                     <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
                       {{-- View is always available --}}
                       <li>
@@ -391,9 +425,7 @@
                       @endif
                     </ul>
                   </div>
-
-
-                </td>
+                </td> -->
               </tr>
             @endforeach
           </tbody>
@@ -407,7 +439,10 @@
     $sessionId = (string) $sessionId;
   }
           @endphp
-          <div class="modal fade" id="createSessionModal" tabindex="-1" aria-hidden="true">
+        @endforeach
+
+        <!-- Create Session Modal -->
+         <div class="modal fade" id="createSessionModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
               <form action="{{ route('sessions.store') }}" method="POST" class="modal-content">
                 @csrf
@@ -445,9 +480,6 @@
               </form>
             </div>
           </div>
-
-        @endforeach
-
 
         <!-- View Modal -->
         @foreach($sessions as $session)
