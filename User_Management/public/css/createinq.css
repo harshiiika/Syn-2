@@ -177,7 +177,7 @@ body{
 .page-header{
     display: flex;
     flex-direction: row;
-    gap:1200px; 
+    gap:1000px; 
     justify-content: space-between; 
 }
 .header-card{
