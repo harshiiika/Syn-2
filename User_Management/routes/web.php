@@ -69,7 +69,9 @@ Route::prefix('session')->group(function () {
 
     Route::post('/end/{session}', [SessionController::class, 'end'])->name('sessions.end');
     Route::delete('/{session}', [SessionController::class, 'destroy'])->name('sessions.destroy');
+
 });
+
 /*
 |--------------------------------------------------------------------------
 | User Routes
