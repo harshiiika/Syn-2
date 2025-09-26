@@ -37,7 +37,7 @@ class BatchesController extends Controller
     public function addBatch(Request $request)
     {
         $validated = $request->validate([
-            'batch_code' => 'required|string|max:50',
+            'batch_id' => 'required|string|max:50',
             'start_date' => 'required|date',
             'username'   => 'required|string|max:100',
             'shift'      => 'required|string|max:50',
@@ -50,7 +50,7 @@ class BatchesController extends Controller
             'status' => 'success',
             'batch' => $batch,
         ]);
-    }
+    }  //automatically today's date gets assigned here
 
     /**
      * Edit a batch assignment
@@ -69,7 +69,7 @@ class BatchesController extends Controller
         $batch = BatchAssignment::findOrFail($id);
 
         $validated = $request->validate([
-            'batch_code' => 'required|string|max:50',
+            'batch_id' => 'required|string|max:50',
             'start_date' => 'required|date',
             'username'   => 'required|string|max:100',
             'shift'      => 'required|string|max:50',
