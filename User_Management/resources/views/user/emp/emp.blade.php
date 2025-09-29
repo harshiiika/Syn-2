@@ -15,7 +15,7 @@
 </head>
 
 <body>
-
+  
   <div class="header">
     <div class="logo">
       <img src="{{asset('images/logo.png.jpg')}}" class="img">
@@ -127,11 +127,11 @@
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
+              id="accordion-button"> 
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-
+          
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
@@ -147,7 +147,7 @@
                       id="side-icon"></i>Students</a></li>
               </ul>
             </div>
-          </div>
+          </div>  
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -256,8 +256,8 @@
           <h4>EMPLOYEE</h4>
         </div>
         <div class="buttons">
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalOne"
-            id="add">
+             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalOne"
+            id="add" >
             Add Employee
           </button>
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTwo"
@@ -303,29 +303,31 @@
             </tr>
           </thead>
           <tbody>
-            <tr>x
+            <tr>
             </tr>
           </tbody>
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-@foreach($users as $index => $user)
+      @foreach($users as $index => $user)
 <tr>
   <td>{{ $index + 1 }}</td>
   <td>{{ $user->name }}</td>
   <td>{{ $user->email }}</td>
   <td>{{ $user->mobileNumber ?? '—' }}</td>
-  <td>{{ implode(', ', $user->roleNames->toArray()) }}</td>
-  <td>{{ implode(', ', $user->departmentNames->toArray()) }}</td>
+<td>{{ $user->roleNames->implode(', ') }}</td>
+<td>{{ $user->departmentNames->implode(', ') }}</td>
+
   <td>
     <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-      {{ $user->status ?? 'Active' }}
+      {{ $user->status  ?? 'Active' }}
     </span>
   </td>
+  
   <td>
     <div class="dropdown">
       <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
               data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
       </button>
       <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
         <li>
@@ -334,7 +336,7 @@
           </button>
         </li>
         <li>
-          <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
+         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
             Edit Details
           </button>
         </li>
@@ -357,59 +359,54 @@
 </tr>
 @endforeach
 
-
-<!-- Here options modals are present. -->
-
         </table>
+
+ <!-- Here options modals are present. -->
+  
         <!-- View Modal -->
+
+       
         @foreach($users as $user)
-          <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}"
-            aria-labelledby="viewModalLabel{{ $user->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="viewModalLabel{{ $user->id }}">Employee Details</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-control" value="{{ $user->name }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="text" class="form-control" value="{{ $user->email }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Mobile</label>
-                    <input type="text" class="form-control" value="{{ $user->mobileNumber ?? '—' }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Alternate Mobile</label>
-                    <input type="text" class="form-control" value="{{ $user->alternateNumber ?? '—' }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Branch</label>
-                    <input type="text" class="form-control" value="{{ $user->branch ?? '—' }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Department</label>
-                    <input type="text" class="form-control" value="{{ $user->departmentNames->join(', ') ?? '—' }}"
-                      readonly>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+          <h5 class="modal-title" id="viewModalLabel{{ $user->id }}">Employee Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-        @endforeach
+          <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" value="{{ $user->name }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control" value="{{ $user->email }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mobile</label>
+            <input type="text" class="form-control" value="{{ $user->mobileNumber ?? '—' }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Alternate Mobile</label>
+            <input type="text" class="form-control" value="{{ $user->alternateNumber ?? '—' }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Branch</label>
+            <input type="text" class="form-control" value="{{ $user->branch ?? '—' }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Department</label>
+            <input type="text" class="form-control" value="{{ $user->departmentNames->join(', ') ?? '—' }}" readonly>
+          </div>
+          </div>
+        </div>
+        </div>
+      </div>
+@endforeach
 
 <!-- Edit Modal -->
 @foreach($users as $user)
-@php
-    $currentDepartment = $user->departmentNames->first() ?? '';
-    $rolesList = $user->roleNames->join(', ') ?: '—';
-@endphp
-
 <div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
@@ -421,81 +418,98 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <x-input label="Name" name="name" type="text" :value="$user->name" required />
-          <x-input label="Email" name="email" type="email" :value="$user->email" required />
-          <x-input label="Mobile" name="mobileNumber" type="text" :value="$user->mobileNumber" required />
-          <x-input label="Alternate Mobile" name="alternateNumber" type="text" :value="$user->alternateNumber" />
-
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Mobile</label>
+            <input type="text" class="form-control" name="mobileNumber" value="{{ $user->mobileNumber ?? '' }}" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Alternate Mobile</label>
+            <input type="text" class="form-control" name="alternateNumber" value="{{ $user->alternateNumber ?? '' }}">
+          </div>
+          
           <div class="mb-3">
             <label class="form-label">Branch</label>
             <select class="form-select" name="branch" required>
               <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
             </select>
           </div>
-
+          
           <div class="mb-3">
             <label class="form-label">Department</label>
             <select class="form-select" name="department" required>
-              @foreach(['Front Office','Back Office','Office','Test Management','Admin'] as $dept)
-                <option value="{{ $dept }}" {{ $currentDepartment === $dept ? 'selected' : '' }}>{{ $dept }}</option>
-              @endforeach
+              @php
+                $currentDepartment = $user->departmentNames->first() ?? '';
+              @endphp
+              <option value="Front Office" {{ $currentDepartment == 'Front Office' ? 'selected' : '' }}>Front Office</option>
+              <option value="Back Office" {{ $currentDepartment == 'Back Office' ? 'selected' : '' }}>Back Office</option>
+              <option value="Office" {{ $currentDepartment == 'Office' ? 'selected' : '' }}>Office</option>
+              <option value="Test Management" {{ $currentDepartment == 'Test Management' ? 'selected' : '' }}>Test Management</option>
+              <option value="Admin" {{ $currentDepartment == 'Admin' ? 'selected' : '' }}>Admin</option>
             </select>
-          </div>
-
+                    </div>
+          
           <div class="mb-3">
             <label class="form-label">Current Role</label>
-            <input type="text" class="form-control" value="{{ $rolesList }}" readonly>
+            <input type="text" class="form-control" value="{{ $user->roleNames->join(', ') ?? '—' }}" readonly>
           </div>
         </div>
-
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Update</button>
+          <button type="submit" id="submit" class="btn btn-primary">Update</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 @endforeach
-
       <!-- Password Update Modal -->
        
       @foreach($users as $user)
 
-          <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1"
-            aria-labelledby="passwordModalLabel{{ $user->id }}" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <form method="POST" action="{{ route('users.password.update', $user->id) }}">
-                  @csrf
-                  @method('PUT')
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label class="form-label">Current Password</label>
-                      <input type="password" name="current_password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">New Password</label>
-                      <input type="password" name="new_password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Confirm New Password</label>
-                      <input type="password" name="confirm_new_password" class="form-control" required>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="submit" id="submit" class="btn btn-primary">Update Password</button>
-                  </div>
-                </form>
-              </div>
+      <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1" aria-labelledby="passwordModalLabel{{ $user->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{{ route('users.password.update', $user->id) }}">
+          @csrf
+          @method('PUT')
+          <div class="modal-header">
+            <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="current_password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+            <label class="form-label">New Password</label>
+            <input type="password" name="new_password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+            <label class="form-label">Confirm New Password</label>
+            <input type="password" name="confirm_new_password" class="form-control" required>
             </div>
           </div>
+          <div class="modal-footer">
+            <button type="submit" id="submit" class="btn btn-primary">Update Password</button>
+          </div>
+          </form>
+        </div>
+        </div>
+      </div>
 
-        @endforeach
+    @endforeach
       </div>
       <div class="footer">
         <div class="left-footer">
@@ -517,9 +531,9 @@
     </div>
   </div>
   </div>
-  <!-- Modal Form with fillables for add employee starts here -->
+<!-- Modal Form with fillables for add employee starts here -->
 
-  <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content" id="content-one">
         <div class="modal-header">
@@ -599,8 +613,8 @@
                         <input type="password" name="confirm_password" class="form-control" id="basic-url"
                           aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Confirm Password" required>
                         @error('confirm_password')
-                          <div class="text-danger">{{ $message }}</div>
-                        @enderror
+              <div class="text-danger">{{ $message }}</div>
+            @enderror
 
                       </div>
                     </div>
@@ -643,8 +657,8 @@
         </div>
       </div>
     </div>
-  </div>
-
+  </div> 
+ 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
@@ -680,7 +694,7 @@
         if (xhr.status === 422) {
           const errors = xhr.responseJSON.errors;
           for (let field in errors) {
-            $(`#error-${field}`).text(errors[field][0]);
+            $(#error-${field}).text(errors[field][0]);
           }
         }
       }
