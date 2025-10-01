@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+    App\Providers\AuthServiceProvider::class,
     MongoDB\Laravel\MongoDBServiceProvider::class,
     /*
     |--------------------------------------------------------------------------
