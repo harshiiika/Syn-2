@@ -17,7 +17,11 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // -------------------------
 // Default Route
 // -------------------------
+// Redirects based on auth status
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return redirect()->route('login');
 })->name('home');
 

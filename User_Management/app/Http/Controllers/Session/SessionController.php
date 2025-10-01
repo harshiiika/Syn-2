@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Session;
 
 use App\Models\Session\AcademicSession;  
 use Illuminate\Http\Request;  
-use App\Http\Controllers\Controller;  
+use App\Http\Controllers\Controller;
+  
 
 class SessionController extends Controller 
 {     
@@ -73,14 +74,14 @@ class SessionController extends Controller
     /** GET /sessions/{session} */     
     public function show(AcademicSession $session)     
     {         
-        // Return session data as JSON
-        return response()->json([             
-            'id'         => $session->id,             
-            'name'       => $session->name,             
-            'start_date' => $session->start_date,             
-            'end_date'   => $session->end_date,             
-            'status'     => $session->status,         
-        ]);     
+      return response()->json([
+    'id'         => $session->_id,
+    'name'       => $session->name,
+    'start_date' => $session->start_date,
+    'end_date'   => $session->end_date,
+    'status'     => $session->status,
+]);
+     
     }      
 
     /** PUT /sessions/{session} */     
@@ -88,7 +89,7 @@ class SessionController extends Controller
     {         
         // Basic validation rules         
         $rules = [             
-            'name'       => 'required|string|min:3|max:100|unique:academic_sessions,name,' . $session->id,             
+            'name' => 'required|string|min:3|max:100|unique:academic_sessions,name,' . $session->_id,
             'start_date' => ['required', 'date'],             
             'end_date'   => ['required', 'date', 'after_or_equal:start_date'],             
             'status'     => 'required|in:active,deactive',         

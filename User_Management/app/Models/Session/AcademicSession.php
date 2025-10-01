@@ -19,12 +19,16 @@ class AcademicSession extends Eloquent
         'status'
     ];
 
-    protected $casts = [
-    '_id' => 'string',
-];
+   // MongoDB _id is the primary key
+    protected $primaryKey = '_id';
+    public $incrementing = false;  // MongoDB _id is not auto-incrementing
+    protected $keyType = 'string';
 
+    protected $casts = [
+        '_id' => 'string',
+    ];
 
     // enable timestamps  (created_at/updated_at saved) for future use idea
-    // public $timestamps = true;
+    public $timestamps = true;
 
 }
