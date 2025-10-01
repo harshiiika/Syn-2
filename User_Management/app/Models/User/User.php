@@ -11,10 +11,9 @@ use App\Models\User\Department;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-//referenced mongo db here and the specific collection used
+    //referenced mongo db here and the specific collection used
     protected $connection = 'mongodb';
     protected $collection = 'users';
-
 
     //name of these fillables must be same as in the db
     protected $fillable = [
@@ -29,7 +28,6 @@ class User extends Authenticatable
         'status',
     ];
 
-
     //the roles and dept are stored as array in db so here they are stored in $casts as array and object
     protected $casts = [
         'department' => 'array',
@@ -43,9 +41,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-
     //reference the many to many relation between role and dept
-     public function role()
+    public function role()
     {
         return $this->belongsTo(Role::class);
     }

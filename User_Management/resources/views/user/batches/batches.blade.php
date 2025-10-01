@@ -491,63 +491,6 @@
 </div>
 </div>
 
-<!-- Modal to assign batches -->
-<!-- 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content" id="content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Batches</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-  <label for="basic-url" class="form-label">Select Role</label>
-  <div class="input-group">
- 
-   <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle"  id="list"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
-   Select Floor Incharge
-  </button>
-  <ul class="dropdown-menu" id="select-menu">
-    <li><a class="dropdown-item" id="select-item">Floor Inch Evng (UG)</a></li>
-    <li><a class="dropdown-item" id="select-item">Floor Inch Mrng(UG)</a></li> 
-    <li><a class="dropdown-item" id="select-item">Preeti Acharya</a></li>
-    <li><a class="dropdown-item" id="select-item">Rajendra Kumar</a></li> 
-    <li><a class="dropdown-item" id="select-item">Omprakash Jyani</a></li>
-    <li><a class="dropdown-item" id="select-item">Test Series Executive</a></li> 
-    <li><a class="dropdown-item" id="select-item">Omprakash Jyani</a></li>
-    <li><a class="dropdown-item" id="select-item">Test Series Executive</a></li> 
-  </ul>
-</div>
-  </div>
-</div>
-
-        <div class="mb-3">
-  <label for="basic-url" class="form-label">Select Branch Name</label>
-  <div class="input-group">
- 
-   <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" id="list"   type="button" data-bs-toggle="dropdown" aria-expanded="false">
-   Select Batch
-  </button>
-  <ul class="dropdown-menu">
-    <li><a class="dropdown-item">Select Batch</a></li>
-    <li><a class="dropdown-item">M2</a></li> 
-  </ul>
-</div>
-  </div>
-
-</div>
-  
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submit">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="add">Assign</button>
-      </div>
-    </div>
-  </div>
-</div> -->
        <!-- Assign Batch Modal -->
         <div class="modal fade" id="assignBatchModal" tabindex="-1" aria-labelledby="assignBatchModalLabel" data-bs-target="#assignBatchModal" aria-hidden="true">
           <div class="modal-dialog">
@@ -578,10 +521,9 @@
                     <div class="input-group">
                       <select name="batch" class="form-select" required>
                         <option value="">Select Batch</option>
-                        <option value="Floor Inch Evng (UG)">L1</option>
-                        <option value="Floor Inch Mrng(UG)">L2</option>
-                        <option value="Floor Inch Evng (UG)">L3</option>
-                        <option value="Floor Inch Mrng(UG)">L4</option>
+                        @foreach($batches as $batch)
+                          <option value="{{ $batch->id }}">{{ $batch->code }}</option>
+                        @endforeach
                       </select>
                     </div>
                   </div>
@@ -639,5 +581,43 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
     crossorigin="anonymous"></script>
-<script src="{{asset('js/batchesa.js')}}"></script>
+<script src="{{asset('js/emp.js')}}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+  // Ajax for dynamic user addition without page reload
+  $('#addUserForm').on('submit', function (e) {
+    e.preventDefault();
+    $('.text-danger').text('');
+
+    $.ajax({
+      url: "{{ route('users.add') }}",
+      method: 'POST',
+      data: $(this).serialize(),
+      success: function (response) {
+        if (response.status === 'success') {
+          $('#addUserModal').modal('hide');
+          $('#addUserForm')[0].reset();
+
+          // Append user to table
+          $('#users-table tbody').append(`
+                    <tr>
+                        <td>${response.user.name}</td>
+                        <td>${response.user.email}</td>
+                        <td>${response.user.phone}</td>
+                    </tr>
+                `);
+        }
+      },
+      error: function (xhr) {
+        if (xhr.status === 422) {
+          const errors = xhr.responseJSON.errors;
+          for (let field in errors) {
+            $(#error-${field}).text(errors[field][0]);
+          }
+        }
+      }
+    });
+  });
+</script>
 </html>

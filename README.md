@@ -13,7 +13,7 @@ Integrate all the separate folders into one and test if they're working well tog
 Test main for bugs
 
 Project Flow:
-LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY
+LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY (Access via left sidebar)
 
 
 Project Structure:
@@ -21,7 +21,7 @@ Project Structure:
    - Employee
    - Batches Assignment
   
-2. Master
+2. Master (Will begin in Upcoming Sprint)
    - Courses
    - Batches
    - Scholarships

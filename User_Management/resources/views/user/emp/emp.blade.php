@@ -314,16 +314,8 @@
   <td>{{ $user->name }}</td>
   <td>{{ $user->email }}</td>
   <td>{{ $user->mobileNumber ?? '—' }}</td>
-<td>
-    @foreach($user->roleNames as $roleName)
-        {{ $roleName }}{{ !$loop->last ? ', ' : '' }}
-    @endforeach
-</td>
-<td>
-    @foreach($user->departmentNames as $deptName)
-        {{ $deptName }}{{ !$loop->last ? ', ' : '' }}
-    @endforeach
-</td>
+<td>{{ $user->roleNames->implode(', ') }}</td>
+<td>{{ $user->departmentNames->implode(', ') }}</td>
 
   <td>
     <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
@@ -367,10 +359,13 @@
 </tr>
 @endforeach
 
-<!-- Here options modals are present. -->
-
         </table>
+
+ <!-- Here options modals are present. -->
+  
         <!-- View Modal -->
+
+       
         @foreach($users as $user)
       <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
@@ -699,7 +694,7 @@
         if (xhr.status === 422) {
           const errors = xhr.responseJSON.errors;
           for (let field in errors) {
-            $(`#error-${field}`).text(errors[field][0]);
+            $(#error-${field}).text(errors[field][0]);
           }
         }
       }
