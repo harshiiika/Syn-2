@@ -13,7 +13,11 @@ Integrate all the separate folders into one and test if they're working well tog
 Test main for bugs
 
 Project Flow:
+<<<<<<< Updated upstream
 LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY (Access via left sidebar)
+=======
+LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY
+>>>>>>> Stashed changes
 
 
 Project Structure:
