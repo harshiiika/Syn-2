@@ -39,11 +39,10 @@
     <button class="btn" type="submit">Continue</button>
 </form>
 
- 
-    </div>
+</div>
     </div>
     <!-- <script src="{{ asset('js/login.js') }}"></script> -->
 </body>
- 
+
 </html>
  

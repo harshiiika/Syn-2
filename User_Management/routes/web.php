@@ -15,8 +15,8 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // -------------------------
-// Default Route
 // -------------------------
+// Default Route
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
@@ -85,3 +85,4 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 Route::get('/batches', [BatchesController::class, 'showBatches'])->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
 Route::post('/batches/{id}/toggle', [BatchesController::class, 'updateStatus'])->name('batches.toggleStatus');
+Route::resource('inquiries', InquiryController::class);
