@@ -11,8 +11,7 @@ class Inquiry extends Model
 
     protected $connection = 'mongodb';
     protected $table = 'inquiries';
-
-    // ❌ REMOVE these (let the driver manage ObjectId):
+    
     // protected $primaryKey = '_id';
     // public $incrementing  = false;
     // protected $keyType    = 'string';
