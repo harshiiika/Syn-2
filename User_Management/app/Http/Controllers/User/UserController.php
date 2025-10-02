@@ -26,66 +26,10 @@ class UserController extends Controller
         return $this->showUser();
     }
 
-    // public function addUser(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|email|unique:users,email',
-    //         'mobileNumber' => 'required|string|max:15',
-    //         'alternateNumber' => 'nullable|string|max:15',
-    //         'branch' => 'required|string',
-    //         'department' => 'required|string',
-    //         'password' => 'required|min:6',
-    //         'confirm_password' => 'required|same:password',
-    //     ]);
-
-    //     // Auto-assign roles based on department
-    //     $departmentRoleMapping = [
-    //         'Front Office' => 'Administration',
-    //         'Back Office' => 'Administration', 
-    //         'Office' => 'Administration',
-    //         'Test Management' => 'Administration',
-    //         'Admin' => 'Admin'
-    //     ];
-
-    //     $selectedDepartment = $request->input('department');
-    //     $assignedRole = $departmentRoleMapping[$selectedDepartment] ?? 'Administration';
-
-    //     // Find or create department
-    //     $department = Department::where('name', $selectedDepartment)->first();
-    //     if (!$department) {
-    //         $department = Department::create(['name' => $selectedDepartment]);
-    //     }
-
-    //     // Find or create role
-    //     $role = Role::where('name', $assignedRole)->first();
-    //     if (!$role) {
-    //         $role = Role::create(['name' => $assignedRole]);
-    //     }
-
-    //     User::create([
-    //         'name' => $request->input('name'),
-    //         'email' => $request->input('email'),
-    //         'mobileNumber' => $request->input('mobileNumber'),
-    //         'alternateNumber' => $request->input('alternateNumber'),
-    //         'branch' => $request->input('branch'),
-    //         'roles' => [$role->_id],
-    //         'departments' => [$department->_id],
-    //         'password' => Hash::make($request->input('password')),
-    //         'status' => 'Active',
-    //     ]);
-
-    //     return redirect()->route('emp')->with('success', 'Employee added successfully!');
-    // }
-
     /**
      * Show employees
      */
-<<<<<<< Updated upstream
-    public function addUser(Request $request)
-=======
      public function addUser(Request $request)
->>>>>>> Stashed changes
     {
         // Debugging: uncomment if needed
         // dd($request->all());

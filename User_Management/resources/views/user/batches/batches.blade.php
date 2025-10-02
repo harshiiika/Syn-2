@@ -307,7 +307,6 @@
         <td>{{ $batch->start_date }}</td>
         <td>{{ $batch->username }}</td>
         <td>{{ $batch->shift ?? '—' }}</td>
-        <td>{{ $batch->status ?? '—' }}</td>
         <td>{{ $batch->action ?? '—' }}</td>
         <td>
 
@@ -326,25 +325,25 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
             <li>
-            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $user->_id }}">
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $batch->_id }}">
               View Details
             </button>
             </li>
             <li>
-            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $batch->_id }}">
               Edit Details
             </button>
             </li>
             <li>
-            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#passwordModal{{ $user->_id }}">
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#passwordModal{{ $batch->_id }}">
               Password Update
             </button>
             </li>
             <li>
-            <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}">
+            <form method="POST" action="{{ route('users.toggleStatus', $batch->_id) }}">
               @csrf
               <button type="submit" class="dropdown-item">
-              {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+              {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
               </button>
             </form>
             </li>
@@ -358,11 +357,11 @@
 
         <!-- View Modal -->
                 @foreach($batches as $batch)
-      <div class="modal fade" id="viewModal{{ $batch->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $batch->_id }}" aria-labelledby="viewModalLabel{{ $batch->id }}" aria-hidden="true">
+      <div class="modal fade" id="viewModal{{ $batch->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $batch->_id }}" aria-labelledby="viewModalLabel{{ $batch->_id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-          <h5 class="modal-title" id="viewModalLabel{{ $batch->id }}">Employee Details</h5>
+          <h5 class="modal-title" id="viewModalLabel{{ $batch->_id }}">Employee Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -388,7 +387,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Department</label>
-            <input type="text" class="form-control" value="{{ $batch->departmentNames->join(', ') ?? '—' }}" readonly>
+            <input type="text" class="form-control" value="{{ $batch->departmentNames?->join(', ') ?? '—' }}" readonly>
           </div>
           </div>
         </div>
@@ -402,7 +401,7 @@
         <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-          <h5 class="modal-title" id="viewModalLabel{{ $batch->id }}">Employee Details</h5>
+          <h5 class="modal-title" id="viewModalLabel{{ $batch->_id }}">Employee Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
