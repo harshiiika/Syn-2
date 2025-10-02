@@ -24,7 +24,7 @@
     <div class="top">
 
         <div class="header">
-            <img src="https://synthesisbikaner.org/synthesistest/assets/logo-big.png" class="logo">
+          <img src="{{ asset('images/logo.png.jpg') }}" class="logo" alt="Logo">
             <i class="fa-solid fa-bars" id="toggleBtn"></i>
         </div>
 

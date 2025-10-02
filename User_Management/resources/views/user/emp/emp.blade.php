@@ -410,28 +410,35 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </tbody>
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-@foreach($users as $index => $user)
+      @foreach($users as $index => $user)
 <tr>
    <!-- Serial number (index + 1) -->
   <td>{{ $index + 1 }}</td>
   <td>{{ $user->name }}</td>
   <td>{{ $user->email }}</td>
   <td>{{ $user->mobileNumber ?? '—' }}</td>
+<<<<<<< HEAD
    <!-- Role names joined by comma -->
   <td>{{ implode(', ', $user->roleNames->toArray()) }}</td>
   <!-- Role names joined by comma -->
   <td>{{ implode(', ', $user->departmentNames->toArray()) }}</td>
  <!-- Status badge with dynamic color (red for Deactivated, green for Active) -->
+=======
+<td>{{ $user->roleNames->implode(', ') }}</td>
+<td>{{ $user->departmentNames->implode(', ') }}</td>
+
+>>>>>>> 3cb5753b8f66bb9cf0628ea821c033e075404a97
   <td>
     <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-      {{ $user->status ?? 'Active' }}
+      {{ $user->status  ?? 'Active' }}
     </span>
   </td>
+  
   <td>
     <div class="dropdown">
       <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
               data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
       </button>
       <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
         <li>
@@ -440,7 +447,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </button>
         </li>
         <li>
-          <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
+         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
             Edit Details
           </button>
         </li>
@@ -463,11 +470,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </tr>
 @endforeach
 
-
-<!-- Here options modals are present. -->
-
         </table>
+
+ <!-- Here options modals are present. -->
+  
         <!-- View Modal -->
+
+       
         @foreach($users as $user)
       <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
@@ -509,11 +518,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
 <!-- Edit Modal -->
 @foreach($users as $user)
-@php
-    $currentDepartment = $user->departmentNames->first() ?? '';
-    $rolesList = $user->roleNames->join(', ') ?: '—';
-@endphp
-
 <div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
@@ -526,6 +530,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
         <div class="modal-body">
           <div class="mb-3">
+<<<<<<< HEAD
   <label class="form-label">Name</label>
   <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
 </div>
@@ -542,38 +547,62 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   <input type="text" name="alternateNumber" class="form-control" value="{{ $user->alternateNumber }}">
 </div>
 
+=======
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Mobile</label>
+            <input type="text" class="form-control" name="mobileNumber" value="{{ $user->mobileNumber ?? '' }}" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Alternate Mobile</label>
+            <input type="text" class="form-control" name="alternateNumber" value="{{ $user->alternateNumber ?? '' }}">
+          </div>
+          
+>>>>>>> 3cb5753b8f66bb9cf0628ea821c033e075404a97
           <div class="mb-3">
             <label class="form-label">Branch</label>
             <select class="form-select" name="branch" required>
               <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
             </select>
           </div>
-
+          
           <div class="mb-3">
             <label class="form-label">Department</label>
             <select class="form-select" name="department" required>
-              @foreach(['Front Office','Back Office','Office','Test Management','Admin'] as $dept)
-                <option value="{{ $dept }}" {{ $currentDepartment === $dept ? 'selected' : '' }}>{{ $dept }}</option>
-              @endforeach
+              @php
+                $currentDepartment = $user->departmentNames->first() ?? '';
+              @endphp
+              <option value="Front Office" {{ $currentDepartment == 'Front Office' ? 'selected' : '' }}>Front Office</option>
+              <option value="Back Office" {{ $currentDepartment == 'Back Office' ? 'selected' : '' }}>Back Office</option>
+              <option value="Office" {{ $currentDepartment == 'Office' ? 'selected' : '' }}>Office</option>
+              <option value="Test Management" {{ $currentDepartment == 'Test Management' ? 'selected' : '' }}>Test Management</option>
+              <option value="Admin" {{ $currentDepartment == 'Admin' ? 'selected' : '' }}>Admin</option>
             </select>
-          </div>
-
+                    </div>
+          
           <div class="mb-3">
             <label class="form-label">Current Role</label>
-            <input type="text" class="form-control" value="{{ $rolesList }}" readonly>
+            <input type="text" class="form-control" value="{{ $user->roleNames->join(', ') ?? '—' }}" readonly>
           </div>
         </div>
-
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Update</button>
+          <button type="submit" id="submit" class="btn btn-primary">Update</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 @endforeach
-
       <!-- Password Update Modal -->
        
       @foreach($users as $user)
@@ -810,7 +839,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           const errors = xhr.responseJSON.errors;
           // Display error messages for each field
           for (let field in errors) {
-            $(`#error-${field}`).text(errors[field][0]);
+            $(#error-${field}).text(errors[field][0]);
           }
         }
       }

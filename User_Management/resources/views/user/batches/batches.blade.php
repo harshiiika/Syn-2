@@ -490,8 +490,6 @@
 </div>
 </div>
 
-<!-- Modal to assign batches -->
- 
        <!-- Assign Batch Modal -->
         <div class="modal fade" id="assignBatchModal" tabindex="-1" aria-labelledby="assignBatchModalLabel" data-bs-target="#assignBatchModal" aria-hidden="true">
           <div class="modal-dialog">
@@ -583,5 +581,43 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
     crossorigin="anonymous"></script>
-<script src="{{asset('js/batchesa.js')}}"></script>
+<script src="{{asset('js/emp.js')}}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+  // Ajax for dynamic user addition without page reload
+  $('#addUserForm').on('submit', function (e) {
+    e.preventDefault();
+    $('.text-danger').text('');
+
+    $.ajax({
+      url: "{{ route('users.add') }}",
+      method: 'POST',
+      data: $(this).serialize(),
+      success: function (response) {
+        if (response.status === 'success') {
+          $('#addUserModal').modal('hide');
+          $('#addUserForm')[0].reset();
+
+          // Append user to table
+          $('#users-table tbody').append(`
+                    <tr>
+                        <td>${response.user.name}</td>
+                        <td>${response.user.email}</td>
+                        <td>${response.user.phone}</td>
+                    </tr>
+                `);
+        }
+      },
+      error: function (xhr) {
+        if (xhr.status === 422) {
+          const errors = xhr.responseJSON.errors;
+          for (let field in errors) {
+            $(#error-${field}).text(errors[field][0]);
+          }
+        }
+      }
+    });
+  });
+</script>
 </html>

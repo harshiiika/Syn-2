@@ -10,9 +10,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    //referenced mongo db here and the specific collection used
     protected $connection = 'mongodb';
     protected $collection = 'users';
 
+    //name of these fillables must be same as in the db
     protected $fillable = [
         'name',
         'email',
@@ -25,7 +27,7 @@ class User extends Authenticatable
         'status',
     ];
 
-    // REMOVE THE CASTS - MongoDB handles arrays automatically
+    //the roles and dept are stored as array in db so here they are stored in $casts as array and object
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -35,5 +37,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // No relationships needed - we're handling this manually
+    //reference the many to many relation between role and dept
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

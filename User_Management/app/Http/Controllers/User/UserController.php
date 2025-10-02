@@ -21,7 +21,7 @@ class UserController extends Controller
     //3. find or create department and role
     //4. create user with the provided details and assigned role and department and redirect successfully
 
- public function index()
+    public function index()
     {
         return $this->showUser();
     }
@@ -101,7 +101,7 @@ class UserController extends Controller
         // Get all unique role and department IDs from all users
         $roleIds = collect();
         $departmentIds = collect();
-        
+
         foreach ($users as $user) {
             if (isset($user->roles) && is_array($user->roles)) {
                 $roleIds = $roleIds->merge($user->roles);
@@ -110,19 +110,19 @@ class UserController extends Controller
                 $departmentIds = $departmentIds->merge($user->departments);
             }
         }
-        
+
         // Get unique IDs and convert to strings for MongoDB
-        $roleIds = $roleIds->unique()->map(fn($id) => (string)$id)->filter();
-        $departmentIds = $departmentIds->unique()->map(fn($id) => (string)$id)->filter();
+        $roleIds = $roleIds->unique()->map(fn($id) => (string) $id)->filter();
+        $departmentIds = $departmentIds->unique()->map(fn($id) => (string) $id)->filter();
 
         // Fetch roles and departments
         $roles = collect();
         $departments = collect();
-        
+
         if ($roleIds->isNotEmpty()) {
             $roles = Role::whereIn('_id', $roleIds->toArray())->get()->keyBy(fn($role) => (string) $role->_id);
         }
-        
+
         if ($departmentIds->isNotEmpty()) {
             $departments = Department::whereIn('_id', $departmentIds->toArray())->get()->keyBy(fn($dept) => (string) $dept->_id);
         }
@@ -164,7 +164,7 @@ class UserController extends Controller
     public function updateUser(Request $request, $id)
     {
         $user = User::find($id);
-        
+
         if (!$user) {
             return redirect()->route('emp')->with('error', 'User not found!');
         }
@@ -181,7 +181,7 @@ class UserController extends Controller
         // Auto-assign roles based on department
         $departmentRoleMapping = [
             'Front Office' => 'Administration',
-            'Back Office' => 'Administration', 
+            'Back Office' => 'Administration',
             'Office' => 'Administration',
             'Test Management' => 'Administration',
             'Admin' => 'Admin'
@@ -216,48 +216,6 @@ class UserController extends Controller
     }
 
     /**
-     * Alternative update method if the above doesn't work
-     */
-
-    
-    // public function updateUserAlt(Request $request, $id)
-    // {
-    //     $user = User::find($id);
-        
-    //     if (!$user) {
-    //         return redirect()->route('emp')->with('error', 'User not found!');
-    //     }
-
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|email',
-    //         'mobileNumber' => 'required|string|max:15',
-    //         'alternateNumber' => 'nullable|string|max:15',
-    //         'branch' => 'required|string',
-    //         'role' => 'required|string',
-    //     ]);
-
-    //     // Handle role mapping
-    //     $roleDoc = Role::where('name', $request->input('role'))->first();
-    //     $roleId = $roleDoc ? [$roleDoc->_id] : [];
-
-    //     // Handle department mapping based on branch
-    //     $departmentDoc = Department::where('name', 'like', $request->input('branch'))->first();
-    //     $departmentId = $departmentDoc ? [$departmentDoc->_id] : [];
-
-    //     $user->name = $request->input('name');
-    //     $user->email = $request->input('email');
-    //     $user->mobileNumber = $request->input('mobileNumber');
-    //     $user->alternateNumber = $request->input('alternateNumber');
-    //     $user->branch = $request->input('branch');
-    //     $user->roles = $roleId;
-    //     $user->departments = $departmentId;
-    //     $user->save();
-
-    //     return redirect()->route('emp')->with('success', 'User updated successfully!');
-    // }
-
-    /**
      * Update user password
      */
 
@@ -275,7 +233,7 @@ class UserController extends Controller
         ]);
 
         $user = User::find($id);
-        
+
         if (!$user) {
             return redirect()->route('emp')->with('error', 'User not found!');
         }
@@ -303,7 +261,7 @@ class UserController extends Controller
     public function toggleStatus($id)
     {
         $user = User::find($id);
-        
+
         if (!$user) {
             return redirect()->route('emp')->with('error', 'User not found!');
         }

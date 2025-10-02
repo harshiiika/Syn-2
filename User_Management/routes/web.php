@@ -19,6 +19,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Default Route
 // -------------------------
 
+// -------------------------
+// -------------------------
+// Default Route
 Route::get('/', function () {
     return redirect()->route('login'); // always send root to login
 })->name('home');
@@ -34,7 +37,7 @@ Route::get('/dashboard', function () {
  
 /*
 |--------------------------------------------------------------------------
-| Inquiry Routes (requires authentication)
+| Inquiry Routes (no middleware now)
 |--------------------------------------------------------------------------
 */
 
@@ -59,17 +62,12 @@ $idPattern = '([0-9]+|[0-9a-fA-F]{24})';
 */
 
 Route::prefix('session')->group(function () {
-    
     Route::get('/', [SessionController::class, 'index'])->name('sessions.index');
     Route::get('/create', [SessionController::class, 'create'])->name('sessions.create');
     Route::post('/', [SessionController::class, 'store'])->name('sessions.store');
-    
-    // update session using POST (instead of PUT)
     Route::post('/update/{session}', [SessionController::class, 'update'])->name('sessions.update');
-
     Route::post('/end/{session}', [SessionController::class, 'end'])->name('sessions.end');
     Route::delete('/{session}', [SessionController::class, 'destroy'])->name('sessions.destroy');
-
 });
 
 /*
@@ -85,7 +83,7 @@ Route::put('/users/update/{id}', [UserController::class, 'updateUser'])->name('u
 Route::put('/users/update-password/{id}', [UserController::class, 'updatePassword'])->name('users.password.update');
 Route::post('/users/toggle-status/{id}', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
 Route::post('/users/store', [UserController::class, 'addUser'])->name('users.store');
- 
+
 /*
 |--------------------------------------------------------------------------
 | Batches Routes

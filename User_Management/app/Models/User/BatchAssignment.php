@@ -2,9 +2,7 @@
 
 namespace App\Models\User;
 
-use MongoDB\Laravel\Eloquent\Model; 
-use App\Models\User\Department;
-use App\Models\User\Role;
+use MongoDB\Laravel\Eloquent\Model;
 
 class BatchAssignment extends Model
 {
@@ -17,9 +15,6 @@ class BatchAssignment extends Model
         'start_date', 
         'username', 
         'shift', 
-        'status', 
         'Action']; // Fields are different from that of Employee
 
 }
-
-

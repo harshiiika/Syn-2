@@ -1,93 +1,139 @@
-<?php
+<?php  
 
-namespace App\Http\Controllers\Session;
+namespace App\Http\Controllers\Session;  
 
-use App\Models\Session\AcademicSession;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\Session\AcademicSession;  
+use Illuminate\Http\Request;  
+use App\Http\Controllers\Controller;  
 
-class SessionController extends Controller
-{
-    /** GET /sessions */
-    public function index()
-    {
-        $sessions = AcademicSession::orderByDesc('created_at')->get();
-        return view('session.session', compact('sessions'));
-    }
+class SessionController extends Controller 
+{     
+    /** GET /sessions */     
+    public function index()     
+    {         
+        // Get all sessions in descending order of creation
+        $sessions = AcademicSession::orderByDesc('created_at')->get();         
+        return view('session.session', compact('sessions'));     
+    }      
 
-    /** GET /sessions/create */
-    public function create()
-    {
-        return view('session.create', ['session' => new AcademicSession()]);
-    }
+    /** GET /sessions/create */     
+    public function create()     
+    {         
+        // Show form for creating a new session
+        return view('session.create', ['session' => new AcademicSession()]);     
+    }      
 
-    /** POST /sessions */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date'   => 'required|date|after_or_equal:start_date',
-        ]);
+    /** POST /sessions */     
+    public function store(Request $request)     
+    {         
+        // Validate input
+        $validated = $request->validate([         
+            'name' => [             
+                'required',             
+                'string',             
+                'min:3',             
+                'max:100',             
+                'unique:academic_sessions,name' // unique session names only         
+            ],         
+            'start_date' => [             
+                'required',             
+                'date',             
+                'after:today' // must be after today         
+            ],         
+            'end_date' => [             
+                'required',             
+                'date',             
+                'after:start_date' // must be after start date         
+            ]     
+        ], [         
+            'name.required' => 'Session name is required.',         
+            'name.min' => 'Session name must be at least 3 characters.',         
+            'name.max' => 'Session name cannot exceed 100 characters.',         
+            'name.unique' => 'A session with this name already exists.',         
+            'start_date.required' => 'Start date is required.',         
+            'start_date.date' => 'Please enter a valid start date.',         
+            'start_date.after' => 'Start date must be after today.',         
+            'end_date.required' => 'End date is required.',         
+            'end_date.date' => 'Please enter a valid end date.',         
+            'end_date.after' => 'End date must be after the start date.'     
+        ]);          
 
-        // Only one active session allowed
-        if (AcademicSession::where('status', 'active')->exists()) {
-            return back()->with('error', 'Cannot create session: Limit of 1 active session reached.');
-        }
+        // Only one active session allowed         
+        if (AcademicSession::where('status', 'active')->exists()) {             
+            return back()->with('error', 'Cannot create session: Limit of 1 active session reached.');         
+        }          
 
-        $validated['status'] = 'active'; // default status
-        AcademicSession::create($validated);
+        // Default to active when creating         
+        $validated['status'] = 'active';          
+        AcademicSession::create($validated);          
 
-        return redirect()->route('sessions.index')->with('success', 'Session created successfully.');
-    }
+        return redirect()->route('sessions.index')->with('success', 'Session created successfully.');     
+    }      
 
-    /** GET /sessions/{session} */
-    public function show(AcademicSession $session)
-    {
-        return response()->json([
-            'id'         => $session->_id ?? $session->id,
-            'name'       => $session->name,
-            'start_date' => $session->start_date,
-            'end_date'   => $session->end_date,
-            'status'     => $session->status,
-        ]);
-    }
+    /** GET /sessions/{session} */     
+    public function show(AcademicSession $session)     
+    {         
+        // Return session data as JSON
+        return response()->json([             
+            'id'         => $session->id,             
+            'name'       => $session->name,             
+            'start_date' => $session->start_date,             
+            'end_date'   => $session->end_date,             
+            'status'     => $session->status,         
+        ]);     
+    }      
 
-    /** PUT /sessions/{session} */
-    public function update(Request $request, AcademicSession $session)
-    {
-        $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date'   => 'required|date|after_or_equal:start_date',
-            'status'     => 'required|in:active,deactive',
-        ]);
+    /** PUT /sessions/{session} */     
+    public function update(Request $request, AcademicSession $session)     
+    {         
+        // Basic validation rules         
+        $rules = [             
+            'name'       => 'required|string|min:3|max:100|unique:academic_sessions,name,' . $session->id,             
+            'start_date' => ['required', 'date'],             
+            'end_date'   => ['required', 'date', 'after_or_equal:start_date'],             
+            'status'     => 'required|in:active,deactive',         
+        ];          
 
-        // If setting active, ensure no other active session exists
-        if ($validated['status'] === 'active') {
-            $query = AcademicSession::where('status', 'active')->where('id', '!=', $session->id);
-            if ($query->exists()) {
-                return back()->with('error', 'Another active session already exists. Deactivate it first.');
-            }
-        }
+        // If session hasn't started yet, require future date         
+        if ($session->start_date > now()) {             
+            $rules['start_date'][] = 'after:today';         
+        }          
 
-        $session->update($validated);
-        return redirect()->route('sessions.index')->with('success', 'Session updated successfully.');
-    }
+        $validated = $request->validate($rules, [             
+            'name.required' => 'Session name is required.',             
+            'name.unique' => 'A session with this name already exists.',             
+            'start_date.after' => 'Start date must be after today.',             
+            'end_date.after_or_equal' => 'End date must be after or equal to the start date.'         
+        ]);          
 
-    /** DELETE /sessions/{session} */
-    public function destroy(AcademicSession $session)
-    {
-        $session->delete();
-        return redirect()->route('sessions.index')->with('success', 'Session deleted successfully.');
-    }
+        // If making active, ensure no other active session exists         
+        if ($validated['status'] === 'active') {             
+            $query = AcademicSession::where('status', 'active')->where('id', '!=', $session->id);             
+            if ($query->exists()) {                 
+                return back()->with('error', 'Another active session already exists. Deactivate it first.');             
+            }         
+        }          
 
-    /** POST /sessions/{session}/end */
-    public function end(AcademicSession $session)
-    {
-        $session->status = 'deactive';
-        $session->save();
+        // Save updates         
+        $session->update($validated);         
+        return redirect()->route('sessions.index')->with('success', 'Session updated successfully.');     
+    }      
 
-        return redirect()->route('sessions.index')->with('success', 'Session ended successfully.');
-    }
-}
+    /** DELETE /sessions/{session} */     
+    public function destroy(AcademicSession $session)     
+    {         
+        // Delete session         
+        $session->delete();         
+        return redirect()->route('sessions.index')->with('success', 'Session deleted successfully.');     
+    }      
+
+    /** POST /sessions/{session}/end */     
+    public function end(AcademicSession $session)     
+    {         
+        // Mark session as inactive         
+        $session->status = 'deactive';         
+        $session->save();          
+
+        return redirect()->route('sessions.index')->with('success', 'Session ended successfully.');     
+    } 
+}  
