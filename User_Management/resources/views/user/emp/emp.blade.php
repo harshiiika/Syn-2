@@ -450,7 +450,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </button>
         </li>
         <li>
-          <form method="POST" action="{{ route('users.toggleStatus', $user->id) }}">
+          <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}">
             @csrf
             <button type="submit" class="dropdown-item">
               {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
@@ -469,11 +469,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </table>
         <!-- View Modal -->
         @foreach($users as $user)
-      <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->id }}" aria-hidden="true">
+      <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-          <h5 class="modal-title" id="viewModalLabel{{ $user->id }}">Employee Details</h5>
+          <h5 class="modal-title" id="viewModalLabel{{ $user->_id }}">Employee Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -499,7 +499,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </div>
           <div class="mb-3">
             <label class="form-label">Department</label>
-            <input type="text" class="form-control" value="{{ $user->departmentNames->join(', ') ?? '—' }}" readonly>
+            <input type="text" class="form-control" value="{{ $user->departmentNames ? $user->departmentNames->join(', ') : '—' }}" readonly>
           </div>
           </div>
         </div>
@@ -578,10 +578,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
        
       @foreach($users as $user)
 
-      <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1" aria-labelledby="passwordModalLabel{{ $user->id }}" aria-hidden="true">
+      <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1" aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
-          <form method="POST" action="{{ route('users.password.update', $user->id) }}">
+          <form method="POST" action="{{ route('users.password.update', $user->_id) }}">
           @csrf
           @method('PUT')
           <div class="modal-header">
@@ -690,13 +690,14 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                       <div class="input-group">
 
                         <div class="dropdown">
-                          <select class="form-select" name="roles[0]" required>
-                            <option selected disabled>Select Department</option>
-                            <option value="Front Office">Front Office</option>
-                            <option value="Back Office">Back Office</option>
-                            <option value="Office">Office</option>
-                            <option value="Test Management">Test Management</option>
-                          </select>
+                          <select class="form-select" name="departments[]" required>
+    <option selected disabled>Select Department</option>
+    <option value="Front Office">Front Office</option>
+    <option value="Back Office">Back Office</option>
+    <option value="Office">Office</option>
+    <option value="Test Management">Test Management</option>
+    <option value="Admin">Admin</option>
+</select>
                         </div>
                       </div>
                     </div>
