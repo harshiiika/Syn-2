@@ -307,7 +307,6 @@
         <td>{{ $batch->start_date }}</td>
         <td>{{ $batch->username }}</td>
         <td>{{ $batch->shift ?? '—' }}</td>
-        <td>{{ $batch->status ?? '—' }}</td>
         <td>{{ $batch->action ?? '—' }}</td>
         <td>
 
@@ -326,25 +325,25 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
             <li>
-            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $user->_id }}">
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $batch->_id }}">
               View Details
             </button>
             </li>
             <li>
-            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $batch->_id }}">
               Edit Details
             </button>
             </li>
             <li>
-            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#passwordModal{{ $user->_id }}">
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#passwordModal{{ $batch->_id }}">
               Password Update
             </button>
             </li>
             <li>
-            <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}">
+            <form method="POST" action="{{ route('users.toggleStatus', $batch->_id) }}">
               @csrf
               <button type="submit" class="dropdown-item">
-              {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+              {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
               </button>
             </form>
             </li>
@@ -388,7 +387,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Department</label>
-            <input type="text" class="form-control" value="{{ $batch->departmentNames->join(', ') ?? '—' }}" readonly>
+            <input type="text" class="form-control" value="{{ $batch->departmentNames?->join(', ') ?? '—' }}" readonly>
           </div>
           </div>
         </div>

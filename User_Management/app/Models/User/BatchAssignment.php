@@ -9,7 +9,7 @@ use App\Models\User\Role;
 class BatchAssignment extends Model
 {
     protected $connection = 'mongodb'; 
-    protected $collection = 'batches';
+    protected $collection = 'batch_assignments';
 
     //fields to be filled same as in db
     protected $fillable = [
