@@ -5,12 +5,11 @@ namespace App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use MongoDB\Laravel\Auth\User as Authenticatable;
-use App\Models\User\Role;
-use App\Models\User\Department;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+
     //referenced mongo db here and the specific collection used
     protected $connection = 'mongodb';
     protected $collection = 'users';
@@ -21,8 +20,8 @@ class User extends Authenticatable
         'email',
         'mobileNumber',
         'alternateNumber',
-        'departments',
-        'roles',
+        'departments',  // Changed from 'department'
+        'roles',        // Changed from 'role'
         'branch',
         'password',
         'status',
@@ -30,9 +29,6 @@ class User extends Authenticatable
 
     //the roles and dept are stored as array in db so here they are stored in $casts as array and object
     protected $casts = [
-        'department' => 'array',
-        'role' => 'array',
-        'branch' => 'object',
         'email_verified_at' => 'datetime',
     ];
 

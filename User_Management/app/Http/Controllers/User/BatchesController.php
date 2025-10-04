@@ -43,12 +43,14 @@ class BatchesController extends Controller
      */
 
     public function addBatch(Request $request)
-{
-    $validated = $request->validate([
-        'batch_id' => 'required',
-        'username' => 'required|string|max:255',
-        'shift'    => 'nullable|string|max:255',
-    ]);
+    {
+        $validated = $request->validate([
+            'batch_id' => 'required|string|max:50',
+            'start_date' => 'required|date',
+            'username'   => 'required|string|max:100',
+            'shift'      => 'required|string|max:50',
+            'status'     => 'nullable|string|max:50',
+        ]);
 
     $assignment = BatchAssignment::create([
         'batch_id'   => $validated['batch_id'],

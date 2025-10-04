@@ -1,3 +1,92 @@
+{{--
+
+EMPLOYEE MANAGEMENT BLADE FILE - CODE SUMMARY
+
+
+LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title, 
+           external CSS (Font Awesome, custom emp.css, Bootstrap 5.3.6)
+
+LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
+            notification bell, user dropdown menu with profile and login options
+
+LINE 50-51: Main container div starts
+
+LINE 52-233: Left Sidebar Navigation
+  - LINE 52-58: Sidebar container and admin info display
+  - LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
+    * LINE 61-75: User Management (Employee, Batches Assignment)
+    * LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
+    * LINE 100-114: Session Management (Session, Calendar, Student Migrate)
+    * LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
+    * LINE 132-142: Fees Management (Fees Collection)
+    * LINE 143-155: Attendance Management (Student, Employee)
+    * LINE 156-168: Study Material (Units, Dispatch Material)
+    * LINE 169-179: Test Series Management (Test Master)
+    * LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
+
+LINE 234-252: Right Content Area Header
+  - LINE 236-238: Page title "EMPLOYEE"
+  - LINE 239-246: Action buttons (Add Employee, Upload)
+
+LINE 253-282: Table Controls
+  - LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
+  - LINE 269-274: Search input field with icon
+
+LINE 275-295: Employee Table Structure
+  - LINE 276-286: Table headers (Serial No, Name, Email, Mobile, Department, Role, Status, Action)
+  - LINE 287-289: Empty tbody tag
+  - LINE 290-294: Comment indicating modal fillables location
+
+LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
+  - Displays user data from database
+  - Status badge with color coding
+  - Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
+
+LINE 340-342: Comment for options modals section
+
+LINE 344-375: View Modal (foreach loop for each user)
+  - Read-only display of employee details
+  - Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
+
+LINE 377-445: Edit Modal (foreach loop for each user)
+  - LINE 379-382: PHP variables setup for current department and roles
+  - LINE 384-443: Edit form with PUT method
+  - Editable fields: Name, Email, Mobile, Alternate Mobile, Branch, Department
+  - Current Role displayed as read-only
+
+LINE 447-480: Password Update Modal (foreach loop for each user)
+  - Form with PUT method for password update
+  - Fields: Current Password, New Password, Confirm New Password
+
+LINE 481-498: Footer Section
+  - LINE 482-484: Pagination info text
+  - LINE 485-493: Pagination controls (Previous, page numbers, Next)
+
+LINE 499-500: Closing divs for main container
+
+LINE 501-503: Comment for Add Employee modal
+
+LINE 504-600: Add Employee Modal
+  - LINE 504-509: Modal dialog setup
+  - LINE 510-586: Form with POST method to add new employee
+  - Fields: Name, Mobile, Alternate Mobile, Email, Branch, Department, 
+            Password, Confirm Password, File upload
+  - LINE 587-591: Modal footer with Cancel and Submit buttons
+
+LINE 592-621: Upload Modal
+  - Sample file download button
+  - File upload form for bulk employee import
+
+LINE 622-624: Closing divs and body tag
+
+LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js, jQuery)
+
+LINE 629-665: AJAX Script for Dynamic User Addition
+  - Prevents page reload on form submit
+  - Handles form validation errors
+  - Appends new user to table without refresh
+--}}
+
 <!DOCTYPE html>
 
 
@@ -7,18 +96,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Employee</title>
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+    <!-- Custom CSS -->
   <link rel="stylesheet" href="{{asset('css/emp.css')}}">
+   <!-- Bootstrap 5.3.6 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 
 </head>
 
 <body>
-  
+  <!-- Header Section: Contains logo, sidebar toggle, session selector, notifications, and user menu -->
+ 
   <div class="header">
     <div class="logo">
       <img src="{{asset('images/logo.png.jpg')}}" class="img">
+
+      <!-- Sidebar toggle button -->
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -43,7 +138,7 @@
     </div>
   </div>
   <div class="main-container">
-
+ <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
     <div class="left" id="sidebar">
 
       <div class="text" id="text">
@@ -256,10 +351,12 @@
           <h4>EMPLOYEE</h4>
         </div>
         <div class="buttons">
+           <!-- Button to open Add Employee modal -->
              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalOne"
             id="add" >
             Add Employee
           </button>
+          <!-- Button to open Upload modal for bulk import -->
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTwo"
             id="up">
             Upload
@@ -267,6 +364,7 @@
         </div>
       </div>
       <div class="whole">
+         <!-- Table controls: entries dropdown and search -->
         <div class="dd">
           <div class="line">
             <h6>Show Enteries:</h6>
@@ -303,6 +401,10 @@
             </tr>
           </thead>
           <tbody>
+  <!-- Modal fillables where roles are assigned according to dept automatically -->
+            <!-- Dynamic table rows populated from database using Blade foreach loop -->
+          
+
             <tr>
             </tr>
           </tbody>
@@ -310,13 +412,22 @@
 
       @foreach($users as $index => $user)
 <tr>
+   <!-- Serial number (index + 1) -->
   <td>{{ $index + 1 }}</td>
   <td>{{ $user->name }}</td>
   <td>{{ $user->email }}</td>
   <td>{{ $user->mobileNumber ?? '—' }}</td>
+<<<<<<< HEAD
+   <!-- Role names joined by comma -->
+  <td>{{ implode(', ', $user->roleNames->toArray()) }}</td>
+  <!-- Role names joined by comma -->
+  <td>{{ implode(', ', $user->departmentNames->toArray()) }}</td>
+ <!-- Status badge with dynamic color (red for Deactivated, green for Active) -->
+=======
 <td>{{ $user->roleNames->implode(', ') }}</td>
 <td>{{ $user->departmentNames->implode(', ') }}</td>
 
+>>>>>>> 3cb5753b8f66bb9cf0628ea821c033e075404a97
   <td>
     <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
       {{ $user->status  ?? 'Active' }}
@@ -346,7 +457,7 @@
           </button>
         </li>
         <li>
-          <form method="POST" action="{{ route('users.toggleStatus', $user->id) }}">
+          <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}">
             @csrf
             <button type="submit" class="dropdown-item">
               {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
@@ -367,11 +478,11 @@
 
        
         @foreach($users as $user)
-      <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->id }}" aria-hidden="true">
+      <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-          <h5 class="modal-title" id="viewModalLabel{{ $user->id }}">Employee Details</h5>
+          <h5 class="modal-title" id="viewModalLabel{{ $user->_id }}">Employee Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -397,7 +508,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Department</label>
-            <input type="text" class="form-control" value="{{ $user->departmentNames->join(', ') ?? '—' }}" readonly>
+            <input type="text" class="form-control" value="{{ $user->departmentNames ? $user->departmentNames->join(', ') : '—' }}" readonly>
           </div>
           </div>
         </div>
@@ -419,6 +530,24 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
+<<<<<<< HEAD
+  <label class="form-label">Name</label>
+  <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
+</div>
+<div class="mb-3">
+  <label class="form-label">Email</label>
+  <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
+</div>
+<div class="mb-3">
+  <label class="form-label">Mobile</label>
+  <input type="text" name="mobileNumber" class="form-control" value="{{ $user->mobileNumber }}" required>
+</div>
+<div class="mb-3">
+  <label class="form-label">Alternate Mobile</label>
+  <input type="text" name="alternateNumber" class="form-control" value="{{ $user->alternateNumber }}">
+</div>
+
+=======
             <label class="form-label">Name</label>
             <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
           </div>
@@ -438,6 +567,7 @@
             <input type="text" class="form-control" name="alternateNumber" value="{{ $user->alternateNumber ?? '' }}">
           </div>
           
+>>>>>>> 3cb5753b8f66bb9cf0628ea821c033e075404a97
           <div class="mb-3">
             <label class="form-label">Branch</label>
             <select class="form-select" name="branch" required>
@@ -477,10 +607,10 @@
        
       @foreach($users as $user)
 
-      <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1" aria-labelledby="passwordModalLabel{{ $user->id }}" aria-hidden="true">
+      <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1" aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
-          <form method="POST" action="{{ route('users.password.update', $user->id) }}">
+          <form method="POST" action="{{ route('users.password.update', $user->_id) }}">
           @csrf
           @method('PUT')
           <div class="modal-header">
@@ -589,13 +719,14 @@
                       <div class="input-group">
 
                         <div class="dropdown">
-                          <select class="form-select" name="roles[0]" required>
-                            <option selected disabled>Select Department</option>
-                            <option value="Front Office">Front Office</option>
-                            <option value="Back Office">Back Office</option>
-                            <option value="Office">Office</option>
-                            <option value="Test Management">Test Management</option>
-                          </select>
+                          <select class="form-select" name="departments[]" required>
+    <option selected disabled>Select Department</option>
+    <option value="Front Office">Front Office</option>
+    <option value="Back Office">Back Office</option>
+    <option value="Office">Office</option>
+    <option value="Test Management">Test Management</option>
+    <option value="Admin">Admin</option>
+</select>
                         </div>
                       </div>
                     </div>
@@ -660,26 +791,38 @@
   </div> 
  
 </body>
+<!-- External JavaScript Libraries -->
+<!-- Bootstrap Bundle JS (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 <script src="{{asset('js/emp.js')}}"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
 
+
+<!-- AJAX Script: Handles dynamic user addition without page reload -->
+<script>
+// Event handler for add user form submission
   // Ajax for dynamic user addition without page reload
   $('#addUserForm').on('submit', function (e) {
+    // Prevent default form submission behavior
     e.preventDefault();
+    // Clear previous error messages
     $('.text-danger').text('');
 
+
+    // AJAX POST request to add user
     $.ajax({
       url: "{{ route('users.add') }}",
       method: 'POST',
       data: $(this).serialize(),
       success: function (response) {
+        // On successful user addition
         if (response.status === 'success') {
+          // Close the modal
           $('#addUserModal').modal('hide');
+          // Reset form fields
           $('#addUserForm')[0].reset();
 
+          // Dynamically append new user row to table without page reload
           // Append user to table
           $('#users-table tbody').append(`
                     <tr>
@@ -691,8 +834,10 @@
         }
       },
       error: function (xhr) {
+        // Handle validation errors (HTTP 422)
         if (xhr.status === 422) {
           const errors = xhr.responseJSON.errors;
+          // Display error messages for each field
           for (let field in errors) {
             $(#error-${field}).text(errors[field][0]);
           }

@@ -12,15 +12,15 @@
     flex-direction: row;
 }
 
-#toggle-btn {
+/* #toggle-btn {
     margin: 10px;
     color: #838383;
     border-radius: 50%;
     background-color: #f0f0f0;
-    height: 40px;
-    width: 40px;
+    height: 4px;
+    width: 4px;
     font-size: 20px;
-}
+} */
 
 .pfp {
     justify-content: center;
@@ -105,6 +105,13 @@
     width: 20%;
     overflow-y: scroll;
 }
+#toggle-btn {
+    background-color: transparent;
+    justify-content: center;
+    display: flex;
+    border: none;
+    cursor: pointer; 
+}
 
 .left h6 {
     display: flex;
@@ -140,6 +147,26 @@
     align-items: flex-start;
     flex-direction: column;
 
+}
+
+.fa-bars {
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: large;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.fa-bars:hover {
+    background-color: rgb(212, 208, 207);
+    transition: 0.3s;
+    border-radius: 50%;
 }
 
 #accordion-button {
@@ -281,7 +308,7 @@
 
 }
 
-#toggle-btn, #ellipsis {
+#ellipsis {
     background-color: transparent;
     justify-content: center;
     display: flex;
@@ -289,14 +316,6 @@
     cursor: pointer; 
 }
 
-.fa-bars:hover{ 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.fa-bars{
-    margin-right: 35px;
-}
 #serial{
     margin-left: 15px;
 }
@@ -475,4 +494,30 @@ height: 30px;
     border: none;
     color: #000;
     font-size: 16px;
+}
+
+.accordion-flush, .accordion-header{
+    border: none;
+    justify-content: flex-start;
+    align-items: center;
+    height: 40px;
+    width: 290px;
+    font-size: 17px;
+}
+.menu li {
+    list-style: none;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 17px;
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-start;
+}
+.menu li a{
+    text-decoration: none;
+    color: #000;
+}
+.accordion-body, .menu{
+    padding: 0 !important;
+    margin-left: 5px;
 }
