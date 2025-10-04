@@ -41,9 +41,9 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->prefix('inquiries')->group(function () {
-$idPattern = '([0-9]+|[0-9a-fA-F]{24})';
- 
+Route::prefix('inquiries')->group(function () { 
+    $idPattern = '([0-9]+|[0-9a-fA-F]{24})';
+
     Route::get('/',              [InquiryController::class, 'index'])->name('inquiries.index');
     Route::get('/list',          [InquiryController::class, 'list'])->name('inquiries.list');
     Route::get('/create',        [InquiryController::class, 'create'])->name('inquiries.create');
@@ -53,8 +53,8 @@ $idPattern = '([0-9]+|[0-9a-fA-F]{24})';
     Route::delete('/{inquiry}',  [InquiryController::class, 'destroy'])->where('inquiry', $idPattern)->name('inquiries.destroy');
     Route::get('/{inquiry}',     [InquiryController::class, 'show'])->where('inquiry', $idPattern)->name('inquiries.show');
     Route::post('/{inquiry}/status', [InquiryController::class, 'setStatus'])->where('inquiry', $idPattern)->name('inquiries.setStatus');
-    });
- 
+});
+
 /*
 |--------------------------------------------------------------------------
 | Session Management Routes

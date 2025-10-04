@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 //Code for sidebar, to make it collapsible.
 document.addEventListener('DOMContentLoaded', function () {
   console.log("session.js loaded and DOMContentLoaded event fired");
@@ -130,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+>>>>>>> 3cb5753b8f66bb9cf0628ea821c033e075404a97
 // document.addEventListener('DOMContentLoaded', function () {
 //   // ---------- helpers ----------
 //   function getCsrf() {
