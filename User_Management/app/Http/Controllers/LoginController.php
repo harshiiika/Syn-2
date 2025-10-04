@@ -26,21 +26,10 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-<<<<<<< Updated upstream
-        if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
-            Log::info('Admin login successful');
-            return redirect()->route('dashboard');
-        }
-
-        Log::warning('Admin login failed: invalid credentials');
-        return back()->withErrors([
-            'email' => 'Invalid email or password.',
-        ]);
-=======
     if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
         Log::info('Admin login successful');
         return redirect()->route('dashboard');
->>>>>>> Stashed changes
     }
 
+}
 }
