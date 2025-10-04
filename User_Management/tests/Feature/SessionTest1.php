@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Session\User;
 
-class ExampleTest extends TestCase
+class SessionTest1 extends TestCase
 {
     /**
      * A basic test example.

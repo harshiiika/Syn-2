@@ -81,11 +81,7 @@ class UserController extends Controller
     /**
      * Show employees
      */
-<<<<<<< Updated upstream
-    public function addUser(Request $request)
-=======
      public function addUser(Request $request)
->>>>>>> Stashed changes
     {
         // Debugging: uncomment if needed
         // dd($request->all());
