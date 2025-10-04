@@ -3,25 +3,21 @@
 namespace App\Models\Student;
 
 use MongoDB\Laravel\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Inquiry extends Model
 {
-    /** Use MongoDB connection */
+    use HasFactory;
+
     protected $connection = 'mongodb';
-
-    /** Collection name (v5.x uses $table) */
     protected $table = 'inquiries';
+    
+    // protected $primaryKey = '_id';
+    // public $incrementing  = false;
+    // protected $keyType    = 'string';
 
-    /** Mongo uses _id (ObjectId) */
-    protected $primaryKey = '_id';
-    public $incrementing  = false;
-    protected $keyType    = 'string';
-
-    /** Auto-manage created_at / updated_at */
     public $timestamps = true;
 
-    /** Mass-assignable fields */
     protected $fillable = [
         'student_name',
         'father_name',
@@ -39,12 +35,11 @@ class Inquiry extends Model
         'status',
     ];
 
-    /** Helpful type casting */
     protected $casts = [
-        'ews'                 => 'bool',
-        'service_background'  => 'bool',
-        'specially_abled'     => 'bool',
-        'created_at'          => 'datetime',
-        'updated_at'          => 'datetime',
+        'ews'                => 'bool',
+        'service_background' => 'bool',
+        'specially_abled'    => 'bool',
+        'created_at'         => 'datetime',
+        'updated_at'         => 'datetime',
     ];
 }

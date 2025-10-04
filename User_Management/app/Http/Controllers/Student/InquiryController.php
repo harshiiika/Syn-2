@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers\Student;
 
@@ -55,10 +55,30 @@ class InquiryController extends Controller
     }
 
     /** PUT /inquiries/{inquiry} */
-    public function update(Request $request, Inquiry $inquiry)
+    public function update(Request $request, string $id)
     {
-        $validated = $this->rules($request);
-        $inquiry->update($validated);
+        // ✅ validate input (includes status)
+        $data = $request->validate([
+            'student_name'       => ['required','string','max:120'],
+            'father_name'        => ['required','string','max:120'],
+            'father_contact'     => ['required','string','max:20'],
+            'father_whatsapp'    => ['nullable','string','max:20'],
+            'student_contact'    => ['required','string','max:20'],
+            'category'           => ['required','string','max:50'],
+            'state'              => ['required','string','max:80'],
+            'city'               => ['required','string','max:80'],
+            'address'            => ['nullable','string','max:500'],
+            'branch_name'        => ['required','string','max:50'],
+            'ews'                => ['required','boolean'],
+            'service_background' => ['required','boolean'],
+            'specially_abled'    => ['required','boolean'],
+            'status'             => ['required','in:new,open,closed'], // ✅ include status
+        ]);
+
+        // ✅ Find the inquiry by _id and update
+        $inquiry = Inquiry::findOrFail($id);
+        $inquiry->fill($data);
+        $inquiry->save();
 
         return redirect()
             ->route('inquiries.index')

@@ -10,6 +10,7 @@ use App\Http\Controllers\User\BatchesController;
 // -------------------------
 // Authentication Routes
 // -------------------------
+
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -26,31 +27,34 @@ Route::get('/', function () {
 })->name('home');
 
 // -------------------------
-// Routes that require login
+// Dashboard (after login)
 // -------------------------
 
 Route::get('/dashboard', function () {
     return view('auth.dashboard');   // make sure you have resources/views/auth/dashboard.blade.php
 })->name('dashboard');
 
+ 
 /*
 |--------------------------------------------------------------------------
 | Inquiry Routes (no middleware now)
 |--------------------------------------------------------------------------
 */
 
+Route::middleware('auth')->prefix('inquiries')->group(function () {
 $idPattern = '([0-9]+|[0-9a-fA-F]{24})';
-
-Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
-Route::get('/inquiries/list', [InquiryController::class, 'list'])->name('inquiries.list');
-Route::get('/inquiries/create', [InquiryController::class, 'create'])->name('inquiries.create');
-Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
-Route::get('/inquiries/{inquiry}/edit', [InquiryController::class, 'edit'])->where('inquiry', $idPattern)->name('inquiries.edit');
-Route::put('/inquiries/{inquiry}', [InquiryController::class, 'update'])->where('inquiry', $idPattern)->name('inquiries.update');
-Route::delete('/inquiries/{inquiry}', [InquiryController::class, 'destroy'])->where('inquiry', $idPattern)->name('inquiries.destroy');
-Route::get('/inquiries/{inquiry}', [InquiryController::class, 'show'])->where('inquiry', $idPattern)->name('inquiries.show');
-Route::post('/inquiries/{inquiry}/status', [InquiryController::class, 'setStatus'])->where('inquiry', $idPattern)->name('inquiries.setStatus');
-
+ 
+    Route::get('/',              [InquiryController::class, 'index'])->name('inquiries.index');
+    Route::get('/list',          [InquiryController::class, 'list'])->name('inquiries.list');
+    Route::get('/create',        [InquiryController::class, 'create'])->name('inquiries.create');
+    Route::post('/',             [InquiryController::class, 'store'])->name('inquiries.store');
+    Route::get('/{inquiry}/edit',[InquiryController::class, 'edit'])->where('inquiry', $idPattern)->name('inquiries.edit');
+    Route::put('/{inquiry}',     [InquiryController::class, 'update'])->where('inquiry', $idPattern)->name('inquiries.update');
+    Route::delete('/{inquiry}',  [InquiryController::class, 'destroy'])->where('inquiry', $idPattern)->name('inquiries.destroy');
+    Route::get('/{inquiry}',     [InquiryController::class, 'show'])->where('inquiry', $idPattern)->name('inquiries.show');
+    Route::post('/{inquiry}/status', [InquiryController::class, 'setStatus'])->where('inquiry', $idPattern)->name('inquiries.setStatus');
+    });
+ 
 /*
 |--------------------------------------------------------------------------
 | Session Management Routes
@@ -85,7 +89,6 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 | Batches Routes
 |--------------------------------------------------------------------------
 */
-
-Route::get('/batches', [BatchesController::class, 'showBatches'])->name('user.batches.batches');
+Route::get('/batches', [BatchesController::class, 'showBatches'])
+    ->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
-Route::post('/batches/{id}/toggle', [BatchesController::class, 'updateStatus'])->name('batches.toggleStatus');
