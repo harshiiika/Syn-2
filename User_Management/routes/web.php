@@ -7,7 +7,6 @@ use App\Http\Controllers\Session\SessionController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Master\CoursesController;
 use App\Http\Controllers\User\BatchesController;
-use App\Http\Controllers\Master\CoursesController;
 use App\Http\Controllers\fees\FeesMasterController;
 
 // -------------------------
@@ -134,25 +133,5 @@ Route::prefix('fees')->name('fees.')->group(function () {
     Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
 });
 
-<<<<<<< HEAD
-// Courses Management Routes
-Route::prefix('courses')->group(function () {
-    // List / Index page (GET /courses)
-    Route::get('/', [CoursesController::class, 'index'])->name('courses.index');
-
-    // Store new course (POST /courses)
-    Route::post('/', [CoursesController::class, 'store'])->name('courses.store');
-
-    // Show single course (optional, if you need a separate view page)
-    Route::get('/{course}', [CoursesController::class, 'show'])->name('courses.show');
-
-    // Update course (PUT /courses/{course})
-    Route::put('/{course}', [CoursesController::class, 'update'])->name('courses.update');
-
-    // Delete course (DELETE /courses/{course})
-    Route::delete('/{course}', [CoursesController::class, 'destroy'])->name('courses.destroy');
-});
-=======
 
 
->>>>>>> e8d761abbfa64a2e1503725e304683da9851590c

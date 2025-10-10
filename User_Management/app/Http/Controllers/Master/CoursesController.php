@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\CoursesRequest;
-use App\Models\Master\Course;
 use App\Models\Master\Courses;
 use Illuminate\Http\Request;
-use App\Http\Requests\Master\CourseRequest;
 
 class CoursesController extends Controller
 {

@@ -98,11 +98,7 @@
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-<<<<<<< HEAD
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
-=======
                 <li><a class="item" href="{{ route('master.courses.index') }}"><i class="fa-solid fa-book-open"
->>>>>>> e8d761abbfa64a2e1503725e304683da9851590c
                       id="side-icon"></i> Courses</a></li>
 
                 <li><a class="item" href="/master/batches/batches.html"><i
