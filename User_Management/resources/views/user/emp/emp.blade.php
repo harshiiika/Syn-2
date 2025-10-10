@@ -176,7 +176,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/master/courses/course.html"><i class="fa-solid fa-book-open"
+                <li><a class="item" href="{{ route('master.courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
                 <li><a class="item" href="/master/batches/batches.html"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
@@ -184,8 +184,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
-                <li><a class="item" href="/master/feesm/fees.html"><i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="{{ route('fees.index') }}">
+<i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
                 <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
