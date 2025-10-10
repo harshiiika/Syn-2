@@ -5,10 +5,15 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Student\InquiryController;
 use App\Http\Controllers\Session\SessionController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Master\CoursesController;
 use App\Http\Controllers\User\BatchesController;
+<<<<<<< HEAD
 use App\Http\Controllers\Master\CoursesController;
 use App\Http\Controllers\fees\FeesMasterController;
 
+=======
+use App\Http\Controllers\fees\FeesMasterController;
+>>>>>>> main
 
 // -------------------------
 // Authentication Routes
@@ -95,7 +100,39 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 Route::get('/batches', [BatchesController::class, 'showBatches'])
     ->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
+Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])
+    ->name('batches.toggleStatus');
 
+
+// Courses Management Routes
+Route::prefix('courses')->group(function () {
+    // List / Index page (GET /courses)
+    Route::get('/', [CoursesController::class, 'index'])->name('master.courses.index');
+
+    // Store new course (POST /courses)
+    Route::post('/', [CoursesController::class, 'store'])->name('courses.store');
+
+    // Show single course (optional, if you need a separate view page)
+    Route::get('/{course}', [CoursesController::class, 'show'])->name('courses.show');
+
+    // Update course (PUT /courses/{course})
+    Route::put('/{course}', [CoursesController::class, 'update'])->name('courses.update');
+
+    // Delete course (DELETE /courses/{course})
+    Route::delete('/{course}', [CoursesController::class, 'destroy'])->name('courses.destroy');
+});
+
+
+
+
+// Toggle status (Active / Deactivated)
+Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])
+    ->name('batches.toggleStatus');
+
+<<<<<<< HEAD
+=======
+//feesmaster//
+>>>>>>> main
 
 Route::prefix('fees')->name('fees.')->group(function () {
     Route::get('/', [FeesMasterController::class, 'index'])->name('index');
@@ -105,6 +142,7 @@ Route::prefix('fees')->name('fees.')->group(function () {
     Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
 });
 
+<<<<<<< HEAD
 // Courses Management Routes
 Route::prefix('courses')->group(function () {
     // List / Index page (GET /courses)
@@ -122,3 +160,7 @@ Route::prefix('courses')->group(function () {
     // Delete course (DELETE /courses/{course})
     Route::delete('/{course}', [CoursesController::class, 'destroy'])->name('courses.destroy');
 });
+=======
+
+
+>>>>>>> main
