@@ -92,3 +92,15 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 Route::get('/batches', [BatchesController::class, 'showBatches'])
     ->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
+
+//feesmaster//
+use App\Http\Controllers\fees\FeesMasterController;
+
+Route::prefix('fees')->name('fees.')->group(function () {
+    Route::get('/', [FeesMasterController::class, 'index'])->name('index');
+    Route::post('/', [FeesMasterController::class, 'store'])->name('store');
+    Route::get('/{fee}', [FeesMasterController::class, 'show'])->name('show');
+    Route::patch('/{fee}', [FeesMasterController::class, 'update'])->name('update');
+    Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
+});
+

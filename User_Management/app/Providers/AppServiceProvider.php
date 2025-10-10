@@ -2,33 +2,19 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
-use App\Models\Student\Inquiry;
-use App\Policies\InquiryPolicy;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
 
-class AuthServiceProvider extends ServiceProvider
+class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
-    protected $policies = [
-        Inquiry::class => InquiryPolicy::class,
-    ];
+    public function register(): void
+    {
+        //
+    }
 
-    /**
-     * Register any authentication / authorization services.
-     */
     public function boot(): void
     {
-        $this->registerPolicies();
-
-        // Optional global override: allow admins everything
-        Gate::before(function ($user, $ability) {
-            // return $user->is_admin ? true : null;
-            return null;
-        });
+        // optional but common in MySQL < 5.7 / utf8mb4
+        Schema::defaultStringLength(191);
     }
 }

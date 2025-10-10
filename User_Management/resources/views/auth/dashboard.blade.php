@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-
 <html lang="en">
 
 <head>
@@ -89,9 +88,12 @@
                 <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
-                <li><a class="item" href="/master/feesm/fees.html"><i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
+              <li>
+  <a class="item" href="{{ route('fees.index') }}" onclick="event.stopPropagation()">
+    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master
+  </a>
+</li>
+      <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="/master/branch/branch.html"><i class="fa-solid fa-diagram-project"
@@ -129,7 +131,7 @@
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
               id="accordion-button"> 
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-
+              
             </button>
           </h2>
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -259,44 +261,4 @@
 <script src="{{asset('User_js/emp.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-<!-- 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-
-  // Ajax for dynamic user addition without page reload
-  $('#addUserForm').on('submit', function (e) {
-    e.preventDefault();
-    $('.text-danger').text('');
-
-    $.ajax({
-      url: "{{ route('users.add') }}",
-      method: 'POST',
-      data: $(this).serialize(),
-      success: function (response) {
-        if (response.status === 'success') {
-          $('#addUserModal').modal('hide');
-          $('#addUserForm')[0].reset();
-
-          // Append user to table
-          $('#users-table tbody').append(`
-                    <tr>
-                        <td>${response.user.name}</td>
-                        <td>${response.user.email}</td>
-                        <td>${response.user.phone}</td>
-                    </tr>
-                `);
-        }
-      },
-      error: function (xhr) {
-        if (xhr.status === 422) {
-          const errors = xhr.responseJSON.errors;
-          for (let field in errors) {
-            $(`#error-${field}`).text(errors[field][0]);
-          }
-        }
-      }
-    });
-  });
-</script> -->
-
 </html>
