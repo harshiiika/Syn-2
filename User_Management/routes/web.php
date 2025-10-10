@@ -92,6 +92,8 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 Route::get('/batches', [BatchesController::class, 'showBatches'])
     ->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
+Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])
+    ->name('batches.toggleStatus');
 
 //feesmaster//
 use App\Http\Controllers\fees\FeesMasterController;
