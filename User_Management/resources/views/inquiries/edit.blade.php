@@ -1,33 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edit Inquiry</title>
-
-  <!-- Icons + Bootstrap -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" />
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
-    crossorigin="anonymous"
-  />
-
-  <!-- Reuse the same stylesheet as create page -->
-  <link rel="stylesheet" href="{{ asset('css/createinq.css') }}" />
-</head>
-
-<body>
-  <!-- Toast (optional) -->
-  <div class="toast-container end-0 p-3">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-body">
-        <img src="/images/tick.png" class="tick" />
-        Login Successfully
-      </div>
-    </div>
+@section('content')
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Edit Fees</h4>
+    <a href="{{ route('fees.index') }}" class="btn btn-secondary">Back</a>
   </div>
 
   <!-- Top bar -->
@@ -303,285 +280,89 @@
           <h2 class="section-title m-0">Edit Inquiry</h2>
         </div>
 
-        <div class="card-body">
-          @if (session('status'))
-            <div class="alert alert-success">{{ session('status') }}</div>
-          @endif
+        <form method="POST" action="{{ route('fees.update', $fee->id) }}">
+          @csrf
+          @method('PUT')
 
-          @if ($errors->any())
-            <div class="alert alert-danger">
-              <strong>Fix the following:</strong>
-              <ul class="mb-0">
-                @foreach ($errors->all() as $e)
-                  <li>{{ $e }}</li>
-                @endforeach
-              </ul>
-            </div>
-          @endif
-
-          <form
-            class="row g-3 needs-validation"
-            method="POST"
-            action="{{ route('inquiries.update', $inquiry->id) }}"
-            enctype="multipart/form-data"
-            novalidate
-          >
-            @csrf
-            @method('PUT')
-
-            <!-- Row 1 -->
-            <div class="col-md-6">
-              <label class="form-label">Student Name</label>
-              <input type="text" class="form-control" name="student_name"
-                     value="{{ old('student_name', $inquiry->student_name) }}" required />
-              <div class="invalid-feedback">Please provide the student name.</div>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Father Name</label>
-              <input type="text" class="form-control" name="father_name"
-                     value="{{ old('father_name', $inquiry->father_name) }}" required />
-              <div class="invalid-feedback">Please provide the father name.</div>
-            </div>
-
-            <!-- Row 2 -->
-            <div class="col-md-6">
-              <label class="form-label">Father Contact Number</label>
-              <input type="text" class="form-control" name="father_contact"
-                     value="{{ old('father_contact', $inquiry->father_contact) }}" required />
-              <div class="invalid-feedback">Please provide a valid contact number.</div>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Father WhatsApp Number</label>
-              <input type="text" class="form-control" name="father_whatsapp"
-                     value="{{ old('father_whatsapp', $inquiry->father_whatsapp) }}" />
-            </div>
-
-            <!-- Row 3 -->
-            <div class="col-md-6">
-              <label class="form-label">Student Contact Number</label>
-              <input type="text" class="form-control" name="student_contact"
-                     value="{{ old('student_contact', $inquiry->student_contact) }}" />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label d-block">Category</label>
-              @php $cat = old('category', $inquiry->category); @endphp
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="category" id="cat_obc" value="OBC" {{ $cat==='OBC'?'checked':'' }} required />
-                <label class="form-check-label" for="cat_obc">OBC</label>
+          <div class="modal-body fees-form">
+            <!-- Course -->
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Course</label>
+                <select name="course" class="form-select" required>
+                  <option value="" disabled>Select Course</option>
+                  @foreach(['Impulse','Momentum','Intensity','Thrust','Seedling 10th','Anthesis','Dynamic','Radical 8th','Plumule 9th','Pre Radical 7th'] as $course)
+                    <option value="{{ $course }}" {{ old('course', $fee->course)===$course ? 'selected' : '' }}>
+                      {{ $course }}
+                    </option>
+                  @endforeach
+                </select>
               </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="category" id="cat_sc" value="SC" {{ $cat==='SC'?'checked':'' }} />
-                <label class="form-check-label" for="cat_sc">SC</label>
+            </div>
+
+            <!-- Fees Configuration -->
+            <div class="form-section">Fees Configuration</div>
+            <div class="row g-3 align-items-end">
+              <div class="col-12 col-md-4">
+                <label class="form-label">GST %</label>
+                <input type="number" step="0.01" min="0" max="100"
+                       name="gst_percent" class="form-control"
+                       value="{{ old('gst_percent', $fee->gst_percent) }}" required>
               </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="category" id="cat_gen" value="GENERAL" {{ $cat==='GENERAL'?'checked':'' }} />
-                <label class="form-check-label" for="cat_gen">GENERAL</label>
+              <div class="col-12 col-md-4 offset-md-4">
+                <label class="form-label">Status</label>
+                @php $sv = old('status', $fee->status); @endphp
+                <select name="status" class="form-select" required>
+                  <option value="Active"   {{ $sv==='Active' ? 'selected' : '' }}>Active</option>
+                  <option value="Inactive" {{ $sv==='Inactive' ? 'selected' : '' }}>Inactive</option>
+                </select>
               </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="category" id="cat_st" value="ST" {{ $cat==='ST'?'checked':'' }} />
-                <label class="form-check-label" for="cat_st">ST</label>
+            </div>
+
+            <!-- Fees (before GST) -->
+            <div class="form-section mt-2">Fees (before GST)</div>
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label">Class Room Course</label>
+                <input type="number" step="0.01" min="0"
+                       name="classroom_fee" class="form-control"
+                       value="{{ old('classroom_fee', $fee->classroom_fee) }}">
               </div>
-              <div class="invalid-feedback d-block">Please choose a category.</div>
-            </div>
-
-            <!-- Row 4 -->
-            <div class="col-md-6">
-              <label class="form-label">State</label>
-              <input type="text" class="form-control" name="state"
-                     value="{{ old('state', $inquiry->state) }}" required />
-              <div class="invalid-feedback">Please enter a state.</div>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">City</label>
-              <input type="text" class="form-control" name="city"
-                     value="{{ old('city', $inquiry->city) }}" required />
-              <div class="invalid-feedback">Please provide a city.</div>
-            </div>
-
-            <!-- Row 5 -->
-            <div class="col-md-6">
-              <label class="form-label">Address Name</label>
-              <textarea class="form-control" name="address" rows="2">{{ old('address', $inquiry->address) }}</textarea>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Select Branch Name</label>
-              @php $bn = old('branch_name', $inquiry->branch_name); @endphp
-              <select class="form-select" name="branch_name" required>
-                <option value="" disabled {{ $bn ? '' : 'selected' }}>Choose...</option>
-                <option {{ $bn==='Branch 1'?'selected':'' }}>Branch 1</option>
-                <option {{ $bn==='Branch 2'?'selected':'' }}>Branch 2</option>
-                <option {{ $bn==='Branch 3'?'selected':'' }}>Branch 3</option>
-                <option {{ $bn==='Branch 4'?'selected':'' }}>Branch 4</option>
-              </select>
-              <div class="invalid-feedback">Please select a branch.</div>
-            </div>
-
-            <!-- Yes/No groups -->
-            <div class="col-12">
-              <div class="soft-row d-flex align-items-center justify-content-between">
-                <span>Do You Belong to Economic Weaker Section ?</span>
-                @php $ews = old('ews', $inquiry->ews); @endphp
-                <span>
-                  <label class="me-3">
-                    <input class="form-check-input me-1" type="radio" name="ews" value="yes" {{ $ews==='yes'?'checked':'' }} required />
-                    Yes
-                  </label>
-                  <label>
-                    <input class="form-check-input me-1" type="radio" name="ews" value="no" {{ $ews==='no'?'checked':'' }} />
-                    No
-                  </label>
-                </span>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Live online class course</label>
+                <input type="number" step="0.01" min="0"
+                       name="live_fee" class="form-control"
+                       value="{{ old('live_fee', $fee->live_fee) }}">
               </div>
-              <div class="invalid-feedback d-block">Select Yes/No for EWS.</div>
-            </div>
-
-            <div class="col-12">
-              <div class="soft-row d-flex align-items-center justify-content-between">
-                <span>Do You Belong to Any Army/Police/Martyr Background?</span>
-                @php $srv = old('service_background', $inquiry->service_background); @endphp
-                <span>
-                  <label class="me-3">
-                    <input class="form-check-input me-1" type="radio" name="service_background" value="yes" {{ $srv==='yes'?'checked':'' }} required />
-                    Yes
-                  </label>
-                  <label>
-                    <input class="form-check-input me-1" type="radio" name="service_background" value="no" {{ $srv==='no'?'checked':'' }} />
-                    No
-                  </label>
-                </span>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Recorded online class course</label>
+                <input type="number" step="0.01" min="0"
+                       name="recorded_fee" class="form-control"
+                       value="{{ old('recorded_fee', $fee->recorded_fee) }}">
               </div>
-              <div class="invalid-feedback d-block">Select Yes/No for service background.</div>
-            </div>
-
-            <div class="col-12">
-              <div class="soft-row d-flex align-items-center justify-content-between">
-                <span>Are You a Specially Abled ?</span>
-                @php $sa = old('specially_abled', $inquiry->specially_abled); @endphp
-                <span>
-                  <label class="me-3">
-                    <input class="form-check-input me-1" type="radio" name="specially_abled" value="yes" {{ $sa==='yes'?'checked':'' }} required />
-                    Yes
-                  </label>
-                  <label>
-                    <input class="form-check-input me-1" type="radio" name="specially_abled" value="no" {{ $sa==='no'?'checked':'' }} />
-                    No
-                  </label>
-                </span>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Study Material only</label>
+                <input type="number" step="0.01" min="0"
+                       name="study_fee" class="form-control"
+                       value="{{ old('study_fee', $fee->study_fee) }}">
               </div>
-              <div class="invalid-feedback d-block">Select Yes/No for specially abled.</div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Test series only</label>
+                <input type="number" step="0.01" min="0"
+                       name="test_fee" class="form-control"
+                       value="{{ old('test_fee', $fee->test_fee) }}">
+              </div>
             </div>
+          </div>
 
-            <!-- Course Details divider -->
-            <div class="col-12"><hr class="my-4" /></div>
-            <div class="col-12">
-              <h5 class="mb-3">Course Details</h5>
-            </div>
+          <div class="modal-footer bg-light">
+            <a href="{{ route('fees.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Update</button>
+          </div>
+        </form>
 
-            <div class="col-md-6">
-              <label class="form-label">Course Type</label>
-              <input name="course_type" class="form-control" value="{{ old('course_type', $inquiry->course_type) }}" />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Course Name</label>
-              <input name="course_name" class="form-control" value="{{ old('course_name', $inquiry->course_name) }}" />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Delivery Mode</label>
-              @php $dm = old('delivery_mode', $inquiry->delivery_mode); @endphp
-              <select name="delivery_mode" class="form-select">
-                <option value="" disabled {{ $dm ? '' : 'selected' }}>Choose…</option>
-                <option value="Offline"  {{ $dm==='Offline'?'selected':'' }}>Offline</option>
-                <option value="Online"   {{ $dm==='Online'?'selected':'' }}>Online</option>
-                <option value="Hybrid"   {{ $dm==='Hybrid'?'selected':'' }}>Hybrid</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Medium</label>
-              @php $med = old('medium', $inquiry->medium); @endphp
-              <select name="medium" class="form-select">
-                <option value="" disabled {{ $med ? '' : 'selected' }}>Choose…</option>
-                <option value="Hindi"     {{ $med==='Hindi'?'selected':'' }}>Hindi</option>
-                <option value="English"   {{ $med==='English'?'selected':'' }}>English</option>
-                <option value="Bilingual" {{ $med==='Bilingual'?'selected':'' }}>Bilingual</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Board</label>
-              <input name="board" class="form-control" value="{{ old('board', $inquiry->board) }}" />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Course Content</label>
-              <input name="course_content" class="form-control" value="{{ old('course_content', $inquiry->course_content) }}" />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Status</label>
-              <input name="status" class="form-control" value="{{ old('status', $inquiry->status) }}" />
-            </div>
-
-            <!-- Buttons -->
-            <div class="col-12 d-flex justify-content-end mt-3">
-              <a href="{{ route('inquiries.index') }}" class="btn btn-outline-secondary me-2">Back</a>
-              <button class="btn btn-primary" type="submit">Update</button>
-            </div>
-          </form>
-        </div>
       </div>
-
-    </div> <!-- /right -->
-  </div> <!-- /main-container -->
-
-  <!-- Scripts -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-    crossorigin="anonymous"
-  ></script>
-
-  <script>
-    // Same sidebar toggle behavior you used elsewhere
-    document.addEventListener('DOMContentLoaded', function () {
-      const sidebar = document.querySelector('#sidebar');
-      const toggleBtn = document.getElementById('toggleBtn');
-      const admin = document.getElementById('admin');
-      const right = document.getElementById('right');
-
-      let isCollapsed = false;
-
-      if (sidebar) {
-        sidebar.style.transition = 'width 0.5s ease';
-        sidebar.style.overflow = 'hidden';
-        sidebar.style.width = '300px';
-      }
-
-      toggleBtn?.addEventListener('click', function () {
-        if (!sidebar) return;
-        if (isCollapsed) {
-          sidebar.style.width = '25%';
-          admin && (admin.style.visibility = 'visible');
-          right && (right.style.width = '100%');
-        } else {
-          sidebar.style.width = '40px';
-          admin && (admin.style.visibility = 'hidden');
-          right && (right.style.width = '100%');
-        }
-        isCollapsed = !isCollapsed;
-      });
-    });
-
-    // Enable bootstrap popovers if any
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-    [...popoverTriggerList].map(el => new bootstrap.Popover(el));
-  </script>
-</body>
-</html>
+    </div>
+  </div>
+</div>
+@endsection
