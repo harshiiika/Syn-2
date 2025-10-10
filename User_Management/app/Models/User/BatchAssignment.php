@@ -6,8 +6,7 @@ use MongoDB\Laravel\Eloquent\Model;
 
 class BatchAssignment extends Model
 {
-    protected $connection = 'mongodb'; 
-    
+    protected $connection = 'mongodb';     
     protected $collection = 'batch_assignments';
 
     //fields to be filled same as in db
@@ -16,7 +15,9 @@ class BatchAssignment extends Model
         'start_date', 
         'username', 
         'shift', 
-        'status']; // Fields are different from that of Employee
+        'status', 
+        'Action'
+    ]; // Fields are different from that of Employee
 
 //  public function assignments()
 //     {
