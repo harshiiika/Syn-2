@@ -14,7 +14,7 @@ Test main for bugs ✅
 Now , Unit testing of respective second modules is going on 10/10/205 
 
 Project Flow:
-<<<<<<< Updated upstream
+Updated upstream
 LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY /... (Access via left sidebar)
 
 
