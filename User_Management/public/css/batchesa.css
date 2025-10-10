@@ -12,7 +12,12 @@
     justify-content: space-between;
     flex-direction: row;
 }
-
+#actionMenuButton{
+    background-color: transparent;
+    border: none;
+    color: #000;
+    font-size: 16px;
+}
 .pfp {
     justify-content: center;
     flex-direction: row;
