@@ -417,17 +417,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   <td>{{ $user->name }}</td>
   <td>{{ $user->email }}</td>
   <td>{{ $user->mobileNumber ?? '—' }}</td>
-<<<<<<< HEAD
-   <!-- Role names joined by comma -->
-  <td>{{ implode(', ', $user->roleNames->toArray()) }}</td>
-  <!-- Role names joined by comma -->
-  <td>{{ implode(', ', $user->departmentNames->toArray()) }}</td>
- <!-- Status badge with dynamic color (red for Deactivated, green for Active) -->
-=======
 <td>{{ $user->roleNames->implode(', ') }}</td>
 <td>{{ $user->departmentNames->implode(', ') }}</td>
 
->>>>>>> 3cb5753b8f66bb9cf0628ea821c033e075404a97
   <td>
     <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
       {{ $user->status  ?? 'Active' }}
@@ -530,24 +522,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
         <div class="modal-body">
           <div class="mb-3">
-<<<<<<< HEAD
-  <label class="form-label">Name</label>
-  <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
-</div>
-<div class="mb-3">
-  <label class="form-label">Email</label>
-  <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
-</div>
-<div class="mb-3">
-  <label class="form-label">Mobile</label>
-  <input type="text" name="mobileNumber" class="form-control" value="{{ $user->mobileNumber }}" required>
-</div>
-<div class="mb-3">
-  <label class="form-label">Alternate Mobile</label>
-  <input type="text" name="alternateNumber" class="form-control" value="{{ $user->alternateNumber }}">
-</div>
-
-=======
             <label class="form-label">Name</label>
             <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
           </div>
@@ -567,7 +541,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <input type="text" class="form-control" name="alternateNumber" value="{{ $user->alternateNumber ?? '' }}">
           </div>
           
->>>>>>> 3cb5753b8f66bb9cf0628ea821c033e075404a97
           <div class="mb-3">
             <label class="form-label">Branch</label>
             <select class="form-select" name="branch" required>

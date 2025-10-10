@@ -1,4 +1,3 @@
-
 * {
     margin: 0;
     padding: 0;
@@ -12,12 +11,7 @@
     justify-content: space-between;
     flex-direction: row;
 }
-#actionMenuButton{
-    background-color: transparent;
-    border: none;
-    color: #000;
-    font-size: 16px;
-}
+
 .pfp {
     justify-content: center;
     flex-direction: row;
@@ -115,6 +109,7 @@
     justify-content: center;
     align-items: center;
 }
+
 .fa-solid,
 .fa-regular {
     margin: 0px 10px 0px 5px;
@@ -138,7 +133,7 @@
 }
 
 #accordion-button {
-   font-size: 17px;
+    font-size: 17px;
     border: none;
     height: 38px;
     padding: 10px !important;
@@ -160,6 +155,7 @@
     justify-content: flex-start;
 }
 
+/* Right side css */
 .right {
     height: 90vh;
     width: 80%;
@@ -190,8 +186,9 @@
 }
 
 #table{
-    font-size: 12px;
-    flex-direction: column;  
+    font-size: 14px;
+    width: 100%;
+    flex-direction: row;  
 }
 
 .top {
@@ -210,11 +207,10 @@
 
 .buttons {
     flex-direction: row;
-    margin: 10px; 
-    display: flex;
+    margin: 10px;
 }
 
-#add {
+#createCourseBtn {
     background-color: rgb(224, 83, 1);
     color: #edfeff;
     height: 40px;
@@ -223,32 +219,14 @@
     border: 0;
     margin: 10px;
 }
-#submit{
-     border:1px solid rgb(224, 83, 1);
-    color: #000000;
-    background-color: transparent;
-    height: 40px;
-    width: 100px;
-    border-radius: 7px; 
-    margin: 10px;
-}
-#up{
-    background-color: rgb(8, 90, 0);
-    color: #edfeff;
-    height: 40px;
-    width: 130px;
-    border-radius: 7px;
-    border: 0;
-    margin: 10px;
-
-}
  
 .menu li {
     list-style: none;
 }
 
+
 .btn-secondary,
-#ellipsis {
+#ellipse {
     margin: 5px 0px 10px 5px;
     align-items: center;
     outline: none;
@@ -262,21 +240,7 @@
     align-items: center;
     border: 1px solid #000;
     background-color: #ffffff;
-    color: #000; 
-}
-
-#list {
-    margin: 5px 0px 10px 5px;
-    align-items: center;
-    border: 1px solid #000;
-    background-color: #ffffff;
     color: #000;
-    width: 35vw;
-    height: 40px;
-    border: 1px solid #d8d8d8;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
 }
 
 .dd {
@@ -289,7 +253,7 @@
 
 }
 
-#toggle-btn, #ellipsis {
+#toggle-btn{
     background-color: transparent;
     justify-content: center;
     display: flex;
@@ -307,16 +271,6 @@
 }
 #serial{
     margin-left: 15px;
-}
-.dropdown-item {
-    height: 20px;
-    width: 30px;
-    margin: 15px;
-    border-radius: 5px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    cursor: pointer;
 }
 
 .line {
@@ -349,6 +303,7 @@
     padding: 5px;
 }
 
+
 #bottom{
     display: flex;
     align-items: center;
@@ -378,113 +333,260 @@ height: 30px;
 }
 #pg3{
     height: 30px;
-    color:  rgb(224, 83, 1);
     width: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
-#form{
-    overflow-y: scroll;
-    height: 400px;
-    width: 700px;
-}
-
-.modal-dialog-scrollable , .modal-content{
-    height: 90vh;
+.show{
+    justify-content: flex-start;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    font-size: 12px;
 }
 
-#inputGroupFile01{
-    width: 500px;
-    border: 1px dashed #d8d8d8;
+.toast-container {
+    position: fixed !important;  /* Fixed, not absolute */
+    right: 20px;
+    top: 20px;
+    z-index: 1060;
 }
 
-.modal-body{
-    flex: 1 1 auto;
+#toast {
+    justify-content: flex-start;  /* Changed from center */
+    display: flex;
+    align-items: center;
+    border-left: 5px solid red;
+    background-color: #fff;
+    font-size: 14px;             /* Reduced from 17px */
+    min-height: 50px;            /* Changed from fixed height */
+    max-width: 400px;            /* Reduced from 800px */
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#liveToastBtn{
+    background-color: rgb(224, 83, 1);
+    border: none;
+    margin: 7px;
+}
+.fa-circle-xmark{
+    font-size: 27px;
+}
+
+
+/* Modal overall background */
+.modal-content {
+    color: rgb(224, 83, 1) !important;
+    border-radius: 10px !important;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+
+/* Buttons inside modal */
+ .modal-footer 
+ .btn-primary
+  { 
+    background-color: rgb(224, 83, 1) !important; 
+    border-color: rgb(224, 83, 1) !important;
+} 
+/* Force Bootstrap modal close button to black */
+.close-btn {
+  filter: invert(1); 
+}
+
+.dropdown-toggle::after {
+  display: none !important; /* Remove default Bootstrap arrow */
+}
+
+/* Ensure dropdown menu appears above table */
+.dropdown-menu {
+  z-index: 1055 !important;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Fix dropdown positioning in table */
+.table .dropdown {
+  position: relative;
+}
+
+.table .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    margin-top: 0.125rem;
+    min-width: 150px;            /* Ensure minimum width */
+}
+
+/* Style dropdown items */
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Fix button group alignment if using alternative */
+.btn-group .btn {
+  margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+  margin-right: 0;
+}
+
+#ellipsis, [id^="actionDropdown"] {
+    background-color: transparent;
+    color: #6c757d;
+    border: none;
+    font-size: 0.875rem;
+}
+
+#ellipsis:hover, [id^="actionDropdown"]:hover {
+    background-color: #e9ecef;
+    color: #495057;
+    cursor: pointer;
+    border: none!important;
+    text-decoration: none;
+}
+
+#ellipsis:focus, [id^="actionDropdown"]:focus {
+    box-shadow: none!important;
+    outline: none!important;
+    border: none!important;
+    text-decoration: none !important;
+}
+
+/* Subject Tags Styling */
+.subject-input-wrapper {
     position: relative;
 }
 
-.modal-footer{
-    position: sticky;
-    bottom: 0;
-    background-color: #fff;
-    z-index: 10; 
-}
-#content-one{
-    height: 500px;
-    width: 600px;
-}
-#content-two{
-   height: 400px;
-    width: 600px; 
-}
- 
-#modal-two{
-    height: 300px;
-    width: 600px;
-    
-}
-#sample-body{
-      display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
- #file{
-    height: 34px;
-    width: 400px;
-    border: 2px solid #d8d8d8;
+.subject-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px;
+    border: 1px solid #dee2e6;
     border-radius: 5px;
-    display: flex;
-    align-items: center; 
+    background-color: #f8f9fa;
 }
 
-#xlsx{
-    margin-bottom: 20px;
-    height: 40px;
-    width: 200px;
-    border-radius: 10px;
-    background-color:  rgb(224, 83, 1);
-    border: 0;
-    color: #fff;
+.subject-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: rgb(224, 83, 1);
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
-#content{
-    height: 400px;
-    width: 600px;
-     margin-top: 150px;
+.subject-tag:hover {
+    background-color: rgb(200, 70, 0);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
- 
-#select-item{
-    height: 30px;
-    width: 100px;
-    border-radius: 10px;
-    background-color: #fff;
-    color: #000;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-#select-menu{
-    position: absolute;
-    height: 150px;
-    width: 200px;
-    border-radius: 10px;
-    background-color: #fff;
-    color: #000; 
-    overflow-y: scroll;
-}
-.footer{
-    flex-direction: row;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 95%;
-}
-.left-footer p{
+
+.subject-tag .remove-subject {
+    cursor: pointer;
     font-size: 12px;
+    margin-left: 4px;
+    transition: transform 0.2s ease;
 }
- 
+
+.subject-tag .remove-subject:hover {
+    transform: scale(1.2);
+}
+
+/* Subject tags in View Modal (readonly) */
+.subject-tags-readonly {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 40px;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+.subject-tag-readonly {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: rgb(224, 83, 1);
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Modal body adjustments */
+.modal-body .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    border-color: rgb(224, 83, 1);
+    box-shadow: 0 0 0 0.2rem rgba(224, 83, 1, 0.25);
+}
+
+.modal-body .form-control[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* Ensure modals have consistent styling */
+.modal-dialog {
+    max-width: 600px;
+}
+
+.modal-dialog-scrollable .modal-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+/* Empty state for subject tags */
+.subject-tags:empty::before {
+    content: 'No subjects added yet. Type and press Enter to add.';
+    color: #6c757d;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.subject-tags-readonly:empty::before {
+    content: 'No subjects assigned';
+    color: #6c757d;
+    font-size: 13px;
+    font-style: italic;
+}
