@@ -1,23 +1,21 @@
 SYNTHESIS PROJECT
 @priyanshiii7, @harshiiika, @tisha-dhamu
 
-18-09-25
+Work until 10/10/2025
 Integrated User Management, Session Management, and Student Management, where:
-1. User Management - Employee ✅ CRUD operations all working
-2. Session management - Session ✅ CRUD all working
-3. Student management - Inquiry management ✅ CRUD all working
-4. Pushed the code to the main branch
+1. User Management - Employee , Batches ✅ 
+2. Session management - Session , Courses ✅ 
+3. Student management - Inquiry , Fees ✅ 
+4. Pushed the code , main branch is up to date.
 
 Next Steps:
-Integrate all the separate folders into one and test if they're working well together.
-Test main for bugs
+Integrate all the separate folders into one and test if they're working well together ✅
+Test main for bugs ✅
+Now , Unit testing of respective second modules is going on 10/10/205 
 
 Project Flow:
-<<<<<<< Updated upstream
-LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY (Access via left sidebar)
-=======
-LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY
->>>>>>> Stashed changes
+Updated upstream
+LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY /... (Access via left sidebar)
 
 
 Project Structure:
@@ -25,11 +23,11 @@ Project Structure:
    - Employee
    - Batches Assignment
   
-2. Master (Will begin in Upcoming Sprint)
-   - Courses
-   - Batches
+2. Master 
+   - Courses (Harshika)
+   - Batches 
    - Scholarships
-   - Fees Master
+   - Fees Master (Tisha)
    - Other Fees Master
    - Branch Management
   
@@ -44,21 +42,21 @@ Project Structure:
    - Pending Fees Student
    - Students
   
-5. Fees Management
+5. Fees Management (Yet to start)
    - Fees Collection
 
-6. Attendance Management
+6. Attendance Management (Yet to start)
    - Employee
    - Student
   
-7. Study Material
+7. Study Material (Yet to start)
    - Units
    - Dispatch Material
 
-8. Test Series Management
+8. Test Series Management (Yet to start)
    - Test Master
   
-9. Reports
+9. Reports (Yet to start)
     - Walk In/Onboarding
     - Attendance
     - Test Series

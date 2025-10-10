@@ -7,13 +7,12 @@
     <a href="{{ route('fees.index') }}" class="btn btn-secondary">Back</a>
   </div>
 
-  {{-- Render as a modal block so it looks EXACTLY like create --}}
   <div class="modal fade fees-modal show d-block" id="editFeesModal"
        tabindex="-1" aria-labelledby="editFeesLabel" aria-hidden="true"
        style="position:relative;display:block;">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content shadow-sm border-0">
 
+    <div class="modal-content shadow-sm border-0">
         <div class="modal-header bg-light">
           <h1 class="modal-title fs-5" id="editFeesLabel">Edit Fees</h1>
         </div>
@@ -72,24 +71,28 @@
                        name="live_fee" class="form-control"
                        value="{{ old('live_fee', $fee->live_fee) }}">
               </div>
+            
               <div class="col-12 col-md-6">
                 <label class="form-label">Recorded online class course</label>
                 <input type="number" step="0.01" min="0"
                        name="recorded_fee" class="form-control"
                        value="{{ old('recorded_fee', $fee->recorded_fee) }}">
               </div>
+            
               <div class="col-12 col-md-6">
                 <label class="form-label">Study Material only</label>
                 <input type="number" step="0.01" min="0"
                        name="study_fee" class="form-control"
                        value="{{ old('study_fee', $fee->study_fee) }}">
               </div>
+            
               <div class="col-12 col-md-6">
                 <label class="form-label">Test series only</label>
                 <input type="number" step="0.01" min="0"
                        name="test_fee" class="form-control"
                        value="{{ old('test_fee', $fee->test_fee) }}">
               </div>
+            
             </div>
           </div>
 
@@ -98,9 +101,19 @@
             <button type="submit" class="btn btn-primary">Update</button>
           </div>
         </form>
-
       </div>
     </div>
   </div>
 </div>
 @endsection
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Master\CoursesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Student\InquiryController;
@@ -19,12 +18,12 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // -------------------------
 // Default Route
 // -------------------------
-// Redirects based on auth status
+
+// -------------------------
+// -------------------------
+// Default Route
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('dashboard');
-    }
-    return redirect()->route('login');
+    return redirect()->route('login'); // always send root to login
 })->name('home');
 
 // -------------------------
@@ -94,10 +93,14 @@ Route::get('/batches', [BatchesController::class, 'showBatches'])
     ->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
 
+//feesmaster//
+use App\Http\Controllers\fees\FeesMasterController;
 
-Route::prefix('courses')->group(function () {
-    Route::get('/', [CoursesController::class, 'index'])->name('courses.index');
-Route::post('/courses', [CoursesController::class, 'store'])->name('courses.store');
-    Route::put('/{id}', [CoursesController::class, 'update'])->name('courses.update');
-    Route::delete('/{id}', [CoursesController::class, 'destroy'])->name('courses.destroy');
+Route::prefix('fees')->name('fees.')->group(function () {
+    Route::get('/', [FeesMasterController::class, 'index'])->name('index');
+    Route::post('/', [FeesMasterController::class, 'store'])->name('store');
+    Route::get('/{fee}', [FeesMasterController::class, 'show'])->name('show');
+    Route::patch('/{fee}', [FeesMasterController::class, 'update'])->name('update');
+    Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
 });
+
