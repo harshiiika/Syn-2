@@ -57,9 +57,9 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/user management/emp/emp.html "> <i class="fa-solid fa-user"
+                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user"
                       id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="/user management/batches a/batchesa.html"><i class="fa-solid fa-user-group"
+                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
                       id="side-icon"></i> Batches
                     Assignment</a></li>
               </ul>
@@ -76,7 +76,7 @@
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/master/courses/course.html"><i class="fa-solid fa-book-open"
+                <li><a class="item" href="{{ route('master.courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
                 <li><a class="item" href="/master/batches/batches.html"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
@@ -84,11 +84,9 @@
                 <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
-           <li>
-  <a class="item" href="{{ route('fees.index') }}">
-    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master
-  </a>
-</li>
+                <li><a class="item" href="{{ route('fees.index') }}">
+<i class="fa-solid fa-credit-card"
+                      id="side-icon"></i> Fees Master</a></li>
                 <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
@@ -110,7 +108,7 @@
           <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/session mana/session/session.html"><i class="fa-solid fa-calendar-day"
+                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
                 <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
                       id="side-icon"></i> Calendar</a></li>
@@ -133,13 +131,17 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/student management/inq/inq.html"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry
+                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry
                     Management</a></li>
-                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
+                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Student Onboard</a>
                 </li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees
+                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Pending Fees
                     Students</a></li>
-                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>
@@ -155,7 +157,8 @@
           <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a>
+                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card"
+                      id="side-icon"></i> Fees Collection</a>
                 </li>
               </ul>
             </div>
@@ -172,8 +175,10 @@
           <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Student</a></li>
-                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Employee</a></li>
+                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Student</a></li>
+                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Employee</a></li>
               </ul>
             </div>
           </div>
@@ -189,8 +194,10 @@
           <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Units</a></li>
-                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Dispatch Material</a></li>
+                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon">
+                    </i>Units</a></li>
+                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Dispatch Material</a></li>
               </ul>
             </div>
           </div>
@@ -206,7 +213,8 @@
           <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test Master</i></a></li>
+                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test
+                    Master</i></a></li>
               </ul>
             </div>
           </div>
@@ -222,12 +230,17 @@
           <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Walk In</a></li>
-                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a>
+                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon">
+                    </i>Walk In</a></li>
+                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days"
+                      id="side-icon"></i> Attendance</a>
                 </li>
-                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
+                    Series</a></li>
+                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
+                    History</a></li>
+                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
+                      id="side-icon"></i>Onboard History</a></li>
               </ul>
             </div>
           </div>
@@ -1037,6 +1050,7 @@
     </div>
   </div> -->
 </body>
+  <script src="{{ asset('js/courses.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 
