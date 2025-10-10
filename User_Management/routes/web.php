@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Master\CoursesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Student\InquiryController;
@@ -92,3 +93,11 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 Route::get('/batches', [BatchesController::class, 'showBatches'])
     ->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
+
+
+Route::prefix('courses')->group(function () {
+    Route::get('/', [CoursesController::class, 'index'])->name('courses.index');
+Route::post('/courses', [CoursesController::class, 'store'])->name('courses.store');
+    Route::put('/{id}', [CoursesController::class, 'update'])->name('courses.update');
+    Route::delete('/{id}', [CoursesController::class, 'destroy'])->name('courses.destroy');
+});
