@@ -178,7 +178,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('master.courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="/master/batches/batches.html"><i
+                <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
                 <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"

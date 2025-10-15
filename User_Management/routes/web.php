@@ -8,6 +8,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\BatchesController;
 use App\Http\Controllers\Master\CoursesController;
 use App\Http\Controllers\fees\FeesMasterController;
+use App\Http\Controllers\Master\BatchController;
 
 // -------------------------
 // Authentication Routes
@@ -116,8 +117,27 @@ Route::prefix('courses')->group(function () {
     Route::delete('/{course}', [CoursesController::class, 'destroy'])->name('courses.destroy');
 });
 
-
-
+//Batches Routes
+Route::prefix('master/batch')->name('batches.')->group(function () {
+    // Display all batches
+    Route::get('/', [BatchController::class, 'index'])->name('index');
+    
+    // Download sample Excel file (BEFORE {id} route)
+    Route::get('/download/sample', [BatchController::class, 'downloadSample'])->name('downloadSample');
+    
+    // Add new batch
+    Route::post('/add', [BatchController::class, 'store'])->name('add');
+    
+    // Bulk upload batches
+    Route::post('/upload', [BatchController::class, 'bulkUpload'])->name('upload');
+    
+    // Update batch details
+    Route::put('/{id}/update', [BatchController::class, 'update'])->name('update');
+    
+    // Toggle batch status (Active/Inactive)
+    Route::post('/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('toggleStatus');
+    
+});
 
 //feesmaster//
 
