@@ -5,9 +5,10 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Student\InquiryController;
 use App\Http\Controllers\Session\SessionController;
 use App\Http\Controllers\User\UserController;
-use App\Http\Controllers\User\BatchesController;
 use App\Http\Controllers\Master\CoursesController;
+use App\Http\Controllers\User\BatchesController;
 use App\Http\Controllers\fees\FeesMasterController;
+use App\Http\Controllers\Master\CalendarController;
 
 // -------------------------
 // Authentication Routes
@@ -97,27 +98,18 @@ Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batch
 Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])
     ->name('batches.toggleStatus');
 
-
-// Courses Management Routes
-Route::prefix('courses')->group(function () {
-    // List / Index page (GET /courses)
-    Route::get('/', [CoursesController::class, 'index'])->name('master.courses.index');
-
-    // Store new course (POST /courses)
-    Route::post('/', [CoursesController::class, 'store'])->name('courses.store');
-
-    // Show single course (optional, if you need a separate view page)
-    Route::get('/{course}', [CoursesController::class, 'show'])->name('courses.show');
-
-    // Update course (PUT /courses/{course})
-    Route::put('/{course}', [CoursesController::class, 'update'])->name('courses.update');
-
-    // Delete course (DELETE /courses/{course})
-    Route::delete('/{course}', [CoursesController::class, 'destroy'])->name('courses.destroy');
+Route::prefix('courses')->name('courses.')->group(function () {
+    Route::get('/', [CoursesController::class, 'index'])->name('index');
+    Route::get('/create', [CoursesController::class, 'create'])->name('create');
+    Route::post('/store', [CoursesController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [CoursesController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}', [CoursesController::class, 'update'])->name('update'); // ✅ PUT here
+    Route::delete('/destroy/{id}', [CoursesController::class, 'destroy'])->name('destroy');
 });
 
-
-
+// Toggle status (Active / Deactivated)
+Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])
+    ->name('batches.toggleStatus');
 
 //feesmaster//
 
@@ -129,5 +121,22 @@ Route::prefix('fees')->name('fees.')->group(function () {
     Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
 });
 
-
-
+// Calendar Management Routes
+Route::prefix('calendar')->name('calendar.')->group(function () {
+    // Main calendar page
+    Route::get('/', [CalendarController::class, 'index'])->name('index');
+    
+    // Get all events for FullCalendar
+    Route::get('/events', [CalendarController::class, 'getEvents'])->name('events');
+    
+    // Holiday routes
+    Route::post('/holidays', [CalendarController::class, 'storeHoliday'])->name('holidays.store');
+    Route::delete('/holidays/{id}', [CalendarController::class, 'deleteHoliday'])->name('holidays.delete');
+    
+    // Test routes (PLURAL - important!)
+    Route::post('/tests', [CalendarController::class, 'storeTest'])->name('tests.store');
+    Route::delete('/tests/{id}', [CalendarController::class, 'deleteTest'])->name('tests.delete');
+    
+    // Mark all Sundays
+    Route::post('/mark-sundays', [CalendarController::class, 'markSundays'])->name('mark.sundays');
+});
