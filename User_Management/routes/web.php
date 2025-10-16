@@ -9,6 +9,7 @@ use App\Http\Controllers\User\BatchesController;
 use App\Http\Controllers\Master\CoursesController;
 use App\Http\Controllers\fees\FeesMasterController;
 use App\Http\Controllers\Master\BatchController;
+use App\Http\Controllers\Master\BranchController;
 
 // -------------------------
 // Authentication Routes
@@ -149,5 +150,19 @@ Route::prefix('fees')->name('fees.')->group(function () {
     Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
 });
 
+//Batches Routes
+Route::prefix('master/branch')->name('branches.')->group(function () {
+    // Display all branches
+    Route::get('/', [BranchController::class, 'index'])->name('index');
 
+    // Add new branch
+    Route::post('/add', [BranchController::class, 'store'])->name('add');
+
+    // Update branch details
+    Route::put('/{id}/update', [BranchController::class, 'update'])->name('update');
+
+    // Toggle branch status (Active/Inactive)
+    Route::post('/{id}/toggle-status', [BranchController::class, 'toggleStatus'])->name('toggleStatus');
+
+});
 

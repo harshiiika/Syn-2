@@ -95,7 +95,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee</title>
+  <title>Branch Assignment</title>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
     <!-- Custom CSS -->
@@ -190,8 +190,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
-                      id="side-icon"></i> Branch
-                    Management</a></li>
+                  id="side-icon"></i> Branch
+                Management</a></li>
               </ul>
             </div>
           </div>
@@ -351,12 +351,12 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <h4>EMPLOYEE</h4>
         </div>
         <div class="buttons">
-           <!-- Button to open Add Employee modal -->
+           <!-- Button to open Add Branch modal -->
              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalOne"
             id="add" >
-            Add Employee
+            Add Branch
           </button>
-          <!-- Button to open Upload modal for bulk import -->
+          <!-- Button to open Upload modal -->
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTwo"
             id="up">
             Upload
@@ -391,38 +391,27 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <thead>
             <tr>
               <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Name</th>
-              <th scope="col" id="one">Email</th>
-              <th scope="col" id="one">Mobile No.</th>
-              <th scope="col" id="one">Department</th>
-              <th scope="col" id="one">Role</th>
-              <th scope="col" id="one">Status</th>
+              <th scope="col" id="one">Branch Name</th>
+              <th scope="col" id="one">Branch City</th>
+              <th scope="col" id="one">Branch Status</th>
               <th scope="col" id="one">Action</th>
             </tr>
           </thead>
           <tbody>
-  <!-- Modal fillables where roles are assigned according to dept automatically -->
-            <!-- Dynamic table rows populated from database using Blade foreach loop -->
-          
 
             <tr>
             </tr>
           </tbody>
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-      @foreach($users as $index => $user)
+@foreach($branches as $index => $branch)
 <tr>
-   <!-- Serial number (index + 1) -->
   <td>{{ $index + 1 }}</td>
-  <td>{{ $user->name }}</td>
-  <td>{{ $user->email }}</td>
-  <td>{{ $user->mobileNumber ?? '—' }}</td>
-<td>{{ $user->roleNames->implode(', ') }}</td>
-<td>{{ $user->departmentNames->implode(', ') }}</td>
-
+  <td>{{ $branch->name }}</td>
+  <td>{{ $branch->city }}</td>
   <td>
-    <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-      {{ $user->status  ?? 'Active' }}
+    <span class="badge {{ ($branch->status ?? 'Active') === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
+      {{ $branch->status ?? 'Active' }}
     </span>
   </td>
   
@@ -434,25 +423,20 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </button>
       <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
         <li>
-          <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $user->_id }}">
+          <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $branch->_id }}">
             View Details
           </button>
         </li>
         <li>
-         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
+         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $branch->_id }}">
             Edit Details
           </button>
         </li>
         <li>
-          <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#passwordModal{{ $user->_id }}">
-            Password Update
-          </button>
-        </li>
-        <li>
-          <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}">
+          <form method="POST" action="{{ route('branches.toggleStatus', $branch->_id) }}">
             @csrf
             <button type="submit" class="dropdown-item">
-              {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+              {{ ($branch->status ?? 'Active') === 'Active' ? 'Deactivate' : 'Reactivate' }}
             </button>
           </form>
         </li>
@@ -469,38 +453,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <!-- View Modal -->
 
        
-        @foreach($users as $user)
-      <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
+        @foreach($branches as $branch)
+      <div class="modal fade" id="viewModal{{ $branch->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $branch->_id }}" aria-labelledby="viewModalLabel{{ $branch->_id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-          <h5 class="modal-title" id="viewModalLabel{{ $user->_id }}">Employee Details</h5>
+          <h5 class="modal-title" id="viewModalLabel{{ $branch->_id }}">Branch Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
           <div class="mb-3">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-control" value="{{ $user->name }}" readonly>
+            <label class="form-label">Branch Name</label>
+            <input type="text" class="form-control" value="{{ $branch->name }}" readonly>
           </div>
           <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="text" class="form-control" value="{{ $user->email }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Mobile</label>
-            <input type="text" class="form-control" value="{{ $user->mobileNumber ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Alternate Mobile</label>
-            <input type="text" class="form-control" value="{{ $user->alternateNumber ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Branch</label>
-            <input type="text" class="form-control" value="{{ $user->branch ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Department</label>
-            <input type="text" class="form-control" value="{{ $user->departmentNames ? $user->departmentNames->join(', ') : '—' }}" readonly>
+            <label class="form-label">Branch City</label>
+            <input type="text" class="form-control" value="{{ $branch->city }}" readonly>
           </div>
           </div>
         </div>
@@ -509,62 +477,26 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 @endforeach
 
 <!-- Edit Modal -->
-@foreach($users as $user)
-<div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
+@foreach($branches as $branch)
+<div class="modal fade" id="editModal{{ $branch->_id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $branch->_id }}" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
-      <form method="POST" action="{{ route('users.update', $user->_id) }}">
+      <form method="POST" action="{{ route('branches.update', $branch->_id) }}">
         @csrf
         @method('PUT')
         <div class="modal-header">
-          <h5 class="modal-title" id="editModalLabel{{ $user->_id }}">Edit Employee Details</h5>
+          <h5 class="modal-title" id="editModalLabel{{ $branch->_id }}">Edit Branch Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
+            <label class="form-label">Branch Name</label>
+            <input type="text" class="form-control" name="name" value="{{ $branch->name }}" required>
           </div>
           
           <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Mobile</label>
-            <input type="text" class="form-control" name="mobileNumber" value="{{ $user->mobileNumber ?? '' }}" required>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Alternate Mobile</label>
-            <input type="text" class="form-control" name="alternateNumber" value="{{ $user->alternateNumber ?? '' }}">
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Branch</label>
-            <select class="form-select" name="branch" required>
-              <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
-            </select>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Department</label>
-            <select class="form-select" name="department" required>
-              @php
-                $currentDepartment = $user->departmentNames->first() ?? '';
-              @endphp
-              <option value="Front Office" {{ $currentDepartment == 'Front Office' ? 'selected' : '' }}>Front Office</option>
-              <option value="Back Office" {{ $currentDepartment == 'Back Office' ? 'selected' : '' }}>Back Office</option>
-              <option value="Office" {{ $currentDepartment == 'Office' ? 'selected' : '' }}>Office</option>
-              <option value="Test Management" {{ $currentDepartment == 'Test Management' ? 'selected' : '' }}>Test Management</option>
-              <option value="Admin" {{ $currentDepartment == 'Admin' ? 'selected' : '' }}>Admin</option>
-            </select>
-                    </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Current Role</label>
-            <input type="text" class="form-control" value="{{ $user->roleNames->join(', ') ?? '—' }}" readonly>
+            <label class="form-label">Branch City</label>
+            <input type="text" class="form-control" name="city" value="{{ $branch->city }}" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -576,43 +508,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </div>
 </div>
 @endforeach
-      <!-- Password Update Modal -->
-       
-      @foreach($users as $user)
 
-      <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1" aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-          <form method="POST" action="{{ route('users.password.update', $user->_id) }}">
-          @csrf
-          @method('PUT')
-          <div class="modal-header">
-            <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-            <label class="form-label">Current Password</label>
-            <input type="password" name="current_password" class="form-control" required>
-            </div>
-            <div class="mb-3">
-            <label class="form-label">New Password</label>
-            <input type="password" name="new_password" class="form-control" required>
-            </div>
-            <div class="mb-3">
-            <label class="form-label">Confirm New Password</label>
-            <input type="password" name="confirm_new_password" class="form-control" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" id="submit" class="btn btn-primary">Update Password</button>
-          </div>
-          </form>
-        </div>
-        </div>
-      </div>
-
-    @endforeach
       </div>
       <div class="footer">
         <div class="left-footer">
@@ -640,92 +536,23 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content" id="content-one">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Employee</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Branch</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST" action="{{ route('users.add') }}">
+          <form method="POST" action="{{ route('branches.add') }}">
             @csrf
             <div class="mb-3">
-              <label for="basic-url" class="form-label">Name</label>
+              <label for="basic-url" class="form-label">Branch Name</label>
               <div class="input-group">
                 <input type="text" name="name" class="form-control" id="basic-url"
-                  aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Your Name" required>
+                  aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Branch Name" required>
               </div>
               <div class="mb-3">
-                <label for="basic-url" class="form-label">Mobile No.</label>
+                <label for="basic-url" class="form-label">City</label>
                 <div class="input-group">
-                  <input type="tel" name="mobileNumber" class="form-control" id="basic-url"
-                    aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Your Mobile Number" required>
-                </div>
-
-                <div class="mb-3">
-                  <label for="basic-url" class="form-label">Alternate Mobile No.</label>
-                  <div class="input-group">
-                    <input type="tel" name="alternateNumber" class="form-control" id="basic-url"
-                      aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Your Alternate Mobile Number"
-                      required>
-                  </div>
-
-                  <div class="mb-3">
-                    <label for="basic-url" class="form-label">Email</label>
-                    <div class="input-group">
-                      <input type="email" name="email" class="form-control" id="basic-url"
-                        aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Your Email id" required>
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="basic-url" class="form-label">Select Branch</label>
-                      <div class="input-group">
-
-                        <div class="dropdown">
-                          <select class="form-select" name="branch" required>
-                            <option selected disabled>Select Branch</option>
-                            <option value="Bikaner ">Bikaner</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="basic-url" class="form-label">Select Department</label>
-                      <div class="input-group">
-
-                        <div class="dropdown">
-                          <select class="form-select" name="departments[]" required>
-    <option selected disabled>Select Department</option>
-    <option value="Front Office">Front Office</option>
-    <option value="Back Office">Back Office</option>
-    <option value="Office">Office</option>
-    <option value="Test Management">Test Management</option>
-    <option value="Admin">Admin</option>
-</select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="basic-url" class="form-label">Password</label>
-                      <div class="input-group">
-                        <input type="password" name="password" class="form-control" id="basic-url"
-                          aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Password" required>
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="basic-url" class="form-label">Confirm Password</label>
-                      <div class="input-group">
-                        <input type="password" name="confirm_password" class="form-control" id="basic-url"
-                          aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Confirm Password" required>
-                        @error('confirm_password')
-              <div class="text-danger">{{ $message }}</div>
-            @enderror
-
-                      </div>
-                    </div>
-                    <div class="input-group mb-3">
-                      <input type="file" class="form-control" id="inputGroupFile01">
-                    </div>
-                  </div>
+                  <input type="text" name="city" class="form-control" id="basic-url"
+                    aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Branch City" required>
                 </div>
               </div>
             </div>
