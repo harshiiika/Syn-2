@@ -26,19 +26,19 @@ class CoursesController extends Controller
 
         $courses = $query->orderBy('created_at', 'desc')->paginate($perPage)->appends($request->all());
 
-        return view('master.courses.index', compact('courses', 'search'));
+        return view('courses.index', compact('courses', 'search'));
     }
 
     public function create()
     {
-        return view('master.courses.create');
+        return view('courses.create');
     }
 
 public function edit($id)
 {
     $course = Courses::findOrFail($id);
     $courses = Courses::orderBy('created_at', 'desc')->paginate(10); // or same pagination as index
-    return view('master.courses.index', compact('courses', 'course'));
+    return view('courses.index', compact('courses', 'course'));
 }
 
 

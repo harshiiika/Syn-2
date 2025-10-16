@@ -1,0 +1,351 @@
+/* Calendar Page Specific Styles */
+
+.calendar-container {
+    height: 90vh;
+    width: 80%;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: #e7e7e7;
+    padding: 20px;
+    flex: 1;
+}
+main-container {
+  display: flex;
+}
+#sidebar {
+  transition: width 0.5s ease-in-out;
+  overflow: hidden;
+  width: 300px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 0;
+}
+
+.calendar-header h3 {
+    color: rgb(224, 83, 1);
+    font-weight: 600;
+    margin: 0;
+    font-size: 24px;
+}
+
+.calendar-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-actions button {
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-mark-sunday {
+    background-color: rgb(224, 83, 1);
+    color: #fff;
+}
+
+.btn-mark-sunday:hover {
+    background-color: rgb(190, 51, 0);
+}
+
+.btn-add-holiday {
+    background-color: rgb(224, 83, 1);
+    color: #fff;
+}
+
+.btn-add-holiday:hover {
+    background-color: rgb(190, 51, 0);
+}
+
+.btn-add-test {
+    background-color: rgb(224, 83, 1);
+    color: #fff;
+}
+
+.btn-add-test:hover {
+    background-color: rgb(190, 51, 0);
+}
+
+.calendar-content {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    flex: 1;
+}
+
+/* Make calendar full width */
+.calendar-main {
+    flex: 1;
+    width: 100%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Sidebar on the right */
+.calendar-sidebar {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.list-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.list-card-header {
+    background-color: rgb(224, 83, 1);
+    color: #fff;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.list-card-body {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.list-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.list-item-empty {
+    padding: 30px 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+.list-item-date {
+    font-weight: 600;
+    color: rgb(224, 83, 1);
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.list-item-desc {
+    color: #666;
+    font-size: 13px;
+}
+
+.list-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    padding: 5px 10px;
+    font-size: 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.btn-action i {
+    color: #dc3545;
+}
+
+.btn-action:hover i {
+    color: #c82333;
+}
+
+/* FullCalendar Customization */
+.fc {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fc-toolbar {
+    margin-bottom: 20px !important;
+}
+
+.fc-toolbar-title {
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.fc-button {
+    background-color: rgb(224, 83, 1) !important;
+    border: none !important;
+    padding: 8px 14px !important;
+    text-transform: capitalize !important;
+    font-size: 14px !important;
+}
+
+.fc-button:hover {
+    background-color: rgb(190, 51, 0) !important;
+}
+
+.fc-button-active {
+    background-color: rgb(190, 51, 0) !important;
+}
+
+.fc-button:disabled {
+    background-color: #ccc !important;
+    opacity: 0.6;
+}
+
+/* Calendar grid styling */
+.fc-daygrid-day {
+    background-color: #fff;
+}
+
+.fc-day-sun {
+    background-color: #fff5f5 !important;
+}
+
+.fc-day-today {
+    background-color: #e8f4f8 !important;
+}
+
+.fc-daygrid-day-number {
+    color: #333;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.fc-col-header-cell {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 10px 0;
+}
+
+/* Calendar events */
+.fc-event {
+    border: none;
+    padding: 2px 4px;
+    font-size: 12px;
+    cursor: pointer;
+    margin: 1px 0;
+}
+
+.fc-event-holiday {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+}
+
+.fc-event-test {
+    background-color: rgb(224, 83, 1) !important;
+    color: #fff !important;
+}
+
+.fc-event-sunday {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+/* Bootstrap Modal Customization */
+.modal-header {
+    background-color: rgb(224, 83, 1);
+    color: #fff;
+    border-bottom: none;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-title {
+    color: #fff;
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 20px 25px;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 15px 25px;
+}
+
+.btn-primary {
+    background-color: rgb(224, 83, 1) !important;
+    border-color: rgb(224, 83, 1) !important;
+}
+
+.btn-primary:hover {
+    background-color: rgb(190, 51, 0) !important;
+    border-color: rgb(190, 51, 0) !important;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    border: 1px solid #ced4da;
+    padding: 10px 12px;
+}
+
+.form-control:focus {
+    border-color: rgb(224, 83, 1);
+    box-shadow: 0 0 0 0.2rem rgba(224, 83, 1, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .calendar-content {
+        flex-direction: column;
+    }
+    
+    .calendar-sidebar {
+        width: 100%;
+    }
+    
+    .calendar-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .calendar-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .calendar-container {
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .calendar-actions button {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}

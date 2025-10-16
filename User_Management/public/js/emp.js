@@ -1,4 +1,4 @@
-//Code for sidebar, to make it collapsible.
+//Code for sidebar, to make it collapsible.//emp.js
 document.addEventListener('DOMContentLoaded', function () {
   const sidebar = document.querySelector('.sidebar') || document.querySelector('#sidebar') || document.querySelector('#text') || document.querySelector('#right');
 

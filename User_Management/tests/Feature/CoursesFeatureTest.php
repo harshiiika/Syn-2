@@ -93,7 +93,7 @@ class CoursesFeatureTest extends TestCase
 
     $response->assertStatus(200);
 
-    $response->assertViewIs('master.courses.index');
+    $response->assertViewIs('courses.index');
 
     $response->assertViewHas('course', function ($viewCourse) use ($course) {
         return $viewCourse->_id == $course->_id;
