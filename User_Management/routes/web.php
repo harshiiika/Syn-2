@@ -10,6 +10,7 @@ use App\Http\Controllers\User\BatchesController;
 use App\Http\Controllers\fees\FeesMasterController;
 use App\Http\Controllers\Master\BatchController;
 use App\Http\Controllers\Master\BranchController;
+use App\Http\Controllers\Master\CalendarController;
 
 // -------------------------
 // Authentication Routes
@@ -140,7 +141,7 @@ Route::prefix('fees')->name('fees.')->group(function () {
     Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
 });
 
-//Batches Routes
+//branch Routes
 Route::prefix('master/branch')->name('branches.')->group(function () {
     // Display all branches
     Route::get('/', [BranchController::class, 'index'])->name('index');
@@ -156,3 +157,24 @@ Route::prefix('master/branch')->name('branches.')->group(function () {
 
 });
 
+
+// Calendar Management Routes
+Route::prefix('calendar')->name('calendar.')->group(function () {
+    // Main calendar page
+    Route::get('/', [CalendarController::class, 'index'])->name('index');
+   
+    // Get all events for FullCalendar
+    Route::get('/events', [CalendarController::class, 'getEvents'])->name('events');
+   
+    // Holiday routes
+    Route::post('/holidays', [CalendarController::class, 'storeHoliday'])->name('holidays.store');
+    Route::delete('/holidays/{id}', [CalendarController::class, 'deleteHoliday'])->name('holidays.delete');
+   
+    // Test routes (PLURAL - important!)
+    Route::post('/tests', [CalendarController::class, 'storeTest'])->name('tests.store');
+    Route::delete('/tests/{id}', [CalendarController::class, 'deleteTest'])->name('tests.delete');
+   
+    // Mark all Sundays
+    Route::post('/mark-sundays', [CalendarController::class, 'markSundays'])->name('mark.sundays');
+});
+ 

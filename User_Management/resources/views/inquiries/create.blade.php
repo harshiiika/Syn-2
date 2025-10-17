@@ -80,7 +80,7 @@
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('master.courses.index') }}"><i class="fa-solid fa-book-open"
+                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
@@ -114,7 +114,8 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
+                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
+                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
                       id="side-icon"></i> Calendar</a></li>
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
