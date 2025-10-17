@@ -94,7 +94,7 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="/Master/batches/batches.html"><i
+                <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
                 <li><a class="item" href="/Master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
@@ -106,7 +106,7 @@
                 <li><a class="item" href="/Master/other fees/other.html"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
-                <li><a class="item" href="/Master/branch/branch.html"><i class="fa-solid fa-diagram-project"
+                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
                       id="side-icon"></i> Branch
                     Management</a></li>
               </ul>
