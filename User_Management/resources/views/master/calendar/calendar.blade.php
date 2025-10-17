@@ -1,23 +1,37 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Session Calendar</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="{{asset('css/emp.css')}}">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/session.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/calendar.css') }}">
 </head>
 
 <body>
-  
+  <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+    @if(session('success'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    @endif
+
+    @if(session('error'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    @endif
+  </div>
+
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="{{ asset('images/logo.png.jpg') }}" class="img">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -41,16 +55,13 @@
       </div>
     </div>
   </div>
+
   <div class="main-container">
-
     <div class="left" id="sidebar">
-
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-
-      <!-- Left side bar accordian -->
       <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -62,10 +73,11 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('emp') }}"> <i class="fa-solid fa-user"
+                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user"
                       id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
-                      id="side-icon"></i> Batches Assignment</a></li>
+                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
+                      id="side-icon"></i> Batches
+                    Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -82,19 +94,18 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i
+                <li><a class="item" href="/Master/batches/batches.html"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
                 <li><a class="item" href="/Master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
-                <li><a class="item" href="{{ route('fees.index') }}">
-<i class="fa-solid fa-credit-card"
+                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card"
                       id="side-icon"></i> Fees Master</a></li>
                 <li><a class="item" href="/Master/other fees/other.html"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
+                <li><a class="item" href="/Master/branch/branch.html"><i class="fa-solid fa-diagram-project"
                       id="side-icon"></i> Branch
                     Management</a></li>
               </ul>
@@ -114,8 +125,9 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Calendar</a></li>
+                <li><a class="item" href="{{ route('calendar.index') }}">
+                    <i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar
+                  </a></li>
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
                 </li>
@@ -127,16 +139,16 @@
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button"> 
+              id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-              
             </button>
           </h2>
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry Management </a></li>
+                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry
+                    Management</a></li>
                 <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
@@ -147,7 +159,7 @@
                       id="side-icon"></i>Students</a></li>
               </ul>
             </div>
-          </div>  
+          </div>
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -250,13 +262,109 @@
         </div>
       </div>
     </div>
-    <div class="right" id="right">
-        <h2>Welcome to Dashboard</h2>
-        <p>This is the dashboard page.</p>
+
+    <!-- Calendar Content -->
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <h3>Session Calendar</h3>
+        <div class="calendar-actions">
+          <button class="btn-mark-sunday" id="markAllSundayBtn">Mark All Sunday as Holiday</button>
+          <button class="btn-add-holiday" id="addHolidayBtn">Add Holiday</button>
+          <button class="btn-add-test" id="addTestBtn">Add Test</button>
+        </div>
+      </div>
+
+      <div class="calendar-content">
+        <!-- Calendar -->
+        <div class="calendar-main">
+          <div id="calendar"></div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="calendar-sidebar">
+          <!-- Holiday List -->
+          <div class="list-card">
+            <div class="list-card-header">Holiday List</div>
+            <div class="list-card-body" id="holidayList">
+              <div class="list-item-empty">No holidays added</div>
+            </div>
+          </div>
+
+          <!-- Test List -->
+          <div class="list-card">
+            <div class="list-card-header">Test List</div>
+            <div class="list-card-body" id="testList">
+              <div class="list-item-empty">No tests added</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
- 
+  </div>
+
+  <!-- Add Holiday Modal (Bootstrap) -->
+  <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addHolidayModalLabel">Add Holiday</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="holidayForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="holiday_date" class="form-label">Holiday Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="holiday_date" name="holiday_date" required>
+            </div>
+            <div class="mb-3">
+              <label for="holiday_description" class="form-label">Description <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="holiday_description" name="holiday_description" placeholder="Enter holiday description" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Test Modal (Bootstrap) -->
+  <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTestModalLabel">Add Test</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="testForm" method="POST" action="{{ route('calendar.tests.store') }}">
+        @csrf
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="test_date" class="form-label">Test Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="test_date" name="test_date" required>
+            </div>
+            <div class="mb-3">
+              <label for="test_name" class="form-label">Test Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="test_name" name="test_name" placeholder="Enter test name" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+    <script src="{{ asset('js/calendar.js') }}"></script>
+
 </body>
-<script src="{{asset('User_js/emp.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
 </html>

@@ -1,3 +1,4 @@
+//session.js
 //Code for sidebar, to make it collapsible.
 document.addEventListener('DOMContentLoaded', function () {
   console.log("session.js loaded and DOMContentLoaded event fired");
