@@ -11,6 +11,8 @@ use App\Http\Controllers\fees\FeesMasterController;
 use App\Http\Controllers\Master\BatchController;
 use App\Http\Controllers\Master\BranchController;
 use App\Http\Controllers\Master\CalendarController;
+use App\Http\Controllers\Master\StudentController;
+
 
 // -------------------------
 // Authentication Routes
@@ -177,3 +179,39 @@ Route::prefix('calendar')->name('calendar.')->group(function () {
     Route::post('/mark-sundays', [CalendarController::class, 'markSundays'])->name('mark.sundays');
 });
  
+
+
+Route::get('/students/pending', [StudentController::class, 'index'])
+    ->name('master.student.pending');
+
+// Active/Onboarded Students (fully paid students)
+Route::get('/students/onboard', [StudentController::class, 'activeStudents'])
+    ->name('student.onboard');
+
+// Pending Fees Students (partial payment students)
+Route::get('/students/pending-fees', [StudentController::class, 'pendingFees'])
+    ->name('students.pending_fees');
+
+// Show single student details
+Route::get('/students/{id}', [StudentController::class, 'show'])
+    ->name('students.show');
+
+// Store new student (direct entry)
+Route::post('/students/store', [StudentController::class, 'store'])
+    ->name('students.store');
+
+// Update student details
+Route::put('/students/{id}/update', [StudentController::class, 'update'])
+    ->name('students.update');
+
+// Update student fees (collect payment)
+Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees'])
+    ->name('students.updateFees');
+
+// Convert inquiry to student
+Route::post('/students/convert/{inquiryId}', [StudentController::class, 'convertFromInquiry'])
+    ->name('students.convertFromInquiry');
+
+// Additional route for active students (alternative naming)
+Route::get('/students/active', [StudentController::class, 'activeStudents'])
+    ->name('students.active');

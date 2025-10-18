@@ -794,7 +794,6 @@ document.getElementById('courseSelect').addEventListener('change', function() {
         <a href="{{ route('batches.downloadSample') }}">
           <button type="button" class="sampleFile" id="xlsx">Download Sample File</button>
         </a>
-        <form action="{{ route('batches.upload') }}" method="post" enctype="multipart/form-data">
           @csrf
           <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
           <button type="submit" class="btn btn-primary mt-3">Upload</button>
