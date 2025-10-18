@@ -10,10 +10,13 @@ class InquiryController extends Controller
 {
     /** GET /inquiries */
     public function index()
-    {
-        $inquiries = Inquiry::orderByDesc('created_at')->paginate(10);
-        return view('inquiries.index', compact('inquiries'));
-    }
+{
+    // Only show inquiries that are NOT onboarded
+    $inquiries = Inquiry::where('status', '!=', 'onboarded')
+                        ->orderByDesc('created_at')
+                        ->paginate(10);
+    return view('inquiries.index', compact('inquiries'));
+}
 
     /** (Optional) GET /inquiries/list */
     public function list(Request $request)
@@ -138,4 +141,78 @@ class InquiryController extends Controller
             'status'              => 'nullable|string|max:30',
         ]);
     }
+
+// In InquiryController.php
+
+public function bulkOnboard(Request $request)
+{
+    try {
+        $request->validate([
+            'inquiry_ids' => 'required|array',
+            'inquiry_ids.*' => 'required|string'
+        ]);
+
+        $inquiryIds = $request->inquiry_ids;
+        $inquiries = Inquiry::whereIn('_id', $inquiryIds)->get();
+
+        if ($inquiries->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No valid inquiries found'
+            ], 404);
+        }
+
+        $onboardedCount = 0;
+
+        foreach ($inquiries as $inquiry) {
+            // Create student record with proper default values
+            $studentData = [
+                'name' => $inquiry->student_name,
+                'father' => $inquiry->father_name,
+                'mobileNumber' => $inquiry->father_contact,
+                'alternateNumber' => $inquiry->father_whatsapp ?? null,
+                'email' => $inquiry->student_contact ?? 'noemail@example.com',
+                'courseName' => $inquiry->course_name ?? 'Not Assigned',
+                'deliveryMode' => $inquiry->delivery_mode ?? 'Not Assigned',
+                'courseContent' => $inquiry->course_content ?? 'Not Assigned',
+                'branch' => $inquiry->branch_name ?? 'Main Branch',
+                'total_fees' => 0,
+                'paid_fees' => 0,
+                'remaining_fees' => 0,
+                'status' => 'pending_fees', // Use string instead of constant
+                'fee_status' => 'pending',
+                'admission_date' => now(),
+                'session' => '2026'
+            ];
+
+            // Log what we're trying to create
+            \Log::info('Creating student:', $studentData);
+
+            $student = \App\Models\Master\Student::create($studentData);
+
+            // Log the created student
+            \Log::info('Student created:', ['id' => $student->_id]);
+
+            // Update inquiry status to 'onboarded'
+            $inquiry->update(['status' => 'onboarded']);
+            $onboardedCount++;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Successfully onboarded {$onboardedCount} student(s)!",
+            'redirect' => route('master.student.pending') // Add redirect URL
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Bulk onboard error: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to onboard students: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 }

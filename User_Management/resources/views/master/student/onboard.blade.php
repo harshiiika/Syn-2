@@ -1,6 +1,6 @@
 {{--
 
-CALENDAR BLADE FILE - CODE SUMMARY
+STUDENT ONBOARDING BLADE FILE - CODE SUMMARY
 
 
 LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title, 
@@ -35,7 +35,20 @@ LINE 275-295: Table Structure
   - LINE 287-289: Empty tbody tag
   - LINE 290-294: Comment indicating modal fillables location
 
-  :Calendar and its buttons have been displayed
+LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
+  - Displays user data from database
+  - Status badge with color coding
+  - Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
+
+LINE 340-342: Comment for options modals section
+
+LINE 344-375: View Modal (foreach loop for each user)
+  - Read-only display of employee details
+  - Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
+
+LINE 377-445: Edit Modal (foreach loop for each user)
+  - LINE 379-382: PHP variables setup for current department and roles
+  - LINE 384-443: Edit form with PUT method
 
 
 LINE 481-498: Footer Section
@@ -46,7 +59,7 @@ LINE 499-500: Closing divs for main container
 
 LINE 622-624: Closing divs and body tag
 
-LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js)
+LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js, jQuery)
 
 LINE 629-665: AJAX Script for Dynamic User Addition
   - Prevents page reload on form submit
@@ -54,42 +67,33 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   - Appends new user to table without refresh
 --}}
 
-
-
 <!DOCTYPE html>
+
+
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Session Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pending Fees Students</title>
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ asset('css/session.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/calendar.css') }}">
+    <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{asset('css/onboard.css')}}">
+   <!-- Bootstrap 5.3.6 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+
 </head>
 
 <body>
-  <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-    @if(session('success'))
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    @endif
-
-    @if(session('error'))
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    @endif
-  </div>
-
+  <!-- Header Section: Contains logo, sidebar toggle, session selector, notifications, and user menu -->
+ 
   <div class="header">
     <div class="logo">
-      <img src="{{ asset('images/logo.png.jpg') }}" class="img">
+      <img src="{{asset('images/logo.png.jpg')}}" class="img">
+
+      <!-- Sidebar toggle button -->
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -113,13 +117,16 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
     </div>
   </div>
-
   <div class="main-container">
+ <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
     <div class="left" id="sidebar">
+
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
+
+      <!-- Left side bar accordian -->
       <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -131,11 +138,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user"
+                <li><a class="item" href="/user management/emp/emp.html "> <i class="fa-solid fa-user"
                       id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
-                      id="side-icon"></i> Batches
-                    Assignment</a></li>
+                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
+                      id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -152,18 +158,18 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="/Master/batches/batches.html"><i
+                <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
-                <li><a class="item" href="/Master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
+                <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
-                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/Master/other fees/other.html"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('fees.index') }}">
+<i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
-                <li><a class="item" href="/Master/branch/branch.html"><i class="fa-solid fa-diagram-project"
+                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
                       id="side-icon"></i> Branch
                     Management</a></li>
               </ul>
@@ -183,9 +189,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="{{ route('calendar.index') }}">
-                    <i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar
-                  </a></li>
+                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
+                      id="side-icon"></i> Calendar</a></li>
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
                 </li>
@@ -197,20 +202,19 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
+              id="accordion-button"> 
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
+          
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry
-                    Management</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry Management </a></li>
                 <li><a class="item" href="{{ route('master.student.pending') }}">
-  <i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Student Onboard</a>
-                </li>
+    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
+</a></li>
                 <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
@@ -218,7 +222,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                       id="side-icon"></i>Students</a></li>
               </ul>
             </div>
-          </div>
+          </div>  
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -321,109 +325,255 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
       </div>
     </div>
-
-    <!-- Calendar Content -->
-    <div class="calendar-container">
-      <div class="calendar-header">
-        <h3>Session Calendar</h3>
-        <div class="calendar-actions">
-          <button class="btn-mark-sunday" id="markAllSundayBtn">Mark All Sunday as Holiday</button>
-          <button class="btn-add-holiday" id="addHolidayBtn">Add Holiday</button>
-          <button class="btn-add-test" id="addTestBtn">Add Test</button>
+    <div class="right" id="right">
+      <div class="top">
+        <div class="top-text">
         </div>
+            <div class="btns">
+              <a href="{{ route('master.student.pending') }}"><button type="button" class="pendingbtn">Pending Inquiries</button></a>
+              <a class="item" href="{{ route('student.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
+             </div>
+
       </div>
-
-      <div class="calendar-content">
-        <!-- Calendar -->
-        <div class="calendar-main">
-          <div id="calendar"></div>
-        </div>
-
-        <!-- Right Sidebar -->
-        <div class="calendar-sidebar">
-          <!-- Holiday List -->
-          <div class="list-card">
-            <div class="list-card-header">Holiday List</div>
-            <div class="list-card-body" id="holidayList">
-              <div class="list-item-empty">No holidays added</div>
+      <div class="whole">
+         <!-- Table controls: entries dropdown and search -->
+        <div class="dd">
+          <div class="line">
+            <h6>Show Enteries:</h6>
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                10
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item">10</a></li>
+                <li><a class="dropdown-item">25</a></li>
+                <li><a class="dropdown-item">50</a></li>
+                <li><a class="dropdown-item">100</a></li>
+              </ul>
             </div>
           </div>
-
-          <!-- Test List -->
-          <div class="list-card">
-            <div class="list-card-header">Test List</div>
-            <div class="list-card-body" id="testList">
-              <div class="list-item-empty">No tests added</div>
-            </div>
+          <div class="search">
+            <h4 class="search-text">Search</h4>
+            <input type="search" placeholder="" class="search-holder" required>
+            <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
-      </div>
+        <table class="table table-hover" id="table">
+          <thead>
+            <tr>
+              <th scope="col" id="one">Serial No.</th>
+              <th scope="col" id="one">Student Name</th>
+              <th scope="col" id="one">Father Name</th>
+              <th scope="col" id="one">Father Contact No.</th>
+              <th scope="col" id="one">Course Name</th>
+              <th scope="col" id="one">Delivery Mode</th>
+              <th scope="col" id="one">Course Content</th>
+              <th scope="col" id="one">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+            </tr>
+          </tbody>
+<!-- Modal fillables where roles are assigned according to dept automatically -->
+
+      @foreach($onboards as $index => $onboard)
+<tr>
+   <!-- Serial number (index + 1) -->
+  <td>{{ $index + 1 }}</td>
+  <td>{{ $onboard->name }}</td>
+  <td>{{ $onboard->father }}</td>
+  <td>{{ $onboard->mobileNumber ?? '—' }}</td>
+<td>{{ $onboard->courseName ?? '—' }}</td>
+<td>{{ $onboard->deliveryMode ?? '—' }}</td>
+<td>{{ $onboard->courseContent ?? '—' }}</td>
+  <td>
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+        <li>
+         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $student->_id }}">
+            Edit Details
+          </button>
+        </li>
+      </ul>
     </div>
-  </div>
+  </td>
+</tr>
+@endforeach
 
-  <!-- Add Holiday Modal (Bootstrap) -->
-  <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addHolidayModalLabel">Add Holiday</h5>
+        </table>
+
+        <!-- View Modal -->
+
+       
+        @foreach($onboards as $onboard)
+      <div class="modal fade" id="viewModal{{ $onboard->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $onboard->_id }}" aria-labelledby="viewModalLabel{{ $onboard->_id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+          <h5 class="modal-title" id="viewModalLabel{{ $onboard->_id }}">Employee Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="holidayForm">
+          </div>
           <div class="modal-body">
-            <div class="mb-3">
-              <label for="holiday_date" class="form-label">Holiday Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="holiday_date" name="holiday_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="holiday_description" class="form-label">Description <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="holiday_description" name="holiday_description" placeholder="Enter holiday description" required>
-            </div>
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" value="{{ $onboard->name }}" readonly>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control" value="{{ $onboard->email }}" readonly>
           </div>
-        </form>
+          <div class="mb-3">
+            <label class="form-label">Mobile</label>
+            <input type="text" class="form-control" value="{{ $onboard->mobileNumber ?? '—' }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Alternate Mobile</label>
+            <input type="text" class="form-control" value="{{ $onboard->alternateNumber ?? '—' }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Branch</label>
+            <input type="text" class="form-control" value="{{ $onboard->branch ?? '—' }}" readonly>
+          </div>
+          </div>
+        </div>
+        </div>
       </div>
     </div>
-  </div>
+@endforeach
 
-  <!-- Add Test Modal (Bootstrap) -->
-  <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addTestModalLabel">Add Test</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="testForm" method="POST" action="{{ route('calendar.tests.store') }}">
+<!-- Edit Modal -->
+@foreach($onboards as $onboard)
+<div class="modal fade" id="editModal{{ $onboard->_id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $onboard->_id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('users.update', $onboard->_id) }}">
         @csrf
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="test_date" class="form-label">Test Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="test_date" name="test_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="test_name" class="form-label">Test Name <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="test_name" name="test_name" placeholder="Enter test name" required>
-            </div>
+        @method('PUT')
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel{{ $onboard->_id }}">Edit Onboarding Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" value="{{ $onboard->name }}" required>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
+          
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" value="{{ $onboard->email }}" required>
           </div>
-        </form>
+          
+          <div class="mb-3">
+            <label class="form-label">Mobile</label>
+            <input type="text" class="form-control" name="mobileNumber" value="{{ $onboard->mobileNumber ?? '' }}" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Alternate Mobile</label>
+            <input type="text" class="form-control" name="alternateNumber" value="{{ $onboard->alternateNumber ?? '' }}">
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Branch</label>
+            <select class="form-select" name="branch" required>
+              <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
+            </select>
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" id="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+@endforeach
+
+      </div>
+      <div class="footer">
+        <div class="left-footer">
+          <p>Showing 1 to 10 of 10 Enteries</p>
+        </div>
+        <div class="right-footer">
+          <nav aria-label="...">
+            <ul class="pagination">
+              <li class="page-item"><a href="#" class="page-link" id="pg1">Previous</a></li>
+              <li class="page-item active">
+                <a class="page-link" href="#" aria-current="page" id="pg2">1</a>
+              </li>
+              <li class="page-item"><a class="page-link" href="/user management/emp/emp2.html" id="pg3">2</a></li>
+              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Scripts -->
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
-    <script src="{{ asset('js/calendar.js') }}"></script>
-
+  </div>
 </body>
+<!-- External JavaScript Libraries -->
+<!-- Bootstrap Bundle JS (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+<script src="{{asset('js/emp.js')}}"></script>
+
+
+<!-- AJAX Script: Handles dynamic user addition without page reload -->
+<script>
+// Event handler for add user form submission
+  // Ajax for dynamic user addition without page reload
+  $('#addUserForm').on('submit', function (e) {
+    // Prevent default form submission behavior
+    e.preventDefault();
+    // Clear previous error messages
+    $('.text-danger').text('');
+
+
+    // AJAX POST request to add user
+    $.ajax({
+      url: "{{ route('users.add') }}",
+      method: 'POST',
+      data: $(this).serialize(),
+      success: function (response) {
+        // On successful user addition
+        if (response.status === 'success') {
+          // Close the modal
+          $('#addUserModal').modal('hide');
+          // Reset form fields
+          $('#addUserForm')[0].reset();
+
+          // Dynamically append new user row to table without page reload
+          // Append user to table
+          $('#users-table tbody').append(`
+                    <tr>
+                        <td>${response.user.name}</td>
+                        <td>${response.user.email}</td>
+                        <td>${response.user.phone}</td>
+                    </tr>
+                `);
+        }
+      },
+      error: function (xhr) {
+        // Handle validation errors (HTTP 422)
+        if (xhr.status === 422) {
+          const errors = xhr.responseJSON.errors;
+          // Display error messages for each field
+          for (let field in errors) {
+            $(#error-${field}).text(errors[field][0]);
+          }
+        }
+      }
+    });
+  });
+</script>
 
 </html>
