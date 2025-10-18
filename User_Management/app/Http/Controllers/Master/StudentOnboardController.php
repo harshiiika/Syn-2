@@ -16,6 +16,14 @@ class StudentOnboardController extends Controller
         $onboards = StudentOnboard::all();
 return view('master.student.onboard', compact('onboards'));    }
 
+
+public function activeStudents()
+{
+    $onboards = StudentOnboard::where('status', 'Active')->get();
+    // Or if you want all students: $onboards = StudentOnboard::all();
+    
+    return view('master.student.onboard', compact('onboards'));
+}
     /**
      * Show details of a single student.
      */

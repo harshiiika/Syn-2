@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (isCollapsed) {
       sidebar.style.width = '26%';
-      right.style.width = '100%';
+      right.style.wid$usersth = '100%';
       text.style.visibility = 'visible';
 
     }

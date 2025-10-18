@@ -224,7 +224,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry
                     Management</a></li>
-                <li><a class="item" href="{{ route('master.student.pending') }}">
+                <li><a class="item" href="student.html">
   <i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>

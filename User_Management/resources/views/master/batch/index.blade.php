@@ -218,7 +218,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
-                <li><a class="item" href="{{ route('master.student.pending') }}">
+                <li>
+                  <a class="item" href="student.html">
   <i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
@@ -335,7 +336,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div class="right" id="right">
       <div class="top">
         <div class="top-text">
-          <h4>BATCH</h4>
+          <h4>BATCH ASSIGNMENT</h4>
         </div>
         <div class="buttons">
           <!-- Button to open Add Batch modal -->
@@ -408,10 +409,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </span>
               </td>
               <td>
-                <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-three-dots-vertical"></i>
-                  </button>
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+            type="button" 
+            id="actionMenuButton" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
                   <ul class="dropdown-menu">
                     <li>
                       <button class="dropdown-item" data-bs-toggle="modal"

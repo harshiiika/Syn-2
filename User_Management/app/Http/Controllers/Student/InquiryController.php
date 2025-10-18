@@ -198,11 +198,11 @@ public function bulkOnboard(Request $request)
             $onboardedCount++;
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => "Successfully onboarded {$onboardedCount} student(s)!",
-            'redirect' => route('master.student.pending') // Add redirect URL
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => "Successfully onboarded {$onboardedCount} student(s)!",
+        //     'redirect' => route('student.html') // Add redirect URL
+        // ]);
 
     } catch (\Exception $e) {
         \Log::error('Bulk onboard error: ' . $e->getMessage());
