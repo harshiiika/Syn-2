@@ -11,10 +11,6 @@ use App\Http\Controllers\fees\FeesMasterController;
 use App\Http\Controllers\Master\BatchController;
 use App\Http\Controllers\Master\BranchController;
 use App\Http\Controllers\Master\CalendarController;
-use App\Http\Controllers\Master\StudentController;
-use App\Http\Controllers\Master\StudentOnboardController;
-
-
 
 // -------------------------
 // Authentication Routes
@@ -144,7 +140,7 @@ Route::prefix('fees')->name('fees.')->group(function () {
     Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
 });
 
-//Batches Routes
+//branch Routes
 Route::prefix('master/branch')->name('branches.')->group(function () {
     // Display all branches
     Route::get('/', [BranchController::class, 'index'])->name('index');
@@ -159,6 +155,7 @@ Route::prefix('master/branch')->name('branches.')->group(function () {
     Route::post('/{id}/toggle-status', [BranchController::class, 'toggleStatus'])->name('toggleStatus');
 
 });
+
 
 // Calendar Management Routes
 Route::prefix('calendar')->name('calendar.')->group(function () {
@@ -180,74 +177,3 @@ Route::prefix('calendar')->name('calendar.')->group(function () {
     Route::post('/mark-sundays', [CalendarController::class, 'markSundays'])->name('mark.sundays');
 });
  
-
-// Route::prefix('pending')->name('pending.')->group(function () {
-//     Route::get('/', [StudentController::class, 'index'])->name('index');
-//     Route::post('/', [StudentController::class, 'store'])->name('store');
-//     Route::get('/search/query', [StudentController::class, 'search'])->name('search');
-//     Route::get('/{id}', [StudentController::class, 'show'])->name('show');
-//     Route::put('/{student}', [StudentController::class, 'update'])->name('update');
-// });
-
-
-Route::prefix('pending')->name('pending.')->group(function () {
-    // Display all pending students
-    Route::get('/', [StudentController::class, 'index'])->name('index');
-    
-    // Store new student (direct entry)
-    Route::post('/', [StudentController::class, 'store'])->name('store');
-    
-    // Search students
-    Route::get('/search/query', [StudentController::class, 'search'])->name('search');
-    
-    // Show student details
-    Route::get('/{id}', [StudentController::class, 'show'])->name('show');
-    
-    // Update student
-    Route::put('/{student}', [StudentController::class, 'update'])->name('update');
-});
-
-/*
-|--------------------------------------------------------------------------
-| Student Management Routes (Main Flow)
-|--------------------------------------------------------------------------
-*/
-// Student Onboard Routes (after converting from inquiry)
-Route::prefix('students')->name('students.')->group(function () {
-    // View all onboarded students (pending fees)
-    Route::get('/pending', [StudentController::class, 'index'])->name('pending');
-    
-    // View students with completed fees
-    Route::get('/active', [StudentController::class, 'activeStudents'])->name('active');
-    
-    // Show individual student details
-    Route::get('/{id}', [StudentController::class, 'show'])->name('show');
-    
-    // Update student details
-    Route::put('/{id}', [StudentController::class, 'update'])->name('update');
-    
-    // Update fees
-    Route::post('/{id}/update-fees', [StudentController::class, 'updateFees'])->name('update_fees');
-});
-
-// Keep this route for the main pending page
-Route::get('/student-management/pending', [StudentController::class, 'index'])
-    ->name('master.student.pending');
-
-// Route for onboarded students page
-Route::get('/student-management/onboard', [StudentController::class, 'activeStudents'])
-    ->name('student.onboard');
-
-
-Route::prefix('student-management')->group(function () {
-    Route::get('/onboard', [StudentOnboardController::class, 'index'])->name('student.onboard');
-    Route::get('/onboard/{id}', [StudentOnboardController::class, 'show'])->name('students.show');
-    Route::get('/onboard/{id}/edit', [StudentOnboardController::class, 'edit'])->name('students.edit');
-    Route::put('/onboard/{id}', [StudentOnboardController::class, 'update'])->name('students.update');
-    Route::get('/onboard/{id}/transfer', [StudentOnboardController::class, 'transfer'])->name('students.transfer');
-    Route::get('/onboard/{id}/history', [StudentOnboardController::class, 'history'])->name('students.history');
-});
-
-Route::get('/pending', [StudentController::class, 'index'])->name('master.student.pending');
-
-
