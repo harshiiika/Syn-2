@@ -1,3 +1,61 @@
+{{--
+
+CALENDAR BLADE FILE - CODE SUMMARY
+
+
+LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title, 
+           external CSS (Font Awesome, custom emp.css, Bootstrap)
+
+LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
+            notification bell, user dropdown menu with profile and login options
+
+LINE 50-51: Main container div starts
+
+LINE 52-233: Left Sidebar Navigation
+  - LINE 52-58: Sidebar container and admin info display
+  - LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
+    * LINE 61-75: User Management (Employee, Batches Assignment)
+    * LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
+    * LINE 100-114: Session Management (Session, Calendar, Student Migrate)
+    * LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
+    * LINE 132-142: Fees Management (Fees Collection)
+    * LINE 143-155: Attendance Management (Student, Employee)
+    * LINE 156-168: Study Material (Units, Dispatch Material)
+    * LINE 169-179: Test Series Management (Test Master)
+    * LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
+
+LINE 234-252: Right Content Area Header
+  - LINE 239-246: Action buttons 
+
+LINE 253-282: Table Controls
+  - LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
+  - LINE 269-274: Search input field with icon
+
+LINE 275-295: Table Structure
+  - LINE 287-289: Empty tbody tag
+  - LINE 290-294: Comment indicating modal fillables location
+
+  :Calendar and its buttons have been displayed
+
+
+LINE 481-498: Footer Section
+  - LINE 482-484: Pagination info text
+  - LINE 485-493: Pagination controls (Previous, page numbers, Next)
+
+LINE 499-500: Closing divs for main container
+
+LINE 622-624: Closing divs and body tag
+
+LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js)
+
+LINE 629-665: AJAX Script for Dynamic User Addition
+  - Prevents page reload on form submit
+  - Handles form validation errors
+  - Appends new user to table without refresh
+--}}
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -152,7 +210,8 @@
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry
                     Management</a></li>
-                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('master.student.pending') }}">
+  <i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"

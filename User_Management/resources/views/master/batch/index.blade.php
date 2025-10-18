@@ -1,6 +1,6 @@
 {{--
 
-EMPLOYEE MANAGEMENT BLADE FILE - CODE SUMMARY
+BATCH ASSIGNMENT BLADE FILE - CODE SUMMARY
 
 
 LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title,
@@ -25,38 +25,32 @@ LINE 52-233: Left Sidebar Navigation
 * LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
 
 LINE 234-252: Right Content Area Header
-- LINE 236-238: Page title "EMPLOYEE"
-- LINE 239-246: Action buttons (Add Employee, Upload)
+- LINE 239-246: Action buttons (Add Batch, Upload)
 
 LINE 253-282: Table Controls
 - LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
 - LINE 269-274: Search input field with icon
 
-LINE 275-295: Employee Table Structure
-- LINE 276-286: Table headers (Serial No, Name, Email, Mobile, Department, Role, Status, Action)
+LINE 275-295: Batch Table Structure
+- LINE 276-286: Table headers
 - LINE 287-289: Empty tbody tag
 - LINE 290-294: Comment indicating modal fillables location
 
-LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
-- Displays user data from database
+LINE 296-338: Dynamic Batch Table Rows (Blade foreach loop)
+- Displays batch data from database
 - Status badge with color coding
 - Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
 
 LINE 340-342: Comment for options modals section
 
-LINE 344-375: View Modal (foreach loop for each user)
-- Read-only display of employee details
-- Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
+LINE 344-375: View Modal (foreach loop for each batch)
 
-LINE 377-445: Edit Modal (foreach loop for each user)
+LINE 377-445: Edit Modal (foreach loop for each batch)
 - LINE 379-382: PHP variables setup for current department and roles
 - LINE 384-443: Edit form with PUT method
 - Editable fields: Name, Email, Mobile, Alternate Mobile, Branch, Department
 - Current Role displayed as read-only
 
-LINE 447-480: Password Update Modal (foreach loop for each user)
-- Form with PUT method for password update
-- Fields: Current Password, New Password, Confirm New Password
 
 LINE 481-498: Footer Section
 - LINE 482-484: Pagination info text
@@ -64,18 +58,9 @@ LINE 481-498: Footer Section
 
 LINE 499-500: Closing divs for main container
 
-LINE 501-503: Comment for Add Employee modal
-
-LINE 504-600: Add Employee Modal
+LINE 504-600: Add Batch Modal
 - LINE 504-509: Modal dialog setup
-- LINE 510-586: Form with POST method to add new employee
-- Fields: Name, Mobile, Alternate Mobile, Email, Branch, Department,
-Password, Confirm Password, File upload
-- LINE 587-591: Modal footer with Cancel and Submit buttons
-
-LINE 592-621: Upload Modal
-- Sample file download button
-- File upload form for bulk employee import
+- LINE 510-586: Form with POST method to add new batch
 
 LINE 622-624: Closing divs and body tag
 
@@ -176,7 +161,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('master.courses.index') }}"><i class="fa-solid fa-book-open"
+                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
@@ -209,7 +194,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
+                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
+                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
                       id="side-icon"></i> Calendar</a></li>
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
@@ -232,7 +218,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
-                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('master.student.pending') }}">
+  <i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
@@ -351,12 +338,12 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <h4>BATCH</h4>
         </div>
         <div class="buttons">
-          <!-- Button to open Add Employee modal -->
+          <!-- Button to open Add Batch modal -->
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalOne"
             id="add">
             Create Batch
           </button>
-          <!-- Button to open Upload modal for bulk import -->
+
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTwo"
             id="up">
             Upload
@@ -807,7 +794,6 @@ document.getElementById('courseSelect').addEventListener('change', function() {
         <a href="{{ route('batches.downloadSample') }}">
           <button type="button" class="sampleFile" id="xlsx">Download Sample File</button>
         </a>
-        <form action="{{ route('batches.upload') }}" method="post" enctype="multipart/form-data">
           @csrf
           <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
           <button type="submit" class="btn btn-primary mt-3">Upload</button>

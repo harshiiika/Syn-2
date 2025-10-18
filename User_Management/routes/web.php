@@ -10,6 +10,9 @@ use App\Http\Controllers\User\BatchesController;
 use App\Http\Controllers\fees\FeesMasterController;
 use App\Http\Controllers\Master\BatchController;
 use App\Http\Controllers\Master\BranchController;
+use App\Http\Controllers\Master\CalendarController;
+use App\Http\Controllers\Master\StudentController;
+
 
 // -------------------------
 // Authentication Routes
@@ -41,7 +44,7 @@ Route::get('/dashboard', function () {
  
 /*
 |--------------------------------------------------------------------------
-| Inquiry Routes (no middleware now)
+| Inquiry Routes
 |--------------------------------------------------------------------------
 */
 
@@ -57,6 +60,8 @@ Route::prefix('inquiries')->group(function () {
     Route::delete('/{inquiry}',  [InquiryController::class, 'destroy'])->where('inquiry', $idPattern)->name('inquiries.destroy');
     Route::get('/{inquiry}',     [InquiryController::class, 'show'])->where('inquiry', $idPattern)->name('inquiries.show');
     Route::post('/{inquiry}/status', [InquiryController::class, 'setStatus'])->where('inquiry', $idPattern)->name('inquiries.setStatus');
+    Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])
+        ->name('inquiries.bulkOnboard');
 });
 
 /*
@@ -90,7 +95,7 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 
 /*
 |--------------------------------------------------------------------------
-| Batches Routes
+| Batches (In User Management) Routes
 |--------------------------------------------------------------------------
 */
 Route::get('/batches', [BatchesController::class, 'showBatches'])
@@ -104,11 +109,11 @@ Route::prefix('courses')->name('courses.')->group(function () {
     Route::get('/create', [CoursesController::class, 'create'])->name('create');
     Route::post('/store', [CoursesController::class, 'store'])->name('store');
     Route::get('/edit/{id}', [CoursesController::class, 'edit'])->name('edit');
-    Route::put('/update/{id}', [CoursesController::class, 'update'])->name('update'); // ✅ PUT here
+    Route::put('/update/{id}', [CoursesController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [CoursesController::class, 'destroy'])->name('destroy');
 });
 
-//Batches Routes
+//Batches (In master) Routes
 Route::prefix('master/batch')->name('batches.')->group(function () {
     // Display all batches
     Route::get('/', [BatchController::class, 'index'])->name('index');
@@ -118,9 +123,6 @@ Route::prefix('master/batch')->name('batches.')->group(function () {
     
     // Add new batch
     Route::post('/add', [BatchController::class, 'store'])->name('add');
-    
-    // Bulk upload batches
-    Route::post('/upload', [BatchController::class, 'bulkUpload'])->name('upload');
     
     // Update batch details
     Route::put('/{id}/update', [BatchController::class, 'update'])->name('update');
@@ -140,7 +142,7 @@ Route::prefix('fees')->name('fees.')->group(function () {
     Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
 });
 
-//Batches Routes
+//branch Routes
 Route::prefix('master/branch')->name('branches.')->group(function () {
     // Display all branches
     Route::get('/', [BranchController::class, 'index'])->name('index');
@@ -156,3 +158,60 @@ Route::prefix('master/branch')->name('branches.')->group(function () {
 
 });
 
+
+// Calendar Management Routes
+Route::prefix('calendar')->name('calendar.')->group(function () {
+    // Main calendar page
+    Route::get('/', [CalendarController::class, 'index'])->name('index');
+   
+    // Get all events for FullCalendar
+    Route::get('/events', [CalendarController::class, 'getEvents'])->name('events');
+   
+    // Holiday routes
+    Route::post('/holidays', [CalendarController::class, 'storeHoliday'])->name('holidays.store');
+    Route::delete('/holidays/{id}', [CalendarController::class, 'deleteHoliday'])->name('holidays.delete');
+   
+    // Test routes (PLURAL - important!)
+    Route::post('/tests', [CalendarController::class, 'storeTest'])->name('tests.store');
+    Route::delete('/tests/{id}', [CalendarController::class, 'deleteTest'])->name('tests.delete');
+   
+    // Mark all Sundays
+    Route::post('/mark-sundays', [CalendarController::class, 'markSundays'])->name('mark.sundays');
+});
+ 
+
+
+Route::get('/students/pending', [StudentController::class, 'index'])
+    ->name('master.student.pending');
+
+// Active/Onboarded Students (fully paid students)
+Route::get('/students/onboard', [StudentController::class, 'activeStudents'])
+    ->name('student.onboard');
+
+// Pending Fees Students (partial payment students)
+Route::get('/students/pending-fees', [StudentController::class, 'pendingFees'])
+    ->name('students.pending_fees');
+
+// Show single student details
+Route::get('/students/{id}', [StudentController::class, 'show'])
+    ->name('students.show');
+
+// Store new student (direct entry)
+Route::post('/students/store', [StudentController::class, 'store'])
+    ->name('students.store');
+
+// Update student details
+Route::put('/students/{id}/update', [StudentController::class, 'update'])
+    ->name('students.update');
+
+// Update student fees (collect payment)
+Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees'])
+    ->name('students.updateFees');
+
+// Convert inquiry to student
+Route::post('/students/convert/{inquiryId}', [StudentController::class, 'convertFromInquiry'])
+    ->name('students.convertFromInquiry');
+
+// Additional route for active students (alternative naming)
+Route::get('/students/active', [StudentController::class, 'activeStudents'])
+    ->name('students.active');

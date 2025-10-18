@@ -12,7 +12,7 @@
     flex-direction: row;
 }
 
-#toggle-btn {
+/* #toggle-btn {
     margin: 10px;
     color: #838383;
     border-radius: 50%;
@@ -20,7 +20,7 @@
     height: 4px;
     width: 4px;
     font-size: 20px;
-}
+} */
 
 .pfp {
     justify-content: center;
@@ -533,22 +533,20 @@ height: 30px;
     margin: 25px 15px 25px 10px;
 }
 .pendingbtn{
-    background-color: rgb(233, 96, 47);
-    color: white;
-    border: none;
-    width: 200px;
-    height: 40px;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: rgb(233, 96, 47);
-}
-.onboardbtn{
     color: rgb(233, 96, 47);
     background-color: white;
     border: none;
     width: 200px;
     height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.onboardbtn{
+    border: none;
+    background-color: rgb(233, 96, 47);
+    color: white;
+    width: 200px;
+    height: 40px;
     border-radius: 5px; 
     cursor: pointer;
-    
 }

@@ -93,7 +93,7 @@
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('master.courses.index') }}"><i class="fa-solid fa-book-open"
+                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
@@ -127,11 +127,9 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-               <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
-                  href="{{ route('calendar.index') }}">
-                  <i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar
-                </a>
-              </li>
+                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
+                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
+                      id="side-icon"></i> Calendar</a></li>
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
                 </li>
@@ -154,7 +152,8 @@
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry
                     Management</a></li>
-                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('master.student.pending') }}">
+  <i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
@@ -506,5 +505,72 @@ document.querySelector('#file').addEventListener('change', function(e) {
         }, 1000);
     }
 });    
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Bulk onboard button
+    document.querySelector('.onboard')?.addEventListener('click', function() {
+        const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+        const inquiryIds = Array.from(checkedBoxes).map(cb => cb.value);
+        
+        if (inquiryIds.length === 0) {
+            showToast('Please select at least one student');
+            return;
+        }
+        
+        // Show confirmation modal
+        if (confirm(`Onboard ${inquiryIds.length} student(s)?`)) {
+            bulkOnboard(inquiryIds);
+        }
+    });
+    
+    // Individual onboard from dropdown
+    document.querySelectorAll('.dropdown-item[href="#"]').forEach(item => {
+        if (item.textContent.includes('Onboard')) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const row = this.closest('tr');
+                const inquiryId = row.querySelector('input[type="checkbox"]').value;
+                bulkOnboard([inquiryId]);
+            });
+        }
+    });
+});
+
+function bulkOnboard(inquiryIds) {
+    fetch('{{ route("inquiries.bulkOnboard") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ inquiry_ids: inquiryIds })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message, 'success');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showToast(data.message || 'Error onboarding students', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Failed to onboard students', 'error');
+    });
+}
+
+function showToast(message, type = 'error') {
+    const toast = document.getElementById('onboardToast');
+    const toastBody = document.getElementById('onboardToastBody');
+    
+    toastBody.innerHTML = `
+        <i class="fa-${type === 'success' ? 'check' : 'times'}-circle"></i>
+        <span>${message}</span>
+    `;
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
 </script>
 </html>
