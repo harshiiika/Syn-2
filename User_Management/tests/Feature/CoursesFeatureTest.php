@@ -28,7 +28,7 @@ class CoursesFeatureTest extends TestCase
     //     $response = $this->actingAs($user)->get(route('courses.index'));
 
     //     $response->assertStatus(200);
-    //     $response->assertViewIs('master.courses.index');
+    //     $response->assertViewIs('courses.index');
     // }
 
     /**

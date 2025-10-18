@@ -11,11 +11,18 @@ use MongoDB\BSON\ObjectId;
 use Illuminate\Support\Facades\Log;
 
 use App\Http\Controllers\Controller;
+
+
+
+/**
+ * CalendarController - Manages academic calendar events
+ * Handles holidays, test scheduling, and calendar view operations with MongoDB integration
+ */
 class CalendarController extends Controller
 {
-    /**
-     * Display the calendar page
-     * 
+  /**
+     * Display the calendar page with holidays and tests
+     * Fetches session-specific events and formats them for calendar display
      * @return \Illuminate\View\View
      */
     public function index()
@@ -65,10 +72,11 @@ return view('Master.calendar.calendar', compact('holidays', 'tests'));
         }
     }
 
+    
     /**
-     * Store a new holiday
-     * 
-     * @param Request $request
+     * Store a new holiday in the database
+     * Validates input, checks for duplicates, and creates holiday record
+     * @param Request $request - Contains holiday date, description, and session
      * @return \Illuminate\Http\JsonResponse
      */
     public function storeHoliday(Request $request)
@@ -173,10 +181,10 @@ return view('Master.calendar.calendar', compact('holidays', 'tests'));
         }
     }
 
-    /**
-     * Store a new test
-     * 
-     * @param Request $request
+     /**
+     * Store a new test in the database
+     * Validates test data and creates test record with optional time/marks fields
+     * @param Request $request - Contains test details (date, name, time, marks)
      * @return \Illuminate\Http\JsonResponse
      */
     public function storeTest(Request $request)

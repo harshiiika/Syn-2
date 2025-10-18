@@ -42,7 +42,7 @@ Route::get('/dashboard', function () {
  
 /*
 |--------------------------------------------------------------------------
-| Inquiry Routes (no middleware now)
+| Inquiry Routes
 |--------------------------------------------------------------------------
 */
 
@@ -58,6 +58,8 @@ Route::prefix('inquiries')->group(function () {
     Route::delete('/{inquiry}',  [InquiryController::class, 'destroy'])->where('inquiry', $idPattern)->name('inquiries.destroy');
     Route::get('/{inquiry}',     [InquiryController::class, 'show'])->where('inquiry', $idPattern)->name('inquiries.show');
     Route::post('/{inquiry}/status', [InquiryController::class, 'setStatus'])->where('inquiry', $idPattern)->name('inquiries.setStatus');
+    Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])
+        ->name('inquiries.bulkOnboard');
 });
 
 /*
@@ -91,7 +93,7 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 
 /*
 |--------------------------------------------------------------------------
-| Batches Routes
+| Batches (In User Management) Routes
 |--------------------------------------------------------------------------
 */
 Route::get('/batches', [BatchesController::class, 'showBatches'])
@@ -105,11 +107,11 @@ Route::prefix('courses')->name('courses.')->group(function () {
     Route::get('/create', [CoursesController::class, 'create'])->name('create');
     Route::post('/store', [CoursesController::class, 'store'])->name('store');
     Route::get('/edit/{id}', [CoursesController::class, 'edit'])->name('edit');
-    Route::put('/update/{id}', [CoursesController::class, 'update'])->name('update'); // ✅ PUT here
+    Route::put('/update/{id}', [CoursesController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [CoursesController::class, 'destroy'])->name('destroy');
 });
 
-//Batches Routes
+//Batches (In master) Routes
 Route::prefix('master/batch')->name('batches.')->group(function () {
     // Display all batches
     Route::get('/', [BatchController::class, 'index'])->name('index');
@@ -119,9 +121,6 @@ Route::prefix('master/batch')->name('batches.')->group(function () {
     
     // Add new batch
     Route::post('/add', [BatchController::class, 'store'])->name('add');
-    
-    // Bulk upload batches
-    Route::post('/upload', [BatchController::class, 'bulkUpload'])->name('upload');
     
     // Update batch details
     Route::put('/{id}/update', [BatchController::class, 'update'])->name('update');

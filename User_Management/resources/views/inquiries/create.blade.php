@@ -139,7 +139,7 @@
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry
                     Management</a></li>
-                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('master.student.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
