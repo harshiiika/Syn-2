@@ -12,7 +12,7 @@
     flex-direction: row;
 }
 
-/* #toggle-btn {
+#toggle-btn {
     margin: 10px;
     color: #838383;
     border-radius: 50%;
@@ -20,7 +20,7 @@
     height: 4px;
     width: 4px;
     font-size: 20px;
-} */
+}
 
 .pfp {
     justify-content: center;
