@@ -2,21 +2,15 @@
 
 namespace App\Models\Student;
 
-use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use MongoDB\Laravel\Eloquent\Model;
 
 class Inquiry extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mongodb';
-    protected $table = 'inquiries';
-    
-    // protected $primaryKey = '_id';
-    // public $incrementing  = false;
-    // protected $keyType    = 'string';
-
-    public $timestamps = true;
+    protected $connection = 'mongodb'; // 👈 ensure it uses MongoDB
+    protected $collection = 'inquiries'; // 👈 use MongoDB collection name
 
     protected $fillable = [
         'student_name',
@@ -25,21 +19,32 @@ class Inquiry extends Model
         'father_whatsapp',
         'student_contact',
         'category',
+        'course_name',
+        'delivery_mode',
+        'course_content',
+        'branch',
         'state',
         'city',
         'address',
-        'branch_name',
         'ews',
-        'service_background',
+        'defense',
         'specially_abled',
         'status',
+        'remarks',
+        'follow_up_date',
     ];
 
     protected $casts = [
-        'ews'                => 'bool',
-        'service_background' => 'bool',
-        'specially_abled'    => 'bool',
-        'created_at'         => 'datetime',
-        'updated_at'         => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'follow_up_date' => 'datetime',
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory()
+    {
+        return \Database\Factories\Student\InquiryFactory::new();
+    }
 }

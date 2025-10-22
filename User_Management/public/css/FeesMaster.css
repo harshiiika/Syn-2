@@ -26,15 +26,18 @@
     border: 0.5px solid orangered;
     border-radius: 5px;
 }
-.icons{
+
+.icons {
     display: flex;
     justify-content: center;
     align-items: baseline;
 }
+
 #side-icon {
     color: #838383;
     font-size: 16px;
 }
+
 .session {
     align-items: center;
     flex-direction: row;
@@ -59,7 +62,8 @@
     justify-content: center;
     align-items: center;
 }
-#dropdown-body{
+
+#dropdown-body {
     padding: 0 !important;
     display: flex;
     align-items: flex-start;
@@ -87,13 +91,17 @@
 .main-container {
     max-width: 100%;
     flex-direction: row;
-    display: flex;
+    display: flex !important;
 }
 
 .left {
     height: 100vh;
     width: 20%;
     overflow-y: scroll;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #ffffff !important;
+    border-right: 1px solid #e0e0e0 !important;
 }
 
 .left h6 {
@@ -116,58 +124,136 @@
     font-size: 15px;
 }
 
- .accordion-flush {
+/* FIXED ACCORDION STYLES - ICONS ALWAYS VISIBLE */
+.accordion-flush {
     justify-content: flex-start;
     align-items: center;
-    height: 10px;
-} 
-.accordion-body{
-    padding: 10px !important;
 }
-.menu {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
 
+.accordion-item {
+    border: none !important;
+    background-color: transparent !important;
+}
+
+.accordion-button {
+    font-size: 17px;
+    border: none !important;
+    padding: 10px !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    min-height: 38px;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    width: 100% !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: transparent !important;
+    color: inherit !important;
+    box-shadow: none !important;
+}
+
+.accordion-button:focus {
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.accordion-button::after {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.accordion-collapse {
+    border: none !important;
+}
+
+.accordion-body {
+    padding: 10px !important;
+    margin: 0 !important;
 }
 
 #accordion-button {
     font-size: 17px;
     border: none;
-    height: 38px;
+    min-height: 38px;
     padding: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+/* Force icons to be visible in accordion */
+.accordion-button i,
+#accordion-button i,
+.accordion-button .fa-solid,
+.accordion-button .fa-regular {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0 !important;
+    min-width: 16px !important;
+    margin-right: 8px !important;
+}
+
+/* END FIXED ACCORDION STYLES */
+
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
 }
 
 .item {
     text-decoration: none;
     color: #000;
     cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    padding: 5px 8px;
+}
+
+.item i {
+    margin-right: 8px;
+    flex-shrink: 0;
+    display: inline-flex !important;
+    visibility: visible !important;
 }
 
 .menu li {
     list-style: none;
     cursor: pointer;
-    margin: 5px;
     font-size: 17px;
     text-decoration: none;
     display: flex;
     justify-content: flex-start;
+    align-items: center;
+    /* padding: 5px 10px; */
+    width: 100%;
+}
+
+.menu li:hover {
+    background-color: #f0f0f0;
 }
 
 .right {
     height: 90vh;
     width: 80%;
-    display: flex;
+    display: flex !important;
     align-items: center;
     flex-direction: column;
     overflow-y: scroll;
     background-color: #e7e7e7;
 }
-.whole{
+
+.whole {
     margin: 5px;
     padding: 20px;
-    gap: 25px; 
+    gap: 25px;
     width: 97%;
     display: flex;
     align-items: center;
@@ -175,6 +261,7 @@
     background-color: #ffffff;
     border: 1px solid #d6d6d6;
 }
+
 .right h1 {
     color: rgb(190, 51, 0);
     margin: 10px;
@@ -182,11 +269,13 @@
 
 .toggleBtn {
     border: none;
+    background: transparent;
+    cursor: pointer;
 }
 
-#table{
+#table {
     font-size: 12px;
-    flex-direction: column;  
+    flex-direction: column;
 }
 
 .top {
@@ -205,7 +294,7 @@
 
 .buttons {
     flex-direction: row;
-    margin: 10px; 
+    margin: 10px;
     display: flex;
 }
 
@@ -217,17 +306,21 @@
     border-radius: 7px;
     border: 0;
     margin: 10px;
+    cursor: pointer;
 }
-#submit{
-     border:1px solid rgb(224, 83, 1);
+
+#submit {
+    border: 1px solid rgb(224, 83, 1);
     color: #000000;
     background-color: transparent;
     height: 40px;
     width: 100px;
-    border-radius: 7px; 
+    border-radius: 7px;
     margin: 10px;
+    cursor: pointer;
 }
-#up{
+
+#up {
     background-color: rgb(8, 90, 0);
     color: #edfeff;
     height: 40px;
@@ -235,13 +328,8 @@
     border-radius: 7px;
     border: 0;
     margin: 10px;
-
+    cursor: pointer;
 }
- 
-.menu li {
-    list-style: none;
-}
-
 
 .btn-secondary,
 #ellipsis {
@@ -268,41 +356,45 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
 }
 
-#toggle-btn, #ellipsis {
+#toggle-btn,
+#ellipsis {
     background-color: transparent;
     justify-content: center;
     display: flex;
     border: none;
-    cursor: pointer; 
-}
-
-.fa-bars:hover{ 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.fa-bars{
-    margin-right: 35px;
-}
-#serial{
-    margin-left: 15px;
-}
-.dropdown-item {
-    height: 20px;
-    width: 30px;
-    margin: 15px;
-    border-radius: 5px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
     cursor: pointer;
 }
 
+.fa-bars:hover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fa-bars {
+    margin-right: 35px;
+}
+
+#serial {
+    margin-left: 15px;
+}
+
+.dropdown-item {
+    height: auto;
+    width: auto;
+    margin: 5px 10px;
+    border-radius: 5px;
+    justify-content: flex-start;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    padding: 8px 12px;
+}
+
 .line {
-    flex-direction: row; 
+    flex-direction: row;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -321,28 +413,29 @@
     margin: 5px;
 }
 
-#one{
-    color: rgb(224, 83, 1); 
+#one {
+    color: rgb(224, 83, 1);
 }
-.search-holder{
+
+.search-holder {
     border: 1px solid rgb(224, 83, 1);
     border-radius: 5px;
     outline: none;
     padding: 5px;
 }
 
-
-#bottom{
+#bottom {
     display: flex;
     align-items: center;
     width: 98%;
     justify-content: flex-end;
 }
 
-#pagination{
+#pagination {
     border: 1px solid #d4d4d4;
 }
-#pg1{
+
+#pg1 {
     height: 30px;
     width: 70px;
     display: flex;
@@ -350,93 +443,100 @@
     color: #838383;
     align-items: center;
 }
-#pg2{
-height: 30px;
+
+#pg2 {
+    height: 30px;
     width: 50px;
     display: flex;
     color: #fff;
     justify-content: center;
     align-items: center;
-    background-color:  rgb(224, 83, 1);
+    background-color: rgb(224, 83, 1);
 }
-#pg3{
+
+#pg3 {
     height: 30px;
-    color:  rgb(224, 83, 1);
+    color: rgb(224, 83, 1);
     width: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#form{
+#form {
     overflow-y: scroll;
     height: 400px;
     width: 700px;
 }
 
-.modal-dialog-scrollable , .modal-content{
+.modal-dialog-scrollable,
+.modal-content {
     height: 90vh;
     display: flex;
     flex-direction: column;
 }
 
-#inputGroupFile01{
+#inputGroupFile01 {
     width: 500px;
     border: 1px dashed #d8d8d8;
 }
 
-.modal-body{
+.modal-body {
     overflow-y: auto;
     flex: 1 1 auto;
 }
 
-.modal-footer{
+.modal-footer {
     position: sticky;
     bottom: 0;
     background-color: #fff;
-    z-index: 10; 
+    z-index: 10;
 }
-#content-one{
+
+#content-one {
     height: 500px;
     width: 600px;
 }
-#modal-two{
+
+#modal-two {
     height: 300px;
     width: 600px;
-    
 }
-#sample-body{
-      display: flex;
+
+#sample-body {
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 }
- #file{
+
+#file {
     height: 34px;
     width: 400px;
     border: 2px solid #d8d8d8;
     border-radius: 5px;
     display: flex;
-    align-items: center; 
+    align-items: center;
 }
 
-#xlsx{
+#xlsx {
     margin-bottom: 20px;
     height: 40px;
     width: 200px;
     border-radius: 10px;
-    background-color:  rgb(224, 83, 1);
+    background-color: rgb(224, 83, 1);
     border: 0;
     color: #fff;
+    cursor: pointer;
 }
 
-#content{
+#content {
     height: 550px;
     width: 750px;
-     margin-top: 40px;
+    margin-top: 40px;
 }
- 
-#select-item{
+
+#select-item {
     height: 30px;
     width: 100px;
     border-radius: 10px;
@@ -447,52 +547,58 @@ height: 30px;
     align-items: center;
     margin: 0;
 }
-#select-menu{
+
+#select-menu {
     height: 150px;
     width: 200px;
     border-radius: 10px;
     background-color: #fff;
-    color: #000; 
+    color: #000;
     overflow-y: scroll;
 }
-.footer{
+
+.footer {
     flex-direction: row;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 95%;
 }
-.left-footer p{
+
+.left-footer p {
     font-size: 12px;
 }
- #scroll{
+
+#scroll {
     margin: 5px 0px 10px 5px;
     align-items: center;
     border: 1px solid #dddcdc;
     background-color: transparent;
     width: 45vw;
-    color: #fff;
+    color: #000;
     text-align: left;
 }
 
-#placeholder{
+#placeholder {
     width: 200px;
     height: 40px;
     margin: 5px 0px 10px 5px;
     align-items: center;
-    border: 0;
-    background-color: transparent; 
-    color: #fff;
+    border: 1px solid #ddd;
+    background-color: transparent;
+    color: #000;
     text-align: left;
 }
-.fees{
+
+.fees {
     display: flex;
     width: 100%;
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
 }
-.written{
+
+.written {
     display: flex;
     width: 100%;
     justify-content: space-between;
@@ -500,48 +606,266 @@ height: 30px;
     flex-direction: column;
 }
 
-.hori-text{
-        display: flex;
+.hori-text {
+    display: flex;
     width: 100%;
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
 }
 
-.ver-text{
-           display: flex;
+.ver-text {
+    display: flex;
     width: 100%;
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
 }
 
-/* ---- UNIFIED FEES FORM LOOK ---- */
-.fees-form .form-label{ margin-bottom:6px; }
-.fees-form .form-control,
-.fees-form .form-select{ height:44px; }
-.fees-form .section{ color:#ff5a00; font-weight:600; margin:10px 0 6px; }
-
-/* ---- MODALS: make only the body scroll, footer/header fixed ---- */
-.modal.fees-modal .modal-dialog{ max-width: 960px; }
-.modal.fees-modal .modal-content{
-  display:flex;
-  flex-direction:column;
-  max-height: 90vh;     /* <— KEY: creates a scroll area */
-}
-.modal.fees-modal .modal-body{
-  overflow: auto;       /* <— body scrolls, header/footer stay */
+/* Additional Styling for Better UI */
+.form-control:focus {
+    border-color: rgb(224, 83, 1);
+    box-shadow: 0 0 0 0.2rem rgba(224, 83, 1, 0.25);
 }
 
-/* ---- STANDALONE PAGES (create.blade.php / edit.blade.php) ---- */
-.fees-card .card-body{
-  max-height: calc(100vh - 220px);
-  overflow: auto;       /* page form scrolls if long */
+.btn-primary {
+    background-color: rgb(224, 83, 1);
+    border-color: rgb(224, 83, 1);
 }
-.fees-card .card-footer{
-  position: sticky;
-  bottom: 0;
-  background: #fff;
-  border-top: 1px solid #eee;
-  z-index: 1;
+
+.btn-primary:hover {
+    background-color: rgb(190, 51, 0);
+    border-color: rgb(190, 51, 0);
+}
+
+.alert {
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Scrollbar Styling */
+.left::-webkit-scrollbar,
+.right::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.left::-webkit-scrollbar-track,
+.right::-webkit-scrollbar-track,
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.left::-webkit-scrollbar-thumb,
+.right::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.left::-webkit-scrollbar-thumb:hover,
+.right::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .left {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        z-index: 1000;
+        background: white;
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+    }
+
+    .left.show {
+        transform: translateX(0);
+    }
+
+    .right {
+        width: 100%;
+    }
+
+    .fees {
+        flex-direction: column;
+    }
+
+    #scroll {
+        width: 100%;
+    }
+
+    .header {
+        flex-direction: column;
+        height: auto;
+    }
+}
+
+/* MODAL FIXES */
+.modal-dialog {
+    max-width: 850px !important;
+}
+
+#content {
+    height: auto !important;
+    max-height: 85vh;
+    width: 100% !important;
+    margin-top: 0 !important;
+}
+
+.modal-body {
+    padding: 20px !important;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-body .mb-3 {
+    margin-bottom: 1rem !important;
+}
+
+.modal-body label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.modal-body .form-control,
+.modal-body select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.modal-body p {
+    color: orangered;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 20px 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid orangered;
+}
+
+/* Fix the fees row layout */
+.fees {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 15px !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+}
+
+.fees .mb-3 {
+    margin-bottom: 0 !important;
+}
+
+.fees .input-group {
+    width: 100% !important;
+}
+
+.fees input,
+.fees select {
+    width: 100% !important;
+}
+
+/* Fix written section */
+.written {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.hori-text,
+.ver-text {
+    margin: 10px 0;
+}
+
+.hori-text p,
+.ver-text p {
+    margin: 5px 0;
+    padding: 0;
+    border: none;
+    color: #333;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+/* Modal footer */
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.modal-footer button {
+    min-width: 100px;
+}
+
+/* Fix dropdown/select in modal */
+#scroll,
+#edit_course {
+    width: 100% !important;
+    height: auto !important;
+    padding: 8px 12px !important;
+    background-color: white !important;
+    color: #000 !important;
+    border: 1px solid #ddd !important;
+    border-radius: 5px !important;
+    text-align: left !important;
+    margin: 0 !important;
+}
+
+/* Fix placeholder inputs */
+#placeholder {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+}
+
+#placeholder .form-control {
+    background-color: #f8f9fa !important;
+    cursor: not-allowed !important;
+}
+
+/* Ensure proper spacing */
+.modal-body > div:not(.fees):not(.written) {
+    margin-bottom: 15px;
+}
+
+/* Fix button styling in modal */
+.modal-footer .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.modal-footer .btn-primary {
+    background-color: rgb(224, 83, 1);
+    border-color: rgb(224, 83, 1);
+    color: white;
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgb(224, 83, 1);
+}
+
+/* Remove conflicting styles */
+.btn.btn-secondary.dropdown-toggle {
+    background-color: white !important;
 }
