@@ -2,22 +2,36 @@
 
 namespace Tests;
 
-use Illuminate\Support\Facades\DB;
-
-trait RefreshMongoDatabase
+trait RefreshMongoDatabase 
 {
-    protected function refreshMongo(): void
+    protected function mongoModelsToRefresh(): array
     {
-        try {
-            DB::connection('mongodb')->collection('inquiries')->delete();
-        } catch (\Throwable $e) {
-            // ignore if collection doesn't exist yet
+        return [
+            \App\Models\Master\FeesMaster::class, // only FeesMaster
+        ];
+    }
+
+    protected function refreshMongoCollections(): void
+    {
+        foreach ($this->mongoModelsToRefresh() as $model) {
+            if (!class_exists($model)) continue;
+            try {
+                $model::query()->delete();
+            } catch (\Throwable $e) {
+                // ignore cleanup errors
+            }
         }
     }
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->refreshMongo();
+        $this->refreshMongoCollections();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->refreshMongoCollections();
+        parent::tearDown();
     }
 }

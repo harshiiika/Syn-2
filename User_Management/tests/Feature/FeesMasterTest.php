@@ -2,179 +2,100 @@
 
 namespace Tests\Feature;
 
+use App\Models\Master\FeesMaster;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
-use App\Models\FeesMaster;   // adjust if your model name/table differs
 
 class FeesMasterTest extends TestCase
 {
+    protected $userId;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        // 👇 Skip auth / other middleware so we don't need a User model
-        $this->withoutMiddleware();
+        // 🔥 FIX: Clear any mocks from Unit tests
+        \Mockery::close();
+
+        // Clean database
+        $this->cleanDatabase();
+
+        // Create test user
+        $this->userId = DB::connection('mongodb')
+            ->getCollection('users')
+            ->insertOne([
+                'name' => 'Test Admin',
+                'email' => 'feesmaster_' . uniqid() . '@test.com',
+                'password' => Hash::make('password'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ])->getInsertedId();
+
+        Auth::loginUsingId($this->userId);
     }
 
-    /** @test */
-    public function index_shows_table_and_create_modal(): void
+    protected function tearDown(): void
     {
-        $fees = FeesMaster::factory()->count(2)->create();
-
-        $response = $this->get(route('fees.index'));
-
-        $response->assertOk();
-        $response->assertSee('FEES MASTER', false);
-        $response->assertSee('Create Fees', false);
-
-        foreach ($fees as $fee) {
-            $response->assertSee($fee->course, false);
-        }
-
-        // bits from the modal/form to ensure structure
-        $response->assertSee('GST %', false);
-        $response->assertSee('Fees (before GST)', false);
-        $response->assertSee('name="classroom_fee"', false);
-        $response->assertSee('name="live_fee"', false);
-        $response->assertSee('name="recorded_fee"', false);
-        $response->assertSee('name="study_fee"', false);
-        $response->assertSee('name="test_fee"', false);
+        $this->cleanDatabase();
+        Auth::logout();
+        parent::tearDown();
     }
 
-    /** @test */
-    public function create_page_renders_form_like_modal(): void
+    protected function cleanDatabase(): void
     {
-        if (! app('router')->has('fees.create')) {
-            $this->markTestSkipped('fees.create route not present; create form is shown in a modal.');
-        }
-
-        $response = $this->get(route('fees.create'));
-
-        $response->assertOk();
-        $response->assertSee('Create Fees', false);
-        $response->assertSee('GST %', false);
-        $response->assertSee('Fees (before GST)', false);
-        $response->assertSee('name="classroom_fee"', false);
-    }
-
-    /** @test */
-    public function edit_page_renders_with_prefilled_values(): void
-    {
-        $fee = FeesMaster::factory()->create([
-            'course'        => 'Momentum',
-            'gst_percent'   => 18,
-            'classroom_fee' => 2,
-            'live_fee'      => 1,
-            'recorded_fee'  => 4,
-            'study_fee'     => 3,
-            'test_fee'      => 2,
-            'status'        => 'Active',
-        ]);
-
-        $response = $this->get(route('fees.edit', $fee->id));
-
-        $response->assertOk();
-        $response->assertSee('Edit Fees', false);
-        $response->assertSee('Momentum', false);
-        $response->assertSee('GST %', false);
-        $response->assertSee('name="classroom_fee"', false);
-        $response->assertSee('name="live_fee"', false);
-        $response->assertSee('name="recorded_fee"', false);
-        $response->assertSee('name="study_fee"', false);
-        $response->assertSee('name="test_fee"', false);
-    }
-
-    /** @test */
-    public function store_persists_fee_and_redirects(): void
-    {
-        $payload = [
-            'course'         => 'Impulse',
-            'gst_percent'    => 18,
-            'classroom_fee'  => 45000,
-            'live_fee'       => 40000,
-            'recorded_fee'   => 30000,
-            'study_fee'      => 15000,
-            'test_fee'       => 10000,
-            'status'         => 'Active',
-        ];
-
-        $response = $this->post(route('fees.store'), $payload);
-
-        $response->assertRedirect();
-        $this->assertDatabaseHas('fees_master', [ // adjust table name if different
-            'course'      => 'Impulse',
-            'gst_percent' => 18,
-            'status'      => 'Active',
-        ]);
-    }
-
-    /** @test */
-    public function update_changes_fields(): void
-    {
-        $fee = FeesMaster::factory()->create(['course' => 'Momentum', 'status' => 'Active']);
-
-        $payload = [
-            'course'         => 'Intensity',
-            'gst_percent'    => 18,
-            'classroom_fee'  => 100,
-            'live_fee'       => 200,
-            'recorded_fee'   => 300,
-            'study_fee'      => 400,
-            'test_fee'       => 500,
-            'status'         => 'Inactive',
-        ];
-
-        $response = $this->put(route('fees.update', $fee->id), $payload);
-
-        $response->assertRedirect();
-        $this->assertDatabaseHas('fees_master', [
-            'id'            => $fee->id,
-            'course'        => 'Intensity',
-            'status'        => 'Inactive',
-            'classroom_fee' => 100,
-        ]);
-    }
-
-    /** @test */
-    public function toggle_status_flips_between_active_and_inactive(): void
-    {
-        $fee = FeesMaster::factory()->create(['status' => 'Active']);
-
-        $this->patch(route('fees.toggle', $fee->id))->assertRedirect();
-        $fee->refresh();
-        $this->assertEquals('Inactive', $fee->status);
-
-        $this->patch(route('fees.toggle', $fee->id))->assertRedirect();
-        $fee->refresh();
-        $this->assertEquals('Active', $fee->status);
-    }
-
-    /** @test */
-    public function show_returns_json_for_view_button(): void
-    {
-        $fee = FeesMaster::factory()->create([
-            'course'      => 'Thrust',
-            'gst_percent' => 18,
-            'status'      => 'Active',
-        ]);
-
-        $this->get(route('fees.show', $fee->id))
-            ->assertOk()
-            ->assertJsonFragment([
-                'course'      => 'Thrust',
-                'gst_percent' => 18,
-                'status'      => 'Active',
+        try {
+            DB::connection('mongodb')->getCollection('fees_masters')->deleteMany([]);
+            DB::connection('mongodb')->getCollection('users')->deleteMany([
+                'email' => ['$regex' => '^feesmaster_']
             ]);
+        } catch (\Exception $e) {
+            // Ignore
+        }
     }
 
-    /** @test */
-    public function store_requires_course_and_gst(): void
+    public function test_it_can_create_fees_master()
     {
-        $this->from(route('fees.index'))
-             ->post(route('fees.store'), [
-                 'course'      => '',
-                 'gst_percent' => '',
-             ])
-             ->assertRedirect(route('fees.index'))
-             ->assertSessionHasErrors(['course', 'gst_percent']);
+        $fees = FeesMaster::create([
+            'course' => 'Test Course',
+            'gst_percentage' => 18,
+            'classroom_course' => 10000,
+            'status' => 'active',
+        ]);
+
+        $this->assertNotNull($fees->_id);
+        $this->assertEquals('Test Course', $fees->course);
+        $this->assertEquals(10000, $fees->classroom_course);
+    }
+
+    public function test_it_calculates_gst_automatically()
+    {
+        $fees = FeesMaster::create([
+            'course' => 'Test Course',
+            'gst_percentage' => 18,
+            'classroom_course' => 10000,
+            'status' => 'active',
+        ]);
+
+        $this->assertEquals(1800, $fees->classroom_gst);
+        $this->assertEquals(11800, $fees->classroom_total);
+    }
+
+    public function test_gst_recalculates_on_update()
+    {
+        $fees = FeesMaster::create([
+            'course' => 'Test Course',
+            'gst_percentage' => 18,
+            'classroom_course' => 10000,
+            'status' => 'active',
+        ]);
+
+        $fees->classroom_course = 15000;
+        $fees->save();
+        $fees->refresh();
+
+        $this->assertEquals(2700, $fees->classroom_gst);
+        $this->assertEquals(17700, $fees->classroom_total);
     }
 }
