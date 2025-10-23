@@ -423,10 +423,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
               <td>
                 <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-                  </button>
+                 
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
                   <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
                     <li>
                       <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $user->_id }}">
