@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Student\InquiryController;
 use App\Http\Controllers\Session\SessionController;
@@ -28,9 +29,11 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // -------------------------
 // -------------------------
-// Default Route
+
 Route::get('/', function () {
-    return redirect()->route('login'); // always send root to login
+    return Auth::check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
 })->name('home');
 
 // -------------------------
@@ -104,6 +107,7 @@ Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batch
 Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])
     ->name('batches.toggleStatus');
 
+// Courses Routes
 Route::prefix('courses')->name('courses.')->group(function () {
     Route::get('/', [CoursesController::class, 'index'])->name('index');
     Route::get('/create', [CoursesController::class, 'create'])->name('create');
@@ -111,6 +115,14 @@ Route::prefix('courses')->name('courses.')->group(function () {
     Route::get('/edit/{id}', [CoursesController::class, 'edit'])->name('edit');
     Route::put('/update/{id}', [CoursesController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [CoursesController::class, 'destroy'])->name('destroy');
+    
+    // Bulk import routes
+    Route::get('/download-sample', [CoursesController::class, 'downloadSampleFile'])->name('downloadSample');
+    Route::post('/import', [CoursesController::class, 'importCourses'])->name('import');
+    
+    // Subject validation routes
+    Route::get('/subject-suggestions', [CoursesController::class, 'getSubjectSuggestions'])->name('subjectSuggestions');
+    Route::get('/valid-subjects', [CoursesController::class, 'getValidSubjects'])->name('validSubjects'); // NEW
 });
 
 //Batches (In master) Routes

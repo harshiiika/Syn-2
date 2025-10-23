@@ -11,7 +11,8 @@
       "laravel/framework": "^12.0",
       "laravel/tinker": "^2.10.1",
       "mongodb/laravel-mongodb": "5.5",
-      "mongodb/mongodb": "^2.1"
+      "mongodb/mongodb": "^2.1",
+      "phpoffice/phpspreadsheet": "^5.1"
    },
     
     "require-dev": {

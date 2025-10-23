@@ -8,6 +8,7 @@ use App\Models\Session\AcademicSession;
 use Illuminate\Http\Request;
 use App\Models\Session\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User as UserModel;
 
 class SessionControllerTest extends TestCase
 {
@@ -86,15 +87,24 @@ class SessionControllerTest extends TestCase
         $updated = AcademicSession::find($session->_id);
     }
 
- #[\PHPUnit\Framework\Attributes\Test]
-public function home_route_returns_200_for_authenticated_user()
-{
-    $user = User::factory()->create();
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function home_route_redirects_to_dashboard_for_authenticated_user()
+    {
+        $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->get('/');
+        $response = $this->actingAs($user)->get('/');
+
+        $response->assertRedirect(route('dashboard')); // or ->assertRedirect('/dashboard') if unnamed
+        $this->assertAuthenticatedAs($user);
+    }
+}
+// {
+//     $user = User::factory()->create();
+
+//     $response = $this->actingAs($user)->get('/');
     
-    // Should redirect to dashboard
-    $response->assertStatus(302);
-    $response->assertRedirect(route('dashboard'));
-}
-}
+//     // Should redirect to dashboard
+//     $response->assertStatus(302);
+//     $response->assertRedirect(route('dashboard'));
+// }
+
