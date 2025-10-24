@@ -215,17 +215,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
-<<<<<<< HEAD:User_Management/resources/views/student/pendingfees/pending.blade.php
                 <li><a class="item" href="{{ route('student.student.pending') }}">
     <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
 </a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-=======
-                <li><a class="item" href="student.html">
-    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
-</a></li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
->>>>>>> origin:User_Management/resources/views/master/student/onboard.blade.php
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
@@ -340,13 +333,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <div class="top-text">
         </div>
             <div class="btns">
-<<<<<<< HEAD:User_Management/resources/views/student/pendingfees/pending.blade.php
                <a href="{{ route('student.student.pending') }}"><button type="button" class="pendingbtn">Pending Fees Students</button></a>
-=======
-               <a href="{{ route('student.html') }}">
-                <button type="button" class="pendingbtn">Pending Inquiries</button></a>
-              <a class="item" href="{{ route('student.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
->>>>>>> origin:User_Management/resources/views/master/student/onboard.blade.php
+              <a class="item" href="{{ route('student.onboard.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
             </div>
 
       </div>
@@ -393,7 +381,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </tbody>
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-<<<<<<< HEAD:User_Management/resources/views/student/pendingfees/pending.blade.php
       @foreach($pendingFees as $index => $pending)
 <tr>
    <!-- Serial number (index + 1) -->
@@ -404,18 +391,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <td>{{ $pending->courseName ?? '—' }}</td>
 <td>{{ $pending->deliveryMode ?? '—' }}</td>
 <td>{{ $pending->courseContent ?? '—' }}</td>
-=======
-      @foreach($onboards as $index => $onboard)
-<tr>
-   <!-- Serial number (index + 1) -->
-  <td>{{ $index + 1 }}</td>
-  <td>{{ $onboard->name }}</td>
-  <td>{{ $onboard->father }}</td>
-  <td>{{ $onboard->mobileNumber ?? '—' }}</td>
-<td>{{ $onboard->courseName ?? '—' }}</td>
-<td>{{ $onboard->deliveryMode ?? '—' }}</td>
-<td>{{ $onboard->courseContent ?? '—' }}</td>
->>>>>>> origin:User_Management/resources/views/master/student/onboard.blade.php
   <td>
     <div class="dropdown">
       <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
@@ -423,7 +398,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
       </button>
       <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-<<<<<<< HEAD:User_Management/resources/views/student/pendingfees/pending.blade.php
       <li>
   <a class="dropdown-item" href="{{ route('student.pendingfees.edit', $pending->_id) }}">Edit</a>
       </li>
@@ -445,25 +419,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </button>
       </li>
     </ul>
-=======
-        <li>
-         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $onboard->_id }}">
-            Edit Details
-          </button>
-        </li>
-      </ul>
->>>>>>> origin:User_Management/resources/views/master/student/onboard.blade.php
     </div>
   </td>
 </tr>
 @endforeach
         </table>
-<<<<<<< HEAD:User_Management/resources/views/student/pendingfees/pending.blade.php
-=======
-
-
-
->>>>>>> origin:User_Management/resources/views/master/student/onboard.blade.php
       </div>
       <div class="footer">
         <div class="left-footer">

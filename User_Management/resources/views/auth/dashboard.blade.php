@@ -86,7 +86,6 @@
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
-<<<<<<< HEAD
 
                 <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
@@ -96,8 +95,6 @@
                       id="side-icon"></i> Fees Master</a></li>
                 <li><a class="item" href="/Master/other fees/other.html"><i class="fa-solid fa-wallet"
 
-=======
->>>>>>> 4f213b2efc7d7bfff2c7b33a023170eeb35895ab
                             <li>
     <a class="item" href="{{ route('master.scholarship.index') }}">
         <i class="fa-solid fa-graduation-cap" id="side-icon"></i>
@@ -156,29 +153,17 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-<<<<<<< HEAD
-
-=======
->>>>>>> 4f213b2efc7d7bfff2c7b33a023170eeb35895ab
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
                 <li>
                   <!-- <a class="item" href="student.html"> -->
                   <i class="fa-solid fa-user-check"
                 <li><a class="item" href="{{ route('master.student.pending') }}"><i class="fa-solid fa-user-check"
-<<<<<<< HEAD
-
-=======
->>>>>>> 4f213b2efc7d7bfff2c7b33a023170eeb35895ab
             
               <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
       id="side-icon"></i> Inquiry Management</a></li>
       
               <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
-<<<<<<< HEAD
-
-=======
->>>>>>> 4f213b2efc7d7bfff2c7b33a023170eeb35895ab
                       id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"

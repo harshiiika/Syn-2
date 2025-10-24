@@ -338,7 +338,7 @@ public function bulkOnboard(Request $request)
         return response()->json([
             'success' => true,
             'message' => "Successfully onboarded {$onboardedCount} student(s)!",
-            'redirect' => route('student.html') // Add redirect URL
+            'redirect' => route('student.pendingfees.pending') 
         ]);
 
     } catch (\Exception $e) {

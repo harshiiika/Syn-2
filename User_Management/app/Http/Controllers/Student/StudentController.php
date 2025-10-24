@@ -14,24 +14,25 @@ class StudentController extends Controller
      * Display pending students (newly converted from inquiry)
      */
    // Show pending fees students
-// public function index()
-// {
-//     try {
-//         $students = Student::all(); // Get ALL students first to test
+public function index()
+{
+      try {
+            // Get students with pending status
+            $students = Student::getPendingStudents();
+            
+            \Log::info('Fetching pending students:', [
+                'count' => $students->count()
+            ]);
         
-//         \Log::info('Fetching students for pending page:', [
-//             'count' => $students->count()
-//         ]);
-        
-//         return view('student.html', [
-//             'students' => $students,
-//             'totalCount' => $students->count(),
-//         ]);
-//     } catch (\Exception $e) {
-//         \Log::error('Error loading students: ' . $e->getMessage());
-//         return redirect()->back()->with('error', 'Failed to load students');
-//     }
-// }
+           return view('student.student.pending', [
+                'students' => $students,
+                'totalCount' => $students->count(),
+            ]);
+    } catch (\Exception $e) {
+            \Log::error('Error loading students: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load students');
+        }
+}
 
 // Show fully paid (onboarded) students
 public function activeStudents()
@@ -48,7 +49,7 @@ public function activeStudents()
         try {
             $students = Student::getPendingFeesStudents();
             
-            return view('student.html_fees', [
+            return view('student.pendingfees.pending', [
                 'students' => $students,
                 'totalCount' => $students->count(),
             ]);
@@ -210,7 +211,7 @@ public function activeStudents()
                 ], 201);
             }
 
-            return redirect()->route('student.html')->with('success', 'Student added successfully');
+            return redirect()->route("student.pendingfees.pending")->with('success', 'Student added successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -261,7 +262,7 @@ public function activeStudents()
                 ]);
             }
 
-            return redirect()->route('student.html')->with('success', 'Student updated successfully');
+            return redirect()->route('student.pendingfees.pending')->with('success', 'Student updated successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->ajax()) {
                 return response()->json([

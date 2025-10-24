@@ -414,18 +414,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </span>
               </td>
               <td>
-<<<<<<< HEAD
                 <div class="dropdown">
                   
                     <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
                       data-bs-toggle="dropdown" aria-expanded="false">
-=======
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
-            type="button" 
-            id="actionMenuButton" 
-            data-bs-toggle="dropdown" 
-            aria-expanded="false">
->>>>>>> origin
       <i class="fas fa-ellipsis-v"></i>
     </button>
                   <ul class="dropdown-menu">
