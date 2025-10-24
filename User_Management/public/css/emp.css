@@ -552,3 +552,14 @@ height: 30px;
     cursor: pointer;
     
 }
+
+#doneBtn{
+    height: 50px;
+    width: 90px;
+    background-color: #ff6200;
+    color: #fff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

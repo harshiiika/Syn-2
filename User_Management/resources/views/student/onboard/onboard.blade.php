@@ -77,7 +77,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pending Fees Students</title>
+  <title>Onboarding Students</title>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
     <!-- Custom CSS -->
@@ -140,7 +140,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/user management/emp/emp.html "> <i class="fa-solid fa-user"
+                <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
                       id="side-icon"></i> Employee</a></li>
                 <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
                       id="side-icon"></i> Batches Assignment</a></li>
@@ -163,12 +163,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
-                <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
+                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
 <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('master.other_fees.index') }}
+"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
@@ -214,10 +215,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
-                <li><a class="item" href="student.html">
+                <li><a class="item" href="{{ route('student.student.pending') }}">
     <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
 </a></li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
@@ -317,7 +318,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </li>
                 <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
                     Series</a></li>
-                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
                     History</a></li>
                 <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
                       id="side-icon"></i>Onboard History</a></li>
@@ -332,9 +333,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <div class="top-text">
         </div>
             <div class="btns">
-               <a href="{{ route('student.html') }}">
-                <button type="button" class="pendingbtn">Pending Inquiries</button></a>
-              <a class="item" href="{{ route('student.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
+               <a href="{{ route('student.student.pending') }}"><button type="button" class="pendingbtn">Pending Inquiries</button></a>
+              <a class="item" href="{{ route('student.onboard.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
             </div>
 
       </div>
@@ -381,16 +381,16 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </tbody>
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-      @foreach($onboards as $index => $onboard)
+      @foreach($partiallyPaid as $index => $student)
 <tr>
    <!-- Serial number (index + 1) -->
   <td>{{ $index + 1 }}</td>
-  <td>{{ $onboard->name }}</td>
-  <td>{{ $onboard->father }}</td>
-  <td>{{ $onboard->mobileNumber ?? '—' }}</td>
-<td>{{ $onboard->courseName ?? '—' }}</td>
-<td>{{ $onboard->deliveryMode ?? '—' }}</td>
-<td>{{ $onboard->courseContent ?? '—' }}</td>
+  <td>{{ $student->name }}</td>
+  <td>{{ $student->father }}</td>
+  <td>{{ $student->mobileNumber ?? '—' }}</td>
+<td>{{ $student->courseName ?? '—' }}</td>
+<td>{{ $student->deliveryMode ?? '—' }}</td>
+<td>{{ $student->courseContent ?? '—' }}</td>
   <td>
     <div class="dropdown">
       <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
@@ -399,9 +399,28 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </button>
       <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
         <li>
-         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $onboard->_id }}">
+           <a href="{{ route('student.onboard.edit', $student->_id) }}">
+<button class="dropdown-item">
             Edit Details
-          </button>
+          </button></a>
+          <li>
+           <!-- <a href="{{ route('student.onboard.view', $student->_id) }}"> -->
+<button class="dropdown-item">
+            View Details
+          </button></a>
+        </li>
+        <li>
+           <!-- <a href="{{ route('student.onboard.transfer', $student->_id) }}"> -->
+<button class="dropdown-item">
+            Transfer Student
+          </button></a>
+        </li>
+        <li>
+           <!-- <a href="{{ route('student.onboard.edit', $student->_id) }}"> -->
+<button class="dropdown-item">
+            History
+          </button></a>
+        </li>
         </li>
       </ul>
     </div>

@@ -594,108 +594,6 @@
                 <p>synthesisbikaner@gmail.com</p>
             </div>
 
-<<<<<<< HEAD
-             <div class="accordion accordion-flush" id="accordionFlushExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management </button>
-          </h2>
-          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user"
-                      id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
-                      id="side-icon"></i> Batches
-                    Assignment</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i> Master </button>
-          </h2>
-          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
-                      id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i
-                      class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
-                    Batches</a></li>
-                <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
-                      id="side-icon"></i> Scholarship</a>
-                </li>
-                <li><a class="item" href="{{ route('fees.index') }}">
-<i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
-                      id="side-icon"></i> Other Fees Master</a>
-                </li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
-                      id="side-icon"></i> Branch
-                    Management</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-            </button>
-          </h2>
-          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
-                      id="side-icon"></i> Session</a></li>
-                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
-                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i> Student Migrate</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-
-            </button>
-          </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry
-                    Management</a></li>
-                <li>
-                  <!-- <a class="item" href="student.html"> -->
-  <i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Student Onboard</a>
-                </li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Pending Fees
-                    Students</a></li>
-                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Students</a></li>
-              </ul>
-=======
             <div class="accordion accordion-flush" id="accordionFlushExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
@@ -848,7 +746,6 @@
                         </div>
                     </div>
                 </div>
->>>>>>> a2455f3f8f54ef98ed5f53e0bfaf4abb44d89f5f
             </div>
         </div>
 
@@ -1116,80 +1013,6 @@
         const ENDPOINT = '/inquiries';
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
         
-<<<<<<< HEAD
-        setTimeout(() => {
-            showUploadToast('success', 'File uploaded successfully!');
-        }, 1000);
-    }
-});    
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Bulk onboard button
-    document.querySelector('.onboard')?.addEventListener('click', function() {
-        const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
-        const inquiryIds = Array.from(checkedBoxes).map(cb => cb.value);
-        
-        if (inquiryIds.length === 0) {
-            showToast('Please select at least one student');
-            return;
-        }
-        
-        // Show confirmation modal
-        if (confirm(`Onboard ${inquiryIds.length} student(s)?`)) {
-            bulkOnboard(inquiryIds);
-        }
-    });
-    
-    // Individual onboard from dropdown
-    document.querySelectorAll('.dropdown-item[href="#"]').forEach(item => {
-        if (item.textContent.includes('Onboard')) {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                const row = this.closest('tr');
-                const inquiryId = row.querySelector('input[type="checkbox"]').value;
-                bulkOnboard([inquiryId]);
-            });
-        }
-    });
-});
-
-function bulkOnboard(inquiryIds) {
-    fetch('{{ route("inquiries.bulkOnboard") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ inquiry_ids: inquiryIds })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showToast(data.message, 'success');
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showToast(data.message || 'Error onboarding students', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('Failed to onboard students', 'error');
-    });
-}
-
-function showToast(message, type = 'error') {
-    const toast = document.getElementById('onboardToast');
-    const toastBody = document.getElementById('onboardToastBody');
-    
-    toastBody.innerHTML = `
-        <i class="fa-${type === 'success' ? 'check' : 'times'}-circle"></i>
-        <span>${message}</span>
-    `;
-    
-    const bsToast = new bootstrap.Toast(toast);
-    bsToast.show();
-}
-=======
         let state = { page: 1, per_page: 10, search: '' };
         const elements = {
             tableBody: document.getElementById('tableBody'),
@@ -1226,7 +1049,7 @@ function showToast(message, type = 'error') {
 
         async function loadData() {
             try {
-                const url = `${ENDPOINT}/data?page=${state.page}&per_page=${state.per_page}&search=${encodeURIComponent(state.search)}`;
+                const url = ${ENDPOINT}/data?page=${state.page}&per_page=${state.per_page}&search=${encodeURIComponent(state.search)};
                 console.log('Loading data from:', url);
                 
                 const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -1318,13 +1141,13 @@ function showToast(message, type = 'error') {
         function updateShowingInfo(json) {
             const from = json.data.length ? (json.current_page - 1) * json.per_page + 1 : 0;
             const to = json.data.length ? (json.current_page - 1) * json.per_page + json.data.length : 0;
-            elements.showingInfo.textContent = `Showing ${from} to ${to} of ${json.total || 0} entries`;
+            elements.showingInfo.textContent = Showing ${from} to ${to} of ${json.total || 0} entries;
         }
 
         window.viewInquiry = async function(id) {
             try {
                 console.log('Viewing inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
+                const response = await fetch(${ENDPOINT}/${id}, { headers: { 'Accept': 'application/json' } });
                 const json = await response.json();
                 if (!json.success) throw new Error(json.message);
                 
@@ -1392,7 +1215,7 @@ function showToast(message, type = 'error') {
         window.editInquiry = async function(id) {
             try {
                 console.log('Editing inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
+                const response = await fetch(${ENDPOINT}/${id}, { headers: { 'Accept': 'application/json' } });
                 const json = await response.json();
                 if (!json.success) throw new Error(json.message);
                 
@@ -1405,7 +1228,7 @@ function showToast(message, type = 'error') {
                 document.getElementById('student_contact').value = item.student_contact || '';
                 
                 const categoryValue = item.category || 'General';
-                const categoryInput = document.querySelector(`input[name="category"][value="${categoryValue}"]`);
+                const categoryInput = document.querySelector(input[name="category"][value="${categoryValue}"]);
                 if (categoryInput) categoryInput.checked = true;
                 
                 document.getElementById('state').value = item.state || '';
@@ -1417,15 +1240,15 @@ function showToast(message, type = 'error') {
                 document.getElementById('course_content').value = item.course_content || 'Class Room Course';
                 
                 const economicValue = item.ews || 'No';
-                const economicInput = document.querySelector(`input[name="economic_weaker"][value="${economicValue}"]`);
+                const economicInput = document.querySelector(input[name="economic_weaker"][value="${economicValue}"]);
                 if (economicInput) economicInput.checked = true;
                 
                 const armyValue = item.defense || 'No';
-                const armyInput = document.querySelector(`input[name="army_background"][value="${armyValue}"]`);
+                const armyInput = document.querySelector(input[name="army_background"][value="${armyValue}"]);
                 if (armyInput) armyInput.checked = true;
                 
                 const speciallyValue = item.specially_abled || 'No';
-                const speciallyInput = document.querySelector(`input[name="specially_abled"][value="${speciallyValue}"]`);
+                const speciallyInput = document.querySelector(input[name="specially_abled"][value="${speciallyValue}"]);
                 if (speciallyInput) speciallyInput.checked = true;
                 
                 document.getElementById('inquiryModalLabel').textContent = 'Edit Inquiry';
@@ -1441,7 +1264,7 @@ function showToast(message, type = 'error') {
             
             try {
                 console.log('Deleting inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, {
+                const response = await fetch(${ENDPOINT}/${id}, {
                     method: 'DELETE',
                     headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
                 });
@@ -1484,7 +1307,7 @@ function showToast(message, type = 'error') {
             }
 
             try {
-                const url = id ? `${ENDPOINT}/${id}` : ENDPOINT;
+                const url = id ? ${ENDPOINT}/${id} : ENDPOINT;
                 const method = id ? 'PUT' : 'POST';
                 
                 console.log('Saving inquiry:', method, url, payload);
@@ -1550,7 +1373,7 @@ function showToast(message, type = 'error') {
             formData.append('file', file);
 
             try {
-                const response = await fetch(`${ENDPOINT}/upload`, {
+                const response = await fetch(${ENDPOINT}/upload, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
@@ -1582,7 +1405,6 @@ function showToast(message, type = 'error') {
         console.log('Page loaded, loading data...');
         loadData();
     });
->>>>>>> a2455f3f8f54ef98ed5f53e0bfaf4abb44d89f5f
 </script>
 
 </body>

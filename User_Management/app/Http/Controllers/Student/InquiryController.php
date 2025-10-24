@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
+
 class InquiryController extends Controller
 {
     /**
@@ -22,66 +23,69 @@ class InquiryController extends Controller
      * Return paginated data for AJAX requests
      */
     public function data(Request $request)
-    {
-        try {
-            $query = Inquiry::query();
+{
+    try {
+        $query = Inquiry::query();
+        
+        // ⭐ Filter out onboarded inquiries - only show active inquiries
+        $query->whereNotIn('status', ['onboarded', 'converted']);
 
-            // Search functionality
-            if ($request->has('search') && $request->search) {
-                $search = $request->search;
-                $query->where(function($q) use ($search) {
-                    $q->where('student_name', 'regex', "/$search/i")
-                      ->orWhere('father_name', 'regex', "/$search/i")
-                      ->orWhere('father_contact', 'regex', "/$search/i")
-                      ->orWhere('course_name', 'regex', "/$search/i");
-                });
-            }
-
-            $perPage = $request->get('per_page', 10);
-            $page = $request->get('page', 1);
-            
-            $total = $query->count();
-            $inquiries = $query->orderBy('created_at', 'desc')
-                               ->skip(($page - 1) * $perPage)
-                               ->take($perPage)
-                               ->get();
-
-            // Transform MongoDB _id to string for JavaScript
-            $inquiries = $inquiries->map(function($inquiry) {
-                $inquiry->_id = (string) $inquiry->_id;
-                return $inquiry;
+        // Search functionality
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('student_name', 'regex', "/$search/i")
+                  ->orWhere('father_name', 'regex', "/$search/i")
+                  ->orWhere('father_contact', 'regex', "/$search/i")
+                  ->orWhere('course_name', 'regex', "/$search/i");
             });
-
-            Log::info('Data method - Returning inquiries', [
-                'count' => $inquiries->count(),
-                'total' => $total,
-                'page' => $page
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'data' => $inquiries,
-                'current_page' => (int)$page,
-                'last_page' => (int)ceil($total / $perPage),
-                'per_page' => (int)$perPage,
-                'total' => $total,
-            ], 200);
-
-        } catch (\Exception $e) {
-            Log::error('Inquiry Data Error: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Error loading inquiries: ' . $e->getMessage(),
-                'data' => [],
-                'current_page' => 1,
-                'last_page' => 1,
-                'per_page' => 10,
-                'total' => 0,
-            ], 500);
         }
+
+        $perPage = $request->get('per_page', 10);
+        $page = $request->get('page', 1);
+        
+        $total = $query->count();
+        $inquiries = $query->orderBy('created_at', 'desc')
+                           ->skip(($page - 1) * $perPage)
+                           ->take($perPage)
+                           ->get();
+
+        // Transform MongoDB _id to string for JavaScript
+        $inquiries = $inquiries->map(function($inquiry) {
+            $inquiry->_id = (string) $inquiry->_id;
+            return $inquiry;
+        });
+
+        Log::info('Data method - Returning inquiries', [
+            'count' => $inquiries->count(),
+            'total' => $total,
+            'page' => $page
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $inquiries,
+            'current_page' => (int)$page,
+            'last_page' => (int)ceil($total / $perPage),
+            'per_page' => (int)$perPage,
+            'total' => $total,
+        ], 200);
+
+    } catch (\Exception $e) {
+        Log::error('Inquiry Data Error: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Error loading inquiries: ' . $e->getMessage(),
+            'data' => [],
+            'current_page' => 1,
+            'last_page' => 1,
+            'per_page' => 10,
+            'total' => 0,
+        ], 500);
     }
+}
 
     /**
      * Show single inquiry
@@ -321,7 +325,7 @@ public function bulkOnboard(Request $request)
             // Log what we're trying to create
             \Log::info('Creating student:', $studentData);
 
-            $student = \App\Models\Master\Student::create($studentData);
+            $student = \App\Models\Student\Student::create($studentData);
 
             // Log the created student
             \Log::info('Student created:', ['id' => $student->_id]);
@@ -331,11 +335,11 @@ public function bulkOnboard(Request $request)
             $onboardedCount++;
         }
 
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => "Successfully onboarded {$onboardedCount} student(s)!",
-        //     'redirect' => route('student.html') // Add redirect URL
-        // ]);
+        return response()->json([
+            'success' => true,
+            'message' => "Successfully onboarded {$onboardedCount} student(s)!",
+            'redirect' => route('student.html') // Add redirect URL
+        ]);
 
     } catch (\Exception $e) {
         \Log::error('Bulk onboard error: ' . $e->getMessage());
@@ -344,6 +348,104 @@ public function bulkOnboard(Request $request)
         return response()->json([
             'success' => false,
             'message' => 'Failed to onboard students: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+ /**
+  * Show onboard form for an inquiry
+  */
+public function showOnboardForm($inquiryId)
+{
+    try {
+        $inquiry = Inquiry::findOrFail($inquiryId);
+        
+        // Get dropdown data
+        $courses = \App\Models\Master\Courses::all(); // Adjust model name if different
+        $branches = ['Bikaner']; // Or get from database
+        $deliveryModes = ['Offline', 'Online', 'Hybrid'];
+        $courseContents = ['Class Room Course', 'Test Series Only'];
+        
+        return view('student.inquiry.onboard', compact(
+            'inquiry', 
+            'courses', 
+            'branches', 
+            'deliveryModes', 
+            'courseContents'
+        ));
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Inquiry not found');
+    }
+}
+
+/**
+ * Process onboarding (convert inquiry to student)
+ */
+public function processOnboard(Request $request, $inquiryId)
+{
+    try {
+        $inquiry = Inquiry::findOrFail($inquiryId);
+        
+        // Check if already onboarded
+        if ($inquiry->status === 'onboarded' || $inquiry->status === 'converted') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This inquiry has already been onboarded'
+            ], 400);
+        }
+
+        // Create student record that will appear on BOTH pages
+        $student = \App\Models\Student\Student::create([
+            'name' => $inquiry->student_name,
+            'father' => $inquiry->father_name,
+            'mobileNumber' => $inquiry->father_contact,
+            'fatherWhatsapp' => $inquiry->father_whatsapp ?? null,
+            'alternateNumber' => $inquiry->father_whatsapp ?? null,
+            'studentContact' => $inquiry->student_contact ?? null,
+            'email' => strtolower(str_replace(' ', '', $inquiry->student_name)) . '@temp.com',
+            'courseName' => $inquiry->course_name ?? 'Not Assigned',
+            'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
+            'courseContent' => $inquiry->course_content ?? 'Class Room Course',
+            'branch' => $inquiry->branch ?? 'Main Branch',
+            'category' => $inquiry->category ?? 'General',
+            'state' => $inquiry->state ?? null,
+            'city' => $inquiry->city ?? null,
+            'address' => $inquiry->address ?? null,
+            'economicWeakerSection' => $inquiry->ews ?? 'No',
+            'armyPoliceBackground' => $inquiry->defense ?? 'No',
+            'speciallyAbled' => $inquiry->specially_abled ?? 'No',
+            // Fee related fields - IMPORTANT for showing on both pages
+            'total_fees' => 0,
+            'paid_fees' => 0,
+            'remaining_fees' => 0,
+            'status' => \App\Models\Student\Student::STATUS_PENDING_FEES,
+            'fee_status' => 'pending',
+            'admission_date' => now(),
+            'session' => session('current_session', '2025-2026'),
+        ]);
+
+        // Update inquiry status to prevent duplicate onboarding
+        $inquiry->update(['status' => 'onboarded']);
+
+        \Log::info('Student onboarded successfully', [
+            'inquiry_id' => $inquiryId,
+            'student_id' => $student->_id,
+            'student_name' => $student->name
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Student onboarded successfully!',
+            'student_id' => $student->_id
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Onboard error: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to onboard student: ' . $e->getMessage()
         ], 500);
     }
 }

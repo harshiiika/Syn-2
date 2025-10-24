@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Master;
+namespace App\Models\Student;
 
 use MongoDB\Laravel\Eloquent\Model;
 
@@ -151,34 +151,34 @@ class Student extends Model
     }
 
 
-/**
- * Get only pending students (newly added, any fee status)
- */
-public static function getPendingStudents()
-{
-    // Get ALL students regardless of fee status
-    return self::orderBy('created_at', 'desc')->get();
-}
+  /**
+     * Get students for "Pending Inquiries" tab
+     */
+    public static function getPendingStudents()
+    {
+        return self::where('status', self::STATUS_PENDING_FEES)
+                   ->orderBy('created_at', 'desc')
+                   ->get();
+    }
 
-/**
- * Get only students with pending fees
- */
-public static function getPendingFeesStudents()
-{
-    // Students with any remaining fees
-    return self::where('remaining_fees', '>', 0)
-               ->orderBy('created_at', 'desc')
-               ->get();
-}
+    /**
+     * Get students for "Pending Fees Students" page
+     */
+    public static function getPendingFeesStudents()
+    {
+        return self::where('status', self::STATUS_PENDING_FEES)
+                   ->orderBy('created_at', 'desc')
+                   ->get();
+    }
 
-/**
- * Get only active students (fees fully paid)
- */
-public static function getActiveStudents()
-{
-    // Students with no remaining fees
-    return self::where('remaining_fees', '<=', 0)
-               ->orderBy('created_at', 'desc')
-               ->get();
-}
+    /**
+     * Get active students (fully paid)
+     */
+    public static function getActiveStudents()
+    {
+        return self::where('status', self::STATUS_ACTIVE)
+                   ->where('remaining_fees', '<=', 0)
+                   ->orderBy('created_at', 'desc')
+                   ->get();
+    }
 }
