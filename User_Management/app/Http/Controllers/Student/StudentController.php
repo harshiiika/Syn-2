@@ -7,37 +7,38 @@ use App\Models\Student\Student;
 use App\Models\Student\Inquiry;
 use Illuminate\Http\Request;
 
+
 class StudentController extends Controller
 {
     /**
-     * Display pending students
+     * Display pending students (newly converted from inquiry)
      */
-public function index()
-{
-    try {
-        // Get students with pending status
-        $students = Student::getPendingStudents();
+   // Show pending fees students
+// public function index()
+// {
+//     try {
+//         $students = Student::all(); // Get ALL students first to test
         
-        \Log::info('Fetching pending students:', [
-            'count' => $students->count()
-        ]);
+//         \Log::info('Fetching students for pending page:', [
+//             'count' => $students->count()
+//         ]);
         
-        return view('student.student.pending', [
-            'students' => $students,
-            'totalCount' => $students->count(),
-        ]);
-    } catch (\Exception $e) {
-        \Log::error('Error loading students: ' . $e->getMessage());
-        return redirect()->back()->with('error', 'Failed to load students');
-    }
-}
+//         return view('student.html', [
+//             'students' => $students,
+//             'totalCount' => $students->count(),
+//         ]);
+//     } catch (\Exception $e) {
+//         \Log::error('Error loading students: ' . $e->getMessage());
+//         return redirect()->back()->with('error', 'Failed to load students');
+//     }
+// }
 
 // Show fully paid (onboarded) students
-// public function activeStudents()
-// {
-//     $students = Student::getActiveStudents();
-//     return view('master.student.onboard', compact('students'));
-// }
+public function activeStudents()
+{
+    $students = Student::getActiveStudents();
+    return view('master.student.onboard', compact('students'));
+}
 
     /**
      * Display pending fees students
@@ -47,7 +48,7 @@ public function index()
         try {
             $students = Student::getPendingFeesStudents();
             
-            return view('student.student.pending_fees', [
+            return view('student.html_fees', [
                 'students' => $students,
                 'totalCount' => $students->count(),
             ]);
@@ -209,7 +210,7 @@ public function index()
                 ], 201);
             }
 
-            return redirect()->route('student.student.pending')->with('success', 'Student added successfully');
+            return redirect()->route('student.html')->with('success', 'Student added successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -260,7 +261,7 @@ public function index()
                 ]);
             }
 
-            return redirect()->route('student.student.pending')->with('success', 'Student updated successfully');
+            return redirect()->route('student.html')->with('success', 'Student updated successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -338,12 +339,5 @@ public function index()
             return redirect()->back()->with('error', 'Failed to update fees');
         }
     }
-
-    public function edit($id)
-{
-    $student = Student::findOrFail($id); // or however you're fetching the student
-    return view('student.student.edit', compact('student'));
-}
-
 
 }
