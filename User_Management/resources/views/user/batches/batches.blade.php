@@ -212,7 +212,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry
                     Management</a></li>
+<<<<<<< HEAD
                 <li><a class="item" href="{{ route('student.student.pending') }}">
+=======
+                <li><a class="item" href="student.html">
+>>>>>>> origin
                     <i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
@@ -396,10 +400,18 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                   </span>
                 </td>
                 <td>
+<<<<<<< HEAD
                   <div class="dropdown">
                     
                     <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
                       data-bs-toggle="dropdown" aria-expanded="false">
+=======
+                      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+            type="button" 
+            id="actionMenuButton" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
+>>>>>>> origin
       <i class="fas fa-ellipsis-v"></i>
     </button>
                     <ul class="dropdown-menu" aria-labelledby="actionMenuButton">

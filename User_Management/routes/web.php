@@ -58,18 +58,14 @@ Route::get('/dashboard', function () {
  
 // Inquiry Management Routes
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
-    Route::get('/', [InquiryController::class, 'index'])->name('index');
-    Route::get('/data', [InquiryController::class, 'data'])->name('data');
-    Route::get('/{id}', [InquiryController::class, 'show'])->name('show');
-    Route::post('/', [InquiryController::class, 'store'])->name('store');
-    Route::put('/{id}', [InquiryController::class, 'update'])->name('update');
-    Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
-    Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
-    Route::post('/{id}/onboard', [InquiryController::class, 'processOnboard'])->name('onboard.process');
-Route::get('/{id}/edit', [PendingFeesController::class, 'edit'])->name('student.pendingfees.edit');
- 
+    Route::get('/', [App\Http\Controllers\Student\InquiryController::class, 'index'])->name('index');
+    Route::get('/data', [App\Http\Controllers\Student\InquiryController::class, 'data'])->name('data');
+    Route::get('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'show'])->name('show');
+    Route::post('/', [App\Http\Controllers\Student\InquiryController::class, 'store'])->name('store');
+    Route::put('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'update'])->name('update');
+    Route::delete('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'destroy'])->name('destroy');
+    Route::post('/upload', [App\Http\Controllers\Student\InquiryController::class, 'upload'])->name('upload');
 });
- 
  
 Route::get('/students/pending', [StudentController::class, 'index'])
     ->name('student.student.pending');
@@ -348,6 +344,3 @@ Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::
 // Update the existing onboard route to use the controller
 Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
     ->name('student.onboard');
- 
- 
- 

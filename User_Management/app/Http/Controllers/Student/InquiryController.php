@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
+
 class InquiryController extends Controller
 {
     /**
@@ -337,7 +338,7 @@ public function bulkOnboard(Request $request)
         return response()->json([
             'success' => true,
             'message' => "Successfully onboarded {$onboardedCount} student(s)!",
-            'redirect' => route('student.student.pending') // Add redirect URL
+            'redirect' => route('student.html') // Add redirect URL
         ]);
 
     } catch (\Exception $e) {
@@ -351,35 +352,31 @@ public function bulkOnboard(Request $request)
     }
 }
 
-// /**
-//  * Show onboard form for an inquiry
-//  */
-// public function showOnboardForm($inquiryId)
-// {
-//     try {
-//         $inquiry = Inquiry::findOrFail($inquiryId);
+ /**
+  * Show onboard form for an inquiry
+  */
+public function showOnboardForm($inquiryId)
+{
+    try {
+        $inquiry = Inquiry::findOrFail($inquiryId);
         
-//         // Get dropdown data
-//         $courses = \App\Models\Master\Courses::all(); // Adjust model name if different
-//         $branches = ['Bikaner']; // Or get from database
-//         $deliveryModes = ['Offline', 'Online', 'Hybrid'];
-//         $courseContents = ['Class Room Course', 'Test Series Only'];
+        // Get dropdown data
+        $courses = \App\Models\Master\Courses::all(); // Adjust model name if different
+        $branches = ['Bikaner']; // Or get from database
+        $deliveryModes = ['Offline', 'Online', 'Hybrid'];
+        $courseContents = ['Class Room Course', 'Test Series Only'];
         
-//         return view('student.inquiry.onboard', compact(
-//             'inquiry', 
-//             'courses', 
-//             'branches', 
-//             'deliveryModes', 
-//             'courseContents'
-//         ));
-//     } catch (\Exception $e) {
-//         return redirect()->back()->with('error', 'Inquiry not found');
-//     }
-// }
-
-/**
- * Process onboarding (convert inquiry to student)
- */
+        return view('student.inquiry.onboard', compact(
+            'inquiry', 
+            'courses', 
+            'branches', 
+            'deliveryModes', 
+            'courseContents'
+        ));
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Inquiry not found');
+    }
+}
 
 /**
  * Process onboarding (convert inquiry to student)

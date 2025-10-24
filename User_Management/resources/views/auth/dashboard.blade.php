@@ -86,14 +86,20 @@
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
-                <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
-                      id="side-icon"></i> Scholarship</a>
-                </li>
-                <li><a class="item" href="{{ route('fees.index') }}">
-<i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
+                            <li>
+    <a class="item" href="{{ route('master.scholarship.index') }}">
+        <i class="fa-solid fa-graduation-cap" id="side-icon"></i>
+        Scholarship
+    </a>
+</li>
+
+
+             <li>
+  <a class="item" href="{{ route('fees.master.index') }}">
+    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master
+  </a>
+</li>
+     <li><a class="item active" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
@@ -138,11 +144,17 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry
-                    Management</a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}">
-  <i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry Management </a></li>
+                <li>
+                  <!-- <a class="item" href="student.html"> -->
+                  <i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('master.student.pending') }}"><i class="fa-solid fa-user-check"
+            
+              <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+      id="side-icon"></i> Inquiry Management</a></li>
+      
+              <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
