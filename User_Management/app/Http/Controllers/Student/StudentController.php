@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\Student;
+use App\Models\Student\Student;
 use App\Models\Student\Inquiry;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
     /**
-     * Display pending students (newly converted from inquiry)
+     * Display pending students
      */
-   // Show pending fees students
 public function index()
 {
     try {
-        $students = Student::all(); // Get ALL students first to test
+        // Get students with pending status
+        $students = Student::getPendingStudents();
         
-        \Log::info('Fetching students for pending page:', [
+        \Log::info('Fetching pending students:', [
             'count' => $students->count()
         ]);
         
-        return view('master.student.pending', [
+        return view('student.student.pending', [
             'students' => $students,
             'totalCount' => $students->count(),
         ]);
@@ -33,11 +33,11 @@ public function index()
 }
 
 // Show fully paid (onboarded) students
-public function activeStudents()
-{
-    $students = Student::getActiveStudents();
-    return view('master.student.onboard', compact('students'));
-}
+// public function activeStudents()
+// {
+//     $students = Student::getActiveStudents();
+//     return view('master.student.onboard', compact('students'));
+// }
 
     /**
      * Display pending fees students
@@ -47,7 +47,7 @@ public function activeStudents()
         try {
             $students = Student::getPendingFeesStudents();
             
-            return view('master.student.pending_fees', [
+            return view('student.student.pending_fees', [
                 'students' => $students,
                 'totalCount' => $students->count(),
             ]);
@@ -209,7 +209,7 @@ public function activeStudents()
                 ], 201);
             }
 
-            return redirect()->route('master.student.pending')->with('success', 'Student added successfully');
+            return redirect()->route('student.student.pending')->with('success', 'Student added successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -260,7 +260,7 @@ public function activeStudents()
                 ]);
             }
 
-            return redirect()->route('master.student.pending')->with('success', 'Student updated successfully');
+            return redirect()->route('student.student.pending')->with('success', 'Student updated successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -338,5 +338,12 @@ public function activeStudents()
             return redirect()->back()->with('error', 'Failed to update fees');
         }
     }
+
+    public function edit($id)
+{
+    $student = Student::findOrFail($id); // or however you're fetching the student
+    return view('student.student.edit', compact('student'));
+}
+
 
 }

@@ -7,11 +7,16 @@ use App\Http\Controllers\Session\SessionController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Master\CoursesController;
 use App\Http\Controllers\User\BatchesController;
-use App\Http\Controllers\fees\FeesMasterController;
+use App\Http\Controllers\Master\FeesMasterController;
 use App\Http\Controllers\Master\BatchController;
 use App\Http\Controllers\Master\BranchController;
 use App\Http\Controllers\Master\CalendarController;
-use App\Http\Controllers\Master\StudentController;
+use App\Http\Controllers\Student\StudentController;
+use App\Http\Controllers\Master\OtherFeeController;
+use App\Http\Controllers\Master\ScholarshipController;
+use App\Http\Controllers\Student\PendingFeesController;
+use App\Http\Controllers\Student\OnboardController;
+use App\Http\Controllers\Student\PaymentController;
 
 
 // -------------------------
@@ -48,21 +53,27 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('inquiries')->group(function () { 
-    $idPattern = '([0-9]+|[0-9a-fA-F]{24})';
+// Inquiry Management Routes
+Route::prefix('inquiries')->name('inquiries.')->group(function () {
+    Route::get('/', [InquiryController::class, 'index'])->name('index');
+    Route::get('/data', [InquiryController::class, 'data'])->name('data');
+    Route::get('/{id}', [InquiryController::class, 'show'])->name('show');
+    Route::post('/', [InquiryController::class, 'store'])->name('store');
+    Route::put('/{id}', [InquiryController::class, 'update'])->name('update');
+    Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
+    Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
+    Route::post('/{id}/onboard', [InquiryController::class, 'processOnboard'])->name('onboard.process');
+Route::get('/{id}/edit', [PendingFeesController::class, 'edit'])->name('student.pendingfees.edit');
 
-    Route::get('/',              [InquiryController::class, 'index'])->name('inquiries.index');
-    Route::get('/list',          [InquiryController::class, 'list'])->name('inquiries.list');
-    Route::get('/create',        [InquiryController::class, 'create'])->name('inquiries.create');
-    Route::post('/',             [InquiryController::class, 'store'])->name('inquiries.store');
-    Route::get('/{inquiry}/edit',[InquiryController::class, 'edit'])->where('inquiry', $idPattern)->name('inquiries.edit');
-    Route::put('/{inquiry}',     [InquiryController::class, 'update'])->where('inquiry', $idPattern)->name('inquiries.update');
-    Route::delete('/{inquiry}',  [InquiryController::class, 'destroy'])->where('inquiry', $idPattern)->name('inquiries.destroy');
-    Route::get('/{inquiry}',     [InquiryController::class, 'show'])->where('inquiry', $idPattern)->name('inquiries.show');
-    Route::post('/{inquiry}/status', [InquiryController::class, 'setStatus'])->where('inquiry', $idPattern)->name('inquiries.setStatus');
-    Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])
-        ->name('inquiries.bulkOnboard');
 });
+
+
+Route::get('/students/pending', [StudentController::class, 'index'])
+    ->name('student.student.pending');
+
+Route::get('/student/pendingfees', [PendingFeesController::class, 'index'])
+    ->name('student.pendingfees.pending');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -134,12 +145,34 @@ Route::prefix('master/batch')->name('batches.')->group(function () {
 
 //feesmaster//
 
-Route::prefix('fees')->name('fees.')->group(function () {
+// Fees Master Routes
+Route::prefix('fees-master')->name('fees.')->group(function () {
+    // List all fees
     Route::get('/', [FeesMasterController::class, 'index'])->name('index');
+    
+    // Create new fee
     Route::post('/', [FeesMasterController::class, 'store'])->name('store');
-    Route::get('/{fee}', [FeesMasterController::class, 'show'])->name('show');
-    Route::patch('/{fee}', [FeesMasterController::class, 'update'])->name('update');
-    Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
+    
+    // Show single fee details (for View modal)
+    Route::get('/{id}', [FeesMasterController::class, 'show'])->name('show');
+    
+    // Update fee
+    Route::patch('/{id}', [FeesMasterController::class, 'update'])->name('update');
+    
+    // Toggle status (Activate/Deactivate)
+    Route::patch('/{fee}/toggle', [FeesMasterController::class, 'toggle'])->name('toggle');
+});
+
+
+// Other Fees Routes
+Route::prefix('master/other_fees')->group(function () {
+    Route::get('/', [OtherFeeController::class, 'index'])->name('master.other_fees.index');
+    Route::get('/data', [OtherFeeController::class, 'index']);
+    Route::get('/{id}', [OtherFeeController::class, 'show']);
+    Route::post('/', [OtherFeeController::class, 'store']);
+    Route::put('/{id}', [OtherFeeController::class, 'update']);
+    Route::post('/{id}/toggle', [OtherFeeController::class, 'toggle']);
+    Route::delete('/{id}', [OtherFeeController::class, 'destroy']);
 });
 
 //branch Routes
@@ -180,9 +213,9 @@ Route::prefix('calendar')->name('calendar.')->group(function () {
 });
  
 
-
+//student onboard-pending inquiries routes
 Route::get('/students/pending', [StudentController::class, 'index'])
-    ->name('master.student.pending');
+    ->name('student.student.pending');
 
 // Active/Onboarded Students (fully paid students)
 Route::get('/students/onboard', [StudentController::class, 'activeStudents'])
@@ -212,6 +245,88 @@ Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees
 Route::post('/students/convert/{inquiryId}', [StudentController::class, 'convertFromInquiry'])
     ->name('students.convertFromInquiry');
 
-// Additional route for active students (alternative naming)
+// Additional route for active students
 Route::get('/students/active', [StudentController::class, 'activeStudents'])
     ->name('students.active');
+
+
+
+// Scholarship Routes 
+Route::prefix('master')->name('master.')->group(function () {
+    // List scholarships (GET) - returns JSON or view
+    Route::get('/scholarship', [ScholarshipController::class, 'index'])->name('scholarship.index');
+    
+    // Alternative endpoint for getting paginated data
+    Route::get('/scholarship/data', [ScholarshipController::class, 'index'])->name('scholarship.data');
+    
+    // Create scholarship (POST)
+    Route::post('/scholarship', [ScholarshipController::class, 'store'])->name('scholarship.store');
+    
+    // Show single scholarship (GET)
+    Route::get('/scholarship/{id}', [ScholarshipController::class, 'show'])->name('scholarship.show');
+    
+    // Update scholarship (PUT)
+    Route::put('/scholarship/{id}', [ScholarshipController::class, 'update'])->name('scholarship.update');
+    
+    // Toggle status (PATCH)
+    Route::patch('/scholarship/{id}/toggle-status', [ScholarshipController::class, 'toggleStatus']);
+    // Delete scholarship (DELETE)
+    Route::delete('/scholarship/{id}', [ScholarshipController::class, 'destroy'])->name('scholarship.destroy');
+});
+
+
+//pending fees students routes
+Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Student\PendingFeesController::class, 'index'])->name('pending');
+    Route::get('/{id}/edit', [App\Http\Controllers\Student\PendingFeesController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [App\Http\Controllers\Student\PendingFeesController::class, 'update'])->name('update');
+    Route::get('/{id}', [App\Http\Controllers\Student\PendingFeesController::class, 'show'])->name('view');
+});
+
+Route::get('/student/pending', [PendingFeesController::class, 'index'])->name('student.pendingfees.pending');
+Route::get('/student/pending', [StudentController::class, 'index'])->name('student.student.pending');
+Route::get('/student/edit/{id}', [StudentController::class, 'edit'])->name('student.student.edit');
+
+
+// Payment Routes
+Route::prefix('student/payment')->name('student.payment.')->group(function () {
+    // Show payment page - using 'pay' as the route name
+    Route::get('/{id}/pay', [App\Http\Controllers\Student\PaymentController::class, 'showPaymentPage'])
+        ->name('pay');
+    
+    // Process payment
+    Route::post('/{id}/process', [App\Http\Controllers\Student\PaymentController::class, 'processPayment'])
+        ->name('process');
+    
+    // View payment history
+    Route::get('/{id}/history', [App\Http\Controllers\Student\PaymentController::class, 'viewHistory'])
+        ->name('history');
+});
+
+
+// Onboard Routes
+Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
+    // List onboarded students
+    Route::get('/', [App\Http\Controllers\Student\OnboardController::class, 'index'])
+        ->name('index');
+    
+    // View onboarded student
+    Route::get('/{id}', [App\Http\Controllers\Student\OnboardController::class, 'show'])
+        ->name('show');
+    
+    // Edit onboarded student
+    Route::get('/{id}/edit', [App\Http\Controllers\Student\OnboardController::class, 'edit'])
+        ->name('edit');
+    
+    // Update onboarded student
+    Route::put('/{id}', [App\Http\Controllers\Student\OnboardController::class, 'update'])
+        ->name('update');
+});
+
+// Update the existing onboard route to use the controller
+Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
+    ->name('student.onboard');
+
+// Update the existing onboard route to use the controller
+Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
+    ->name('student.onboard');

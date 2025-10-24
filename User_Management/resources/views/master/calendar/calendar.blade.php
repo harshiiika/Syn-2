@@ -160,7 +160,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card"
                       id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/Master/other fees/other.html"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('master.other_fees.index') }}
+"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="/Master/branch/branch.html"><i class="fa-solid fa-diagram-project"
@@ -210,11 +211,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry
                     Management</a></li>
-                <li><a class="item" href="{{ route('master.student.pending') }}">
+                <li><a class="item" href="{{ route('student.student.pending') }}">
   <i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
@@ -314,7 +315,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </li>
                 <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
                     Series</a></li>
-                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
                     History</a></li>
                 <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
                       id="side-icon"></i>Onboard History</a></li>
