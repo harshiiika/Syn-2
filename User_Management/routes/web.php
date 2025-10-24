@@ -323,7 +323,7 @@ Route::prefix('student/payment')->name('student.payment.')->group(function () {
 
 
 // Onboard Routes
-Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
+Route::prefix('student/onboard')->name('student.onboard.onboard')->group(function () {
     // List onboarded students
     Route::get('/', [App\Http\Controllers\Student\OnboardController::class, 'index'])
         ->name('index');
@@ -347,5 +347,5 @@ Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::
 
 // Update the existing onboard route to use the controller
 Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
-    ->name('student.onboard');
+    ->name('student.onboard.onboard');
 

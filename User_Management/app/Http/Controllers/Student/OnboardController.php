@@ -26,7 +26,7 @@ class OnboardController extends Controller
                 'partially_paid_count' => $partiallyPaid->count()
             ]);
             
-            return view('student.onboard.index', [
+            return view('student.onboard.onboard', [
                 'fullyPaid' => $fullyPaid,
                 'partiallyPaid' => $partiallyPaid
             ]);
