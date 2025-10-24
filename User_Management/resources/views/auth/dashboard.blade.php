@@ -85,6 +85,18 @@
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                <li><a class="item" href="/Master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
+                      id="side-icon"></i> Scholarship</a>
+                </li>
+                <li><a class="item" href="{{ route('fees.index') }}">
+<i class="fa-solid fa-credit-card"
+                      id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="/Master/other fees/other.html"><i class="fa-solid fa-wallet"
+=======
+>>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
                             <li>
     <a class="item" href="{{ route('master.scholarship.index') }}">
         <i class="fa-solid fa-graduation-cap" id="side-icon"></i>
@@ -99,6 +111,10 @@
   </a>
 </li>
      <li><a class="item active" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
+<<<<<<< HEAD
+=======
+>>>>>>> a2455f3f8f54ef98ed5f53e0bfaf4abb44d89f5f
+>>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
@@ -143,11 +159,23 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry Management </a></li>
+                <li><a class="item" href="{{ route('master.student.pending') }}"><i class="fa-solid fa-user-check"
+=======
+>>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
             
               <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
       id="side-icon"></i> Inquiry Management</a></li>
       
               <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+<<<<<<< HEAD
+=======
+>>>>>>> a2455f3f8f54ef98ed5f53e0bfaf4abb44d89f5f
+>>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
                       id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
