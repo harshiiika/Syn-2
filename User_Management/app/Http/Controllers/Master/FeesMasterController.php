@@ -8,17 +8,46 @@ use Illuminate\Http\Request;
 
 class FeesMasterController extends Controller
 {
+    // public function index()
+    // {
+    //     try {
+    //         $fees = FeesMaster::orderBy('created_at', 'desc')->get();
+    //     } catch (\Exception $e) {
+    //         \Log::error('Fees Master Error: ' . $e->getMessage());
+    //         $fees = collect([]);
+    //     }
+        
+    //     // FIXED: Changed from 'fees.index' to 'master.fees_master.index'
+    //     return view('master.fees_master.index', compact('fees'));
+    // }
+
     public function index()
     {
-        try {
-            $fees = FeesMaster::orderBy('created_at', 'desc')->get();
-        } catch (\Exception $e) {
-            \Log::error('Fees Master Error: ' . $e->getMessage());
-            $fees = collect([]);
-        }
+        // IMPORTANT: Use paginate() not get() or all()
+        $fees = FeesMaster::paginate(10);
         
-        // FIXED: Changed from 'fees.index' to 'master.fees_master.index'
         return view('master.fees_master.index', compact('fees'));
+    }
+
+     /**
+     * Toggle the status of a fee (Active/Inactive)
+     */
+    public function toggle($id)
+    {
+        try {
+            $fee = FeesMaster::findOrFail($id);
+            
+            // Toggle the status
+            $fee->status = ($fee->status === 'Active') ? 'Inactive' : 'Active';
+            $fee->save();
+            
+            return redirect()->route('fees.index')
+                ->with('success', 'Fee status updated successfully!');
+                
+        } catch (\Exception $e) {
+            return redirect()->route('fees.index')
+                ->with('error', 'Failed to update fee status: ' . $e->getMessage());
+        }
     }
 
     public function store(Request $request)

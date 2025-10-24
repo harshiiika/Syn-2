@@ -321,8 +321,8 @@
           <tbody>
             @forelse($fees as $index => $fee)
             <tr>
-              <td>{{ $fees->firstItem() + $index }}</td>
-              <td>{{ $fee->course }}</td>
+<td>{{ $index + 1 }}</td>              
+<td>{{ $fee->course }}</td>
               <td>{{ $fee->course_type ?? 'N/A' }}</td>
               <td>{{ $fee->class_name ?? 'N/A' }}</td>
               <td class="{{ $fee->status === 'Active' ? 'text-success' : 'text-danger' }}">{{ $fee->status }}</td>
@@ -386,7 +386,7 @@
       
       <div class="footer">
         <div class="left-footer">
-          <p>Showing {{ $fees->count() }} of {{ $fees->count() }} Enteries</p>
+<p>Showing {{ $fees->firstItem() }} to {{ $fees->lastItem() }} of {{ $fees->total() }} Entries</p>
         </div>
         <div class="right-footer">
           <nav aria-label="Page navigation example" id="bottom">
