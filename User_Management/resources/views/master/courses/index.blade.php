@@ -340,23 +340,34 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
     </div>
 
 <div class="right" id="right">
-  <div class="top">
-    <div class="top-text">
-      <h4>Courses</h4>
-    </div>
+  <div class="top d-flex justify-content-between align-items-center flex-wrap">
+  <div class="top-text">
+    <h4>Courses</h4>
+  </div>
 
-    <button type="button" class="btn btn-primary" id="liveToastBtn" data-bs-toggle="modal"
-      data-bs-target="#createCourseModal">Create Course</button>
+  <div class="d-flex gap-2 align-items-center">
+    <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center" id="liveToastBtn" data-bs-toggle="modal"
+    style="min-width: 140px; height: 38px;" 
+      data-bs-target="#createCourseModal">
+      Create Course
+    </button>
 
-    <div class="toast-container end-0 p-3">
-      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body" id="toast">
-          <i class="fa-regular fa-circle-xmark" style="color: #ff0000;"></i>Cannot create course. Error occurred
-        </div>
+  <button type="button" class="btn btn-success d-flex align-items-center justify-content-center" 
+          style="min-width: 140px; height: 38px;" 
+          data-bs-toggle="modal" data-bs-target="#uploadCourseModal">
+    <i class="fa-solid fa-upload me-1"></i> Upload
+  </button>
+</div>
+
+  <div class="toast-container end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body" id="toast">
+        <i class="fa-regular fa-circle-xmark" style="color: #ff0000;"></i>Cannot create course. Error occurred
       </div>
     </div>
-
   </div>
+</div>
+
   <div class="whole">
     <div class="dd">
       <div class="line">
@@ -483,6 +494,75 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
         {{ $courses->links() }}
       </div>
 
+
+      <!-- UPLOAD MODAL - NEW FEATURE -->
+<div class="modal fade" id="uploadCourseModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #28a745; color: white;">
+        <h5 class="modal-title">Upload</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label fw-bold">Step 1: Download Sample File</label>
+          <p class="text-muted small">Get a pre-formatted Excel file with dummy data to understand the required format.</p>
+          <a href="{{ route('courses.downloadSample') }}" class="btn btn-warning w-100" style= "background-color: rgb(224, 83, 1);">
+            <i class="fa-solid fa-download"></i> Download Sample File
+          </a>
+        </div>
+
+        <hr>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Step 2: Upload Your File</label>
+          <p class="text-muted small">Select the edited Excel file to import courses in bulk.</p>
+          
+          <form id="uploadForm" action="{{ route('courses.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            
+            <div class="mb-3">
+              <input type="file" id="importFile" name="import_file" class="form-control" 
+                accept=".xlsx,.xls,.csv" required>
+              <small class="form-text text-muted d-block mt-2">
+                Supported formats: Excel (.xlsx, .xls) or CSV. Max size: 2MB
+              </small>
+            </div>
+
+            <div id="filePreview" class="alert alert-light d-none" style="border: 1px solid #ddd;">
+              <strong>File Selected:</strong>
+              <div id="previewText"></div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100" id="uploadBtn">
+              <i class="fa-solid fa-upload"></i> Import Courses
+            </button>
+          </form>
+        </div>
+
+        <hr>
+
+        <div class="alert alert-secondary" role="alert">
+          <strong>Format Guide:</strong>
+          <ul class="mb-0 mt-2 small">
+            <li><strong>Course Name:</strong> Full name of the course</li>
+            <li><strong>Course Type:</strong> Pre - Foundation | Pre - Medical | Pre - Engineering</li>
+            <li><strong>Class Name:</strong> e.g., 11th (XI), 12th (XII)</li>
+            <li><strong>Course Code:</strong> Unique code for the course</li>
+            <li><strong>Subjects:</strong> Separate multiple subjects with semicolons (;)</li>
+            <li><strong>Status:</strong> active or inactive</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     <!-- Create Course Modal -->
     <div class="modal fade" id="createCourseModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
@@ -520,12 +600,26 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Subjects</label>
-              <div class="subject-input-wrapper">
-                <input type="text" id="subjectInput" class="form-control" placeholder="Type subject and press Enter">
-                <div id="subjectTags" class="subject-tags mt-2"></div>
-              </div>
-            </div>
+     <label class="form-label">Subjects</label>
+      <div class="subject-input-wrapper position-relative">
+        <input type="text" 
+              id="subjectInput" 
+              class="form-control" 
+              placeholder="Type subject name (auto-suggest enabled)"
+              autocomplete="off">
+        
+        <!-- Autocomplete dropdown -->
+        <div id="subjectSuggestions" 
+            class="list-group position-absolute w-100" 
+            style="z-index: 1050; max-height: 200px; overflow-y: auto; display: none;">
+        </div>
+        
+        <div id="subjectTags" class="subject-tags mt-2"></div>
+        <small class="form-text text-muted">
+          Start typing to see suggestions. Press Enter or click to add.
+        </small>
+      </div>
+    </div>
 
             <div class="mb-3">
               <label class="form-label">Status</label>
@@ -642,12 +736,27 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
                   <input type="text" class="form-control" name="course_code" value="{{ $course->course_code }}" required>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label">Subjects</label>
-                  <div class="subject-input-wrapper">
-                    <input type="text" id="editSubjectInput{{ $courseId }}" class="form-control" placeholder="Type subject and press Enter">
-                    <div id="editSubjectTags{{ $courseId }}" class="subject-tags mt-2" data-subjects='@json($subjects)' data-course-id="{{ $courseId }}"></div>
-                  </div>
-                </div>
+  <label class="form-label">Subjects</label>
+  <div class="subject-input-wrapper position-relative">
+    <input type="text" 
+           id="editSubjectInput{{ $courseId }}" 
+           class="form-control" 
+           placeholder="Type subject name (auto-suggest enabled)"
+           autocomplete="off">
+    
+    <div id="editSubjectSuggestions{{ $courseId }}" 
+         class="list-group position-absolute w-100" 
+         style="z-index: 1050; max-height: 200px; overflow-y: auto; display: none;">
+    </div>
+    
+    <div id="editSubjectTags{{ $courseId }}" 
+         class="subject-tags mt-2" 
+         data-subjects='@json($subjects)' 
+         data-course-id="{{ $courseId }}">
+    </div>
+  </div>
+</div>
+
                 <div class="mb-3">
                   <label class="form-label">Status</label>
                   <select class="form-select" name="status">
@@ -666,6 +775,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
       </div>
     @endforeach
   </div>
+</div>
 </div>
 
 

@@ -1,20 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Student\InquiryController;
 use App\Http\Controllers\Session\SessionController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Master\CoursesController;
 use App\Http\Controllers\User\BatchesController;
-use App\Http\Controllers\fees\FeesMasterController;
 use App\Http\Controllers\Master\BatchController;
 use App\Http\Controllers\Master\BranchController;
 use App\Http\Controllers\Master\CalendarController;
-use App\Http\Controllers\Master\StudentController;
+use App\Http\Controllers\Student\StudentController;
 use App\Http\Controllers\Master\StudentOnboardController;
 
+use App\Http\Controllers\Master\FeesMasterController;
+use App\Http\Controllers\Master\OtherFeeController;
 
+use App\Http\Controllers\Master\ScholarshipController;
 // -------------------------
 // Authentication Routes
 // -------------------------
@@ -29,9 +32,11 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // -------------------------
 // -------------------------
-// Default Route
+
 Route::get('/', function () {
-    return redirect()->route('login'); // always send root to login
+    return Auth::check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
 })->name('home');
 
 // -------------------------
@@ -63,7 +68,21 @@ Route::prefix('inquiries')->group(function () {
     Route::post('/{inquiry}/status', [InquiryController::class, 'setStatus'])->where('inquiry', $idPattern)->name('inquiries.setStatus');
     Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])
         ->name('inquiries.bulkOnboard');
+// Inquiry Management Routes
+Route::prefix('inquiries')->name('inquiries.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Student\InquiryController::class, 'index'])->name('index');
+    Route::get('/data', [App\Http\Controllers\Student\InquiryController::class, 'data'])->name('data');
+    Route::get('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'show'])->name('show');
+    Route::post('/', [App\Http\Controllers\Student\InquiryController::class, 'store'])->name('store');
+    Route::put('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'update'])->name('update');
+    Route::delete('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'destroy'])->name('destroy');
+    Route::post('/upload', [App\Http\Controllers\Student\InquiryController::class, 'upload'])->name('upload');
 });
+
+
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -105,6 +124,7 @@ Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batch
 Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])
     ->name('batches.toggleStatus');
 
+// Courses Routes
 Route::prefix('courses')->name('courses.')->group(function () {
     Route::get('/', [CoursesController::class, 'index'])->name('index');
     Route::get('/create', [CoursesController::class, 'create'])->name('create');
@@ -112,6 +132,14 @@ Route::prefix('courses')->name('courses.')->group(function () {
     Route::get('/edit/{id}', [CoursesController::class, 'edit'])->name('edit');
     Route::put('/update/{id}', [CoursesController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [CoursesController::class, 'destroy'])->name('destroy');
+    
+    // Bulk import routes
+    Route::get('/download-sample', [CoursesController::class, 'downloadSampleFile'])->name('downloadSample');
+    Route::post('/import', [CoursesController::class, 'importCourses'])->name('import');
+    
+    // Subject validation routes
+    Route::get('/subject-suggestions', [CoursesController::class, 'getSubjectSuggestions'])->name('subjectSuggestions');
+    Route::get('/valid-subjects', [CoursesController::class, 'getValidSubjects'])->name('validSubjects'); // NEW
 });
 
 //Batches (In master) Routes
@@ -135,12 +163,23 @@ Route::prefix('master/batch')->name('batches.')->group(function () {
 
 //feesmaster//
 
-Route::prefix('fees')->name('fees.')->group(function () {
-    Route::get('/', [FeesMasterController::class, 'index'])->name('index');
-    Route::post('/', [FeesMasterController::class, 'store'])->name('store');
-    Route::get('/{fee}', [FeesMasterController::class, 'show'])->name('show');
-    Route::patch('/{fee}', [FeesMasterController::class, 'update'])->name('update');
-    Route::patch('/{fee}/toggle-status', [FeesMasterController::class, 'toggleStatus'])->name('toggle');
+// Fees Master Routes
+Route::get('/fees-master', [FeesMasterController::class, 'index'])->name('fees.master.index');
+Route::post('/fees-master/store', [FeesMasterController::class, 'store'])->name('fees.master.store');
+Route::get('/fees-master/{id}', [FeesMasterController::class, 'show'])->name('fees.master.show');
+Route::put('/fees-master/{id}', [FeesMasterController::class, 'update'])->name('fees.master.update');
+Route::post('/fees-master/{id}/activate', [FeesMasterController::class, 'activate'])->name('fees.master.activate');
+Route::post('/fees-master/{id}/deactivate', [FeesMasterController::class, 'deactivate'])->name('fees.master.deactivate');
+
+// Other Fees Routes - NO MIDDLEWARE
+Route::prefix('master/other_fees')->group(function () {
+    Route::get('/', [OtherFeeController::class, 'index'])->name('master.other_fees.index');
+    Route::get('/data', [OtherFeeController::class, 'index']);
+    Route::get('/{id}', [OtherFeeController::class, 'show']);
+    Route::post('/', [OtherFeeController::class, 'store']);
+    Route::put('/{id}', [OtherFeeController::class, 'update']);
+    Route::post('/{id}/toggle', [OtherFeeController::class, 'toggle']);
+    Route::delete('/{id}', [OtherFeeController::class, 'destroy']);
 });
 
 //branch Routes
@@ -180,3 +219,62 @@ Route::prefix('calendar')->name('calendar.')->group(function () {
     Route::post('/mark-sundays', [CalendarController::class, 'markSundays'])->name('mark.sundays');
 });
  
+
+
+// Route::get('/students/pending', [StudentController::class, 'index'])
+//     ->name('master.student.pending');
+
+// // Active/Onboarded Students (fully paid students)
+// Route::get('/students/onboard', [StudentController::class, 'activeStudents'])
+//     ->name('student.onboard');
+
+// // Pending Fees Students (partial payment students)
+// Route::get('/students/pending-fees', [StudentController::class, 'pendingFees'])
+//     ->name('students.pending_fees');
+
+// // Show single student details
+// Route::get('/students/{id}', [StudentController::class, 'show'])
+//     ->name('students.show');
+
+// // Store new student (direct entry)
+// Route::post('/students/store', [StudentController::class, 'store'])
+//     ->name('students.store');
+
+// // Update student details
+// Route::put('/students/{id}/update', [StudentController::class, 'update'])
+//     ->name('students.update');
+
+// // Update student fees (collect payment)
+// Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees'])
+//     ->name('students.updateFees');
+
+// // Convert inquiry to student
+// Route::post('/students/convert/{inquiryId}', [StudentController::class, 'convertFromInquiry'])
+//     ->name('students.convertFromInquiry');
+
+// // Additional route for active students (alternative naming)
+// Route::get('/students/active', [StudentController::class, 'activeStudents'])
+//     ->name('students.active');
+// Scholarship Routes 
+Route::prefix('master')->name('master.')->group(function () {
+    // List scholarships (GET) - returns JSON or view
+    Route::get('/scholarship', [ScholarshipController::class, 'index'])->name('scholarship.index');
+    
+    // Alternative endpoint for getting paginated data
+    Route::get('/scholarship/data', [ScholarshipController::class, 'index'])->name('scholarship.data');
+    
+    // Create scholarship (POST)
+    Route::post('/scholarship', [ScholarshipController::class, 'store'])->name('scholarship.store');
+    
+    // Show single scholarship (GET)
+    Route::get('/scholarship/{id}', [ScholarshipController::class, 'show'])->name('scholarship.show');
+    
+    // Update scholarship (PUT)
+    Route::put('/scholarship/{id}', [ScholarshipController::class, 'update'])->name('scholarship.update');
+    
+    // Toggle status (PATCH)
+    Route::patch('/scholarship/{id}/toggle-status', [ScholarshipController::class, 'toggleStatus']);
+    // Delete scholarship (DELETE)
+    Route::delete('/scholarship/{id}', [ScholarshipController::class, 'destroy'])->name('scholarship.destroy');
+});
+});
