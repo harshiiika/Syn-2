@@ -521,9 +521,7 @@
               <input type="text" class="form-control" value="{{ $student->batchName ?? 'N/A' }}" readonly>
             </div>
           </div>
-        </div>
-
-        
+        </div>        
       </div>
     </div>
   </div>

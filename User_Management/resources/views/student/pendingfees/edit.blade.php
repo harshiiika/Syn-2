@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Student Details - {{ $student->name ?? 'Student' }}</title>
+  <title>Edit Student Details</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{{asset('css/emp.css')}}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -372,18 +372,38 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="right" id="right">
-      <div class="container-custom">
-        <a href="{{ route('student.pendingfees.pending') }}" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i> Back
-        </a>
+       <div class="right" id="right">
+      <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h1 class="page-title">Update Student</h1>
+          <a href="{{ route('student.pendingfees.pending') }}" class="back-btn" style="border: 1px solid #ff6b35; padding: 8px 16px; border-radius: 6px;">
+            <i class="fa-solid fa-arrow-left"></i> Back
+          </a>
+        </div>
 
+        <!-- Success Message -->
         @if(session('success'))
           <div class="alert alert-success">
-            <i class="fa-solid fa-check-circle"></i> {{ session('success') }}
+            <i class="fa-solid fa-check-circle"></i>
+            <span>{{ session('success') }}</span>
           </div>
         @endif
 
+        <!-- Error Messages -->
+        @if($errors->any())
+          <div class="alert alert-danger">
+            <i class="fa-solid fa-exclamation-circle"></i>
+            <div>
+              <strong>Please fix the following errors:</strong>
+              <ul style="margin: 10px 0 0 20px;">
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          </div>
+        @endif
 
         <form id="editStudentForm" method="POST" action="{{ route('student.pendingfees.update', $student->_id) }}">
           @csrf
@@ -392,89 +412,100 @@
           <!-- Basic Details Section -->
           <div class="form-section">
             <h4>Basic Details</h4>
-            <div class="form-row">
+            <div class="form-row-2col">
               <div class="form-group">
                 <label>Student Name <span class="required">*</span></label>
-                <input type="text" name="name" class="form-control" value="{{ old('name', $student->name) }}" required>
+                <input type="text" name="name" class="form-control" value="{{ old('name', $student->name ?? '') }}" required>
               </div>
               
               <div class="form-group">
                 <label>Father Name</label>
-                <input type="text" name="father" class="form-control" value="{{ old('father', $student->father) }}">
+                <input type="text" name="father" class="form-control" value="{{ old('father', $student->father ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Mother Name</label>
-                <input type="text" name="mother" class="form-control" value="{{ old('mother', $student->mother) }}">
+                <input type="text" name="mother" class="form-control" value="{{ old('mother', $student->mother ?? '') }}">
               </div>
               
               <div class="form-group">
-                <label>Date of Birth</label>
-                <input type="date" name="dob" class="form-control" 
-                       value="{{ old('dob', $student->dob ? date('Y-m-d', strtotime($student->dob)) : '') }}">
+                <label>DOB</label>
+                <input type="date" name="dob" class="form-control" value="{{ old('dob', $student->dob ? date('Y-m-d', strtotime($student->dob)) : '') }}">
               </div>
               
               <div class="form-group">
                 <label>Father Contact No</label>
-                <input type="tel" name="mobileNumber" class="form-control" 
-                       value="{{ old('mobileNumber', $student->mobileNumber) }}" maxlength="15">
+                <input type="tel" name="mobileNumber" class="form-control" value="{{ old('mobileNumber', $student->mobileNumber ?? '') }}" maxlength="15">
               </div>
               
               <div class="form-group">
-                <label>Father WhatsApp Number</label>
-                <input type="tel" name="fatherWhatsapp" class="form-control" 
-                       value="{{ old('fatherWhatsapp', $student->fatherWhatsapp) }}" maxlength="15">
+                <label>Father Whatsapp Number</label>
+                <input type="tel" name="fatherWhatsapp" class="form-control" value="{{ old('fatherWhatsapp', $student->fatherWhatsapp ?? '') }}" maxlength="15">
               </div>
               
               <div class="form-group">
                 <label>Mother Contact No</label>
-                <input type="tel" name="motherContact" class="form-control" 
-                       value="{{ old('motherContact', $student->motherContact) }}" maxlength="15">
+                <input type="tel" name="motherContact" class="form-control" value="{{ old('motherContact', $student->motherContact ?? '') }}" maxlength="15">
               </div>
               
               <div class="form-group">
                 <label>Student Contact No</label>
-                <input type="tel" name="studentContact" class="form-control" 
-                       value="{{ old('studentContact', $student->studentContact) }}" maxlength="15">
+                <input type="tel" name="studentContact" class="form-control" value="{{ old('studentContact', $student->studentContact ?? '') }}" maxlength="15">
               </div>
               
               <div class="form-group">
                 <label>Category</label>
-                <select name="category" class="form-select">
-                  <option value="">Select Category</option>
-                  <option value="GENERAL" {{ old('category', $student->category) == 'GENERAL' ? 'selected' : '' }}>GENERAL</option>
-                  <option value="OBC" {{ old('category', $student->category) == 'OBC' ? 'selected' : '' }}>OBC</option>
-                  <option value="SC" {{ old('category', $student->category) == 'SC' ? 'selected' : '' }}>SC</option>
-                  <option value="ST" {{ old('category', $student->category) == 'ST' ? 'selected' : '' }}>ST</option>
-                </select>
+                <div class="radio-group">
+                  <div class="radio-option">
+                    <input type="radio" name="category" value="OBC" id="cat-obc" {{ old('category', $student->category ?? '') == 'OBC' ? 'checked' : '' }}>
+                    <label for="cat-obc">OBC</label>
+                  </div>
+                  <div class="radio-option">
+                    <input type="radio" name="category" value="SC" id="cat-sc" {{ old('category', $student->category ?? '') == 'SC' ? 'checked' : '' }}>
+                    <label for="cat-sc">SC</label>
+                  </div>
+                  <div class="radio-option">
+                    <input type="radio" name="category" value="GENERAL" id="cat-general" {{ old('category', $student->category ?? '') == 'GENERAL' ? 'checked' : '' }}>
+                    <label for="cat-general">GENERAL</label>
+                  </div>
+                  <div class="radio-option">
+                    <input type="radio" name="category" value="ST" id="cat-st" {{ old('category', $student->category ?? '') == 'ST' ? 'checked' : '' }}>
+                    <label for="cat-st">ST</label>
+                  </div>
+                </div>
               </div>
               
               <div class="form-group">
                 <label>Gender</label>
-                <select name="gender" class="form-select">
-                  <option value="">Select Gender</option>
-                  <option value="Male" {{ old('gender', $student->gender) == 'Male' ? 'selected' : '' }}>Male</option>
-                  <option value="Female" {{ old('gender', $student->gender) == 'Female' ? 'selected' : '' }}>Female</option>
-                  <option value="Others" {{ old('gender', $student->gender) == 'Others' ? 'selected' : '' }}>Others</option>
-                </select>
+                <div class="radio-group">
+                  <div class="radio-option">
+                    <input type="radio" name="gender" value="Male" id="gender-male" {{ old('gender', $student->gender ?? '') == 'Male' ? 'checked' : '' }}>
+                    <label for="gender-male">Male</label>
+                  </div>
+                  <div class="radio-option">
+                    <input type="radio" name="gender" value="Female" id="gender-female" {{ old('gender', $student->gender ?? '') == 'Female' ? 'checked' : '' }}>
+                    <label for="gender-female">Female</label>
+                  </div>
+                  <div class="radio-option">
+                    <input type="radio" name="gender" value="Others" id="gender-others" {{ old('gender', $student->gender ?? '') == 'Others' ? 'checked' : '' }}>
+                    <label for="gender-others">Others</label>
+                  </div>
+                </div>
               </div>
               
               <div class="form-group">
                 <label>Father Occupation</label>
-                <input type="text" name="fatherOccupation" class="form-control" 
-                       value="{{ old('fatherOccupation', $student->fatherOccupation) }}">
+                <input type="text" name="fatherOccupation" class="form-control" value="{{ old('fatherOccupation', $student->fatherOccupation ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Father's Grade</label>
-                <input type="text" name="fatherGrade" class="form-control" 
-                       value="{{ old('fatherGrade', $student->fatherGrade) }}">
+                <input type="text" name="fatherGrade" class="form-control" value="{{ old('fatherGrade', $student->fatherGrade ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Mother Occupation</label>
-                <input type="text" name="motherOccupation" class="form-control" 
-                       value="{{ old('motherOccupation', $student->motherOccupation) }}">
+                <input type="text" name="motherOccupation" class="form-control" value="{{ old('motherOccupation', $student->motherOccupation ?? '') }}">
               </div>
             </div>
           </div>
@@ -482,34 +513,33 @@
           <!-- Address Details Section -->
           <div class="form-section">
             <h4>Address Details</h4>
-            <div class="form-row">
+            <div class="form-row-2col">
               <div class="form-group">
                 <label>State</label>
-                <input type="text" name="state" class="form-control" value="{{ old('state', $student->state) }}">
+                <input type="text" name="state" class="form-control" value="{{ old('state', $student->state ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>City</label>
-                <input type="text" name="city" class="form-control" value="{{ old('city', $student->city) }}">
+                <input type="text" name="city" class="form-control" value="{{ old('city', $student->city ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Pin Code</label>
-                <input type="text" name="pinCode" class="form-control" 
-                       value="{{ old('pinCode', $student->pinCode) }}" maxlength="10">
+                <input type="text" name="pinCode" class="form-control" value="{{ old('pinCode', $student->pinCode ?? '') }}" maxlength="10">
               </div>
               
               <div class="form-group full-width">
                 <label>Address</label>
-                <textarea name="address" class="form-control" rows="3">{{ old('address', $student->address) }}</textarea>
+                <textarea name="address" class="form-control">{{ old('address', $student->address ?? '') }}</textarea>
               </div>
               
               <div class="form-group">
                 <label>Belong to Other City</label>
                 <select name="belongToOtherCity" class="form-select">
                   <option value="">Select</option>
-                  <option value="Yes" {{ old('belongToOtherCity', $student->belongToOtherCity) == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('belongToOtherCity', $student->belongToOtherCity) == 'No' ? 'selected' : '' }}>No</option>
+                  <option value="Yes" {{ old('belongToOtherCity', $student->belongToOtherCity ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('belongToOtherCity', $student->belongToOtherCity ?? '') == 'No' ? 'selected' : '' }}>No</option>
                 </select>
               </div>
               
@@ -517,8 +547,8 @@
                 <label>Economic Weaker Section</label>
                 <select name="economicWeakerSection" class="form-select">
                   <option value="">Select</option>
-                  <option value="Yes" {{ old('economicWeakerSection', $student->economicWeakerSection) == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('economicWeakerSection', $student->economicWeakerSection) == 'No' ? 'selected' : '' }}>No</option>
+                  <option value="Yes" {{ old('economicWeakerSection', $student->economicWeakerSection ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('economicWeakerSection', $student->economicWeakerSection ?? '') == 'No' ? 'selected' : '' }}>No</option>
                 </select>
               </div>
               
@@ -526,8 +556,8 @@
                 <label>Army/Police/Martyr Background</label>
                 <select name="armyPoliceBackground" class="form-select">
                   <option value="">Select</option>
-                  <option value="Yes" {{ old('armyPoliceBackground', $student->armyPoliceBackground) == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('armyPoliceBackground', $student->armyPoliceBackground) == 'No' ? 'selected' : '' }}>No</option>
+                  <option value="Yes" {{ old('armyPoliceBackground', $student->armyPoliceBackground ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('armyPoliceBackground', $student->armyPoliceBackground ?? '') == 'No' ? 'selected' : '' }}>No</option>
                 </select>
               </div>
               
@@ -535,8 +565,8 @@
                 <label>Specially Abled</label>
                 <select name="speciallyAbled" class="form-select">
                   <option value="">Select</option>
-                  <option value="Yes" {{ old('speciallyAbled', $student->speciallyAbled) == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('speciallyAbled', $student->speciallyAbled) == 'No' ? 'selected' : '' }}>No</option>
+                  <option value="Yes" {{ old('speciallyAbled', $student->speciallyAbled ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('speciallyAbled', $student->speciallyAbled ?? '') == 'No' ? 'selected' : '' }}>No</option>
                 </select>
               </div>
             </div>
@@ -545,41 +575,35 @@
           <!-- Course Details Section -->
           <div class="form-section">
             <h4>Course Details</h4>
-            <div class="form-row">
+            <div class="form-row-2col">
               <div class="form-group">
                 <label>Course Type</label>
-                <input type="text" name="courseType" class="form-control" 
-                       value="{{ old('courseType', $student->courseType) }}">
+                <input type="text" name="courseType" class="form-control" value="{{ old('courseType', $student->courseType ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Course Name</label>
-                <input type="text" name="courseName" class="form-control" 
-                       value="{{ old('courseName', $student->courseName) }}">
+                <input type="text" name="courseName" class="form-control" value="{{ old('courseName', $student->courseName ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Delivery Mode</label>
-                <input type="text" name="deliveryMode" class="form-control" 
-                       value="{{ old('deliveryMode', $student->deliveryMode) }}">
+                <input type="text" name="deliveryMode" class="form-control" value="{{ old('deliveryMode', $student->deliveryMode ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Medium</label>
-                <input type="text" name="medium" class="form-control" 
-                       value="{{ old('medium', $student->medium) }}">
+                <input type="text" name="medium" class="form-control" value="{{ old('medium', $student->medium ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Board</label>
-                <input type="text" name="board" class="form-control" 
-                       value="{{ old('board', $student->board) }}">
+                <input type="text" name="board" class="form-control" value="{{ old('board', $student->board ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Course Content</label>
-                <input type="text" name="courseContent" class="form-control" 
-                       value="{{ old('courseContent', $student->courseContent) }}">
+                <input type="text" name="courseContent" class="form-control" value="{{ old('courseContent', $student->courseContent ?? '') }}">
               </div>
             </div>
           </div>
@@ -587,42 +611,35 @@
           <!-- Academic Details Section -->
           <div class="form-section">
             <h4>Academic Details</h4>
-            <div class="form-row">
+            <div class="form-row-2col">
               <div class="form-group">
                 <label>Previous Class</label>
-                <input type="text" name="previousClass" class="form-control" 
-                       value="{{ old('previousClass', $student->previousClass) }}">
+                <input type="text" name="previousClass" class="form-control" value="{{ old('previousClass', $student->previousClass ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Previous Medium</label>
-                <input type="text" name="previousMedium" class="form-control" 
-                       value="{{ old('previousMedium', $student->previousMedium) }}">
+                <input type="text" name="previousMedium" class="form-control" value="{{ old('previousMedium', $student->previousMedium ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>School Name</label>
-                <input type="text" name="schoolName" class="form-control" 
-                       value="{{ old('schoolName', $student->schoolName) }}">
+                <input type="text" name="schoolName" class="form-control" value="{{ old('schoolName', $student->schoolName ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Previous Board</label>
-                <input type="text" name="previousBoard" class="form-control" 
-                       value="{{ old('previousBoard', $student->previousBoard) }}">
+                <input type="text" name="previousBoard" class="form-control" value="{{ old('previousBoard', $student->previousBoard ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Passing Year</label>
-                <input type="text" name="passingYear" class="form-control" 
-                       value="{{ old('passingYear', $student->passingYear) }}">
+                <input type="text" name="passingYear" class="form-control" value="{{ old('passingYear', $student->passingYear ?? '') }}">
               </div>
               
               <div class="form-group">
                 <label>Percentage</label>
-                <input type="number" name="percentage" class="form-control" 
-                       value="{{ old('percentage', $student->percentage) }}" 
-                       min="0" max="100" step="0.01">
+                <input type="number" name="percentage" class="form-control" value="{{ old('percentage', $student->percentage ?? '') }}" min="0" max="100" step="0.01">
               </div>
             </div>
           </div>
@@ -630,13 +647,13 @@
           <!-- Scholarship Eligibility Section -->
           <div class="form-section">
             <h4>Scholarship Eligibility</h4>
-            <div class="form-row">
+            <div class="form-row-2col">
               <div class="form-group">
                 <label>Is Repeater</label>
                 <select name="isRepeater" class="form-select">
                   <option value="">Select</option>
-                  <option value="Yes" {{ old('isRepeater', $student->isRepeater) == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('isRepeater', $student->isRepeater) == 'No' ? 'selected' : '' }}>No</option>
+                  <option value="Yes" {{ old('isRepeater', $student->isRepeater ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('isRepeater', $student->isRepeater ?? '') == 'No' ? 'selected' : '' }}>No</option>
                 </select>
               </div>
               
@@ -644,24 +661,22 @@
                 <label>Scholarship Test Appeared</label>
                 <select name="scholarshipTest" class="form-select">
                   <option value="">Select</option>
-                  <option value="Yes" {{ old('scholarshipTest', $student->scholarshipTest) == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('scholarshipTest', $student->scholarshipTest) == 'No' ? 'selected' : '' }}>No</option>
+                  <option value="Yes" {{ old('scholarshipTest', $student->scholarshipTest ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('scholarshipTest', $student->scholarshipTest ?? '') == 'No' ? 'selected' : '' }}>No</option>
                 </select>
               </div>
               
               <div class="form-group">
                 <label>Last Board Percentage</label>
-                <input type="number" name="lastBoardPercentage" class="form-control" 
-                       value="{{ old('lastBoardPercentage', $student->lastBoardPercentage) }}" 
-                       min="0" max="100" step="0.01">
+                <input type="number" name="lastBoardPercentage" class="form-control" value="{{ old('lastBoardPercentage', $student->lastBoardPercentage ?? '') }}" min="0" max="100" step="0.01">
               </div>
               
               <div class="form-group">
                 <label>Competition Exam Appeared</label>
                 <select name="competitionExam" class="form-select">
                   <option value="">Select</option>
-                  <option value="Yes" {{ old('competitionExam', $student->competitionExam) == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('competitionExam', $student->competitionExam) == 'No' ? 'selected' : '' }}>No</option>
+                  <option value="Yes" {{ old('competitionExam', $student->competitionExam ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('competitionExam', $student->competitionExam ?? '') == 'No' ? 'selected' : '' }}>No</option>
                 </select>
               </div>
             </div>
@@ -670,11 +685,10 @@
           <!-- Batch Allocation Section -->
           <div class="form-section">
             <h4>Batch Allocation</h4>
-            <div class="form-row">
+            <div class="form-row-2col">
               <div class="form-group">
                 <label>Batch Name</label>
-                <input type="text" name="batchName" class="form-control" 
-                       value="{{ old('batchName', $student->batchName) }}">
+                <input type="text" name="batchName" class="form-control" value="{{ old('batchName', $student->batchName ?? '') }}">
               </div>
             </div>
           </div>
@@ -710,6 +724,18 @@
           saveBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes';
         }
       });
+    @endif
+
+    // Auto-hide success message after 5 seconds
+    @if(session('success'))
+      setTimeout(function() {
+        const alert = document.querySelector('.alert-success');
+        if (alert) {
+          alert.style.transition = 'opacity 0.5s';
+          alert.style.opacity = '0';
+          setTimeout(() => alert.remove(), 500);
+        }
+      }, 5000);
     @endif
   </script>
 </body>

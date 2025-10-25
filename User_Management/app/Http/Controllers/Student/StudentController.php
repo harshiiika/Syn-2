@@ -7,31 +7,31 @@ use App\Models\Student\Student;
 use App\Models\Student\Inquiry;
 use Illuminate\Http\Request;
 
-
 class StudentController extends Controller
 {
-    /**
-     * Display pending students (newly converted from inquiry)
-     */
-   // Show pending fees students
-// public function index()
-// {
-//     try {
-//         $students = Student::all(); // Get ALL students first to test
+ public function index()
+{
+    try {
+        // Get ALL students with pending status
+        $students = Student::where('status', 'pending_fees')
+            ->orderBy('created_at', 'desc')
+            ->get();
         
-//         \Log::info('Fetching students for pending page:', [
-//             'count' => $students->count()
-//         ]);
+        \Log::info('Fetching pending inquiry students:', [
+            'count' => $students->count(),
+            'students' => $students->pluck('name', '_id')->toArray()
+        ]);
         
-//         return view('student.html', [
-//             'students' => $students,
-//             'totalCount' => $students->count(),
-//         ]);
-//     } catch (\Exception $e) {
-//         \Log::error('Error loading students: ' . $e->getMessage());
-//         return redirect()->back()->with('error', 'Failed to load students');
-//     }
-// }
+        return view('student.student.pending', [
+            'students' => $students,
+            'totalCount' => $students->count(),
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Error loading students: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Failed to load students');
+    }
+}
+
 
 // Show fully paid (onboarded) students
 public function activeStudents()
@@ -56,7 +56,6 @@ public function activeStudents()
             return redirect()->back()->with('error', 'Failed to load pending fees students');
         }
     }
-
 
     /**
      * Show single student details
@@ -235,53 +234,110 @@ public function activeStudents()
     /**
      * Update the specified student
      */
-    public function update(Request $request, $id)
-    {
-        try {
-            $student = Student::findOrFail($id);
+public function update(Request $request, $id)
+{
+    try {
+        \Log::info('Update request received', [
+            'id' => $id,
+            'data' => $request->all()
+        ]);
 
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'father' => 'required|string|max:255',
-                'mobileNumber' => 'required|string|regex:/^[0-9]{10}$/',
-                'courseName' => 'required|string|max:255',
-                'deliveryMode' => 'required|string',
-                'courseContent' => 'nullable|string',
-                'email' => 'required|email|unique:mongodb.students,email,' . $id . ',_id',
-                'alternateNumber' => 'nullable|string|regex:/^[0-9]{10}$/',
-                'branch' => 'required|string',
-            ]);
+        $student = Student::findOrFail($id);
+        
+        \Log::info('Student found', [
+            'student_id' => $student->_id,
+            'student_name' => $student->name
+        ]);
 
-            $student->update($validated);
+        $validated = $request->validate([
+            // Basic Details
+            'name' => 'nullable|string|max:255',
+            'father' => 'nullable|string|max:255',
+            'mother' => 'nullable|string|max:255',
+            'dob' => 'nullable|date',
+            'mobileNumber' => 'nullable|string|regex:/^[0-9]{10}$/',
+            'fatherWhatsapp' => 'nullable|string|regex:/^[0-9]{10}$/',
+            'motherContact' => 'nullable|string|regex:/^[0-9]{10}$/',
+            'studentContact' => 'nullable|string|regex:/^[0-9]{10}$/',
+            'category' => 'nullable|in:GENERAL,OBC,SC,ST',
+            'gender' => 'nullable|in:Male,Female,Others',
+            'fatherOccupation' => 'nullable|string|max:255',
+            'fatherGrade' => 'nullable|string|max:255',
+            'motherOccupation' => 'nullable|string|max:255',
+            
+            // Address Details
+            'state' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'pinCode' => 'nullable|string|regex:/^[0-9]{6}$/',
+            'address' => 'nullable|string',
+            'belongToOtherCity' => 'nullable|in:Yes,No',
+            'economicWeakerSection' => 'nullable|in:Yes,No',
+            'armyPoliceBackground' => 'nullable|in:Yes,No',
+            'speciallyAbled' => 'nullable|in:Yes,No',
+            
+            // Course Details
+            'course_type' => 'nullable|string',
+            'course' => 'nullable|string',
+            'courseName' => 'nullable|string',
+            'deliveryMode' => 'nullable|string',
+            'medium' => 'nullable|string',
+            'board' => 'nullable|string',
+            'courseContent' => 'nullable|string',
+            
+            // Academic Details
+            'previousClass' => 'nullable|string',
+            'previousMedium' => 'nullable|string',
+            'schoolName' => 'nullable|string|max:255',
+            'previousBoard' => 'nullable|string',
+            'passingYear' => 'nullable|string|regex:/^[0-9]{4}$/',
+            'percentage' => 'nullable|numeric|min:0|max:100',
+            
+            // Scholarship Eligibility
+            'isRepeater' => 'nullable|in:Yes,No',
+            'scholarshipTest' => 'nullable|in:Yes,No',
+            'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
+            'competitionExam' => 'nullable|in:Yes,No',
+            
+            // Batch
+            'batchName' => 'nullable|string|max:255',
+        ]);
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Student updated successfully'
-                ]);
-            }
+        // Remove null values to avoid overwriting existing data with nulls
+        $validated = array_filter($validated, function($value) {
+            return $value !== null;
+        });
 
-            return redirect()->route('student.html')->with('success', 'Student updated successfully');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'error',
-                    'errors' => $e->errors()
-                ], 422);
-            }
+        $student->update($validated);
+        
+        \Log::info('Student updated successfully', [
+            'student_id' => $student->_id
+        ]);
 
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to update student'
-                ], 500);
-            }
+        return redirect()->route('student.student.pending')
+            ->with('success', 'Student updated successfully');
+            
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        \Log::error('Student not found: ', ['id' => $id]);
+        return redirect()->back()
+            ->with('error', 'Student not found')
+            ->withInput();
+            
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        \Log::error('Validation failed', ['errors' => $e->errors()]);
+        return redirect()->back()
+            ->withErrors($e->errors())
+            ->withInput();
+        
+    } catch (\Exception $e) {
+        \Log::error('Error updating student: ' . $e->getMessage(), [
+            'trace' => $e->getTraceAsString()
+        ]);
 
-            return redirect()->back()->with('error', 'Failed to update student');
-        }
+        return redirect()->back()
+            ->with('error', 'Failed to update student: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
     /**
      * Update student fees (collect payment)
@@ -340,4 +396,13 @@ public function activeStudents()
         }
     }
 
+
+    public function edit($id)
+{
+    // Fetch the student by ID
+    $student = Student::findOrFail($id);
+
+    // Return the edit view (make sure it exists)
+    return view('student.student.edit', compact('student'));
+}
 }
