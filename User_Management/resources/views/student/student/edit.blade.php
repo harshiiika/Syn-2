@@ -400,7 +400,7 @@
       <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form id="editStudentForm" method="POST" action="{{ route('student.pendingfees.update', $student->_id) }}">
+    <form id="editStudentForm" method="POST" action="{{ route('student.student.update', $student->_id) }}">
       @csrf
       @method('PUT')
 
@@ -828,67 +828,40 @@
           crossorigin="anonymous"></script>
         <script src="{{ asset('js/session.js') }}"></script>
   <script>
-    // Form submission handling
-    document.getElementById('editStudentForm').addEventListener('submit', function(e) {
-      const saveBtn = document.getElementById('saveBtn');
-      saveBtn.disabled = true;
-    });
-
-    // Re-enable button if there are validation errors
-    @if($errors->any())
-      const saveBtn = document.getElementById('saveBtn');
-      saveBtn.disabled = false;
-      saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Save';
-    @endif
-
-
-    
-  //dynamic dd options script
-
-  document.addEventListener("DOMContentLoaded", function () {
+ document.addEventListener("DOMContentLoaded", function () {
     const courseTypeSelect = document.getElementById("course_type");
     const courseSelect = document.getElementById("course");
 
-    // Define mapping
     const courseOptions = {
-      "Pre-Medical": [
-        "Anthesis 11th NEET",
-        "Momentum 12th NEET",
-        "Dynamic Target NEET"
-      ],
-      "Pre-Engineering": [
-        "Impulse 11th IIT",
-        "Intensity 12th IIT",
-        "Thurst Target IIT"
-      ],
-      "Pre-Foundation": [
-        "Seedling 10th",
-        "Plumule 9th",
-        "Radicle 8th"
-      ]
+      "Pre-Medical": ["Anthesis 11th NEET", "Momentum 12th NEET", "Dynamic Target NEET"],
+      "Pre-Engineering": ["Impulse 11th IIT", "Intensity 12th IIT", "Thurst Target IIT"],
+      "Pre-Foundation": ["Seedling 10th", "Plumule 9th", "Radicle 8th"]
     };
 
-    // Pre-fill if editing existing batch
-    const selectedType = "{{ $batch->course_type ?? '' }}";
-    const selectedCourse = "{{ $batch->course ?? '' }}";
+    // Pre-fill on page load
+    const selectedType = "{{ old('course_type', $student->course_type ?? $student->courseType ?? '') }}";
+    const selectedCourse = "{{ old('course', $student->course ?? $student->courseName ?? '') }}";
+
+    console.log('Selected Type:', selectedType);
+    console.log('Selected Course:', selectedCourse);
 
     if (selectedType) {
       updateCourses(selectedType);
-      courseSelect.value = selectedCourse;
+      setTimeout(() => {
+        if (selectedCourse) {
+          courseSelect.value = selectedCourse;
+        }
+      }, 100);
     }
 
-    // Update course list when course_type changes
     courseTypeSelect.addEventListener("change", function () {
-      const selectedType = this.value;
-      updateCourses(selectedType);
+      updateCourses(this.value);
     });
 
     function updateCourses(type) {
-      // Clear existing
       courseSelect.innerHTML = '<option value="">Select Course</option>';
       if (!type || !courseOptions[type]) return;
 
-      // Add new
       courseOptions[type].forEach(course => {
         const option = document.createElement("option");
         option.value = course;
@@ -897,6 +870,6 @@
       });
     }
   });
-  </script>
+    </script>
 </body>
 </html>

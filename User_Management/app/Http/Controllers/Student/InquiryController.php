@@ -7,12 +7,85 @@ use App\Models\Student\Inquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use App\Models\Student\Student;
-
-
 
 class InquiryController extends Controller
 {
+    /**
+     * Display the inquiry management page
+     */
+    public function index(Request $request)
+    {
+        return view('inquiries.index');
+    }
+
+    /**
+     * Return paginated data for AJAX requests
+     */
+    public function data(Request $request)
+{
+    try {
+        $query = Inquiry::query();
+        
+        // ⭐ Filter out onboarded inquiries - only show active inquiries
+        $query->whereNotIn('status', ['onboarded', 'converted']);
+
+        // Search functionality
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('student_name', 'regex', "/$search/i")
+                  ->orWhere('father_name', 'regex', "/$search/i")
+                  ->orWhere('father_contact', 'regex', "/$search/i")
+                  ->orWhere('course_name', 'regex', "/$search/i");
+            });
+        }
+
+        $perPage = $request->get('per_page', 10);
+        $page = $request->get('page', 1);
+        
+        $total = $query->count();
+        $inquiries = $query->orderBy('created_at', 'desc')
+                           ->skip(($page - 1) * $perPage)
+                           ->take($perPage)
+                           ->get();
+
+        // Transform MongoDB _id to string for JavaScript
+        $inquiries = $inquiries->map(function($inquiry) {
+            $inquiry->_id = (string) $inquiry->_id;
+            return $inquiry;
+        });
+
+        Log::info('Data method - Returning inquiries', [
+            'count' => $inquiries->count(),
+            'total' => $total,
+            'page' => $page
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $inquiries,
+            'current_page' => (int)$page,
+            'last_page' => (int)ceil($total / $perPage),
+            'per_page' => (int)$perPage,
+            'total' => $total,
+        ], 200);
+
+    } catch (\Exception $e) {
+        Log::error('Inquiry Data Error: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Error loading inquiries: ' . $e->getMessage(),
+            'data' => [],
+            'current_page' => 1,
+            'last_page' => 1,
+            'per_page' => 10,
+            'total' => 0,
+        ], 500);
+    }
+}
+
     /**
      * Show single inquiry
      */
@@ -204,22 +277,102 @@ class InquiryController extends Controller
             ], 500);
         }
     }
+
+public function bulkOnboard(Request $request)
+{
+    try {
+        $request->validate([
+            'inquiry_ids' => 'required|array',
+            'inquiry_ids.*' => 'required|string'
+        ]);
+
+        $inquiryIds = $request->inquiry_ids;
+        $inquiries = Inquiry::whereIn('_id', $inquiryIds)->get();
+
+        if ($inquiries->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No valid inquiries found'
+            ], 404);
+        }
+
+        $onboardedCount = 0;
+
+        foreach ($inquiries as $inquiry) {
+            // ✅ Create student record in 'students' collection
+            $student = \App\Models\Student\Student::create([
+                'name' => $inquiry->student_name,
+                'father' => $inquiry->father_name,
+                'mobileNumber' => $inquiry->father_contact,
+                'alternateNumber' => $inquiry->father_whatsapp ?? null,
+                'email' => $inquiry->student_contact ?? 'noemail@example.com',
+                'courseName' => $inquiry->course_name ?? 'Not Assigned',
+                'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
+                'courseContent' => $inquiry->course_content ?? 'Class Room Course',
+                'branch' => $inquiry->branch ?? 'Main Branch',
+                'state' => $inquiry->state,
+                'city' => $inquiry->city,
+                'address' => $inquiry->address,
+                'category' => $inquiry->category ?? 'General',
+                'economicWeakerSection' => $inquiry->ews ?? 'No',
+                'armyPoliceBackground' => $inquiry->defense ?? 'No',
+                'speciallyAbled' => $inquiry->specially_abled ?? 'No',
+                
+                // ✅ CRITICAL: These fields make them appear in pending pages
+                'total_fees' => 0,
+                'paid_fees' => 0,
+                'remaining_fees' => 0,
+                'status' => 'pending_fees', // Must be 'pending_fees'
+                'fee_status' => 'pending',
+                'admission_date' => now(),
+                'session' => session('current_session', '2025-2026')
+            ]);
+
+            \Log::info('Student created:', [
+                'id' => $student->_id,
+                'name' => $student->name,
+                'status' => $student->status,
+                'remaining_fees' => $student->remaining_fees
+            ]);
+
+            // ✅ Mark inquiry as onboarded
+            $inquiry->update(['status' => 'onboarded']);
+            
+            $onboardedCount++;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Successfully onboarded {$onboardedCount} student(s)!"
+            // ❌ REMOVED: 'redirect' => route('student.pendingfees.pending')
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Bulk onboard error: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to onboard students: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
  /**
   * Show onboard form for an inquiry
   */
-
 public function showOnboardForm($inquiryId)
 {
     try {
         $inquiry = Inquiry::findOrFail($inquiryId);
         
         // Get dropdown data
-        $courses = \App\Models\Master\Courses::all();
-        $branches = ['Bikaner'];
+        $courses = \App\Models\Master\Courses::all(); 
+        $branches = ['Bikaner']; // Or get from database
         $deliveryModes = ['Offline', 'Online', 'Hybrid'];
         $courseContents = ['Class Room Course', 'Test Series Only'];
         
-        return view('student.onboard.onboard', compact(
+        return view('student.inquiry.onboard', compact(
             'inquiry', 
             'courses', 
             'branches', 
@@ -227,9 +380,11 @@ public function showOnboardForm($inquiryId)
             'courseContents'
         ));
     } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Inquiry not found');
+        return redirect()->route('inquiries.index')
+            ->with('error', 'Inquiry not found');
     }
 }
+
 
 /**
  * Process onboarding (convert inquiry to student)
@@ -239,253 +394,71 @@ public function processOnboard(Request $request, $inquiryId)
     try {
         $inquiry = Inquiry::findOrFail($inquiryId);
         
-        // Check if already onboarded
-        if ($inquiry->status === 'onboarded' || $inquiry->status === 'converted') {
-            return response()->json([
-                'success' => false,
-                'message' => 'This inquiry has already been onboarded'
-            ], 400);
+        // Validate
+        $validated = $request->validate([
+            'courseName' => 'required|string',
+            'deliveryMode' => 'required|string',
+            'courseContent' => 'required|string',
+            'branch' => 'required|string',
+            'total_fees' => 'required|numeric|min:0',
+            'paid_fees' => 'nullable|numeric|min:0',
+        ]);
+
+        // Calculate fees
+        $totalFees = $validated['total_fees'];
+        $paidFees = $validated['paid_fees'] ?? 0;
+        $remainingFees = $totalFees - $paidFees;
+
+        // Determine status
+        if ($remainingFees <= 0) {
+            $status = \App\Models\Student\Student::STATUS_ACTIVE;
+            $feeStatus = 'paid';
+        } elseif ($paidFees > 0) {
+            $status = \App\Models\Student\Student::STATUS_PENDING_FEES;
+            $feeStatus = 'partial';
+        } else {
+            $status = \App\Models\Student\Student::STATUS_PENDING_FEES;
+            $feeStatus = 'pending';
         }
 
-        // Create student record that will appear on BOTH pages
-        $student = Student::create([
+        // Create student
+        $student = \App\Models\Student\Student::create([
             'name' => $inquiry->student_name,
             'father' => $inquiry->father_name,
             'mobileNumber' => $inquiry->father_contact,
-            'fatherWhatsapp' => $inquiry->father_whatsapp ?? null,
             'alternateNumber' => $inquiry->father_whatsapp ?? null,
-            'studentContact' => $inquiry->student_contact ?? null,
-            'email' => strtolower(str_replace(' ', '', $inquiry->student_name)) . '@temp.com',
-            'courseName' => $inquiry->course_name ?? 'Not Assigned',
-            'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
-            'courseContent' => $inquiry->course_content ?? 'Class Room Course',
-            'branch' => $inquiry->branch ?? 'Main Branch',
-            'category' => $inquiry->category ?? 'General',
-            'state' => $inquiry->state ?? null,
-            'city' => $inquiry->city ?? null,
-            'address' => $inquiry->address ?? null,
-            'economicWeakerSection' => $inquiry->ews ?? 'No',
-            'armyPoliceBackground' => $inquiry->defense ?? 'No',
-            'speciallyAbled' => $inquiry->specially_abled ?? 'No',
-            // Fee related fields - IMPORTANT for showing on both pages
-            'total_fees' => 0,
-            'paid_fees' => 0,
-            'remaining_fees' => 0,
-            'status' => Student::STATUS_PENDING_FEES,
-            'fee_status' => 'pending',
-            'admission_date' => now(),
+            'email' => $inquiry->student_name . '@temp.com', // Generate temp email
+            'courseName' => $validated['courseName'],
+            'deliveryMode' => $validated['deliveryMode'],
+            'courseContent' => $validated['courseContent'],
+            'branch' => $validated['branch'],
+            'total_fees' => $totalFees,
+            'paid_fees' => $paidFees,
+            'remaining_fees' => $remainingFees,
+            'status' => $status,
+            'fee_status' => $feeStatus,
             'session' => session('current_session', '2025-2026'),
         ]);
 
-        // Update inquiry status to prevent duplicate onboarding
-        $inquiry->update(['status' => 'onboarded']);
+        // Update inquiry status
+        $inquiry->update(['status' => 'converted']);
 
-        \Log::info('Student onboarded successfully', [
-            'inquiry_id' => $inquiryId,
-            'student_id' => $student->_id,
-            'student_name' => $student->name
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Student onboarded successfully!',
-            'student_id' => $student->_id
-        ]);
+        // Redirect based on status
+        if ($remainingFees > 0) {
+            return redirect()->route('student.pendingfees.pending')
+                ->with('success', 'Student onboarded! Pending fees: ₹' . number_format($remainingFees, 2));
+        } else {
+            return redirect()->route('student.onboard')
+                ->with('success', 'Student onboarded successfully with full payment!');
+        }
 
     } catch (\Exception $e) {
         \Log::error('Onboard error: ' . $e->getMessage());
-        \Log::error('Stack trace: ' . $e->getTraceAsString());
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to onboard student: ' . $e->getMessage()
-        ], 500);
+        return redirect()->back()
+            ->with('error', 'Failed to onboard student: ' . $e->getMessage())
+            ->withInput();
     }
 }
-
-/**
-     * Onboard single inquiry
-     */
-    public function onboardSingle($id)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($id);
-            
-            // Check if already onboarded
-            if (in_array($inquiry->status, ['onboarded', 'converted'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'This inquiry has already been onboarded'
-                ], 400);
-            }
-
-            // Create student record
-            $student = $this->createStudentFromInquiry($inquiry);
-
-            // Update inquiry status
-            $inquiry->update(['status' => 'onboarded']);
-
-            Log::info('Single inquiry onboarded successfully', [
-                'inquiry_id' => $id,
-                'student_id' => $student->_id
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Student onboarded successfully!',
-                'student_id' => $student->_id
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Single onboard error: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to onboard student: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Bulk onboard selected inquiries
-     */
-    public function bulkOnboard(Request $request)
-    {
-        try {
-            $request->validate([
-                'inquiry_ids' => 'required|array|min:1',
-                'inquiry_ids.*' => 'required|string'
-            ]);
-
-            $inquiryIds = $request->inquiry_ids;
-            $inquiries = Inquiry::whereIn('_id', $inquiryIds)
-                               ->whereNotIn('status', ['onboarded', 'converted'])
-                               ->get();
-
-            if ($inquiries->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No valid inquiries found to onboard'
-                ], 404);
-            }
-
-            $onboardedCount = 0;
-            $errors = [];
-
-            foreach ($inquiries as $inquiry) {
-                try {
-                    // Create student record
-                    $student = $this->createStudentFromInquiry($inquiry);
-                    
-                    // Update inquiry status
-                    $inquiry->update(['status' => 'onboarded']);
-                    
-                    $onboardedCount++;
-                    
-                    Log::info('Inquiry onboarded in bulk', [
-                        'inquiry_id' => $inquiry->_id,
-                        'student_id' => $student->_id
-                    ]);
-                    
-                } catch (\Exception $e) {
-                    $errors[] = "Failed to onboard {$inquiry->student_name}: {$e->getMessage()}";
-                    Log::error('Bulk onboard error for inquiry: ' . $inquiry->_id, [
-                        'error' => $e->getMessage()
-                    ]);
-                }
-            }
-
-            $message = "Successfully onboarded {$onboardedCount} student(s)";
-            if (!empty($errors)) {
-                $message .= ". Errors: " . implode('; ', $errors);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'onboarded_count' => $onboardedCount,
-                'redirect' => route('student.pendingfees.pending')
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Bulk onboard error: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to onboard students: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Helper method to create student from inquiry
-     */
-    private function createStudentFromInquiry(Inquiry $inquiry)
-    {
-        // Generate a temporary email if student contact is missing
-        $email = $inquiry->student_contact 
-            ? $inquiry->student_contact . '@temp.com'
-            : strtolower(str_replace(' ', '', $inquiry->student_name)) . '@temp.com';
-
-        $studentData = [
-            // Basic Information
-            'name' => $inquiry->student_name,
-            'father' => $inquiry->father_name,
-            'mobileNumber' => $inquiry->father_contact,
-            'fatherWhatsapp' => $inquiry->father_whatsapp,
-            'studentContact' => $inquiry->student_contact,
-            'email' => $email,
-            'alternateNumber' => $inquiry->father_whatsapp,
-            
-            // Course Information
-            'courseName' => $inquiry->course_name ?? 'Not Assigned',
-            'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
-            'courseContent' => $inquiry->course_content ?? 'Class Room Course',
-            'branch' => $inquiry->branch ?? 'Main Branch',
-            
-            // Personal Details
-            'category' => $inquiry->category ?? 'General',
-            'state' => $inquiry->state,
-            'city' => $inquiry->city,
-            'address' => $inquiry->address,
-            
-            // Special Categories
-            'economicWeakerSection' => $inquiry->ews ?? 'No',
-            'armyPoliceBackground' => $inquiry->defense ?? 'No',
-            'speciallyAbled' => $inquiry->specially_abled ?? 'No',
-            
-            // Fee Information (CRITICAL - this determines which pages they appear on)
-            'total_fees' => 0,
-            'paid_fees' => 0,
-            'remaining_fees' => 0,
-            'status' => Student::STATUS_PENDING_FEES, // This makes them appear on both pages
-            'fee_status' => 'pending',
-            
-            // Administrative
-            'admission_date' => now(),
-            'session' => session('current_session', '2024-2025'),
-        ];
-
-        // Create the student record
-        $student = Student::create($studentData);
-
-        Log::info('Student created from inquiry', [
-            'inquiry_id' => $inquiry->_id,
-            'student_id' => $student->_id,
-            'student_name' => $student->name,
-            'status' => $student->status
-        ]);
-
-        return $student;
-    }
-
-    /**
-     * Display the inquiry management page
-     */
-    public function index(Request $request)
-    {
-        return view('inquiries.index');
-    }
-
-
 }
+
+

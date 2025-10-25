@@ -14,25 +14,14 @@ class Student extends Model
     const STATUS_PENDING_FEES = 'pending_fees';
     const STATUS_ACTIVE = 'active';
 
-    protected $fillable = [
+protected $fillable = [
+    // Basic Details
     'name',
     'father',
-    'mobileNumber',
-    'alternateNumber',
-    'email',
-    'courseName',
-    'deliveryMode',
-    'courseContent',
-    'branch',
-    'status',
-    'total_fees',
-    'paid_fees',
-    'remaining_fees',
-    'fee_status',
-    'admission_date',
-    'session',
     'mother',
     'dob',
+    'mobileNumber',
+    'alternateNumber',
     'fatherWhatsapp',
     'motherContact',
     'studentContact',
@@ -41,6 +30,8 @@ class Student extends Model
     'fatherOccupation',
     'fatherGrade',
     'motherOccupation',
+    
+    // Address Details
     'state',
     'city',
     'pinCode',
@@ -49,20 +40,42 @@ class Student extends Model
     'economicWeakerSection',
     'armyPoliceBackground',
     'speciallyAbled',
-    'courseType',
+    
+    // Course Details (IMPORTANT - note the field names)
+    'course_type',      // NEW FIELD
+    'course',           // NEW FIELD
+    'courseName',       // Keep for backward compatibility
+    'courseType',       // Keep for backward compatibility
+    'deliveryMode',
     'medium',
     'board',
+    'courseContent',
+    'email',
+    'branch',
+    
+    // Academic Details
     'previousClass',
     'previousMedium',
     'schoolName',
     'previousBoard',
     'passingYear',
     'percentage',
+    
+    // Scholarship Eligibility
     'isRepeater',
     'scholarshipTest',
     'lastBoardPercentage',
     'competitionExam',
+    
+    // Batch & Fees
     'batchName',
+    'status',
+    'total_fees',
+    'paid_fees',
+    'remaining_fees',
+    'fee_status',
+    'admission_date',
+    'session',
     'paymentHistory'
 ];
 
@@ -184,34 +197,35 @@ class Student extends Model
     }
 
 
-  /**
-     * Get students for "Pending Inquiries" tab
-     */
-    public static function getPendingStudents()
-    {
-        return self::where('status', self::STATUS_PENDING_FEES)
-                   ->orderBy('created_at', 'desc')
-                   ->get();
-    }
-
     /**
-     * Get students for "Pending Fees Students" page
-     */
-    public static function getPendingFeesStudents()
-    {
-        return self::where('status', self::STATUS_PENDING_FEES)
-                   ->orderBy('created_at', 'desc')
-                   ->get();
-    }
+ * Get students for "Pending Inquires" tab (with any remaining fees)
+ */
+public static function getPendingStudents()
+{
+    return self::where('remaining_fees', '>', 0)
+               ->where('status', self::STATUS_PENDING_FEES)
+               ->orderBy('created_at', 'desc')
+               ->get();
+}
 
-    /**
-     * Get active students (fully paid)
-     */
-    public static function getActiveStudents()
-    {
-        return self::where('status', self::STATUS_ACTIVE)
-                   ->where('remaining_fees', '<=', 0)
-                   ->orderBy('created_at', 'desc')
-                   ->get();
-    }
+/**
+ * Get students for "Pending Fees Students" page (same as pending)
+ */
+public static function getPendingFeesStudents()
+{
+    return self::where('remaining_fees', '>', 0)
+               ->orderBy('created_at', 'desc')
+               ->get();
+}
+
+/**
+ * Get students for "Onboarding Students" tab (fully paid)
+ */
+public static function getActiveStudents()
+{
+    return self::where('remaining_fees', '<=', 0)
+               ->where('status', self::STATUS_ACTIVE)
+               ->orderBy('created_at', 'desc')
+               ->get();
+}
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -594,8 +594,7 @@
                 <p>synthesisbikaner@gmail.com</p>
             </div>
 
-           <!-- Left side bar accordian -->
-      <div class="accordion accordion-flush" id="accordionFlushExample">
+               <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -633,7 +632,7 @@
                       id="side-icon"></i> Scholarship</a>
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
-                    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+<i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
                 <li><a class="item" href="{{ route('master.other_fees.index') }}
 "><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
@@ -658,8 +657,7 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
-                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
+                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
                       id="side-icon"></i> Calendar</a></li>
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
@@ -672,19 +670,19 @@
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
+              id="accordion-button"> 
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-
+          
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}">
-                    <i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
-                </li>
+    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
+</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
@@ -692,7 +690,7 @@
                       id="side-icon"></i>Students</a></li>
               </ul>
             </div>
-          </div>
+          </div>  
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -809,9 +807,9 @@
                         Upload
                     </button>
                     <input type="file" id="fileUpload" style="display: none;" accept=".csv,.xlsx">
-                   <button type="button" class="btn-onboard" id="bulkOnboardBtn">
-        Onboard Selected
-    </button>
+                    <button type="button" class="btn-onboard">
+                        Onboard
+                    </button>
                 </div>
             </div>
 
@@ -1031,7 +1029,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="saveBtn">Save Inquiry</button>
+                    <button type="button" class="btn btn-primary" id="saveBtn">Save Inquiry</button>
                 </div>
             </div>
         </div>
@@ -1115,6 +1113,49 @@
                 console.error('Load error:', error);
                 elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center text-danger">Failed to load data: ' + error.message + '</td></tr>';
             }
+        }
+
+        function renderTable(data) {
+            console.log('Rendering table with data:', data);
+            
+            if (!data || data.length === 0) {
+                elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No data available</td></tr>';
+                return;
+            }
+
+            elements.tableBody.innerHTML = data.map((item, index) => {
+                const serialNo = (state.page - 1) * state.per_page + index + 1;
+                const id = item._id ? (typeof item._id === 'object' ? item._id.$oid : item._id) : '';
+                
+                console.log('Rendering item:', item, 'ID:', id);
+                
+                return `
+                    <tr>
+                        <td><input type="checkbox" class="row-checkbox" data-id="${id}"></td>
+                        <td>${serialNo}</td>
+                        <td>${escapeHtml(item.student_name || '')}</td>
+                        <td>${escapeHtml(item.father_name || '')}</td>
+                        <td>${escapeHtml(item.father_contact || '')}</td>
+                        <td>${escapeHtml(item.course_name || '')}</td>
+                        <td>${escapeHtml(item.delivery_mode || 'Offline')}</td>
+                        <td>${escapeHtml(item.course_content || 'Class Room Course')}</td>
+                        <td><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#" onclick="viewInquiry('${id}'); return false;">View</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="editInquiry('${id}'); return false;">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="deleteInquiry('${id}'); return false;">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function renderPagination(json) {
@@ -1284,14 +1325,49 @@
             }
         };
 
+window.onboardSingle = async function(id) {
+    if (!confirm('Are you sure you want to onboard this student?')) {
+        return;
+    }
+
+    try {
+        console.log('Onboarding single inquiry:', id);
+        
+        const response = await fetch('/inquiries/bulk-onboard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ inquiry_ids: [id] })
+        });
+
+        const json = await response.json();
+        console.log('Onboard response:', json);
+
+        if (!json.success) {
+            throw new Error(json.message || 'Onboarding failed');
+        }
+
+        alert(json.message);
+        
+        // ✅ Just reload the table, no redirect
+        loadData();
+
+    } catch (error) {
+        console.error('Onboard error:', error);
+        alert('Failed to onboard student: ' + error.message);
+    }
+};
+        // ✅ Save button click handler
         elements.saveBtn.addEventListener('click', async (e) => {
-            e.preventDefault(); // Prevent any default behavior
+            e.preventDefault();
             
             console.log('Save button clicked');
             
             const id = document.getElementById('inquiry_id').value;
             
-            // Validate required fields
             const studentName = document.getElementById('student_name').value.trim();
             const fatherName = document.getElementById('father_name').value.trim();
             const fatherContact = document.getElementById('father_contact').value.trim();
@@ -1328,7 +1404,6 @@
                 
                 console.log('Saving inquiry:', method, url, payload);
                 
-                // Disable button during save
                 elements.saveBtn.disabled = true;
                 elements.saveBtn.textContent = 'Saving...';
                 
@@ -1357,12 +1432,61 @@
                 console.error('Save error:', error);
                 alert('Save failed: ' + error.message);
             } finally {
-                // Re-enable button
                 elements.saveBtn.disabled = false;
                 elements.saveBtn.textContent = 'Save Inquiry';
             }
         });
 
+document.querySelector('.btn-onboard').addEventListener('click', async function() {
+    const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+    
+    if (checkedBoxes.length === 0) {
+        alert('Please select at least one inquiry to onboard');
+        return;
+    }
+
+    if (!confirm(`Are you sure you want to onboard ${checkedBoxes.length} student(s)?`)) {
+        return;
+    }
+
+    const inquiryIds = Array.from(checkedBoxes).map(cb => cb.dataset.id);
+    
+    console.log('Onboarding inquiries:', inquiryIds);
+
+    try {
+        this.disabled = true;
+        this.textContent = 'Onboarding...';
+        
+        const response = await fetch('/inquiries/bulk-onboard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ inquiry_ids: inquiryIds })
+        });
+
+        const json = await response.json();
+        console.log('Onboard response:', json);
+
+        if (!json.success) {
+            throw new Error(json.message || 'Onboarding failed');
+        }
+
+        alert(json.message);
+        
+        // ✅ Just reload the table, no redirect
+        loadData();
+
+    } catch (error) {
+        console.error('Onboard error:', error);
+        alert('Failed to onboard students: ' + error.message);
+    } finally {
+        this.disabled = false;
+        this.textContent = 'Onboard';
+    }
+});
         window.changePage = function(page) {
             state.page = page;
             loadData();
@@ -1429,164 +1553,6 @@
         console.log('Page loaded, loading data...');
         loadData();
     });
-
-document.addEventListener('DOMContentLoaded', () => {
-    const ENDPOINT = '/inquiries';
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-    
-    // ... [Keep all your existing code] ...
-
-    /**
-     * Onboard single inquiry (called from dropdown)
-     */
-    window.onboardSingleInquiry = async function(id) {
-        if (!confirm('Onboard this student? They will be moved to Pending Fees Students.')) {
-            return;
-        }
-        
-        try {
-            console.log('Onboarding single inquiry:', id);
-            
-            const response = await fetch(`${ENDPOINT}/onboard/${id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                }
-            });
-            
-            const json = await response.json();
-            console.log('Onboard response:', json);
-            
-            if (!json.success) {
-                throw new Error(json.message || 'Onboard failed');
-            }
-            
-            alert(json.message);
-            
-            // Reload the page to refresh the table (inquiry will be removed)
-            window.location.reload();
-            
-        } catch (error) {
-            console.error('Onboard error:', error);
-            alert('Failed to onboard student: ' + error.message);
-        }
-    };
-
-    /**
-     * Bulk onboard selected inquiries (called from "Onboard Selected" button)
-     */
-    document.getElementById('bulkOnboardBtn').addEventListener('click', async function() {
-        const checkboxes = document.querySelectorAll('.row-checkbox:checked');
-        
-        if (checkboxes.length === 0) {
-            alert('Please select at least one inquiry to onboard');
-            return;
-        }
-        
-        const inquiryIds = Array.from(checkboxes).map(cb => cb.dataset.id);
-        
-        if (!confirm(`Onboard ${inquiryIds.length} student(s)? They will be moved to Pending Fees Students.`)) {
-            return;
-        }
-        
-        // Disable button during processing
-        this.disabled = true;
-        this.textContent = 'Processing...';
-        
-        try {
-            console.log('Bulk onboarding inquiries:', inquiryIds);
-            
-            const response = await fetch(`${ENDPOINT}/bulk-onboard`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ inquiry_ids: inquiryIds })
-            });
-            
-            const json = await response.json();
-            console.log('Bulk onboard response:', json);
-            
-            if (json.success) {
-                alert(json.message);
-                
-                // Redirect to pending fees page or reload
-                if (json.redirect) {
-                    window.location.href = json.redirect;
-                } else {
-                    window.location.reload();
-                }
-            } else {
-                alert('Failed: ' + json.message);
-            }
-        } catch (error) {
-            console.error('Bulk onboard error:', error);
-            alert('Failed to onboard students: ' + error.message);
-        } finally {
-            // Re-enable button
-            this.disabled = false;
-            this.textContent = 'Onboard Selected';
-        }
-    });
-
-    /**
-     * Update the renderTable function to include onboard in dropdown
-     */
-    function renderTable(data) {
-        console.log('Rendering table with data:', data);
-        
-        if (!data || data.length === 0) {
-            elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No data available</td></tr>';
-            return;
-        }
-
-        elements.tableBody.innerHTML = data.map((item, index) => {
-            const serialNo = (state.page - 1) * state.per_page + index + 1;
-            const id = item._id ? (typeof item._id === 'object' ? item._id.$oid : item._id) : '';
-            
-            return `
-                <tr>
-                    <td><input type="checkbox" class="row-checkbox" data-id="${id}"></td>
-                    <td>${serialNo}</td>
-                    <td>${escapeHtml(item.student_name || '')}</td>
-                    <td>${escapeHtml(item.father_name || '')}</td>
-                    <td>${escapeHtml(item.father_contact || '')}</td>
-                    <td>${escapeHtml(item.course_name || '')}</td>
-                    <td>${escapeHtml(item.delivery_mode || 'Offline')}</td>
-                    <td>${escapeHtml(item.course_content || 'Class Room Course')}</td>
-                    <td><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span></td>
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#" onclick="viewInquiry('${id}'); return false;">
-                                    <i class="fa-solid fa-eye"></i> View
-                                </a></li>
-                                <li><a class="dropdown-item" href="#" onclick="editInquiry('${id}'); return false;">
-                                    <i class="fa-solid fa-edit"></i> Edit
-                                </a></li>
-                                <li><a class="dropdown-item" href="#" onclick="onboardSingleInquiry('${id}'); return false;">
-                                    <i class="fa-solid fa-user-check"></i> Onboard
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="#" onclick="deleteInquiry('${id}'); return false;">
-                                    <i class="fa-solid fa-trash"></i> Delete
-                                </a></li>
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-
 </script>
 
 </body>

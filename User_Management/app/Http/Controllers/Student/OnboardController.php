@@ -23,7 +23,8 @@ class OnboardController extends Controller
             ]);
             
             return view('student.onboard.onboard', [
-                'students' => $students
+                'students' => $students,
+                'totalCount' => $students->count()
             ]);
             
         } catch (\Exception $e) {
@@ -46,7 +47,7 @@ class OnboardController extends Controller
                 'student_name' => $student->name
             ]);
             
-            return view('student.onboard.onboard', compact('student'));
+            return view('student.onboard.view', compact('student'));
             
         } catch (\Exception $e) {
             Log::error("View failed for student ID {$id}: " . $e->getMessage());
@@ -123,6 +124,20 @@ class OnboardController extends Controller
                 'medium' => 'required|string',
                 'board' => 'required|string',
                 'courseContent' => 'required|string',
+                
+                // Academic Details
+                'previousClass' => 'required|string',
+                'previousMedium' => 'required|string',
+                'schoolName' => 'required|string',
+                'previousBoard' => 'required|string',
+                'passingYear' => 'required|string',
+                'percentage' => 'required|numeric|min:0|max:100',
+                
+                // Scholarship
+                'isRepeater' => 'required|in:Yes,No',
+                'scholarshipTest' => 'required|in:Yes,No',
+                'lastBoardPercentage' => 'required|numeric|min:0|max:100',
+                'competitionExam' => 'required|in:Yes,No',
                 
                 // Batch Details
                 'batchName' => 'required|string',
