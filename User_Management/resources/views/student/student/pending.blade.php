@@ -335,7 +335,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <div class="btns">
                <a href="{{ route('student.student.pending') }}"><button type="button" class="pendingbtn">Pending Inquiries</button></a>
               <a class="item" href="{{ route('student.onboard.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
-              <a class="item" href="{{ route('student.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
             </div>
 
       </div>

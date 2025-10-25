@@ -12,6 +12,7 @@ class Onboard extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        // Basic Details
         'name',
         'father',
         'mother',
@@ -25,6 +26,8 @@ class Onboard extends Model
         'fatherOccupation',
         'fatherGrade',
         'motherOccupation',
+        
+        // Address Details
         'state',
         'city',
         'pinCode',
@@ -33,41 +36,47 @@ class Onboard extends Model
         'economicWeakerSection',
         'armyPoliceBackground',
         'speciallyAbled',
+        
+        // Course Details
         'courseType',
         'courseName',
         'deliveryMode',
         'medium',
         'board',
         'courseContent',
+        
+        // Academic Details
         'previousClass',
         'previousMedium',
         'schoolName',
         'previousBoard',
         'passingYear',
         'percentage',
+        
+        // Additional Details
         'isRepeater',
         'scholarshipTest',
         'lastBoardPercentage',
         'competitionExam',
+        
+        // Batch Details
         'batchName',
         'batchStartDate',
-        // Payment related fields
-        'totalFees',
-        'paidAmount',
-        'remainingAmount',
-        'paymentStatus', // 'fully_paid', 'partial'
-        'paymentHistory',
+        
+        // Metadata
+        'email',
+        'alternateNumber',
+        'branch',
+        'session',
         'onboardedAt'
     ];
 
     protected $casts = [
-        'totalFees' => 'float',
-        'paidAmount' => 'float',
-        'remainingAmount' => 'float',
-        'paymentHistory' => 'array',
-        'onboardedAt' => 'datetime',
         'dob' => 'date',
-        'batchStartDate' => 'date'
+        'batchStartDate' => 'date',
+        'onboardedAt' => 'datetime',
+        'percentage' => 'float',
+        'lastBoardPercentage' => 'float',
     ];
 
     /**
@@ -75,19 +84,6 @@ class Onboard extends Model
      */
     public static function getAllOnboarded()
     {
-        return self::where('paymentStatus', 'fully_paid')
-                   ->orderBy('onboardedAt', 'desc')
-                   ->get();
-    }
-
-    /**
-     * Get partially paid students
-     */
-    public static function getPartiallyPaid()
-    {
-        return self::where('paymentStatus', 'partial')
-                   ->where('remainingAmount', '>', 0)
-                   ->orderBy('created_at', 'desc')
-                   ->get();
+        return self::orderBy('onboardedAt', 'desc')->get();
     }
 }
