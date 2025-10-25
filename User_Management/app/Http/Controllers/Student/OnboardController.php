@@ -10,25 +10,20 @@ use Illuminate\Support\Facades\Log;
 class OnboardController extends Controller
 {
     /**
-     * Display onboarded students page with tabs
+     * Display all onboarded students (completely filled forms)
      */
     public function index()
     {
         try {
-            // Get fully paid students
-            $fullyPaid = Onboard::getAllOnboarded();
-            
-            // Get partially paid students (if any exist in onboard collection)
-            $partiallyPaid = Onboard::getPartiallyPaid();
+            // Get all onboarded students
+            $students = Onboard::getAllOnboarded();
             
             Log::info('Fetching onboarded students:', [
-                'fully_paid_count' => $fullyPaid->count(),
-                'partially_paid_count' => $partiallyPaid->count()
+                'count' => $students->count()
             ]);
             
             return view('student.onboard.onboard', [
-                'fullyPaid' => $fullyPaid,
-                'partiallyPaid' => $partiallyPaid
+                'students' => $students
             ]);
             
         } catch (\Exception $e) {
@@ -51,11 +46,11 @@ class OnboardController extends Controller
                 'student_name' => $student->name
             ]);
             
-            return view('student.onboard.view', compact('student'));
+            return view('student.onboard.onboard', compact('student'));
             
         } catch (\Exception $e) {
             Log::error("View failed for student ID {$id}: " . $e->getMessage());
-            return redirect()->route('student.onboard')
+            return redirect()->route('student.onboard.onboard')
                 ->with('error', 'Student not found');
         }
     }
@@ -77,7 +72,7 @@ class OnboardController extends Controller
             
         } catch (\Exception $e) {
             Log::error("Edit failed for student ID {$id}: " . $e->getMessage());
-            return redirect()->route('student.onboard')
+            return redirect()->route('student.onboard.onboard')
                 ->with('error', 'Student not found');
         }
     }
@@ -96,34 +91,42 @@ class OnboardController extends Controller
             $student = Onboard::findOrFail($id);
             
             $validated = $request->validate([
+                // Basic Details
                 'name' => 'required|string|max:255',
-                'father' => 'nullable|string|max:255',
-                'mother' => 'nullable|string|max:255',
-                'dob' => 'nullable|date',
-                'mobileNumber' => 'nullable|string|max:15',
+                'father' => 'required|string|max:255',
+                'mother' => 'required|string|max:255',
+                'dob' => 'required|date',
+                'mobileNumber' => 'required|string|max:15',
                 'fatherWhatsapp' => 'nullable|string|max:15',
                 'motherContact' => 'nullable|string|max:15',
                 'studentContact' => 'nullable|string|max:15',
-                'category' => 'nullable|in:OBC,SC,GENERAL,ST',
-                'gender' => 'nullable|in:Male,Female,Others',
+                'category' => 'required|in:OBC,SC,GENERAL,ST',
+                'gender' => 'required|in:Male,Female,Others',
                 'fatherOccupation' => 'nullable|string',
                 'fatherGrade' => 'nullable|string',
                 'motherOccupation' => 'nullable|string',
-                'state' => 'nullable|string',
-                'city' => 'nullable|string',
-                'pinCode' => 'nullable|string|max:10',
-                'address' => 'nullable|string',
-                'belongToOtherCity' => 'nullable|in:Yes,No',
-                'economicWeakerSection' => 'nullable|in:Yes,No',
-                'armyPoliceBackground' => 'nullable|in:Yes,No',
-                'speciallyAbled' => 'nullable|in:Yes,No',
-                'courseType' => 'nullable|string',
-                'courseName' => 'nullable|string',
-                'deliveryMode' => 'nullable|string',
-                'medium' => 'nullable|string',
-                'board' => 'nullable|string',
-                'courseContent' => 'nullable|string',
-                'batchName' => 'nullable|string',
+                
+                // Address Details
+                'state' => 'required|string',
+                'city' => 'required|string',
+                'pinCode' => 'required|string|max:10',
+                'address' => 'required|string',
+                'belongToOtherCity' => 'required|in:Yes,No',
+                'economicWeakerSection' => 'required|in:Yes,No',
+                'armyPoliceBackground' => 'required|in:Yes,No',
+                'speciallyAbled' => 'required|in:Yes,No',
+                
+                // Course Details
+                'courseType' => 'required|string',
+                'courseName' => 'required|string',
+                'deliveryMode' => 'required|string',
+                'medium' => 'required|string',
+                'board' => 'required|string',
+                'courseContent' => 'required|string',
+                
+                // Batch Details
+                'batchName' => 'required|string',
+                'batchStartDate' => 'nullable|date',
             ]);
 
             $student->update($validated);
@@ -134,7 +137,7 @@ class OnboardController extends Controller
             ]);
 
             return redirect()
-                ->route('student.onboard')
+                ->route('student.onboard.onboard')
                 ->with('success', 'Student details updated successfully!');
 
         } catch (\Exception $e) {

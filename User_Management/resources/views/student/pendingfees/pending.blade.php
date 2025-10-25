@@ -333,8 +333,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <div class="top-text">
         </div>
             <div class="btns">
-               <a href="{{ route('student.student.pending') }}"><button type="button" class="pendingbtn">Pending Fees Students</button></a>
-              <a class="item" href="{{ route('student.onboard.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
+               <a href="{{ route('student.student.pending') }}"><button type="button" class="onboardbtn">Pending Fees Students</button></a>
             </div>
 
       </div>
@@ -407,7 +406,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </a>
       </li>
       <li>
-        <a href="{{ route('student.payment.pay', $pending->_id) }}">
 <button class="dropdown-item">
           Pay Fees
               </button>   

@@ -56,7 +56,6 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
  
-// Inquiry Management Routes
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
     Route::get('/', [App\Http\Controllers\Student\InquiryController::class, 'index'])->name('index');
     Route::get('/data', [App\Http\Controllers\Student\InquiryController::class, 'data'])->name('data');
@@ -65,6 +64,9 @@ Route::prefix('inquiries')->name('inquiries.')->group(function () {
     Route::put('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'update'])->name('update');
     Route::delete('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'destroy'])->name('destroy');
     Route::post('/upload', [App\Http\Controllers\Student\InquiryController::class, 'upload'])->name('upload');
+    
+    Route::post('/onboard/{id}', [App\Http\Controllers\Student\InquiryController::class, 'onboardSingle'])->name('onboard.single');
+    Route::post('/bulk-onboard', [App\Http\Controllers\Student\InquiryController::class, 'bulkOnboard'])->name('bulk.onboard');
 });
  
 Route::get('/students/pending', [StudentController::class, 'index'])
@@ -232,10 +234,6 @@ Route::get('/students/pending', [StudentController::class, 'index'])
 Route::get('/students/onboard', [StudentController::class, 'activeStudents'])
     ->name('student.onboard');
  
-// Pending Fees Students (partial payment students)
-Route::get('/students/pending-fees', [StudentController::class, 'pendingFees'])
-    ->name('students.pending_fees');
- 
 // Show single student details
 Route::get('/students/{id}', [StudentController::class, 'show'])
     ->name('students.show');
@@ -262,7 +260,6 @@ Route::get('/students/active', [StudentController::class, 'activeStudents'])
  
  
  
-// Additional route for active students (alternative naming)
 Route::get('/students/active', [StudentController::class, 'activeStudents'])
     ->name('students.active');
 // Scholarship Routes
@@ -288,18 +285,14 @@ Route::prefix('master')->name('master.')->group(function () {
     Route::delete('/scholarship/{id}', [ScholarshipController::class, 'destroy'])->name('scholarship.destroy');
 });
  
- 
+
 //pending fees students routes
 Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(function () {
     Route::get('/', [App\Http\Controllers\Student\PendingFeesController::class, 'index'])->name('pending');
     Route::get('/{id}/edit', [App\Http\Controllers\Student\PendingFeesController::class, 'edit'])->name('edit');
     Route::put('/{id}', [App\Http\Controllers\Student\PendingFeesController::class, 'update'])->name('update');
-    Route::get('/{id}', [App\Http\Controllers\Student\PendingFeesController::class, 'show'])->name('view');
+    Route::get('/{id}', [App\Http\Controllers\Student\PendingFeesController::class, 'view'])->name('view');
 });
- 
-Route::get('/student/pending', [PendingFeesController::class, 'index'])->name('student.pendingfees.pending');
-Route::get('/student/pending', [StudentController::class, 'index'])->name('student.student.pending');
-Route::get('/student/edit/{id}', [StudentController::class, 'edit'])->name('student.student.edit');
  
  
 // Payment Routes
@@ -318,30 +311,50 @@ Route::prefix('student/payment')->name('student.payment.')->group(function () {
 });
  
  
-// Onboard Routes
-Route::prefix('student/onboard')->name('student.onboard.onboard')->group(function () {
-    // List onboarded students
-    Route::get('/', [App\Http\Controllers\Student\OnboardController::class, 'index'])
-        ->name('index');
+// // Onboard Routes
+// Route::prefix('student/onboard')->name('student.onboard.onboard')->group(function () {
+//     // List onboarded students
+//     Route::get('/', [App\Http\Controllers\Student\OnboardController::class, 'index'])
+//         ->name('index');
    
-    // View onboarded student
-    Route::get('/{id}', [App\Http\Controllers\Student\OnboardController::class, 'show'])
-        ->name('show');
+//     // View onboarded student
+//     Route::get('/{id}', [App\Http\Controllers\Student\OnboardController::class, 'show'])
+//         ->name('show');
    
-    // Edit onboarded student
-    Route::get('/{id}/edit', [App\Http\Controllers\Student\OnboardController::class, 'edit'])
-        ->name('edit');
+//     // Edit onboarded student
+//     Route::get('/{id}/edit', [App\Http\Controllers\Student\OnboardController::class, 'edit'])
+//         ->name('edit');
    
-    // Update onboarded student
-    Route::put('/{id}', [App\Http\Controllers\Student\OnboardController::class, 'update'])
-        ->name('update');
-});
+//     // Update onboarded student
+//     Route::put('/{id}', [App\Http\Controllers\Student\OnboardController::class, 'update'])
+//         ->name('update');
+// });
  
-// Update the existing onboard route to use the controller
-Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
-    ->name('student.onboard');
+// // Update the existing onboard route to use the controller
+// Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
+//     ->name('student.onboard');
  
-// Update the existing onboard route to use the controller
-Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
-    ->name('student.onboard.onboard');
+// // Update the existing onboard route to use the controller
+// Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
+//     ->name('student.onboard.onboard');
 
+
+    // Student Onboard Routes
+Route::prefix('student')->name('student.')->group(function () {
+    
+    // Pending Students (Student collection)
+    Route::get('/pending', [StudentController::class, 'index'])
+        ->name('student.pending');
+    Route::get('/pending/{id}/edit', [StudentController::class, 'edit'])
+        ->name('student.edit');
+    Route::put('/pending/{id}', [StudentController::class, 'update'])
+        ->name('student.update');
+    
+    // Onboarded Students (Onboard collection)
+    Route::get('/onboard', [OnboardController::class, 'index'])
+        ->name('onboard.onboard');
+    Route::get('/onboard/{id}/edit', [OnboardController::class, 'edit'])
+        ->name('onboard.edit');
+    Route::put('/onboard/{id}', [OnboardController::class, 'update'])
+        ->name('onboard.update');
+});

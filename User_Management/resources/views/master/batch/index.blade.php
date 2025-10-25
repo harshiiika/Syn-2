@@ -553,8 +553,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <div class="mb-3">
               <label class="form-label">Course Type</label>
               <select class="form-select" name="course_type" required>
-                <option value="Pre-Med" {{ ($batch->course_type ?? '') == 'Pre-Med' ? 'selected' : '' }}>Pre-Med</option>
-                <option value="Regular" {{ ($batch->course_type ?? '') == 'Regular' ? 'selected' : '' }}>Regular</option>
+                <option value="Pre-Medical" {{ ($batch->course_type ?? '') == 'Pre-Medical' ? 'selected' : '' }}>Pre-Medical</option>
+                <option value="Pre-Engineering" {{ ($batch->course_type ?? '') == 'Pre-Engineering' ? 'selected' : '' }}>Pre-Engineering</option>
                 <option value="Pre-Foundation" {{ ($batch->course_type ?? '') == 'Pre-Foundation' ? 'selected' : '' }}>Pre-Foundation</option>
               </select>
             </div>

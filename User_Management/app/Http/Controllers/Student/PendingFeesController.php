@@ -43,7 +43,7 @@ class PendingFeesController extends Controller
     /**
      * Display the student details (read-only view)
      */
-    public function show(string $id)
+    public function view(string $id)
     {
         try {
             // Try to fetch from Student model first, then Pending model
