@@ -214,12 +214,12 @@ public function showOnboardForm($inquiryId)
         $inquiry = Inquiry::findOrFail($inquiryId);
         
         // Get dropdown data
-        $courses = \App\Models\Master\Courses::all(); // Adjust model name if different
-        $branches = ['Bikaner']; // Or get from database
+        $courses = \App\Models\Master\Courses::all();
+        $branches = ['Bikaner'];
         $deliveryModes = ['Offline', 'Online', 'Hybrid'];
         $courseContents = ['Class Room Course', 'Test Series Only'];
         
-        return view('student.inquiry.onboard', compact(
+        return view('student.onboard.onboard', compact(
             'inquiry', 
             'courses', 
             'branches', 
@@ -248,7 +248,7 @@ public function processOnboard(Request $request, $inquiryId)
         }
 
         // Create student record that will appear on BOTH pages
-        $student = \App\Models\Student\Student::create([
+        $student = Student::create([
             'name' => $inquiry->student_name,
             'father' => $inquiry->father_name,
             'mobileNumber' => $inquiry->father_contact,
@@ -271,7 +271,7 @@ public function processOnboard(Request $request, $inquiryId)
             'total_fees' => 0,
             'paid_fees' => 0,
             'remaining_fees' => 0,
-            'status' => \App\Models\Student\Student::STATUS_PENDING_FEES,
+            'status' => Student::STATUS_PENDING_FEES,
             'fee_status' => 'pending',
             'admission_date' => now(),
             'session' => session('current_session', '2025-2026'),
