@@ -1,3 +1,78 @@
+{{--
+
+SESSION MANAGEMENT BLADE FILE - CODE SUMMARY
+
+
+LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title,
+external CSS (Font Awesome, custom emp.css, Bootstrap)
+
+LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
+notification bell, user dropdown menu with profile and login options
+
+LINE 50-51: Main container div starts
+
+LINE 52-233: Left Sidebar Navigation
+- LINE 52-58: Sidebar container and admin info display
+- LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
+* LINE 61-75: User Management (Employee, Batches Assignment)
+* LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
+* LINE 100-114: Session Management (Session, Calendar, Student Migrate)
+* LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
+* LINE 132-142: Fees Management (Fees Collection)
+* LINE 143-155: Attendance Management (Student, Employee)
+* LINE 156-168: Study Material (Units, Dispatch Material)
+* LINE 169-179: Test Series Management (Test Master)
+* LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
+
+LINE 234-252: Right Content Area Header
+- LINE 239-246: Action buttons (Add Session, Upload)
+
+LINE 253-282: Table Controls
+- LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
+- LINE 269-274: Search input field with icon
+
+LINE 275-295: Employee Table Structure
+- LINE 276-286: Table headers (Serial No, Name, Email, Mobile, Department, Role, Status, Action)
+- LINE 287-289: Empty tbody tag
+- LINE 290-294: Comment indicating modal fillables location
+
+LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
+- Displays user data from database
+- Status badge with color coding
+- Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
+
+LINE 340-342: Comment for options modals section
+
+LINE 344-375: View Modal (foreach loop for each user)
+- Read-only display of employee details
+- Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
+
+LINE 377-445: Edit Modal (foreach loop for each user)
+- LINE 379-382: PHP variables setup for current department and roles
+- LINE 384-443: Edit form with PUT method
+
+LINE 481-498: Footer Section
+- LINE 482-484: Pagination info text
+- LINE 485-493: Pagination controls (Previous, page numbers, Next)
+
+LINE 499-500: Closing divs for main container
+
+LINE 504-600: Add Session Modal
+- LINE 504-509: Modal dialog setup
+- LINE 510-586: Form with POST method to add new session
+
+LINE 622-624: Closing divs and body tag
+
+LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js)
+
+LINE 629-665: AJAX Script for Dynamic User Addition
+- Prevents page reload on form submit
+- Handles form validation errors
+- Appends new user to table without refresh
+--}}
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -92,20 +167,22 @@
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/master/courses/course.html"><i class="fa-solid fa-book-open"
+                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="/master/batches/batches.html"><i
+                <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
-                <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
+                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
-                <li><a class="item" href="/master/feesm/fees.html"><i class="fa-solid fa-credit-card"
+                <li><a class="item" href="{{ route('fees.index') }}">
+<i class="fa-solid fa-credit-card"
                       id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('master.other_fees.index') }}
+"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
-                <li><a class="item" href="/master/branch/branch.html"><i class="fa-solid fa-diagram-project"
+                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
                       id="side-icon"></i> Branch
                     Management</a></li>
               </ul>
@@ -125,7 +202,8 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
+                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
+                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
                       id="side-icon"></i> Calendar</a></li>
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
@@ -149,10 +227,15 @@
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry
                     Management</a></li>
-                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+<<<<<<< HEAD
+                <li><a class="item" href="{{ route('student.student.pending') }}">
+=======
+                <li><a class="item" href="student.html">
+>>>>>>> origin
+  <i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
@@ -252,7 +335,7 @@
                 </li>
                 <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
                     Series</a></li>
-                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
                     History</a></li>
                 <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
                       id="side-icon"></i>Onboard History</a></li>
@@ -262,14 +345,19 @@
         </div>
       </div>
     </div>
+
+    <!-- Div for right section starts here -->
     <div class="right" id="right">
       <div class="top">
         <div class="top-text">
-          <h4>Sessions</h4>
+          <h4>SESSION ASSIGNMENT</h4>
         </div>
 
         <button type="button" class="btn btn-primary" id="liveToastBtn" data-bs-toggle="modal"
           data-bs-target="#createSessionModal">Create Session</button>
+
+
+          <!-- Toast for (Session Limit Reached) -->
 
         <div class="toast-container end-0 p-3">
           <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -303,6 +391,8 @@
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
+
+        <!-- Table starts here -->
         <table class="table table-hover" id="table">
           <thead>
             <tr>
@@ -315,6 +405,8 @@
             </tr>
           </thead>
           <tbody>
+
+          <!-- Section for fillables -->
             @foreach($sessions as $index => $session)
               @php
   $sessionId = $session->_id ?? $session->id ?? null;

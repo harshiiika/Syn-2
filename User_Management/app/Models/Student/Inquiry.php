@@ -9,8 +9,8 @@ class Inquiry extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mongodb'; // 👈 ensure it uses MongoDB
-    protected $collection = 'inquiries'; // 👈 use MongoDB collection name
+    protected $connection = 'mongodb'; // ensure it uses MongoDB
+    protected $collection = 'inquiries'; // use MongoDB collection name
 
     protected $fillable = [
         'student_name',

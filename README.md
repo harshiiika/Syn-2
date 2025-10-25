@@ -3,15 +3,11 @@ SYNTHESIS PROJECT
 
 Work until 10/10/2025
 Integrated User Management, Session Management, and Student Management, where:
-1. User Management - Employee , Batches ✅ 
-2. Session management - Session , Courses ✅ 
-3. Student management - Inquiry , Fees ✅ 
-4. Pushed the code , main branch is up to date.
+1. Priyanshi - Employee, Batches Assignment, Batches, Branch Assignment ✅ 
+2. Harshika - Session, Courses, Calendar, Student Migrate ✅ 
+3. Tisha - Inquiry, Fees Master, Other fees master ✅ 
+4. Pushed the code; main branch is up to date.
 
-Next Steps:
-Integrate all the separate folders into one and test if they're working well together ✅
-Test main for bugs ✅
-Now , Unit testing of respective second modules is going on 10/10/205 
 
 Project Flow:
 Updated upstream
@@ -19,15 +15,15 @@ LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY /... (Access via left sidebar)
 
 
 Project Structure:
-1. User Management (Priyanshi)
+1. User Management (Priyanshi - Completed)
    - Employee
    - Batches Assignment
   
-2. Master 
-   - Courses (Harshika)
+2. Master (All Three)
+   - Courses 
    - Batches 
    - Scholarships
-   - Fees Master (Tisha)
+   - Fees Master 
    - Other Fees Master
    - Branch Management
   

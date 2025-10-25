@@ -1049,7 +1049,7 @@
 
         async function loadData() {
             try {
-                const url = `${ENDPOINT}/data?page=${state.page}&per_page=${state.per_page}&search=${encodeURIComponent(state.search)}`;
+                const url = ${ENDPOINT}/data?page=${state.page}&per_page=${state.per_page}&search=${encodeURIComponent(state.search)};
                 console.log('Loading data from:', url);
                 
                 const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -1141,13 +1141,13 @@
         function updateShowingInfo(json) {
             const from = json.data.length ? (json.current_page - 1) * json.per_page + 1 : 0;
             const to = json.data.length ? (json.current_page - 1) * json.per_page + json.data.length : 0;
-            elements.showingInfo.textContent = `Showing ${from} to ${to} of ${json.total || 0} entries`;
+            elements.showingInfo.textContent = Showing ${from} to ${to} of ${json.total || 0} entries;
         }
 
         window.viewInquiry = async function(id) {
             try {
                 console.log('Viewing inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
+                const response = await fetch(${ENDPOINT}/${id}, { headers: { 'Accept': 'application/json' } });
                 const json = await response.json();
                 if (!json.success) throw new Error(json.message);
                 
@@ -1215,7 +1215,7 @@
         window.editInquiry = async function(id) {
             try {
                 console.log('Editing inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
+                const response = await fetch(${ENDPOINT}/${id}, { headers: { 'Accept': 'application/json' } });
                 const json = await response.json();
                 if (!json.success) throw new Error(json.message);
                 
@@ -1228,7 +1228,7 @@
                 document.getElementById('student_contact').value = item.student_contact || '';
                 
                 const categoryValue = item.category || 'General';
-                const categoryInput = document.querySelector(`input[name="category"][value="${categoryValue}"]`);
+                const categoryInput = document.querySelector(input[name="category"][value="${categoryValue}"]);
                 if (categoryInput) categoryInput.checked = true;
                 
                 document.getElementById('state').value = item.state || '';
@@ -1240,15 +1240,15 @@
                 document.getElementById('course_content').value = item.course_content || 'Class Room Course';
                 
                 const economicValue = item.ews || 'No';
-                const economicInput = document.querySelector(`input[name="economic_weaker"][value="${economicValue}"]`);
+                const economicInput = document.querySelector(input[name="economic_weaker"][value="${economicValue}"]);
                 if (economicInput) economicInput.checked = true;
                 
                 const armyValue = item.defense || 'No';
-                const armyInput = document.querySelector(`input[name="army_background"][value="${armyValue}"]`);
+                const armyInput = document.querySelector(input[name="army_background"][value="${armyValue}"]);
                 if (armyInput) armyInput.checked = true;
                 
                 const speciallyValue = item.specially_abled || 'No';
-                const speciallyInput = document.querySelector(`input[name="specially_abled"][value="${speciallyValue}"]`);
+                const speciallyInput = document.querySelector(input[name="specially_abled"][value="${speciallyValue}"]);
                 if (speciallyInput) speciallyInput.checked = true;
                 
                 document.getElementById('inquiryModalLabel').textContent = 'Edit Inquiry';
@@ -1264,7 +1264,7 @@
             
             try {
                 console.log('Deleting inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, {
+                const response = await fetch(${ENDPOINT}/${id}, {
                     method: 'DELETE',
                     headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
                 });
@@ -1307,7 +1307,7 @@
             }
 
             try {
-                const url = id ? `${ENDPOINT}/${id}` : ENDPOINT;
+                const url = id ? ${ENDPOINT}/${id} : ENDPOINT;
                 const method = id ? 'PUT' : 'POST';
                 
                 console.log('Saving inquiry:', method, url, payload);
@@ -1373,7 +1373,7 @@
             formData.append('file', file);
 
             try {
-                const response = await fetch(`${ENDPOINT}/upload`, {
+                const response = await fetch(${ENDPOINT}/upload, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

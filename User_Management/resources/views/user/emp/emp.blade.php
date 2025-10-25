@@ -3,88 +3,82 @@
 EMPLOYEE MANAGEMENT BLADE FILE - CODE SUMMARY
 
 
-LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title, 
-           external CSS (Font Awesome, custom emp.css, Bootstrap 5.3.6)
+LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title,
+external CSS (Font Awesome, custom emp.css, Bootstrap)
 
 LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
-            notification bell, user dropdown menu with profile and login options
+notification bell, user dropdown menu with profile and login options
 
 LINE 50-51: Main container div starts
 
 LINE 52-233: Left Sidebar Navigation
-  - LINE 52-58: Sidebar container and admin info display
-  - LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
-    * LINE 61-75: User Management (Employee, Batches Assignment)
-    * LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
-    * LINE 100-114: Session Management (Session, Calendar, Student Migrate)
-    * LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
-    * LINE 132-142: Fees Management (Fees Collection)
-    * LINE 143-155: Attendance Management (Student, Employee)
-    * LINE 156-168: Study Material (Units, Dispatch Material)
-    * LINE 169-179: Test Series Management (Test Master)
-    * LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
+- LINE 52-58: Sidebar container and admin info display
+- LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
+* LINE 61-75: User Management (Employee, Batches Assignment)
+* LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
+* LINE 100-114: Session Management (Session, Calendar, Student Migrate)
+* LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
+* LINE 132-142: Fees Management (Fees Collection)
+* LINE 143-155: Attendance Management (Student, Employee)
+* LINE 156-168: Study Material (Units, Dispatch Material)
+* LINE 169-179: Test Series Management (Test Master)
+* LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
 
 LINE 234-252: Right Content Area Header
-  - LINE 236-238: Page title "EMPLOYEE"
-  - LINE 239-246: Action buttons (Add Employee, Upload)
+- LINE 236-238: Page title "EMPLOYEE"
+- LINE 239-246: Action buttons (Add Employee, Upload)
 
 LINE 253-282: Table Controls
-  - LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
-  - LINE 269-274: Search input field with icon
+- LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
+- LINE 269-274: Search input field with icon
 
 LINE 275-295: Employee Table Structure
-  - LINE 276-286: Table headers (Serial No, Name, Email, Mobile, Department, Role, Status, Action)
-  - LINE 287-289: Empty tbody tag
-  - LINE 290-294: Comment indicating modal fillables location
+- LINE 276-286: Table headers (Serial No, Name, Email, Mobile, Department, Role, Status, Action)
+- LINE 287-289: Empty tbody tag
+- LINE 290-294: Comment indicating modal fillables location
 
 LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
-  - Displays user data from database
-  - Status badge with color coding
-  - Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
-
-LINE 340-342: Comment for options modals section
+- Displays user data from database
+- Status badge with color coding
+- Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
 
 LINE 344-375: View Modal (foreach loop for each user)
-  - Read-only display of employee details
-  - Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
+- Read-only display of employee details
+- Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
 
 LINE 377-445: Edit Modal (foreach loop for each user)
-  - LINE 379-382: PHP variables setup for current department and roles
-  - LINE 384-443: Edit form with PUT method
-  - Editable fields: Name, Email, Mobile, Alternate Mobile, Branch, Department
-  - Current Role displayed as read-only
+- LINE 379-382: PHP variables setup for current department and roles
+- LINE 384-443: Edit form with PUT method
+- Editable fields: Name, Email, Mobile, Alternate Mobile, Branch, Department
+- Current Role displayed as read-only
 
 LINE 447-480: Password Update Modal (foreach loop for each user)
-  - Form with PUT method for password update
-  - Fields: Current Password, New Password, Confirm New Password
+- Form with PUT method for password update
+- Fields: Current Password, New Password, Confirm New Password
 
 LINE 481-498: Footer Section
-  - LINE 482-484: Pagination info text
-  - LINE 485-493: Pagination controls (Previous, page numbers, Next)
+- LINE 482-484: Pagination info text
+- LINE 485-493: Pagination controls (Previous, page numbers, Next)
 
 LINE 499-500: Closing divs for main container
 
 LINE 501-503: Comment for Add Employee modal
 
 LINE 504-600: Add Employee Modal
-  - LINE 504-509: Modal dialog setup
-  - LINE 510-586: Form with POST method to add new employee
-  - Fields: Name, Mobile, Alternate Mobile, Email, Branch, Department, 
-            Password, Confirm Password, File upload
-  - LINE 587-591: Modal footer with Cancel and Submit buttons
-
-LINE 592-621: Upload Modal
-  - Sample file download button
-  - File upload form for bulk employee import
+- LINE 504-509: Modal dialog setup
+- LINE 510-586: Form with POST method to add new employee
+- Fields: Name, Mobile, Alternate Mobile, Email, Branch, Department,
+Password, Confirm Password, File upload
+- LINE 587-591: Modal footer with Cancel and Submit buttons
 
 LINE 622-624: Closing divs and body tag
 
-LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js, jQuery)
+LINE 625-628: External JavaScript includes (Bootstrap bundle)
 
 LINE 629-665: AJAX Script for Dynamic User Addition
-  - Prevents page reload on form submit
-  - Handles form validation errors
-  - Appends new user to table without refresh
+- Prevents page reload on form submit
+- Handles form validation errors
+- Appends new user to table without refresh
 --}}
 
 <!DOCTYPE html>
@@ -98,9 +92,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   <title>Employee</title>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-    <!-- Custom CSS -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="{{asset('css/emp.css')}}">
-   <!-- Bootstrap 5.3.6 CSS -->
+  <!-- Bootstrap 5.3.6 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 
@@ -108,7 +102,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
 <body>
   <!-- Header Section: Contains logo, sidebar toggle, session selector, notifications, and user menu -->
- 
+
   <div class="header">
     <div class="logo">
       <img src="{{asset('images/logo.png.jpg')}}" class="img">
@@ -138,7 +132,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     </div>
   </div>
   <div class="main-container">
- <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
+    <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
     <div class="left" id="sidebar">
 
       <div class="text" id="text">
@@ -158,7 +152,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/user management/emp/emp.html "> <i class="fa-solid fa-user"
+                <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
                       id="side-icon"></i> Employee</a></li>
                 <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
                       id="side-icon"></i> Batches Assignment</a></li>
@@ -176,20 +170,21 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/master/courses/course.html"><i class="fa-solid fa-book-open"
+                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="/master/batches/batches.html"><i
+                <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
-                <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
+                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
-                <li><a class="item" href="/master/feesm/fees.html"><i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('fees.index') }}">
+                    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="{{ route('master.other_fees.index') }}
+"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
-                <li><a class="item" href="/master/branch/branch.html"><i class="fa-solid fa-diagram-project"
+                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
                       id="side-icon"></i> Branch
                     Management</a></li>
               </ul>
@@ -209,7 +204,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
+                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
+                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
                       id="side-icon"></i> Calendar</a></li>
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
@@ -222,27 +218,27 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button"> 
+              id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-          
+
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
-                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Student Onboard</a>
+                <li><a class="item" href="{{ route('student.student.pending') }}">
+                    <i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
                 </li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
+                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Students</a></li>
               </ul>
             </div>
-          </div>  
+          </div>
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -335,7 +331,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </li>
                 <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
                     Series</a></li>
-                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
                     History</a></li>
                 <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
                       id="side-icon"></i>Onboard History</a></li>
@@ -351,12 +347,12 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <h4>EMPLOYEE</h4>
         </div>
         <div class="buttons">
-           <!-- Button to open Add Employee modal -->
-             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalOne"
-            id="add" >
+          <!-- Button to open Add Employee modal -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalOne"
+            id="add">
             Add Employee
           </button>
-          <!-- Button to open Upload modal for bulk import -->
+
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTwo"
             id="up">
             Upload
@@ -364,7 +360,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
       </div>
       <div class="whole">
-         <!-- Table controls: entries dropdown and search -->
+        <!-- Table controls: entries dropdown and search -->
         <div class="dd">
           <div class="line">
             <h6>Show Enteries:</h6>
@@ -401,218 +397,233 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </tr>
           </thead>
           <tbody>
-  <!-- Modal fillables where roles are assigned according to dept automatically -->
+            <!-- Modal fillables where roles are assigned according to dept automatically -->
             <!-- Dynamic table rows populated from database using Blade foreach loop -->
-          
+
 
             <tr>
             </tr>
           </tbody>
-<!-- Modal fillables where roles are assigned according to dept automatically -->
+          <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-      @foreach($users as $index => $user)
-<tr>
-   <!-- Serial number (index + 1) -->
-  <td>{{ $index + 1 }}</td>
-  <td>{{ $user->name }}</td>
-  <td>{{ $user->email }}</td>
-  <td>{{ $user->mobileNumber ?? '—' }}</td>
-<td>{{ $user->roleNames->implode(', ') }}</td>
-<td>{{ $user->departmentNames->implode(', ') }}</td>
+          @foreach($users as $index => $user)
+            <tr>
+              <!-- Serial number (index + 1) -->
+              <td>{{ $index + 1 }}</td>
+              <td>{{ $user->name }}</td>
+              <td>{{ $user->email }}</td>
+              <td>{{ $user->mobileNumber ?? '—' }}</td>
+              <td>{{ $user->roleNames->implode(', ') }}</td>
+              <td>{{ $user->departmentNames->implode(', ') }}</td>
 
-  <td>
-    <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-      {{ $user->status  ?? 'Active' }}
-    </span>
-  </td>
-  
-  <td>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-        <li>
-          <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $user->_id }}">
-            View Details
-          </button>
-        </li>
-        <li>
-         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
-            Edit Details
-          </button>
-        </li>
-        <li>
-          <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#passwordModal{{ $user->_id }}">
-            Password Update
-          </button>
-        </li>
-        <li>
-          <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}">
-            @csrf
-            <button type="submit" class="dropdown-item">
-              {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
-            </button>
-          </form>
-        </li>
-      </ul>
-    </div>
-  </td>
-</tr>
-@endforeach
+              <td>
+                <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
+                  {{ $user->status ?? 'Active' }}
+                </span>
+              </td>
+
+              <td>
+                <div class="dropdown">
+              
+
+                   <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+            type="button" 
+            id="actionMenuButton" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
+                  <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+                    <li>
+                      <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $user->_id }}">
+                        View Details
+                      </button>
+                    </li>
+                    <li>
+                      <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
+                        Edit Details
+                      </button>
+                    </li>
+                    <li>
+                      <button class="dropdown-item" data-bs-toggle="modal"
+                        data-bs-target="#passwordModal{{ $user->_id }}">
+                        Password Update
+                      </button>
+                    </li>
+                    <li>
+                      <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                          {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          @endforeach
 
         </table>
 
- <!-- Here options modals are present. -->
-  
+        <!-- Here options modals are present. -->
+
         <!-- View Modal -->
 
-       
+
         @foreach($users as $user)
-      <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}" aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-          <h5 class="modal-title" id="viewModalLabel{{ $user->_id }}">Employee Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}"
+            aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="viewModalLabel{{ $user->_id }}">Employee Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" value="{{ $user->name }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-control" value="{{ $user->email }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Mobile</label>
+                    <input type="text" class="form-control" value="{{ $user->mobileNumber ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Alternate Mobile</label>
+                    <input type="text" class="form-control" value="{{ $user->alternateNumber ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Branch</label>
+                    <input type="text" class="form-control" value="{{ $user->branch ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Department</label>
+                    <input type="text" class="form-control"
+                      value="{{ $user->departmentNames ? $user->departmentNames->join(', ') : '—' }}" readonly>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-control" value="{{ $user->name }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="text" class="form-control" value="{{ $user->email }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Mobile</label>
-            <input type="text" class="form-control" value="{{ $user->mobileNumber ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Alternate Mobile</label>
-            <input type="text" class="form-control" value="{{ $user->alternateNumber ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Branch</label>
-            <input type="text" class="form-control" value="{{ $user->branch ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Department</label>
-            <input type="text" class="form-control" value="{{ $user->departmentNames ? $user->departmentNames->join(', ') : '—' }}" readonly>
-          </div>
-          </div>
-        </div>
-        </div>
-      </div>
-@endforeach
+        @endforeach
 
-<!-- Edit Modal -->
-@foreach($users as $user)
-<div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content">
-      <form method="POST" action="{{ route('users.update', $user->_id) }}">
-        @csrf
-        @method('PUT')
-        <div class="modal-header">
-          <h5 class="modal-title" id="editModalLabel{{ $user->_id }}">Edit Employee Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Mobile</label>
-            <input type="text" class="form-control" name="mobileNumber" value="{{ $user->mobileNumber ?? '' }}" required>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Alternate Mobile</label>
-            <input type="text" class="form-control" name="alternateNumber" value="{{ $user->alternateNumber ?? '' }}">
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Branch</label>
-            <select class="form-select" name="branch" required>
-              <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
-            </select>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Department</label>
-            <select class="form-select" name="department" required>
-              @php
-                $currentDepartment = $user->departmentNames->first() ?? '';
-              @endphp
-              <option value="Front Office" {{ $currentDepartment == 'Front Office' ? 'selected' : '' }}>Front Office</option>
-              <option value="Back Office" {{ $currentDepartment == 'Back Office' ? 'selected' : '' }}>Back Office</option>
-              <option value="Office" {{ $currentDepartment == 'Office' ? 'selected' : '' }}>Office</option>
-              <option value="Test Management" {{ $currentDepartment == 'Test Management' ? 'selected' : '' }}>Test Management</option>
-              <option value="Admin" {{ $currentDepartment == 'Admin' ? 'selected' : '' }}>Admin</option>
-            </select>
+        <!-- Edit Modal -->
+        @foreach($users as $user)
+          <div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1"
+            aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                <form method="POST" action="{{ route('users.update', $user->_id) }}">
+                  @csrf
+                  @method('PUT')
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel{{ $user->_id }}">Edit Employee Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Name</label>
+                      <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
                     </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Current Role</label>
-            <input type="text" class="form-control" value="{{ $user->roleNames->join(', ') ?? '—' }}" readonly>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" id="submit" class="btn btn-primary">Update</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-@endforeach
-      <!-- Password Update Modal -->
-       
-      @foreach($users as $user)
 
-      <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1" aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-          <form method="POST" action="{{ route('users.password.update', $user->_id) }}">
-          @csrf
-          @method('PUT')
-          <div class="modal-header">
-            <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-            <label class="form-label">Current Password</label>
-            <input type="password" name="current_password" class="form-control" required>
-            </div>
-            <div class="mb-3">
-            <label class="form-label">New Password</label>
-            <input type="password" name="new_password" class="form-control" required>
-            </div>
-            <div class="mb-3">
-            <label class="form-label">Confirm New Password</label>
-            <input type="password" name="confirm_new_password" class="form-control" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" id="submit" class="btn btn-primary">Update Password</button>
-          </div>
-          </form>
-        </div>
-        </div>
-      </div>
+                    <div class="mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
+                    </div>
 
-    @endforeach
+                    <div class="mb-3">
+                      <label class="form-label">Mobile</label>
+                      <input type="text" class="form-control" name="mobileNumber" value="{{ $user->mobileNumber ?? '' }}"
+                        required>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Alternate Mobile</label>
+                      <input type="text" class="form-control" name="alternateNumber"
+                        value="{{ $user->alternateNumber ?? '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Branch</label>
+                      <select class="form-select" name="branch" required>
+                        <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
+                      </select>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Department</label>
+                      <select class="form-select" name="department" required>
+                        @php
+                          $currentDepartment = $user->departmentNames->first() ?? '';
+                        @endphp
+                        <option value="Front Office" {{ $currentDepartment == 'Front Office' ? 'selected' : '' }}>Front
+                          Office</option>
+                        <option value="Back Office" {{ $currentDepartment == 'Back Office' ? 'selected' : '' }}>Back Office
+                        </option>
+                        <option value="Office" {{ $currentDepartment == 'Office' ? 'selected' : '' }}>Office</option>
+                        <option value="Test Management" {{ $currentDepartment == 'Test Management' ? 'selected' : '' }}>Test
+                          Management</option>
+                        <option value="Admin" {{ $currentDepartment == 'Admin' ? 'selected' : '' }}>Admin</option>
+                      </select>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Current Role</label>
+                      <input type="text" class="form-control" value="{{ $user->roleNames->join(', ') ?? '—' }}" readonly>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" id="submit" class="btn btn-primary">Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        @endforeach
+        <!-- Password Update Modal -->
+
+        @foreach($users as $user)
+
+          <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1"
+            aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <form method="POST" action="{{ route('users.password.update', $user->_id) }}">
+                  @csrf
+                  @method('PUT')
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Current Password</label>
+                      <input type="password" name="current_password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">New Password</label>
+                      <input type="password" name="new_password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Confirm New Password</label>
+                      <input type="password" name="confirm_new_password" class="form-control" required>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" id="submit" class="btn btn-primary">Update Password</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        @endforeach
       </div>
       <div class="footer">
         <div class="left-footer">
@@ -634,9 +645,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     </div>
   </div>
   </div>
-<!-- Modal Form with fillables for add employee starts here -->
+  <!-- Modal Form with fillables for add employee starts here -->
 
- <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content" id="content-one">
         <div class="modal-header">
@@ -693,13 +704,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
                         <div class="dropdown">
                           <select class="form-select" name="departments[]" required>
-    <option selected disabled>Select Department</option>
-    <option value="Front Office">Front Office</option>
-    <option value="Back Office">Back Office</option>
-    <option value="Office">Office</option>
-    <option value="Test Management">Test Management</option>
-    <option value="Admin">Admin</option>
-</select>
+                            <option selected disabled>Select Department</option>
+                            <option value="Front Office">Front Office</option>
+                            <option value="Back Office">Back Office</option>
+                            <option value="Office">Office</option>
+                            <option value="Test Management">Test Management</option>
+                            <option value="Admin">Admin</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -717,8 +728,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                         <input type="password" name="confirm_password" class="form-control" id="basic-url"
                           aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Confirm Password" required>
                         @error('confirm_password')
-              <div class="text-danger">{{ $message }}</div>
-            @enderror
+                          <div class="text-danger">{{ $message }}</div>
+                        @enderror
 
                       </div>
                     </div>
@@ -761,8 +772,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
       </div>
     </div>
-  </div> 
- 
+  </div>
+
 </body>
 <!-- External JavaScript Libraries -->
 <!-- Bootstrap Bundle JS (includes Popper) -->
@@ -773,7 +784,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
 <!-- AJAX Script: Handles dynamic user addition without page reload -->
 <script>
-// Event handler for add user form submission
+  // Event handler for add user form submission
   // Ajax for dynamic user addition without page reload
   $('#addUserForm').on('submit', function (e) {
     // Prevent default form submission behavior
@@ -812,7 +823,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           const errors = xhr.responseJSON.errors;
           // Display error messages for each field
           for (let field in errors) {
-            $(#error-${field}).text(errors[field][0]);
+            $(#error - ${ field }).text(errors[field][0]);
           }
         }
       }

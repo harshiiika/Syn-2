@@ -3,33 +3,31 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Mockery;
+use App\Models\Master\Holiday;
+use App\Models\Master\Test;
+
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    /**
+     * Run before each test.
+     */
     protected function setUp(): void
     {
-        // CRITICAL: Close ALL mocks before EVERY test
-        if ($container = Mockery::getContainer()) {
-            $this->addToAssertionCount($container->mockery_getExpectationCount());
-        }
-        Mockery::close();
-        
         parent::setUp();
-        
-        config(['database.default' => 'mongodb']);
+
+        $this->cleanCollections();
+
     }
 
-    protected function tearDown(): void
+    /**
+     * Remove all data from Mongo collections.
+     */
+    protected function cleanCollections(): void
     {
-        // CRITICAL: Close ALL mocks after EVERY test
-        if ($container = Mockery::getContainer()) {
-            $this->addToAssertionCount($container->mockery_getExpectationCount());
-        }
-        Mockery::close();
-        
-        parent::tearDown();
+        Holiday::truncate();
+        Test::truncate();
     }
 }
