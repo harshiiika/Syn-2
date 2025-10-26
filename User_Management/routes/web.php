@@ -265,6 +265,8 @@ Route::get('/students/active', [StudentController::class, 'activeStudents'])
 // Additional route for active students (alternative naming)
 Route::get('/students/active', [StudentController::class, 'activeStudents'])
     ->name('students.active');
+
+    
 // Scholarship Routes
 Route::prefix('master')->name('master.')->group(function () {
     // List scholarships (GET) - returns JSON or view
@@ -302,20 +304,20 @@ Route::get('/student/pending', [StudentController::class, 'index'])->name('stude
 Route::get('/student/edit/{id}', [StudentController::class, 'edit'])->name('student.student.edit');
  
  
-// Payment Routes
-Route::prefix('student/payment')->name('student.payment.')->group(function () {
-    // Show payment page - using 'pay' as the route name
-    Route::get('/{id}/pay', [App\Http\Controllers\Student\PaymentController::class, 'showPaymentPage'])
-        ->name('pay');
+// // Payment Routes
+// Route::prefix('student/payment')->name('student.payment.')->group(function () {
+//     // Show payment page - using 'pay' as the route name
+//     Route::get('/{id}/pay', [App\Http\Controllers\Student\PaymentController::class, 'showPaymentPage'])
+//         ->name('pay');
    
-    // Process payment
-    Route::post('/{id}/process', [App\Http\Controllers\Student\PaymentController::class, 'processPayment'])
-        ->name('process');
+//     // Process payment
+//     Route::post('/{id}/process', [App\Http\Controllers\Student\PaymentController::class, 'processPayment'])
+//         ->name('process');
    
-    // View payment history
-    Route::get('/{id}/history', [App\Http\Controllers\Student\PaymentController::class, 'viewHistory'])
-        ->name('history');
-});
+//     // View payment history
+//     Route::get('/{id}/history', [App\Http\Controllers\Student\PaymentController::class, 'viewHistory'])
+//         ->name('history');
+// });
  
  
 // Onboard Routes
@@ -337,10 +339,3 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
         ->name('update');
 });
  
-// Update the existing onboard route to use the controller
-Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
-    ->name('student.onboard');
- 
-// Update the existing onboard route to use the controller
-Route::get('/student/onboard', [App\Http\Controllers\Student\OnboardController::class, 'index'])
-    ->name('student.onboard');
