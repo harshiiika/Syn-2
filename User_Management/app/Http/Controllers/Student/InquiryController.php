@@ -85,27 +85,31 @@ class InquiryController extends Controller
         ], 500);
     }
 }
+public function edit($id)
+{
+    $inquiry = Inquiry::findOrFail($id);
+    return view('inquiries.edit', compact('inquiry'));
+}
 
     /**
      * Show single inquiry
      */
     public function show($id)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($id);
-            
-            return response()->json([
-                'success' => true,
-                'data' => $inquiry,
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Inquiry Show Error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Inquiry not found',
-            ], 404);
-        }
+{
+    try {
+        $inquiry = Inquiry::findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'data' => $inquiry
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Inquiry not found'
+        ], 404);
     }
+}
+
 
     /**
      * Store a new inquiry
@@ -170,60 +174,50 @@ class InquiryController extends Controller
     /**
      * Update an inquiry
      */
-    public function update(Request $request, $id)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($id);
+public function update(Request $request, $id)
+{
+    try {
+        $inquiry = Inquiry::findOrFail($id);
 
-            Log::info('Inquiry Update Request:', $request->all());
+        $validator = Validator::make($request->all(), [
+            'student_name' => 'required|string|max:255',
+            'father_name' => 'required|string|max:255',
+            'father_contact' => 'required|string|max:20',
+            'father_whatsapp' => 'nullable|string|max:20',
+            'student_contact' => 'nullable|string|max:20',
+            'category' => 'required|string|in:General,OBC,SC,ST',
+            'course_name' => 'nullable|string|max:255',
+            'delivery_mode' => 'nullable|string|in:Online,Offline,Hybrid',
+            'course_content' => 'nullable|string|max:255',
+            'branch' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'ews' => 'required|string|in:Yes,No',
+            'defense' => 'required|string|in:Yes,No',
+            'specially_abled' => 'required|string|in:Yes,No',
+            'status' => 'nullable|string',
+            // Add other fields as needed
+        ]);
 
-            $validator = Validator::make($request->all(), [
-                'student_name'       => 'required|string|max:255',
-                'father_name'        => 'required|string|max:255',
-                'father_contact'     => 'required|string|max:20',
-                'father_whatsapp'    => 'nullable|string|max:20',
-                'student_contact'    => 'nullable|string|max:20',
-                'category'           => 'required|string|in:General,OBC,SC,ST',
-                'course_name'        => 'nullable|string|max:255',
-                'delivery_mode'      => 'nullable|string|in:Online,Offline,Hybrid',
-                'course_content'     => 'nullable|string|max:255',
-                'branch'             => 'required|string|max:255',
-                'state'              => 'nullable|string|max:255',
-                'city'               => 'nullable|string|max:255',
-                'address'            => 'nullable|string',
-                'ews'                => 'required|string|in:Yes,No',
-                'defense'            => 'required|string|in:Yes,No',
-                'specially_abled'    => 'required|string|in:Yes,No',
-                'status'             => 'nullable|string|in:Pending,Active,Closed,Converted',
-                'remarks'            => 'nullable|string',
-                'follow_up_date'     => 'nullable|date',
-            ]);
-
-            if ($validator->fails()) {
-                Log::error('Inquiry Update Validation Failed:', $validator->errors()->toArray());
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors(),
-                ], 422);
-            }
-
-            $inquiry->update($validator->validated());
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Inquiry updated successfully',
-                'data' => $inquiry,
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Inquiry Update Error: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error updating inquiry: ' . $e->getMessage(),
-            ], 500);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
+
+        $inquiry->update($validator->validated());
+
+        return redirect()->route('inquiries.index')
+            ->with('success', 'Inquiry updated successfully');
+
+    } catch (\Exception $e) {
+        Log::error('Inquiry Update Error: ' . $e->getMessage());
+        return redirect()->back()
+            ->with('error', 'Error updating inquiry')
+            ->withInput();
     }
+}
 
     /**
      * Delete an inquiry
@@ -344,7 +338,6 @@ public function bulkOnboard(Request $request)
         return response()->json([
             'success' => true,
             'message' => "Successfully onboarded {$onboardedCount} student(s)!"
-            // ❌ REMOVED: 'redirect' => route('student.pendingfees.pending')
         ]);
 
     } catch (\Exception $e) {
@@ -459,6 +452,18 @@ public function processOnboard(Request $request, $inquiryId)
             ->withInput();
     }
 }
+
+public function view($id)
+{
+    try {
+        $inquiry = Inquiry::findOrFail($id);
+        return view('inquiries.view', compact('inquiry'));
+    } catch (\Exception $e) {
+        \Log::error('Failed to load inquiry details: ' . $e->getMessage());
+        return redirect()->route('inquiries.index')->with('error', 'Unable to load inquiry details.');
+    }
+}
+
 }
 
 

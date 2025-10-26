@@ -56,23 +56,42 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
  
-Route::prefix('inquiries')->name('inquiries.')->group(function () {
-    Route::get('/', [App\Http\Controllers\Student\InquiryController::class, 'index'])->name('index');
-    Route::get('/data', [App\Http\Controllers\Student\InquiryController::class, 'data'])->name('data');
-    Route::get('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'show'])->name('show');
-    Route::post('/', [App\Http\Controllers\Student\InquiryController::class, 'store'])->name('store');
-    Route::put('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'update'])->name('update');
-    Route::delete('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'destroy'])->name('destroy');
-    Route::post('/upload', [App\Http\Controllers\Student\InquiryController::class, 'upload'])->name('upload');
-    
-    Route::post('/onboard/{id}', [App\Http\Controllers\Student\InquiryController::class, 'onboardSingle'])->name('onboard.single');
-    Route::post('/bulk-onboard', [App\Http\Controllers\Student\InquiryController::class, 'bulkOnboard'])->name('bulk.onboard');
-});
+//   Static routes FIRST (most specific)
+Route::get('/inquiries/data', [InquiryController::class, 'data'])->name('inquiries.data');
+Route::post('/inquiries/upload', [InquiryController::class, 'upload'])->name('inquiries.upload');
+Route::post('/inquiries/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('inquiries.bulk.onboard');
+
+//  Then general routes
+Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
+Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
+
+//  Finally {id} routes (catch-all LAST)
+Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.destroy');
 
 Route::get('/student/pendingfees', [PendingFeesController::class, 'index'])
     ->name('student.pendingfees.pending');
  
- 
+ Route::get('/inquiries/{id}', [InquiryController::class, 'view'])->name('inquiries.view');
+
+
+ Route::get('/pending', [StudentController::class, 'index'])
+        ->name('student.student.pending');
+    
+    // Onboarding Students (complete forms, status = 'onboarded')
+    Route::get('/onboard', [StudentController::class, 'onboardedStudents'])
+        ->name('student.onboard.onboard');
+    
+    // Edit student from pending inquiries
+    Route::get('/{id}/edit', [StudentController::class, 'edit'])
+        ->name('student.onboard.edit');
+    
+    // Update student (will auto-move to onboarded if complete)
+    Route::put('/{id}/update', [StudentController::class, 'update'])
+        ->name('student.student.update');
+    
+    // View student details
+    Route::get('/{id}', [StudentController::class, 'show'])
+        ->name('student.student.show');
 /*
 |--------------------------------------------------------------------------
 | Session Management Routes
