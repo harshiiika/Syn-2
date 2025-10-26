@@ -174,50 +174,60 @@ public function edit($id)
     /**
      * Update an inquiry
      */
-public function update(Request $request, $id)
-{
-    try {
-        $inquiry = Inquiry::findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        try {
+            $inquiry = Inquiry::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
-            'student_name' => 'required|string|max:255',
-            'father_name' => 'required|string|max:255',
-            'father_contact' => 'required|string|max:20',
-            'father_whatsapp' => 'nullable|string|max:20',
-            'student_contact' => 'nullable|string|max:20',
-            'category' => 'required|string|in:General,OBC,SC,ST',
-            'course_name' => 'nullable|string|max:255',
-            'delivery_mode' => 'nullable|string|in:Online,Offline,Hybrid',
-            'course_content' => 'nullable|string|max:255',
-            'branch' => 'required|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'ews' => 'required|string|in:Yes,No',
-            'defense' => 'required|string|in:Yes,No',
-            'specially_abled' => 'required|string|in:Yes,No',
-            'status' => 'nullable|string',
-            // Add other fields as needed
-        ]);
+            Log::info('Inquiry Update Request:', $request->all());
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            $validator = Validator::make($request->all(), [
+                'student_name'       => 'required|string|max:255',
+                'father_name'        => 'required|string|max:255',
+                'father_contact'     => 'required|string|max:20',
+                'father_whatsapp'    => 'nullable|string|max:20',
+                'student_contact'    => 'nullable|string|max:20',
+                'category'           => 'required|string|in:General,OBC,SC,ST',
+                'course_name'        => 'nullable|string|max:255',
+                'delivery_mode'      => 'nullable|string|in:Online,Offline,Hybrid',
+                'course_content'     => 'nullable|string|max:255',
+                'branch'             => 'required|string|max:255',
+                'state'              => 'nullable|string|max:255',
+                'city'               => 'nullable|string|max:255',
+                'address'            => 'nullable|string',
+                'ews'                => 'required|string|in:Yes,No',
+                'defense'            => 'required|string|in:Yes,No',
+                'specially_abled'    => 'required|string|in:Yes,No',
+                'status'             => 'nullable|string|in:Pending,Active,Closed,Converted',
+                'remarks'            => 'nullable|string',
+                'follow_up_date'     => 'nullable|date',
+            ]);
+
+            if ($validator->fails()) {
+                Log::error('Inquiry Update Validation Failed:', $validator->errors()->toArray());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $inquiry->update($validator->validated());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Inquiry updated successfully',
+                'data' => $inquiry,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Inquiry Update Error: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating inquiry: ' . $e->getMessage(),
+            ], 500);
         }
-
-        $inquiry->update($validator->validated());
-
-        return redirect()->route('inquiries.index')
-            ->with('success', 'Inquiry updated successfully');
-
-    } catch (\Exception $e) {
-        Log::error('Inquiry Update Error: ' . $e->getMessage());
-        return redirect()->back()
-            ->with('error', 'Error updating inquiry')
-            ->withInput();
     }
-}
 
     /**
      * Delete an inquiry

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -1065,7 +1065,7 @@ function viewInquiry(id) {
 
         async function loadData() {
             try {
-                const url = ${ENDPOINT}/data?page=${state.page}&per_page=${state.per_page}&search=${encodeURIComponent(state.search)};
+                const url = `${ENDPOINT}/data?page=${state.page}&per_page=${state.per_page}&search=${encodeURIComponent(state.search)}`;
                 console.log('Loading data from:', url);
                 
                 const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -1129,7 +1129,7 @@ function viewInquiry(id) {
             }).join('');
         }
 function editInquiry(id) {
-    window.location.href = /inquiries/${id}/edit;
+    window.location.href = `/inquiries/${id}/edit`;
 }
 
         function renderPagination(json) {
@@ -1161,7 +1161,7 @@ function editInquiry(id) {
         function updateShowingInfo(json) {
             const from = json.data.length ? (json.current_page - 1) * json.per_page + 1 : 0;
             const to = json.data.length ? (json.current_page - 1) * json.per_page + json.data.length : 0;
-            elements.showingInfo.textContent = Showing ${from} to ${to} of ${json.total || 0} entries;
+            elements.showingInfo.textContent = `Showing ${from} to ${to} of ${json.total || 0} entries`;
         }
 
 
@@ -1170,7 +1170,7 @@ function editInquiry(id) {
             
             try {
                 console.log('Deleting inquiry:', id);
-                const response = await fetch(${ENDPOINT}/${id}, {
+                const response = await fetch(`${ENDPOINT}/${id}`, {
                     method: 'DELETE',
                     headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
                 });
@@ -1259,7 +1259,7 @@ window.onboardSingle = async function(id) {
             };
 
             try {
-                const url = id ? ${ENDPOINT}/${id} : ENDPOINT;
+                const url = id ? `${ENDPOINT}/${id}` : ENDPOINT;
                 const method = id ? 'PUT' : 'POST';
                 
                 console.log('Saving inquiry:', method, url, payload);
@@ -1305,7 +1305,7 @@ document.querySelector('.btn-onboard').addEventListener('click', async function(
         return;
     }
 
-    if (!confirm(Are you sure you want to onboard ${checkedBoxes.length} student(s)?)) {
+    if (!confirm(`Are you sure you want to onboard ${checkedBoxes.length} student(s)?`)) {
         return;
     }
 
@@ -1381,7 +1381,7 @@ document.querySelector('.btn-onboard').addEventListener('click', async function(
             formData.append('file', file);
 
             try {
-                const response = await fetch(${ENDPOINT}/upload, {
+                const response = await fetch(`${ENDPOINT}/upload`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
