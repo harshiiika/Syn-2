@@ -575,18 +575,42 @@ height: 30px;
     max-height: calc(100vh - 200px);
     overflow-y: auto;
 }
-
-/* Empty state for subject tags */
-.subject-tags:empty::before {
-    content: 'No subjects added yet. Type and press Enter to add.';
-    color: #6c757d;
-    font-size: 13px;
-    font-style: italic;
+/* Shake animation for invalid input */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
-.subject-tags-readonly:empty::before {
-    content: 'No subjects assigned';
-    color: #6c757d;
-    font-size: 13px;
+.shake-input {
+    animation: shake 0.5s;
+    border-color: #dc3545 !important;
+}
+
+/* Fade-in animation (for error messages, reused elsewhere if needed) */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Error message styling */
+.subject-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    animation: fadeIn 0.3s;
+}
+
+.subject-error i {
+    margin-right: 4px;
+}
+
+/* Suggestion dropdown "no match" styling */
+#subjectSuggestions .list-group-item.text-muted,
+[id^="editSubjectSuggestions"] .list-group-item.text-muted {
+    cursor: default;
+    background-color: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
     font-style: italic;
 }

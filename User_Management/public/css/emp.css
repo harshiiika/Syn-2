@@ -12,7 +12,7 @@
     flex-direction: row;
 }
 
-/* #toggle-btn {
+#toggle-btn {
     margin: 10px;
     color: #838383;
     border-radius: 50%;
@@ -20,7 +20,7 @@
     height: 4px;
     width: 4px;
     font-size: 20px;
-} */
+}
 
 .pfp {
     justify-content: center;
@@ -520,4 +520,46 @@ height: 30px;
 .accordion-body, .menu{
     padding: 0 !important;
     margin-left: 5px;
+}
+
+.btns{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 40px;
+    width: 77vw;
+    font-size: 17px;
+    align-items: center;
+    margin: 25px 15px 25px 10px;
+}
+.pendingbtn{
+    background-color: rgb(233, 96, 47);
+    color: white;
+    border: none;
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgb(233, 96, 47);
+}
+.onboardbtn{
+    color: rgb(233, 96, 47);
+    background-color: white;
+    border: none;
+    width: 200px;
+    height: 40px;
+    border-radius: 5px; 
+    cursor: pointer;
+    
+}
+
+#doneBtn{
+    height: 50px;
+    width: 90px;
+    background-color: #ff6200;
+    color: #fff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
