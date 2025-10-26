@@ -10,16 +10,20 @@ use Illuminate\Support\Facades\Log;
 class OnboardController extends Controller
 {
     /**
-     * Display all onboarded students (completely filled forms)
+     /**
+     * Display all onboarded students (students with status = 'onboarded')
      */
     public function index()
     {
         try {
-            // Get all onboarded students
-            $students = Onboard::getAllOnboarded();
+            // Get students with 'onboarded' status (complete forms)
+            $students = Onboard::where('status', 'onboarded')
+                ->orderBy('created_at', 'desc')
+                ->get();
             
             Log::info('Fetching onboarded students:', [
-                'count' => $students->count()
+                'count' => $students->count(),
+                'students' => $students->pluck('name', '_id')->toArray()
             ]);
             
             return view('student.onboard.onboard', [
@@ -69,7 +73,8 @@ class OnboardController extends Controller
                 'student_name' => $student->name
             ]);
             
-            return view('student.onboard.edit', compact('student'));
+            // Use the same edit view
+            return view('student.student.edit', compact('student'));
             
         } catch (\Exception $e) {
             Log::error("Edit failed for student ID {$id}: " . $e->getMessage());
@@ -80,91 +85,12 @@ class OnboardController extends Controller
 
     /**
      * Update onboarded student information
+     * This uses the same update logic as StudentController
      */
     public function update(Request $request, $id)
     {
-        try {
-            Log::info('Update request received for onboarded student', [
-                'id' => $id,
-                'data' => $request->except(['_token', '_method'])
-            ]);
-
-            $student = Onboard::findOrFail($id);
-            
-            $validated = $request->validate([
-                // Basic Details
-                'name' => 'required|string|max:255',
-                'father' => 'required|string|max:255',
-                'mother' => 'required|string|max:255',
-                'dob' => 'required|date',
-                'mobileNumber' => 'required|string|max:15',
-                'fatherWhatsapp' => 'nullable|string|max:15',
-                'motherContact' => 'nullable|string|max:15',
-                'studentContact' => 'nullable|string|max:15',
-                'category' => 'required|in:OBC,SC,GENERAL,ST',
-                'gender' => 'required|in:Male,Female,Others',
-                'fatherOccupation' => 'nullable|string',
-                'fatherGrade' => 'nullable|string',
-                'motherOccupation' => 'nullable|string',
-                
-                // Address Details
-                'state' => 'required|string',
-                'city' => 'required|string',
-                'pinCode' => 'required|string|max:10',
-                'address' => 'required|string',
-                'belongToOtherCity' => 'required|in:Yes,No',
-                'economicWeakerSection' => 'required|in:Yes,No',
-                'armyPoliceBackground' => 'required|in:Yes,No',
-                'speciallyAbled' => 'required|in:Yes,No',
-                
-                // Course Details
-                'courseType' => 'required|string',
-                'courseName' => 'required|string',
-                'deliveryMode' => 'required|string',
-                'medium' => 'required|string',
-                'board' => 'required|string',
-                'courseContent' => 'required|string',
-                
-                // Academic Details
-                'previousClass' => 'required|string',
-                'previousMedium' => 'required|string',
-                'schoolName' => 'required|string',
-                'previousBoard' => 'required|string',
-                'passingYear' => 'required|string',
-                'percentage' => 'required|numeric|min:0|max:100',
-                
-                // Scholarship
-                'isRepeater' => 'required|in:Yes,No',
-                'scholarshipTest' => 'required|in:Yes,No',
-                'lastBoardPercentage' => 'required|numeric|min:0|max:100',
-                'competitionExam' => 'required|in:Yes,No',
-                
-                // Batch Details
-                'batchName' => 'required|string',
-                'batchStartDate' => 'nullable|date',
-            ]);
-
-            $student->update($validated);
-            
-            Log::info('Onboarded student updated successfully', [
-                'id' => $id,
-                'name' => $student->name
-            ]);
-
-            return redirect()
-                ->route('student.onboard.onboard')
-                ->with('success', 'Student details updated successfully!');
-
-        } catch (\Exception $e) {
-            Log::error('Update failed:', [
-                'id' => $id,
-                'error' => $e->getMessage()
-            ]);
-            
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to update student: ' . $e->getMessage())
-                ->withInput();
-        }
+        // Redirect to StudentController's update method
+        $controller = new StudentController();
+        return $controller->update($request, $id);
     }
 }
