@@ -137,20 +137,6 @@
                     <i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-<<<<<<< HEAD
-=======
-=======
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry
-                    Management</a></li>
-                <li>
-                  <!-- <a class="item" href="student.html"> -->
-                    <i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Student Onboard</a>
-                </li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
->>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
->>>>>>> 4f213b2efc7d7bfff2c7b33a023170eeb35895ab
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"

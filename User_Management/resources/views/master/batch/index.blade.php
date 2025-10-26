@@ -219,12 +219,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
-<<<<<<< HEAD
                 <li><a class="item" href="{{ route('student.student.pending') }}">
-=======
-                <li>
-                  <a class="item" href="student.html">
->>>>>>> origin
   <i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
@@ -414,11 +409,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </span>
               </td>
               <td>
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
-            type="button" 
-            id="actionMenuButton" 
-            data-bs-toggle="dropdown" 
-            aria-expanded="false">
+                <div class="dropdown">
+                  
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
+                      data-bs-toggle="dropdown" aria-expanded="false">
       <i class="fas fa-ellipsis-v"></i>
     </button>
                   <ul class="dropdown-menu">
@@ -554,8 +548,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <div class="mb-3">
               <label class="form-label">Course Type</label>
               <select class="form-select" name="course_type" required>
-                <option value="Pre-Med" {{ ($batch->course_type ?? '') == 'Pre-Med' ? 'selected' : '' }}>Pre-Med</option>
-                <option value="Regular" {{ ($batch->course_type ?? '') == 'Regular' ? 'selected' : '' }}>Regular</option>
+                <option value="Pre-Medical" {{ ($batch->course_type ?? '') == 'Pre-Medical' ? 'selected' : '' }}>Pre-Medical</option>
+                <option value="Pre-Engineering" {{ ($batch->course_type ?? '') == 'Pre-Engineering' ? 'selected' : '' }}>Pre-Engineering</option>
                 <option value="Pre-Foundation" {{ ($batch->course_type ?? '') == 'Pre-Foundation' ? 'selected' : '' }}>Pre-Foundation</option>
               </select>
             </div>

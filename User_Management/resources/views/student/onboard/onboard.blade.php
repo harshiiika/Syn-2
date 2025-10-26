@@ -381,7 +381,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </tbody>
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-      @foreach($partiallyPaid as $index => $student)
+      @foreach($students as $index => $student)
 <tr>
    <!-- Serial number (index + 1) -->
   <td>{{ $index + 1 }}</td>
@@ -404,19 +404,16 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             Edit Details
           </button></a>
           <li>
-           <!-- <a href="{{ route('student.onboard.view', $student->_id) }}"> -->
 <button class="dropdown-item">
             View Details
           </button></a>
         </li>
         <li>
-           <!-- <a href="{{ route('student.onboard.transfer', $student->_id) }}"> -->
 <button class="dropdown-item">
             Transfer Student
           </button></a>
         </li>
         <li>
-           <!-- <a href="{{ route('student.onboard.edit', $student->_id) }}"> -->
 <button class="dropdown-item">
             History
           </button></a>
