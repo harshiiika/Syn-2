@@ -55,8 +55,6 @@ Route::get('/dashboard', function () {
 | Inquiry Routes
 |--------------------------------------------------------------------------
 */
- 
-// Inquiry Management Routes
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
     Route::get('/', [App\Http\Controllers\Student\InquiryController::class, 'index'])->name('index');
     Route::get('/data', [App\Http\Controllers\Student\InquiryController::class, 'data'])->name('data');
