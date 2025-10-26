@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
-
 class InquiryController extends Controller
 {
     /**
@@ -279,8 +278,6 @@ class InquiryController extends Controller
         }
     }
 
-// In InquiryController.php
-
 public function bulkOnboard(Request $request)
 {
     try {
@@ -302,43 +299,52 @@ public function bulkOnboard(Request $request)
         $onboardedCount = 0;
 
         foreach ($inquiries as $inquiry) {
-            // Create student record with proper default values
-            $studentData = [
+            // ✅ Create student record in 'students' collection
+            $student = \App\Models\Student\Student::create([
                 'name' => $inquiry->student_name,
                 'father' => $inquiry->father_name,
                 'mobileNumber' => $inquiry->father_contact,
                 'alternateNumber' => $inquiry->father_whatsapp ?? null,
                 'email' => $inquiry->student_contact ?? 'noemail@example.com',
                 'courseName' => $inquiry->course_name ?? 'Not Assigned',
-                'deliveryMode' => $inquiry->delivery_mode ?? 'Not Assigned',
-                'courseContent' => $inquiry->course_content ?? 'Not Assigned',
-                'branch' => $inquiry->branch_name ?? 'Main Branch',
+                'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
+                'courseContent' => $inquiry->course_content ?? 'Class Room Course',
+                'branch' => $inquiry->branch ?? 'Main Branch',
+                'state' => $inquiry->state,
+                'city' => $inquiry->city,
+                'address' => $inquiry->address,
+                'category' => $inquiry->category ?? 'General',
+                'economicWeakerSection' => $inquiry->ews ?? 'No',
+                'armyPoliceBackground' => $inquiry->defense ?? 'No',
+                'speciallyAbled' => $inquiry->specially_abled ?? 'No',
+                
+                // ✅ CRITICAL: These fields make them appear in pending pages
                 'total_fees' => 0,
                 'paid_fees' => 0,
                 'remaining_fees' => 0,
-                'status' => 'pending_fees', // Use string instead of constant
+                'status' => 'pending_fees', // Must be 'pending_fees'
                 'fee_status' => 'pending',
                 'admission_date' => now(),
-                'session' => '2026'
-            ];
+                'session' => session('current_session', '2025-2026')
+            ]);
 
-            // Log what we're trying to create
-            \Log::info('Creating student:', $studentData);
+            \Log::info('Student created:', [
+                'id' => $student->_id,
+                'name' => $student->name,
+                'status' => $student->status,
+                'remaining_fees' => $student->remaining_fees
+            ]);
 
-            $student = \App\Models\Student\Student::create($studentData);
-
-            // Log the created student
-            \Log::info('Student created:', ['id' => $student->_id]);
-
-            // Update inquiry status to 'onboarded'
+            // ✅ Mark inquiry as onboarded
             $inquiry->update(['status' => 'onboarded']);
+            
             $onboardedCount++;
         }
 
         return response()->json([
             'success' => true,
-            'message' => "Successfully onboarded {$onboardedCount} student(s)!",
-            'redirect' => route('student.html') // Add redirect URL
+            'message' => "Successfully onboarded {$onboardedCount} student(s)!"
+            // ❌ REMOVED: 'redirect' => route('student.pendingfees.pending')
         ]);
 
     } catch (\Exception $e) {
@@ -361,7 +367,7 @@ public function showOnboardForm($inquiryId)
         $inquiry = Inquiry::findOrFail($inquiryId);
         
         // Get dropdown data
-        $courses = \App\Models\Master\Courses::all(); // Adjust model name if different
+        $courses = \App\Models\Master\Courses::all(); 
         $branches = ['Bikaner']; // Or get from database
         $deliveryModes = ['Offline', 'Online', 'Hybrid'];
         $courseContents = ['Class Room Course', 'Test Series Only'];
@@ -374,9 +380,11 @@ public function showOnboardForm($inquiryId)
             'courseContents'
         ));
     } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Inquiry not found');
+        return redirect()->route('inquiries.index')
+            ->with('error', 'Inquiry not found');
     }
 }
+
 
 /**
  * Process onboarding (convert inquiry to student)
@@ -386,68 +394,71 @@ public function processOnboard(Request $request, $inquiryId)
     try {
         $inquiry = Inquiry::findOrFail($inquiryId);
         
-        // Check if already onboarded
-        if ($inquiry->status === 'onboarded' || $inquiry->status === 'converted') {
-            return response()->json([
-                'success' => false,
-                'message' => 'This inquiry has already been onboarded'
-            ], 400);
+        // Validate
+        $validated = $request->validate([
+            'courseName' => 'required|string',
+            'deliveryMode' => 'required|string',
+            'courseContent' => 'required|string',
+            'branch' => 'required|string',
+            'total_fees' => 'required|numeric|min:0',
+            'paid_fees' => 'nullable|numeric|min:0',
+        ]);
+
+        // Calculate fees
+        $totalFees = $validated['total_fees'];
+        $paidFees = $validated['paid_fees'] ?? 0;
+        $remainingFees = $totalFees - $paidFees;
+
+        // Determine status
+        if ($remainingFees <= 0) {
+            $status = \App\Models\Student\Student::STATUS_ACTIVE;
+            $feeStatus = 'paid';
+        } elseif ($paidFees > 0) {
+            $status = \App\Models\Student\Student::STATUS_PENDING_FEES;
+            $feeStatus = 'partial';
+        } else {
+            $status = \App\Models\Student\Student::STATUS_PENDING_FEES;
+            $feeStatus = 'pending';
         }
 
-        // Create student record that will appear on BOTH pages
+        // Create student
         $student = \App\Models\Student\Student::create([
             'name' => $inquiry->student_name,
             'father' => $inquiry->father_name,
             'mobileNumber' => $inquiry->father_contact,
-            'fatherWhatsapp' => $inquiry->father_whatsapp ?? null,
             'alternateNumber' => $inquiry->father_whatsapp ?? null,
-            'studentContact' => $inquiry->student_contact ?? null,
-            'email' => strtolower(str_replace(' ', '', $inquiry->student_name)) . '@temp.com',
-            'courseName' => $inquiry->course_name ?? 'Not Assigned',
-            'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
-            'courseContent' => $inquiry->course_content ?? 'Class Room Course',
-            'branch' => $inquiry->branch ?? 'Main Branch',
-            'category' => $inquiry->category ?? 'General',
-            'state' => $inquiry->state ?? null,
-            'city' => $inquiry->city ?? null,
-            'address' => $inquiry->address ?? null,
-            'economicWeakerSection' => $inquiry->ews ?? 'No',
-            'armyPoliceBackground' => $inquiry->defense ?? 'No',
-            'speciallyAbled' => $inquiry->specially_abled ?? 'No',
-            // Fee related fields - IMPORTANT for showing on both pages
-            'total_fees' => 0,
-            'paid_fees' => 0,
-            'remaining_fees' => 0,
-            'status' => \App\Models\Student\Student::STATUS_PENDING_FEES,
-            'fee_status' => 'pending',
-            'admission_date' => now(),
+            'email' => $inquiry->student_name . '@temp.com', // Generate temp email
+            'courseName' => $validated['courseName'],
+            'deliveryMode' => $validated['deliveryMode'],
+            'courseContent' => $validated['courseContent'],
+            'branch' => $validated['branch'],
+            'total_fees' => $totalFees,
+            'paid_fees' => $paidFees,
+            'remaining_fees' => $remainingFees,
+            'status' => $status,
+            'fee_status' => $feeStatus,
             'session' => session('current_session', '2025-2026'),
         ]);
 
-        // Update inquiry status to prevent duplicate onboarding
-        $inquiry->update(['status' => 'onboarded']);
+        // Update inquiry status
+        $inquiry->update(['status' => 'converted']);
 
-        \Log::info('Student onboarded successfully', [
-            'inquiry_id' => $inquiryId,
-            'student_id' => $student->_id,
-            'student_name' => $student->name
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Student onboarded successfully!',
-            'student_id' => $student->_id
-        ]);
+        // Redirect based on status
+        if ($remainingFees > 0) {
+            return redirect()->route('student.pendingfees.pending')
+                ->with('success', 'Student onboarded! Pending fees: ₹' . number_format($remainingFees, 2));
+        } else {
+            return redirect()->route('student.onboard')
+                ->with('success', 'Student onboarded successfully with full payment!');
+        }
 
     } catch (\Exception $e) {
         \Log::error('Onboard error: ' . $e->getMessage());
-        \Log::error('Stack trace: ' . $e->getTraceAsString());
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to onboard student: ' . $e->getMessage()
-        ], 500);
+        return redirect()->back()
+            ->with('error', 'Failed to onboard student: ' . $e->getMessage())
+            ->withInput();
     }
 }
-
 }
+
+

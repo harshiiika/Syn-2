@@ -594,239 +594,204 @@
                 <p>synthesisbikaner@gmail.com</p>
             </div>
 
-            <!-- Left side bar accordion -->
-<div class="accordion accordion-flush" id="accordionFlushExample">
-  
-  <!-- User Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
-      </button>
-    </h2>
-    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('emp') }}">
-            <i class="fa-solid fa-user" id="side-icon"></i> Employee</a>
-          </li>
-          <li><a class="item" href="{{ route('user.batches.batches') }}">
-            <i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Master -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-        id="accordion-button">
-        <i class="fa-solid fa-database" id="side-icon"></i> Master
-      </button>
-    </h2>
-    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('courses.index') }}">
-            <i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a>
-          </li>
-          <li><a class="item" href="{{ route('batches.index') }}">
-            <i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a>
-          </li>
-         <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
+               <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management </button>
+          </h2>
+          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
+                      id="side-icon"></i> Employee</a></li>
+                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
+                      id="side-icon"></i> Batches Assignment</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i> Master </button>
+          </h2>
+          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
+                      id="side-icon"></i> Courses</a></li>
+                <li><a class="item" href="{{ route('batches.index') }}"><i
+                      class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
+                    Batches</a></li>
+                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
-          <li><a class="item" href="{{ route('fees.index') }}">
-            <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a>
-          </li>
-          <li><a class="item" href="{{ route('master.other_fees.index') }}">
-            <i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a>
-          </li>
-          <li><a class="item" href="{{ route('branches.index') }}">
-            <i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a>
-          </li>
-        </ul>
+                <li><a class="item" href="{{ route('fees.index') }}">
+<i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="{{ route('master.other_fees.index') }}
+"><i class="fa-solid fa-wallet"
+                      id="side-icon"></i> Other Fees Master</a>
+                </li>
+                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
+                      id="side-icon"></i> Branch
+                    Management</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+            </button>
+          </h2>
+          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
+                      id="side-icon"></i> Session</a></li>
+                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
+                      id="side-icon"></i> Calendar</a></li>
+                <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i> Student Migrate</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+              id="accordion-button"> 
+              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+            </button>
+          </h2>
+          
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry Management </a></li>
+                <li><a class="item" href="{{ route('student.student.pending') }}">
+    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
+</a></li>
+                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Pending Fees
+                    Students</a></li>
+                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Students</a></li>
+              </ul>
+            </div>
+          </div>  
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+              id="accordion-button">
+              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+            </button>
+          </h2>
+          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card"
+                      id="side-icon"></i> Fees Collection</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+              id="accordion-button">
+              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Managment
+            </button>
+          </h2>
+          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Student</a></li>
+                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Employee</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+              id="accordion-button">
+              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+            </button>
+          </h2>
+          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon">
+                    </i>Units</a></li>
+                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user"
+                      id="side-icon"> </i>Dispatch Material</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+              id="accordion-button">
+              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Managment
+            </button>
+          </h2>
+          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test
+                    Master</i></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+              id="accordion-button">
+              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports</i>
+            </button>
+          </h2>
+          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon">
+                    </i>Walk In</a></li>
+                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days"
+                      id="side-icon"></i> Attendance</a>
+                </li>
+                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
+                    Series</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
+                    History</a></li>
+                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
+                      id="side-icon"></i>Onboard History</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Session Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-        id="accordion-button">
-        <i class="fa-solid fa-calendar-days" id="side-icon"></i> Session Management
-      </button>
-    </h2>
-    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('sessions.index') }}">
-            <i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a>
-          </li>
-          <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
-            href="{{ route('calendar.index') }}">
-            <i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Student Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-        id="accordion-button">
-        <i class="fa-solid fa-user-graduate" id="side-icon"></i> Student Management
-      </button>
-    </h2>
-    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('inquiries.index') }}">
-            <i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a>
-          </li>
-          <li><a class="item" href="{{ route('master.student.pending') }}">
-            <i class="fa-solid fa-user-clock" id="side-icon"></i> Pending Students</a>
-          </li>
-          <li><a class="item" href="{{ route('student.onboard') }}">
-            <i class="fa-solid fa-user-check" id="side-icon"></i> Onboarded Students</a>
-          </li>
-          <li><a class="item" href="{{ route('student.pendingfees.pending') }}">
-            <i class="fa-solid fa-file-invoice-dollar" id="side-icon"></i> Pending Fees Students</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Fees Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-        id="accordion-button">
-        <i class="fa-solid fa-money-bill-wave" id="side-icon"></i> Fees Management
-      </button>
-    </h2>
-    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('student.payment.pay', ['id' => 'select']) }}">
-            <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Attendance Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-        id="accordion-button">
-        <i class="fa-solid fa-clipboard-user" id="side-icon"></i> Attendance Management
-      </button>
-    </h2>
-    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="/attendance management/students/student.html">
-            <i class="fa-solid fa-user-check" id="side-icon"></i> Student</a>
-          </li>
-          <li><a class="item" href="/attendance management/employee/employee.html">
-            <i class="fa-solid fa-user-tie" id="side-icon"></i> Employee</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Study Material -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-        id="accordion-button">
-        <i class="fa-solid fa-book-open-reader" id="side-icon"></i> Study Material
-      </button>
-    </h2>
-    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="/study material/units/units.html">
-            <i class="fa-solid fa-book" id="side-icon"></i> Units</a>
-          </li>
-          <li><a class="item" href="/study material/dispatch/dispatch.html">
-            <i class="fa-solid fa-truck" id="side-icon"></i> Dispatch Material</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Test Series Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-        id="accordion-button">
-        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-      </button>
-    </h2>
-    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="/testseries/test.html">
-            <i class="fa-solid fa-file-pen" id="side-icon"></i> Test Master</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Reports -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-        id="accordion-button">
-        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
-      </button>
-    </h2>
-    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="/reports/walk in/walk.html">
-            <i class="fa-solid fa-person-walking" id="side-icon"></i> Walk In</a>
-          </li>
-          <li><a class="item" href="/reports/att/att.html">
-            <i class="fa-solid fa-calendar-check" id="side-icon"></i> Attendance</a>
-          </li>
-          <li><a class="item" href="/reports/test/test.html">
-            <i class="fa-solid fa-file-lines" id="side-icon"></i> Test Series</a>
-          </li>
-          <li><a class="item" href="{{ route('inquiries.index') }}">
-            <i class="fa-solid fa-clock-rotate-left" id="side-icon"></i> Inquiry History</a>
-          </li>
-          <li><a class="item" href="/reports/onboard/onboard.html">
-            <i class="fa-solid fa-timeline" id="side-icon"></i> Onboard History</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-</div>
         </div>
 
         <div class="right" id="right">
@@ -987,41 +952,6 @@
                             <textarea class="form-control" id="address_name" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Select Branch Name</label>
-                            <select class="form-select" id="branch_name">
-                                <option value="">Select Branch</option>
-                                <option value="Bikaner">Bikaner</option>
-                                <option value="Jaipur">Jaipur</option>
-                            </select>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Course Name <span class="text-danger">*</span></label>
-                                <select class="form-select" id="course_name" required>
-                                    <option value="">Select...</option>
-                                    <option value="Anthesis 11th NEET">Anthesis 11th NEET</option>
-                                    <option value="Momentum 12th NEET">Momentum 12th NEET</option>
-                                    <option value="Dynamic Target NEET">Dynamic Target NEET</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Delivery Mode</label>
-                                <select class="form-select" id="delivery_mode">
-                                    <option value="Offline">Offline</option>
-                                    <option value="Online">Online</option>
-                                    <option value="Hybrid">Hybrid</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Course Content</label>
-                            <select class="form-select" id="course_content">
-                                <option value="Class Room Course">Class Room Course</option>
-                                <option value="Online Course">Online Course</option>
-                                <option value="Study Material">Study Material</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label">Do You Belong to Economic Weaker Section?</label>
                             <div class="d-flex gap-4">
                                 <div class="form-check">
@@ -1089,6 +1019,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
+    
     document.addEventListener('DOMContentLoaded', () => {
         const ENDPOINT = '/inquiries';
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
@@ -1103,7 +1035,11 @@
             saveBtn: document.getElementById('saveBtn'),
             form: document.getElementById('inquiryForm')
         };
-
+const inquiryViewRoute = "{{ route('inquiries.view', ':id') }}";
+function viewInquiry(id) {
+    const url = inquiryViewRoute.replace(':id', id);
+    window.location.href = url; // Redirect to Laravel route
+}
         const modals = {
             inquiry: new bootstrap.Modal(document.getElementById('inquiryModal')),
             view: new bootstrap.Modal(document.getElementById('viewModal'))
@@ -1181,8 +1117,9 @@
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#" onclick="viewInquiry('${id}'); return false;">View</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="editInquiry('${id}'); return false;">Edit</a></li>
+                                    <li><a class="dropdown-item" href="/inquiries/${id}">View</a></li>
+                                    <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="deleteInquiry('${id}'); return false;">Delete</a></li>
                                 </ul>
                             </div>
@@ -1191,6 +1128,9 @@
                 `;
             }).join('');
         }
+function editInquiry(id) {
+    window.location.href = /inquiries/${id}/edit;
+}
 
         function renderPagination(json) {
             const currentPage = json.current_page || 1;
@@ -1224,120 +1164,6 @@
             elements.showingInfo.textContent = Showing ${from} to ${to} of ${json.total || 0} entries;
         }
 
-        window.viewInquiry = async function(id) {
-            try {
-                console.log('Viewing inquiry:', id);
-                const response = await fetch(${ENDPOINT}/${id}, { headers: { 'Accept': 'application/json' } });
-                const json = await response.json();
-                if (!json.success) throw new Error(json.message);
-                
-                const item = json.data;
-                document.getElementById('viewModalBody').innerHTML = `
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Student Name:</strong><span>${escapeHtml(item.student_name || '')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Father Name:</strong><span>${escapeHtml(item.father_name || '')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Father Contact:</strong><span>${escapeHtml(item.father_contact || '')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Father WhatsApp:</strong><span>${escapeHtml(item.father_whatsapp || 'N/A')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Student Contact:</strong><span>${escapeHtml(item.student_contact || 'N/A')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Category:</strong><span>${escapeHtml(item.category || 'General')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>State:</strong><span>${escapeHtml(item.state || 'N/A')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>City:</strong><span>${escapeHtml(item.city || 'N/A')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Address:</strong><span>${escapeHtml(item.address || 'N/A')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Branch Name:</strong><span>${escapeHtml(item.branch || 'N/A')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Course Name:</strong><span>${escapeHtml(item.course_name || '')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Delivery Mode:</strong><span>${escapeHtml(item.delivery_mode || 'Offline')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Course Content:</strong><span>${escapeHtml(item.course_content || 'Class Room Course')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Economic Weaker:</strong><span>${escapeHtml(item.ews || 'No')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Army Background:</strong><span>${escapeHtml(item.defense || 'No')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                        <strong>Specially Abled:</strong><span>${escapeHtml(item.specially_abled || 'No')}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0;">
-                        <strong>Status:</strong><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span>
-                    </div>
-                `;
-                modals.view.show();
-            } catch (error) {
-                console.error('View error:', error);
-                alert('Failed to load inquiry details: ' + error.message);
-            }
-        };
-
-        window.editInquiry = async function(id) {
-            try {
-                console.log('Editing inquiry:', id);
-                const response = await fetch(${ENDPOINT}/${id}, { headers: { 'Accept': 'application/json' } });
-                const json = await response.json();
-                if (!json.success) throw new Error(json.message);
-                
-                const item = json.data;
-                document.getElementById('inquiry_id').value = id;
-                document.getElementById('student_name').value = item.student_name || '';
-                document.getElementById('father_name').value = item.father_name || '';
-                document.getElementById('father_contact').value = item.father_contact || '';
-                document.getElementById('father_whatsapp').value = item.father_whatsapp || '';
-                document.getElementById('student_contact').value = item.student_contact || '';
-                
-                const categoryValue = item.category || 'General';
-                const categoryInput = document.querySelector(input[name="category"][value="${categoryValue}"]);
-                if (categoryInput) categoryInput.checked = true;
-                
-                document.getElementById('state').value = item.state || '';
-                document.getElementById('city').value = item.city || '';
-                document.getElementById('address_name').value = item.address || '';
-                document.getElementById('branch_name').value = item.branch || '';
-                document.getElementById('course_name').value = item.course_name || '';
-                document.getElementById('delivery_mode').value = item.delivery_mode || 'Offline';
-                document.getElementById('course_content').value = item.course_content || 'Class Room Course';
-                
-                const economicValue = item.ews || 'No';
-                const economicInput = document.querySelector(input[name="economic_weaker"][value="${economicValue}"]);
-                if (economicInput) economicInput.checked = true;
-                
-                const armyValue = item.defense || 'No';
-                const armyInput = document.querySelector(input[name="army_background"][value="${armyValue}"]);
-                if (armyInput) armyInput.checked = true;
-                
-                const speciallyValue = item.specially_abled || 'No';
-                const speciallyInput = document.querySelector(input[name="specially_abled"][value="${speciallyValue}"]);
-                if (speciallyInput) speciallyInput.checked = true;
-                
-                document.getElementById('inquiryModalLabel').textContent = 'Edit Inquiry';
-                modals.inquiry.show();
-            } catch (error) {
-                console.error('Edit error:', error);
-                alert('Failed to load inquiry for editing: ' + error.message);
-            }
-        };
 
         window.deleteInquiry = async function(id) {
             if (!confirm('Are you sure you want to delete this inquiry?')) return;
@@ -1359,12 +1185,63 @@
             }
         };
 
-        elements.saveBtn.addEventListener('click', async () => {
+window.onboardSingle = async function(id) {
+    if (!confirm('Are you sure you want to onboard this student?')) {
+        return;
+    }
+
+    try {
+        console.log('Onboarding single inquiry:', id);
+        
+        const response = await fetch('/inquiries/bulk-onboard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ inquiry_ids: [id] })
+        });
+
+        const json = await response.json();
+        console.log('Onboard response:', json);
+
+        if (!json.success) {
+            throw new Error(json.message || 'Onboarding failed');
+        }
+
+        alert(json.message);
+        
+        // ✅ Just reload the table, no redirect
+        loadData();
+
+    } catch (error) {
+        console.error('Onboard error:', error);
+        alert('Failed to onboard student: ' + error.message);
+    }
+};
+        // ✅ Save button click handler
+        elements.saveBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            console.log('Save button clicked');
+            
             const id = document.getElementById('inquiry_id').value;
+            
+            const studentName = document.getElementById('student_name').value.trim();
+            const fatherName = document.getElementById('father_name').value.trim();
+            const fatherContact = document.getElementById('father_contact').value.trim();
+            const courseName = document.getElementById('course_name').value;
+            
+            if (!studentName || !fatherName || !fatherContact || !courseName) {
+                alert('Please fill all required fields (Student Name, Father Name, Father Contact, Course Name)');
+                return;
+            }
+            
             const payload = {
-                student_name: document.getElementById('student_name').value.trim(),
-                father_name: document.getElementById('father_name').value.trim(),
-                father_contact: document.getElementById('father_contact').value.trim(),
+                student_name: studentName,
+                father_name: fatherName,
+                father_contact: fatherContact,
                 father_whatsapp: document.getElementById('father_whatsapp').value.trim(),
                 student_contact: document.getElementById('student_contact').value.trim(),
                 category: document.querySelector('input[name="category"]:checked').value,
@@ -1372,7 +1249,7 @@
                 city: document.getElementById('city').value,
                 address: document.getElementById('address_name').value.trim(),
                 branch: document.getElementById('branch_name').value,
-                course_name: document.getElementById('course_name').value,
+                course_name: courseName,
                 delivery_mode: document.getElementById('delivery_mode').value,
                 course_content: document.getElementById('course_content').value,
                 ews: document.querySelector('input[name="economic_weaker"]:checked').value,
@@ -1381,16 +1258,14 @@
                 status: 'Pending'
             };
 
-            if (!payload.student_name || !payload.father_name || !payload.father_contact) {
-                alert('Please fill all required fields');
-                return;
-            }
-
             try {
                 const url = id ? ${ENDPOINT}/${id} : ENDPOINT;
                 const method = id ? 'PUT' : 'POST';
                 
                 console.log('Saving inquiry:', method, url, payload);
+                
+                elements.saveBtn.disabled = true;
+                elements.saveBtn.textContent = 'Saving...';
                 
                 const response = await fetch(url, {
                     method,
@@ -1416,9 +1291,62 @@
             } catch (error) {
                 console.error('Save error:', error);
                 alert('Save failed: ' + error.message);
+            } finally {
+                elements.saveBtn.disabled = false;
+                elements.saveBtn.textContent = 'Save Inquiry';
             }
         });
 
+document.querySelector('.btn-onboard').addEventListener('click', async function() {
+    const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+    
+    if (checkedBoxes.length === 0) {
+        alert('Please select at least one inquiry to onboard');
+        return;
+    }
+
+    if (!confirm(Are you sure you want to onboard ${checkedBoxes.length} student(s)?)) {
+        return;
+    }
+
+    const inquiryIds = Array.from(checkedBoxes).map(cb => cb.dataset.id);
+    
+    console.log('Onboarding inquiries:', inquiryIds);
+
+    try {
+        this.disabled = true;
+        this.textContent = 'Onboarding...';
+        
+        const response = await fetch('/inquiries/bulk-onboard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ inquiry_ids: inquiryIds })
+        });
+
+        const json = await response.json();
+        console.log('Onboard response:', json);
+
+        if (!json.success) {
+            throw new Error(json.message || 'Onboarding failed');
+        }
+
+        alert(json.message);
+        
+        // ✅ Just reload the table, no redirect
+        loadData();
+
+    } catch (error) {
+        console.error('Onboard error:', error);
+        alert('Failed to onboard students: ' + error.message);
+    } finally {
+        this.disabled = false;
+        this.textContent = 'Onboard';
+    }
+});
         window.changePage = function(page) {
             state.page = page;
             loadData();

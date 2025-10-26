@@ -163,7 +163,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
-                <li><a class="item" href="/master/scholarship/scholar.html"><i class="fa-solid fa-graduation-cap"
+                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
                       id="side-icon"></i> Scholarship</a>
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
@@ -215,11 +215,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
-<<<<<<< HEAD:User_Management/resources/views/student/student/pending.blade.php
                 <li><a class="item" href="{{ route('student.student.pending') }}">
-=======
-                <li><a class="item" href="student.html">
->>>>>>> origin:User_Management/resources/views/master/student/pending.blade.php
     <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
 </a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
@@ -337,12 +333,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <div class="top-text">
         </div>
             <div class="btns">
-<<<<<<< HEAD:User_Management/resources/views/student/student/pending.blade.php
                <a href="{{ route('student.student.pending') }}"><button type="button" class="pendingbtn">Pending Inquiries</button></a>
-=======
-               <a href="{{ route('student.html') }}"><button type="button" class="pendingbtn">Pending Inquiries</button></a>
->>>>>>> origin:User_Management/resources/views/master/student/pending.blade.php
-              <a class="item" href="{{ route('student.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
+              <a class="item" href="{{ route('student.onboard.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
             </div>
 
       </div>

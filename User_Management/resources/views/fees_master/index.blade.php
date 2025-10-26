@@ -57,18 +57,10 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-<<<<<<< HEAD
                 <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
                       id="side-icon"></i> Employee</a></li>
                 <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
                       id="side-icon"></i> Batches Assignment</a></li>
-=======
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user"
-                      id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
-                      id="side-icon"></i> Batches
-                    Assignment</a></li>
->>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
               </ul>
             </div>
           </div>
@@ -92,15 +84,9 @@
                       id="side-icon"></i> Scholarship</a>
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
-<<<<<<< HEAD
                     <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
                 <li><a class="item" href="{{ route('master.other_fees.index') }}
 "><i class="fa-solid fa-wallet"
-=======
-<i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/master/other fees/other.html"><i class="fa-solid fa-wallet"
->>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
@@ -123,15 +109,9 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
                       id="side-icon"></i> Session</a></li>
-<<<<<<< HEAD
                 <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}"
                     href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i>
                     Calendar</a></li>
-=======
-                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
-                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Calendar</a></li>
->>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
                 <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i> Student Migrate</a>
                 </li>
@@ -151,24 +131,12 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-<<<<<<< HEAD
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}">
                     <i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-=======
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry
-                    Management</a></li>
-                <li>
-                  <!-- <a class="item" href="student.html"> -->
-                    <i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Student Onboard</a>
-                </li>
-                <li><a class="item" href="/student management/pending/pending.html"><i class="fa-solid fa-user-check"
->>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
@@ -268,12 +236,8 @@
                 </li>
                 <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
                     Series</a></li>
-<<<<<<< HEAD
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file"
                       id="side-icon"></i>Inquiry
-=======
-                <li><a class="item" href="/reports/inq/inq.html"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
->>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
                     History</a></li>
                 <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
                       id="side-icon"></i>Onboard History</a></li>
@@ -1335,11 +1299,7 @@
     </div>
   </div> -->
 </body>
-<<<<<<< HEAD
 <script src="{{ asset('js/courses.js') }}"></script>
-=======
-  <script src="{{ asset('js/courses.js') }}"></script>
->>>>>>> 365defd625e038ec1056ed8b06249949e64d7ada
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 

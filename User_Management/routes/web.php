@@ -56,24 +56,42 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
  
-// Inquiry Management Routes
-Route::prefix('inquiries')->name('inquiries.')->group(function () {
-    Route::get('/', [App\Http\Controllers\Student\InquiryController::class, 'index'])->name('index');
-    Route::get('/data', [App\Http\Controllers\Student\InquiryController::class, 'data'])->name('data');
-    Route::get('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'show'])->name('show');
-    Route::post('/', [App\Http\Controllers\Student\InquiryController::class, 'store'])->name('store');
-    Route::put('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'update'])->name('update');
-    Route::delete('/{id}', [App\Http\Controllers\Student\InquiryController::class, 'destroy'])->name('destroy');
-    Route::post('/upload', [App\Http\Controllers\Student\InquiryController::class, 'upload'])->name('upload');
-});
- 
-Route::get('/students/pending', [StudentController::class, 'index'])
-    ->name('student.student.pending');
- 
+//   Static routes FIRST (most specific)
+Route::get('/inquiries/data', [InquiryController::class, 'data'])->name('inquiries.data');
+Route::post('/inquiries/upload', [InquiryController::class, 'upload'])->name('inquiries.upload');
+Route::post('/inquiries/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('inquiries.bulk.onboard');
+
+//  Then general routes
+Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
+Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
+
+//  Finally {id} routes (catch-all LAST)
+Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.destroy');
+
 Route::get('/student/pendingfees', [PendingFeesController::class, 'index'])
     ->name('student.pendingfees.pending');
  
- 
+ Route::get('/inquiries/{id}', [InquiryController::class, 'view'])->name('inquiries.view');
+
+
+ Route::get('/pending', [StudentController::class, 'index'])
+        ->name('student.student.pending');
+    
+    // Onboarding Students (complete forms, status = 'onboarded')
+    Route::get('/onboard', [StudentController::class, 'onboardedStudents'])
+        ->name('student.onboard.onboard');
+    
+    // Edit student from pending inquiries
+    Route::get('/{id}/edit', [StudentController::class, 'edit'])
+        ->name('student.onboard.edit');
+    
+    // Update student (will auto-move to onboarded if complete)
+    Route::put('/{id}/update', [StudentController::class, 'update'])
+        ->name('student.student.update');
+    
+    // View student details
+    Route::get('/{id}', [StudentController::class, 'show'])
+        ->name('student.student.show');
 /*
 |--------------------------------------------------------------------------
 | Session Management Routes
@@ -221,52 +239,9 @@ Route::prefix('calendar')->name('calendar.')->group(function () {
 });
  
  
-//student onboard-pending inquiries routes
-Route::get('/students/pending', [StudentController::class, 'index'])
-    ->name('student.student.pending');
  
-Route::get('/students/pending', [StudentController::class, 'index'])
-    ->name('master.student.pending');
- 
-// Active/Onboarded Students (fully paid students)
-Route::get('/students/onboard', [StudentController::class, 'activeStudents'])
-    ->name('student.onboard');
- 
-// Pending Fees Students (partial payment students)
-Route::get('/students/pending-fees', [StudentController::class, 'pendingFees'])
-    ->name('students.pending_fees');
- 
-// Show single student details
-Route::get('/students/{id}', [StudentController::class, 'show'])
-    ->name('students.show');
- 
-// Store new student (direct entry)
-Route::post('/students/store', [StudentController::class, 'store'])
-    ->name('students.store');
- 
-// Update student details
-Route::put('/students/{id}/update', [StudentController::class, 'update'])
-    ->name('students.update');
- 
-// Update student fees (collect payment)
-Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees'])
-    ->name('students.updateFees');
- 
-// Convert inquiry to student
-Route::post('/students/convert/{inquiryId}', [StudentController::class, 'convertFromInquiry'])
-    ->name('students.convertFromInquiry');
- 
-// Additional route for active students
 Route::get('/students/active', [StudentController::class, 'activeStudents'])
     ->name('students.active');
- 
- 
- 
-// Additional route for active students (alternative naming)
-Route::get('/students/active', [StudentController::class, 'activeStudents'])
-    ->name('students.active');
-
-    
 // Scholarship Routes
 Route::prefix('master')->name('master.')->group(function () {
     // List scholarships (GET) - returns JSON or view
@@ -291,51 +266,39 @@ Route::prefix('master')->name('master.')->group(function () {
 });
  
  
-//pending fees students routes
+Route::prefix('students')->name('student.student.')->group(function () {
+    Route::get('/pending', [StudentController::class, 'index'])->name('pending');
+    Route::get('/{id}/edit', [StudentController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [StudentController::class, 'update'])->name('update');
+    Route::get('/{id}', [StudentController::class, 'show'])->name('show');
+});
+
+// Legacy routes for backward compatibility
+Route::get('/students/active', [StudentController::class, 'activeStudents'])->name('students.active');
+Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
+Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees'])->name('students.updateFees');
+Route::post('/students/convert/{inquiryId}', [StudentController::class, 'convertFromInquiry'])->name('students.convertFromInquiry');
+Route::get('/student/onboard', [StudentController::class, 'activeStudents'])->name('student.onboard');
+
+// Pending Fees Students Routes
 Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(function () {
-    Route::get('/', [App\Http\Controllers\Student\PendingFeesController::class, 'index'])->name('pending');
-    Route::get('/{id}/edit', [App\Http\Controllers\Student\PendingFeesController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [App\Http\Controllers\Student\PendingFeesController::class, 'update'])->name('update');
-    Route::get('/{id}', [App\Http\Controllers\Student\PendingFeesController::class, 'show'])->name('view');
+    Route::get('/', [PendingFeesController::class, 'index'])->name('pending');
+    Route::get('/{id}/edit', [PendingFeesController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [PendingFeesController::class, 'update'])->name('update');
+    Route::get('/{id}', [PendingFeesController::class, 'view'])->name('view');
 });
- 
-Route::get('/student/pending', [PendingFeesController::class, 'index'])->name('student.pendingfees.pending');
-Route::get('/student/pending', [StudentController::class, 'index'])->name('student.student.pending');
-Route::get('/student/edit/{id}', [StudentController::class, 'edit'])->name('student.student.edit');
- 
- 
-// // Payment Routes
-// Route::prefix('student/payment')->name('student.payment.')->group(function () {
-//     // Show payment page - using 'pay' as the route name
-//     Route::get('/{id}/pay', [App\Http\Controllers\Student\PaymentController::class, 'showPaymentPage'])
-//         ->name('pay');
-   
-//     // Process payment
-//     Route::post('/{id}/process', [App\Http\Controllers\Student\PaymentController::class, 'processPayment'])
-//         ->name('process');
-   
-//     // View payment history
-//     Route::get('/{id}/history', [App\Http\Controllers\Student\PaymentController::class, 'viewHistory'])
-//         ->name('history');
-// });
- 
- 
-// Onboard Routes
+
+// Payment Routes
+Route::prefix('student/payment')->name('student.payment.')->group(function () {
+    Route::get('/{id}/pay', [PaymentController::class, 'showPaymentPage'])->name('pay');
+    Route::post('/{id}/process', [PaymentController::class, 'processPayment'])->name('process');
+    Route::get('/{id}/history', [PaymentController::class, 'viewHistory'])->name('history');
+});
+
+// Onboarded Students Routes (from onboarded_students collection)
 Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
-    // List onboarded students
-    Route::get('/', [App\Http\Controllers\Student\OnboardController::class, 'index'])
-        ->name('index');
-   
-    // View onboarded student
-    Route::get('/{id}', [App\Http\Controllers\Student\OnboardController::class, 'show'])
-        ->name('show');
-   
-    // Edit onboarded student
-    Route::get('/{id}/edit', [App\Http\Controllers\Student\OnboardController::class, 'edit'])
-        ->name('edit');
-   
-    // Update onboarded student
-    Route::put('/{id}', [App\Http\Controllers\Student\OnboardController::class, 'update'])
-        ->name('update');
+    Route::get('/', [OnboardController::class, 'index'])->name('onboard');
+    Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
 });
- 
