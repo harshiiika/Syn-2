@@ -68,34 +68,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   - Handles form validation errors
   - Appends new user to table without refresh
 --}}
-
 <!DOCTYPE html>
-
-
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Onboarding Students</title>
-  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-    <!-- Custom CSS -->
   <link rel="stylesheet" href="{{asset('css/onboard.css')}}">
-   <!-- Bootstrap 5.3.6 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <!-- Header Section: Contains logo, sidebar toggle, session selector, notifications, and user menu -->
- 
+  <!-- Header Section -->
   <div class="header">
     <div class="logo">
       <img src="{{asset('images/logo.png.jpg')}}" class="img">
-
-      <!-- Sidebar toggle button -->
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -108,28 +96,26 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
       <i class="fa-solid fa-bell"></i>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown">
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
     </div>
   </div>
-  <div class="main-container">
- <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
-    <div class="left" id="sidebar">
 
+  <div class="main-container">
+    <!-- Sidebar (same as pending page) -->
+    <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-
-      <!-- Left side bar accordian -->
-      <div class="accordion accordion-flush" id="accordionFlushExample">
+      
+       <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -328,24 +314,43 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
       </div>
     </div>
+
+    <!-- Main Content -->
     <div class="right" id="right">
       <div class="top">
-        <div class="top-text">
+        <div class="top-text"></div>
+        <div class="btns">
+          <a href="{{ route('student.student.pending') }}">
+            <button type="button" class="pendingbtn">Pending Inquiries</button>
+          </a>
+          <a href="{{ route('student.onboard.onboard') }}">
+            <button type="button" class="onboardbtn">Onboarding Students</button>
+          </a>
         </div>
-            <div class="btns">
-               <a href="{{ route('student.student.pending') }}"><button type="button" class="pendingbtn">Pending Inquiries</button></a>
-              <a class="item" href="{{ route('student.onboard.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
-            </div>
-
       </div>
+
+      <!-- Success/Error Messages -->
+      @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ session('success') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      @endif
+
+      @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ session('error') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      @endif
+
       <div class="whole">
-         <!-- Table controls: entries dropdown and search -->
+        <!-- Table controls -->
         <div class="dd">
           <div class="line">
             <h6>Show Enteries:</h6>
             <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
+              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown">
                 10
               </button>
               <ul class="dropdown-menu">
@@ -362,75 +367,68 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
-        <table class="table table-hover" id="table">
+
+        <!-- Onboarded Students Table -->
+       <table class="table table-hover" id="table">
           <thead>
             <tr>
-              <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Student Name</th>
-              <th scope="col" id="one">Father Name</th>
-              <th scope="col" id="one">Father Contact No.</th>
-              <th scope="col" id="one">Course Name</th>
-              <th scope="col" id="one">Delivery Mode</th>
-              <th scope="col" id="one">Course Content</th>
-              <th scope="col" id="one">Action</th>
+               <th scope="col" id="one">Serial No.</th>
+               <th scope="col" id="one">Student Name</th>
+               <th scope="col" id="one">Father Name</th>
+               <th scope="col" id="one">Father Contact No.</th>
+               <th scope="col" id="one">Course Name</th>
+               <th scope="col" id="one">Delivery Mode</th>
+               <th scope="col" id="one">Course Content</th>
+               <th scope="col" id="one">Action</th>
             </tr>
           </thead>
           <tbody>
+            @forelse($students as $index => $student)
             <tr>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ $student->name }}</td>
+              <td>{{ $student->father }}</td>
+              <td>{{ $student->mobileNumber ?? '—' }}</td>
+              <td>{{ $student->courseName ?? '—' }}</td>
+              <td>{{ $student->deliveryMode ?? '—' }}</td>
+              <td>{{ $student->courseContent ?? '—' }}</td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{{ route('student.onboard.edit', $student->_id) }}" class="dropdown-item">
+                        Edit Details
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{ route('student.onboard.show', $student->_id) }}" class="dropdown-item">
+                        View Details
+                      </a>
+                    </li>
+                    <li>
+                      <button class="dropdown-item">Transfer Student</button>
+                    </li>
+                    <li>
+                      <button class="dropdown-item">History</button>
+                    </li>
+                  </ul>
+                </div>
+              </td>
             </tr>
+            @empty
+            <tr>
+              <td colspan="8" class="text-center">No onboarded students found</td>
+            </tr>
+            @endforelse
           </tbody>
-<!-- Modal fillables where roles are assigned according to dept automatically -->
-
-      @foreach($students as $index => $student)
-<tr>
-   <!-- Serial number (index + 1) -->
-  <td>{{ $index + 1 }}</td>
-  <td>{{ $student->name }}</td>
-  <td>{{ $student->father }}</td>
-  <td>{{ $student->mobileNumber ?? '—' }}</td>
-<td>{{ $student->courseName ?? '—' }}</td>
-<td>{{ $student->deliveryMode ?? '—' }}</td>
-<td>{{ $student->courseContent ?? '—' }}</td>
-  <td>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-        <li>
-           <a href="{{ route('student.onboard.edit', $student->_id) }}">
-<button class="dropdown-item">
-            Edit Details
-          </button></a>
-          <li>
-<button class="dropdown-item">
-            View Details
-          </button></a>
-        </li>
-        <li>
-<button class="dropdown-item">
-            Transfer Student
-          </button></a>
-        </li>
-        <li>
-<button class="dropdown-item">
-            History
-          </button></a>
-        </li>
-        </li>
-      </ul>
-    </div>
-  </td>
-</tr>
-@endforeach
-
         </table>
-
-
-
       </div>
-      <div class="footer">
+
+      <!-- Footer Pagination -->
+     <div class="footer">
         <div class="left-footer">
           <p>Showing 1 to 10 of 10 Enteries</p>
         </div>
@@ -449,13 +447,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
     </div>
   </div>
-  </div>
-</body>
-<!-- External JavaScript Libraries -->
-<!-- Bootstrap Bundle JS (includes Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-<script src="{{asset('js/emp.js')}}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{asset('js/emp.js')}}"></script>
 
 
 <!-- AJAX Script: Handles dynamic user addition without page reload -->
@@ -506,5 +499,5 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     });
   });
 </script>
-
+ </body>
 </html>

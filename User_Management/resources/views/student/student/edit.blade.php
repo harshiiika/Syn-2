@@ -621,69 +621,68 @@
         </div>
       </div>
 
-      <!-- Course Details Section -->
-      <div class="form-section">
-        <h4>Course Details</h4>
-        <div class="form-row">
-          <div class="form-group">
-<div class="mb-3">
-  <label class="form-label">Course Type</label>
-  <select class="form-select" name="course_type" id="course_type" required>
-    <option value="">Select Course Type</option>
-    <option value="Pre-Medical" {{ ($batch->course_type ?? '') == 'Pre-Medical' ? 'selected' : '' }}>Pre-Medical</option>
-    <option value="Pre-Engineering" {{ ($batch->course_type ?? '') == 'Pre-Engineering' ? 'selected' : '' }}>Pre-Engineering</option>
-    <option value="Pre-Foundation" {{ ($batch->course_type ?? '') == 'Pre-Foundation' ? 'selected' : '' }}>Pre-Foundation</option>
-  </select>
-</div>
+<!-- Course Details Section -->
+<div class="form-section">
+  <h4>Course Details</h4>
+  <div class="form-row">
+    <!-- Course Type -->
+    <div class="form-group">
+      <label>Course Type <span class="required">*</span></label>
+      <select class="form-select" name="course_type" id="course_type" required>
+        <option value="">Select Course Type</option>
+        <option value="Pre-Medical" {{ old('course_type', $student->course_type ?? $student->courseType ?? '') == 'Pre-Medical' ? 'selected' : '' }}>Pre-Medical</option>
+        <option value="Pre-Engineering" {{ old('course_type', $student->course_type ?? $student->courseType ?? '') == 'Pre-Engineering' ? 'selected' : '' }}>Pre-Engineering</option>
+        <option value="Pre-Foundation" {{ old('course_type', $student->course_type ?? $student->courseType ?? '') == 'Pre-Foundation' ? 'selected' : '' }}>Pre-Foundation</option>
+      </select>
+    </div>
 
-<!-- Course -->
-<div class="mb-3">
-  <label class="form-label">Course</label>
-  <select class="form-select" name="course" id="course" required>
-    <option value="">Select Course</option>
-  </select>
+    <!-- Course Name (Dynamic based on Course Type) -->
+    <div class="form-group">
+      <label>Course Name <span class="required">*</span></label>
+      <select class="form-select" name="courseName" id="course" required>
+        <option value="">Select Course</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Delivery Mode <span class="required">*</span></label>
+      <select name="deliveryMode" class="form-select" required>
+        <option value="">Select Mode</option>
+        <option value="Offline" {{ old('deliveryMode', $student->deliveryMode) == 'Offline' ? 'selected' : '' }}>Offline</option>
+        <option value="Online" {{ old('deliveryMode', $student->deliveryMode) == 'Online' ? 'selected' : '' }}>Online</option>
+        <option value="Hybrid" {{ old('deliveryMode', $student->deliveryMode) == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Medium <span class="required">*</span></label>
+      <select name="medium" class="form-select" required>
+        <option value="">Select Medium</option>
+        <option value="English" {{ old('medium', $student->medium) == 'English' ? 'selected' : '' }}>English</option>
+        <option value="Hindi" {{ old('medium', $student->medium) == 'Hindi' ? 'selected' : '' }}>Hindi</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Board <span class="required">*</span></label>
+      <select name="board" class="form-select" required>
+        <option value="">Select Board</option>
+        <option value="CBSE" {{ old('board', $student->board) == 'CBSE' ? 'selected' : '' }}>CBSE</option>
+        <option value="RBSE" {{ old('board', $student->board) == 'RBSE' ? 'selected' : '' }}>RBSE</option>
+        <option value="ICSE" {{ old('board', $student->board) == 'ICSE' ? 'selected' : '' }}>ICSE</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Course Content <span class="required">*</span></label>
+      <select name="courseContent" class="form-select" required>
+        <option value="">Select Content</option>
+        <option value="Class 10th course" {{ old('courseContent', $student->courseContent) == 'Class 10th course' ? 'selected' : '' }}>Class 10th course</option>
+        <option value="JEE/NEET Foundation" {{ old('courseContent', $student->courseContent) == 'JEE/NEET Foundation' ? 'selected' : '' }}>JEE/NEET Foundation</option>
+      </select>
+    </div>
+  </div>
 </div>
-          </div>
-          
-          <div class="form-group">
-            <label>Delivery Mode </label>
-            <select name="deliveryMode" class="form-select" >
-              <option value="">Select Mode</option>
-              <option value="Offline" {{ old('deliveryMode', $student->deliveryMode) == 'Offline' ? 'selected' : '' }}>Offline</option>
-              <option value="Online" {{ old('deliveryMode', $student->deliveryMode) == 'Online' ? 'selected' : '' }}>Online</option>
-              <option value="Hybrid" {{ old('deliveryMode', $student->deliveryMode) == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label>Medium </label>
-            <select name="medium" class="form-select" >
-              <option value="">Select Medium</option>
-              <option value="English" {{ old('medium', $student->medium) == 'English' ? 'selected' : '' }}>English</option>
-              <option value="Hindi" {{ old('medium', $student->medium) == 'Hindi' ? 'selected' : '' }}>Hindi</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label>Board </label>
-            <select name="board" class="form-select" >
-              <option value="">Select Board</option>
-              <option value="CBSE" {{ old('board', $student->board) == 'CBSE' ? 'selected' : '' }}>CBSE</option>
-              <option value="RBSE" {{ old('board', $student->board) == 'RBSE' ? 'selected' : '' }}>RBSE</option>
-              <option value="ICSE" {{ old('board', $student->board) == 'ICSE' ? 'selected' : '' }}>ICSE</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label>Course Content </label>
-            <select name="courseContent" class="form-select" >
-              <option value="">Select Content</option>
-              <option value="Class 10th course" {{ old('courseContent', $student->courseContent) == 'Class 10th course' ? 'selected' : '' }}>Class 10th course</option>
-              <option value="JEE/NEET Foundation" {{ old('courseContent', $student->courseContent) == 'JEE/NEET Foundation' ? 'selected' : '' }}>JEE/NEET Foundation</option>
-            </select>
-          </div>
-        </div>
-      </div>
 
       <!-- Academic Detail Section -->
       <div class="form-section">
@@ -870,6 +869,104 @@
       });
     }
   });
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const courseTypeSelect = document.getElementById("course_type");
+    const courseSelect = document.getElementById("course");
+
+    const courseOptions = {
+      "Pre-Medical": ["Anthesis 11th NEET", "Momentum 12th NEET", "Dynamic Target NEET"],
+      "Pre-Engineering": ["Impulse 11th IIT", "Intensity 12th IIT", "Thurst Target IIT"],
+      "Pre-Foundation": ["Seedling 10th", "Plumule 9th", "Radicle 8th"]
+    };
+
+    // Pre-fill on page load
+    const selectedType = "{{ old('course_type', $student->course_type ?? $student->courseType ?? '') }}";
+    const selectedCourse = "{{ old('courseName', $student->courseName ?? '') }}";
+
+    console.log('Pre-filling course fields:', {
+      selectedType: selectedType,
+      selectedCourse: selectedCourse
+    });
+
+    if (selectedType) {
+      updateCourses(selectedType);
+      setTimeout(() => {
+        if (selectedCourse) {
+          courseSelect.value = selectedCourse;
+          console.log('Course name set to:', selectedCourse);
+        }
+      }, 100);
+    }
+
+    courseTypeSelect.addEventListener("change", function () {
+      updateCourses(this.value);
+    });
+
+    function updateCourses(type) {
+      courseSelect.innerHTML = '<option value="">Select Course</option>';
+      if (!type || !courseOptions[type]) return;
+
+      courseOptions[type].forEach(course => {
+        const option = document.createElement("option");
+        option.value = course;
+        option.textContent = course;
+        courseSelect.appendChild(option);
+      });
+      
+      console.log('Updated courses for type:', type);
+    }
+});
+
+
+document.getElementById('editStudentForm').addEventListener('submit', function(e) {
+    // Don't prevent default, just log what's being sent
+    const formData = new FormData(this);
+    
+    console.log('=== FORM SUBMISSION DEBUG ===');
+    console.log('All form fields being submitted:');
+    
+    for (let [key, value] of formData.entries()) {
+        if (value === '' || value === null) {
+            console.warn(`⚠️ EMPTY: ${key} = "${value}"`);
+        } else {
+            console.log(`✓ ${key} = "${value}"`);
+        }
+    }
+    
+    // Check required fields
+    const requiredFields = [
+        'name', 'father', 'mother', 'dob', 'mobileNumber', 
+        'category', 'gender', 'state', 'city', 'pinCode', 'address',
+        'belongToOtherCity', 'economicWeakerSection', 
+        'armyPoliceBackground', 'speciallyAbled',
+        'course_type', 'courseName', 'deliveryMode', 'medium', 
+        'board', 'courseContent',
+        'previousClass', 'previousMedium', 'schoolName', 
+        'previousBoard', 'passingYear', 'percentage',
+        'isRepeater', 'scholarshipTest', 'lastBoardPercentage', 
+        'competitionExam', 'batchName'
+    ];
+    
+    const missing = [];
+    requiredFields.forEach(field => {
+        const value = formData.get(field);
+        if (!value || value.trim() === '') {
+            missing.push(field);
+        }
+    });
+    
+    console.log('\n=== REQUIRED FIELDS CHECK ===');
+    console.log('Total required fields:', requiredFields.length);
+    console.log('Missing fields:', missing.length);
+    if (missing.length > 0) {
+        console.warn('Missing/Empty required fields:', missing);
+    } else {
+        console.log('✓ All required fields are filled!');
+    }
+    console.log('========================\n');
+});
     </script>
 </body>
 </html>
