@@ -10,17 +10,41 @@ use Illuminate\Support\Facades\Log;
 
 class StudentController extends Controller
 {
+    /**
+     * Display PENDING INQUIRY students - students with incomplete forms
+     * Route: student.student.pending
+     */
     public function index()
     {
         try {
-            \Log::info('=== ONBOARDING PAGE LOADED ===');
+            // Get ALL students with pending_fees status (incomplete forms)
+            $students = Student::where('status', 'pending_fees')
+                ->orderBy('created_at', 'desc')
+                ->get();
             
-            // Get ALL students to debug
-            $allStudents = Student::all();
-            \Log::info('Total students in database:', [
-                'count' => $allStudents->count(),
-                'statuses' => $allStudents->pluck('status', '_id')->toArray()
+            \Log::info('Fetching pending inquiry students:', [
+                'count' => $students->count(),
+                'students' => $students->pluck('name', '_id')->toArray()
             ]);
+            
+            return view('student.student.pending', [
+                'students' => $students,
+                'totalCount' => $students->count(),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error loading pending students: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load students');
+        }
+    }
+
+    /**
+     * Display ONBOARDED students - students with complete forms
+     * Route: student.onboard.onboard
+     */
+    public function onboardedStudents()
+    {
+        try {
+            \Log::info('=== ONBOARDING PAGE LOADED ===');
             
             // Get students with 'onboarded' status (complete forms)
             $students = Student::where('status', 'onboarded')
@@ -30,18 +54,8 @@ class StudentController extends Controller
             \Log::info('Fetching onboarded students:', [
                 'count' => $students->count(),
                 'student_ids' => $students->pluck('_id')->toArray(),
-                'student_names' => $students->pluck('name')->toArray(),
-                'student_statuses' => $students->pluck('status', 'name')->toArray()
+                'student_names' => $students->pluck('name')->toArray()
             ]);
-            
-            // If no students found, check if any have status issues
-            if ($students->count() === 0) {
-                $similarStatus = Student::whereIn('status', ['Onboarded', 'ONBOARDED', 'onboard', 'Onboard'])->get();
-                \Log::warning('No students with status "onboarded" found. Checking similar statuses:', [
-                    'similar_count' => $similarStatus->count(),
-                    'similar_statuses' => $similarStatus->pluck('status', 'name')->toArray()
-                ]);
-            }
             
             return view('student.onboard.onboard', [
                 'students' => $students,
@@ -57,251 +71,14 @@ class StudentController extends Controller
         }
     }
 
-
     /**
-     * Display ONBOARDING STUDENTS - students with complete forms
-     * These are students with status = 'onboarded'
+     * Show fully paid (active) students
      */
-    public function onboardedStudents()
+    public function activeStudents()
     {
-        try {
-            // Get students with onboarded status (complete forms)
-            $students = Student::where('status', 'onboarded')
-                ->orderBy('created_at', 'desc')
-                ->get();
-            
-            \Log::info('Fetching onboarded students:', [
-                'count' => $students->count(),
-                'students' => $students->pluck('name', '_id')->toArray()
-            ]);
-            
-            return view('student.onboard.onboard', [
-                'students' => $students,
-                'totalCount' => $students->count(),
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Error loading onboarded students: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to load students');
-        }
+        $students = Student::getActiveStudents();
+        return view('master.student.onboard', compact('students'));
     }
-
-    /**
-     * Edit onboarded student
-     */
-    public function edit($id)
-    {
-        try {
-            $student = Student::findOrFail($id);
-            
-            Log::info('Editing onboarded student:', [
-                'student_id' => $id,
-                'student_name' => $student->name
-            ]);
-            
-            // Use the same edit view
-            return view('student.student.edit', compact('student'));
-            
-        } catch (\Exception $e) {
-            Log::error("Edit failed for student ID {$id}: " . $e->getMessage());
-            return redirect()->route('student.onboard.onboard')
-                ->with('error', 'Student not found');
-        }
-    }
-
-   public function update(Request $request, $id)
-{
-    try {
-        \Log::info('=== UPDATE REQUEST START ===', [
-            'student_id' => $id,
-            'all_input' => $request->all()
-        ]);
-
-        $student = Student::findOrFail($id);
-        
-        \Log::info('Student found - BEFORE update:', [
-            'student_id' => $student->_id,
-            'student_name' => $student->name,
-            'current_status' => $student->status,
-            'current_course_type' => $student->course_type ?? 'NOT SET'
-        ]);
-
-        $validated = $request->validate([
-            // Basic Details
-            'name' => 'nullable|string|max:255',
-            'father' => 'nullable|string|max:255',
-            'mother' => 'nullable|string|max:255',
-            'dob' => 'nullable|date',
-            'mobileNumber' => 'nullable|string|regex:/^[0-9]{10}$/',
-            'fatherWhatsapp' => 'nullable|string|regex:/^[0-9]{10}$/',
-            'motherContact' => 'nullable|string|regex:/^[0-9]{10}$/',
-            'studentContact' => 'nullable|string|regex:/^[0-9]{10}$/',
-            'category' => 'nullable|in:GENERAL,OBC,SC,ST',
-            'gender' => 'nullable|in:Male,Female,Others',
-            'fatherOccupation' => 'nullable|string|max:255',
-            'fatherGrade' => 'nullable|string|max:255',
-            'motherOccupation' => 'nullable|string|max:255',
-            
-            // Address Details
-            'state' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'pinCode' => 'nullable|string|regex:/^[0-9]{6}$/',
-            'address' => 'nullable|string',
-            'belongToOtherCity' => 'nullable|in:Yes,No',
-            'economicWeakerSection' => 'nullable|in:Yes,No',
-            'armyPoliceBackground' => 'nullable|in:Yes,No',
-            'speciallyAbled' => 'nullable|in:Yes,No',
-            
-            // Course Details
-            'course_type' => 'nullable|string',
-            'courseName' => 'nullable|string',
-            'deliveryMode' => 'nullable|string',
-            'medium' => 'nullable|string',
-            'board' => 'nullable|string',
-            'courseContent' => 'nullable|string',
-            
-            // Academic Details
-            'previousClass' => 'nullable|string',
-            'previousMedium' => 'nullable|string',
-            'schoolName' => 'nullable|string|max:255',
-            'previousBoard' => 'nullable|string',
-            'passingYear' => 'nullable|string|regex:/^[0-9]{4}$/',
-            'percentage' => 'nullable|numeric|min:0|max:100',
-            
-            // Scholarship Eligibility
-            'isRepeater' => 'nullable|in:Yes,No',
-            'scholarshipTest' => 'nullable|in:Yes,No',
-            'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
-            'competitionExam' => 'nullable|in:Yes,No',
-            
-            // Batch
-            'batchName' => 'nullable|string|max:255',
-        ]);
-
-        \Log::info('Validation passed:', [
-            'validated_data' => $validated
-        ]);
-
-        // Remove null values to avoid overwriting existing data
-        $validated = array_filter($validated, function($value) {
-            return $value !== null;
-        });
-
-        \Log::info('After filtering nulls:', [
-            'validated_data' => $validated
-        ]);
-
-        // Update student
-        $student->update($validated);
-        
-        // Refresh student to get updated values
-        $student->refresh();
-        
-        \Log::info('Student AFTER update:', [
-            'student_id' => $student->_id,
-            'status' => $student->status,
-            'course_type' => $student->course_type ?? 'NOT SET',
-            'courseName' => $student->courseName ?? 'NOT SET'
-        ]);
-        
-        // Check if ALL required fields are filled
-        $requiredFields = [
-            'name', 'father', 'mother', 'dob', 'mobileNumber', 
-            'category', 'gender', 
-            'state', 'city', 'pinCode', 'address',
-            'belongToOtherCity', 'economicWeakerSection', 
-            'armyPoliceBackground', 'speciallyAbled',
-            'course_type', 'courseName', 'deliveryMode', 'medium', 
-            'board', 'courseContent',
-            'previousClass', 'previousMedium', 'schoolName', 
-            'previousBoard', 'passingYear', 'percentage',
-            'isRepeater', 'scholarshipTest', 'lastBoardPercentage', 
-            'competitionExam', 'batchName'
-        ];
-
-        $isComplete = true;
-        $missingFields = [];
-        $fieldStatus = [];
-        
-        foreach ($requiredFields as $field) {
-            $value = $student->$field;
-            // Check if field is null, empty string, or just whitespace
-            if ($value === null || $value === '' || (is_string($value) && trim($value) === '')) {
-                $isComplete = false;
-                $missingFields[] = $field;
-                $fieldStatus[$field] = '❌ MISSING';
-            } else {
-                $fieldStatus[$field] = '✓ ' . substr($value, 0, 20);
-            }
-        }
-        
-        \Log::info('=== FORM COMPLETION CHECK ===', [
-            'is_complete' => $isComplete,
-            'total_required' => count($requiredFields),
-            'total_missing' => count($missingFields),
-            'missing_fields' => $missingFields,
-            'field_status' => $fieldStatus
-        ]);
-
-        if ($isComplete) {
-            \Log::info('✓✓✓ FORM IS COMPLETE - CHANGING STATUS ✓✓✓', [
-                'student_id' => $student->_id,
-                'old_status' => $student->status
-            ]);
-
-            // Update status to 'onboarded' to move to Onboarding Students section
-            $student->status = 'onboarded';
-            $student->save();
-            
-            // Verify the save
-            $student->refresh();
-
-            \Log::info('✓✓✓ STATUS CHANGED SUCCESSFULLY ✓✓✓', [
-                'new_status' => $student->status,
-                'verified_in_db' => Student::find($id)->status
-            ]);
-
-            return redirect()->route('student.student.pending')
-                ->with('success', 'Student form completed! Moved to Onboarding Students section.');
-        }
-        
-        \Log::info('Form not complete yet', [
-            'student_id' => $student->_id,
-            'missing_count' => count($missingFields),
-            'missing_fields' => $missingFields
-        ]);
-
-        return redirect()->route('student.student.pending')
-            ->with('info', 'Student updated successfully. Missing ' . count($missingFields) . ' required field(s): ' . implode(', ', array_slice($missingFields, 0, 5)) . (count($missingFields) > 5 ? '...' : ''));
-            
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        \Log::error('Student not found: ', ['id' => $id]);
-        return redirect()->back()
-            ->with('error', 'Student not found')
-            ->withInput();
-            
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        \Log::error('Validation failed', ['errors' => $e->errors()]);
-        return redirect()->back()
-            ->withErrors($e->errors())
-            ->withInput();
-        
-    } catch (\Exception $e) {
-        \Log::error('Error updating student: ' . $e->getMessage(), [
-            'trace' => $e->getTraceAsString()
-        ]);
-
-        return redirect()->back()
-            ->with('error', 'Failed to update student: ' . $e->getMessage())
-            ->withInput();
-    }
-}
-
-
-public function activeStudents()
-{
-    $students = Student::getActiveStudents();
-    return view('master.student.onboard', compact('students'));
-}
 
     /**
      * Display pending fees students
@@ -320,38 +97,269 @@ public function activeStudents()
         }
     }
 
-      /**
-     * View onboarded student details
+    /**
+     * Show single student details (works for both pending and onboarded)
      */
     public function show($id)
     {
         try {
             $student = Student::findOrFail($id);
             
-            Log::info('Viewing onboarded student details:', [
+            Log::info('Viewing student details:', [
                 'student_id' => $id,
-                'student_name' => $student->name
+                'student_name' => $student->name,
+                'status' => $student->status
             ]);
             
-            return view('student.onboard.view', compact('student'));
+            // Return appropriate view based on status
+            if ($student->status === 'onboarded') {
+                return view('student.onboard.view', compact('student'));
+            }
+            
+            return view('master.student.show', ['student' => $student]);
             
         } catch (\Exception $e) {
             Log::error("View failed for student ID {$id}: " . $e->getMessage());
-            return redirect()->route('student.onboard.onboard')
-                ->with('error', 'Student not found');
+            return redirect()->back()->with('error', 'Student not found');
         }
     }
 
     /**
-     * Convert inquiry to student (pending process)
+     * Edit student form (works for both pending and onboarded)
+     */
+    public function edit($id)
+    {
+        try {
+            $student = Student::findOrFail($id);
+            
+            Log::info('Editing student:', [
+                'student_id' => $id,
+                'student_name' => $student->name,
+                'status' => $student->status
+            ]);
+            
+            return view('student.student.edit', compact('student'));
+            
+        } catch (\Exception $e) {
+            Log::error("Edit failed for student ID {$id}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Student not found');
+        }
+    }
+
+    /**
+     * Update student information
+     * This handles BOTH pending and onboarded students
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            \Log::info('=== UPDATE REQUEST START ===', [
+                'student_id' => $id,
+                'request_data_keys' => array_keys($request->all())
+            ]);
+
+            $student = Student::findOrFail($id);
+            
+            \Log::info('Student found - BEFORE update:', [
+                'student_id' => $student->_id,
+                'student_name' => $student->name,
+                'current_status' => $student->status
+            ]);
+
+            $validated = $request->validate([
+                // Basic Details
+                'name' => 'nullable|string|max:255',
+                'father' => 'nullable|string|max:255',
+                'mother' => 'nullable|string|max:255',
+                'dob' => 'nullable|date',
+                'mobileNumber' => 'nullable|string|regex:/^[0-9]{10}$/',
+                'fatherWhatsapp' => 'nullable|string|regex:/^[0-9]{10}$/',
+                'motherContact' => 'nullable|string|regex:/^[0-9]{10}$/',
+                'studentContact' => 'nullable|string|regex:/^[0-9]{10}$/',
+                'category' => 'nullable|in:GENERAL,OBC,SC,ST',
+                'gender' => 'nullable|in:Male,Female,Others',
+                'fatherOccupation' => 'nullable|string|max:255',
+                'fatherGrade' => 'nullable|string|max:255',
+                'motherOccupation' => 'nullable|string|max:255',
+                
+                // Address Details
+                'state' => 'nullable|string|max:255',
+                'city' => 'nullable|string|max:255',
+                'pinCode' => 'nullable|string|regex:/^[0-9]{6}$/',
+                'address' => 'nullable|string',
+                'belongToOtherCity' => 'nullable|in:Yes,No',
+                'economicWeakerSection' => 'nullable|in:Yes,No',
+                'armyPoliceBackground' => 'nullable|in:Yes,No',
+                'speciallyAbled' => 'nullable|in:Yes,No',
+                
+                // Course Details
+                'course_type' => 'nullable|string',
+                'course' => 'nullable|string',
+                'courseName' => 'nullable|string',
+                'deliveryMode' => 'nullable|string',
+                'medium' => 'nullable|string',
+                'board' => 'nullable|string',
+                'courseContent' => 'nullable|string',
+                
+                // Academic Details
+                'previousClass' => 'nullable|string',
+                'previousMedium' => 'nullable|string',
+                'schoolName' => 'nullable|string|max:255',
+                'previousBoard' => 'nullable|string',
+                'passingYear' => 'nullable|string|regex:/^[0-9]{4}$/',
+                'percentage' => 'nullable|numeric|min:0|max:100',
+                
+                // Scholarship Eligibility
+                'isRepeater' => 'nullable|in:Yes,No',
+                'scholarshipTest' => 'nullable|in:Yes,No',
+                'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
+                'competitionExam' => 'nullable|in:Yes,No',
+                
+                // Batch
+                'batchName' => 'nullable|string|max:255',
+            ]);
+
+            // Remove null values to avoid overwriting existing data
+            $validated = array_filter($validated, function($value) {
+                return $value !== null;
+            });
+
+            // Update student
+            $student->update($validated);
+            $student->refresh();
+            
+            \Log::info('Student AFTER update:', [
+                'student_id' => $student->_id,
+                'status' => $student->status
+            ]);
+            
+            // Check if ALL required fields are filled (only for pending_fees students)
+            if ($student->status === 'pending_fees') {
+                $requiredFields = [
+                    'name', 'father', 'mother', 'dob', 'mobileNumber', 
+                    'category', 'gender', 
+                    'state', 'city', 'pinCode', 'address',
+                    'belongToOtherCity', 'economicWeakerSection', 
+                    'armyPoliceBackground', 'speciallyAbled',
+                    'course_type', 'courseName', 'deliveryMode', 'medium', 
+                    'board', 'courseContent',
+                    'previousClass', 'previousMedium', 'schoolName', 
+                    'previousBoard', 'passingYear', 'percentage',
+                    'isRepeater', 'scholarshipTest', 'lastBoardPercentage', 
+                    'competitionExam', 'batchName'
+                ];
+
+                $isComplete = true;
+                $missingFields = [];
+                
+                foreach ($requiredFields as $field) {
+                    $value = $student->$field;
+                    if ($value === null || $value === '' || (is_string($value) && trim($value) === '')) {
+                        $isComplete = false;
+                        $missingFields[] = $field;
+                    }
+                }
+                
+                \Log::info('=== FORM COMPLETION CHECK ===', [
+                    'is_complete' => $isComplete,
+                    'total_required' => count($requiredFields),
+                    'total_missing' => count($missingFields),
+                    'missing_fields' => $missingFields
+                ]);
+
+                if ($isComplete) {
+                    \Log::info('✓✓✓ FORM IS COMPLETE - MOVING TO ONBOARDED ✓✓✓', [
+                        'student_id' => $student->_id,
+                        'student_name' => $student->name
+                    ]);
+
+                    try {
+                        // Get all student data
+                        $onboardedData = $student->toArray();
+                        
+                        // Remove MongoDB _id to create new document
+                        unset($onboardedData['_id']);
+                        
+                        // Add onboarded timestamp
+                        $onboardedData['onboardedAt'] = now();
+                        $onboardedData['status'] = 'onboarded';
+                        
+                        \Log::info('Creating onboarded student entry:', [
+                            'data_keys' => array_keys($onboardedData),
+                            'name' => $onboardedData['name'] ?? 'N/A'
+                        ]);
+                        
+                        // Create entry in onboarded_students collection
+                        $onboarded = \App\Models\Student\Onboard::create($onboardedData);
+                        
+                        \Log::info('✓ Onboarded student created:', [
+                            'onboarded_id' => $onboarded->_id,
+                            'collection' => 'onboarded_students'
+                        ]);
+                        
+                        // Delete from students (pending) collection
+                        $studentId = $student->_id;
+                        $student->delete();
+                        
+                        \Log::info('✓ Deleted from pending students:', [
+                            'deleted_id' => $studentId
+                        ]);
+
+                        \Log::info('✓✓✓ STUDENT MOVED TO ONBOARDED COLLECTION SUCCESSFULLY ✓✓✓');
+
+                        return redirect()->route('student.student.pending')
+                            ->with('success', 'Student form completed! Moved to Onboarding Students section.');
+                            
+                    } catch (\Exception $e) {
+                        \Log::error('❌ ERROR MOVING STUDENT TO ONBOARDED:', [
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString()
+                        ]);
+                        
+                        return redirect()->route('student.student.pending')
+                            ->with('error', 'Failed to move student: ' . $e->getMessage());
+                    }
+                }
+                
+                return redirect()->route('student.student.pending')
+                    ->with('info', 'Student updated. Missing ' . count($missingFields) . ' field(s): ' . implode(', ', array_slice($missingFields, 0, 5)));
+            }
+            
+            // For already onboarded students, just redirect back to onboarded list
+            return redirect()->route('student.onboard.onboard')
+                ->with('success', 'Student updated successfully');
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            \Log::error('Student not found: ', ['id' => $id]);
+            return redirect()->back()
+                ->with('error', 'Student not found')
+                ->withInput();
+                
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed', ['errors' => $e->errors()]);
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+            
+        } catch (\Exception $e) {
+            \Log::error('Error updating student: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Failed to update student: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
+     * Convert inquiry to student
      */
     public function convertFromInquiry(Request $request, $inquiryId)
     {
         try {
-            // Get inquiry data
             $inquiry = Inquiry::findOrFail($inquiryId);
             
-            // Validate additional pending data
             $validated = $request->validate([
                 'total_fees' => 'required|numeric|min:0',
                 'paid_fees' => 'nullable|numeric|min:0',
@@ -361,12 +369,10 @@ public function activeStudents()
                 'branch' => 'required|string',
             ]);
 
-            // Calculate remaining fees
             $totalFees = $validated['total_fees'];
             $paidFees = $validated['paid_fees'] ?? 0;
             $remainingFees = $totalFees - $paidFees;
 
-            // Determine status based on fees
             if ($remainingFees <= 0) {
                 $status = Student::STATUS_ACTIVE;
                 $feeStatus = 'paid';
@@ -378,7 +384,6 @@ public function activeStudents()
                 $feeStatus = 'pending';
             }
 
-            // Create student from inquiry
             $student = Student::create([
                 'name' => $inquiry->name,
                 'father' => $inquiry->father,
@@ -396,10 +401,8 @@ public function activeStudents()
                 'fee_status' => $feeStatus,
             ]);
 
-            // Update inquiry status
             $inquiry->update(['status' => 'converted']);
 
-            // Redirect based on fees status
             if ($remainingFees > 0) {
                 return redirect()->route('students.pending_fees')
                     ->with('success', 'Student onboarded successfully! Pending fees: ₹' . $remainingFees);
@@ -415,7 +418,7 @@ public function activeStudents()
     }
 
     /**
-     * Store a newly created student (direct entry)
+     * Store a newly created student
      */
     public function store(Request $request)
     {
@@ -434,12 +437,10 @@ public function activeStudents()
                 'paid_fees' => 'nullable|numeric|min:0',
             ]);
 
-            // Calculate fees
             $totalFees = $validated['total_fees'];
             $paidFees = $validated['paid_fees'] ?? 0;
             $remainingFees = $totalFees - $paidFees;
 
-            // Determine status
             if ($remainingFees <= 0) {
                 $status = Student::STATUS_ACTIVE;
                 $feeStatus = 'paid';
@@ -499,7 +500,7 @@ public function activeStudents()
     }
 
     /**
-     * Update student fees (collect payment)
+     * Update student fees
      */
     public function updateFees(Request $request, $id)
     {
@@ -514,11 +515,10 @@ public function activeStudents()
             $student->paid_fees += $paymentAmount;
             $student->remaining_fees -= $paymentAmount;
 
-            // Update status based on remaining fees
             if ($student->remaining_fees <= 0) {
                 $student->status = Student::STATUS_ACTIVE;
                 $student->fee_status = 'paid';
-                $student->remaining_fees = 0; // Ensure it doesn't go negative
+                $student->remaining_fees = 0;
             } elseif ($student->paid_fees > 0) {
                 $student->fee_status = 'partial';
             }
@@ -534,7 +534,6 @@ public function activeStudents()
                 ]);
             }
 
-            // Redirect based on remaining fees
             if ($student->remaining_fees <= 0) {
                 return redirect()->route('students.active')
                     ->with('success', 'Payment completed! Student is now active.');
@@ -554,5 +553,4 @@ public function activeStudents()
             return redirect()->back()->with('error', 'Failed to update fees');
         }
     }
-
 }

@@ -381,8 +381,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       <th scope="col" id="one">Serial No.</th>
       <th scope="col" id="one">Batch Code</th>
       <th scope="col" id="one">Class</th>
+      <th scope="col" id="one">Course</th>
       <th scope="col" id="one">Course Type</th>
-      <th scope="col" id="one">Branch</th>
       <th scope="col" id="one">Delivery Mode</th>
       <th scope="col" id="one">Medium</th>
       <th scope="col" id="one">Shift</th>
@@ -408,29 +408,34 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                   {{ $batch->status ?? 'Active' }}
                 </span>
               </td>
-              <td>
-                <div class="dropdown">
-                  
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-                      data-bs-toggle="dropdown" aria-expanded="false">
+             <td>
+  <div class="dropdown">
+    <button class="btn btn-sm btn-outline-secondary" type="button" 
+            id="dropdownMenu{{ $loop->index }}" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
       <i class="fas fa-ellipsis-v"></i>
     </button>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <button class="dropdown-item" data-bs-toggle="modal"
-                        data-bs-target="#viewBatchModal{{ $batch->_id }}">
-                        View Details
-                      </button>
-                    </li>
-                    <li>
-                      <button class="dropdown-item" data-bs-toggle="modal"
-                        data-bs-target="#editBatchModal{{ $batch->_id }}">
-                        Edit Details
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </td>
+    <ul class="dropdown-menu dropdown-menu-end shadow" 
+        aria-labelledby="dropdownMenu{{ $loop->index }}"
+        style="position: absolute;">
+      <li>
+        <a class="dropdown-item" href="#" 
+           data-bs-toggle="modal"
+           data-bs-target="#viewBatchModal{{ $batch->_id }}">
+          View Details
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#" 
+           data-bs-toggle="modal"
+           data-bs-target="#editBatchModal{{ $batch->_id }}">
+          Edit Details
+        </a>
+      </li>
+    </ul>
+  </div>
+</td>
             </tr>
           @endforeach
   </tbody>
@@ -662,15 +667,15 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </select>
           </div>
 
-          <!-- Auto-filled fields (Read-only, shown for reference) -->
+          <!-- Auto-filled fields (Read-only) -->
           <div class="mb-3">
-            <label class="form-label">Class Name <span class="text-muted">(Auto-filled)</span></label>
-            <input type="text" class="form-control bg-light" id="classNameDisplay" readonly placeholder="Will be auto-filled">
+            <label class="form-label">Class Name</label>
+            <input type="text" class="form-control bg-light" id="classNameDisplay">
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Course Type <span class="text-muted">(Auto-filled)</span></label>
-            <input type="text" class="form-control bg-light" id="courseTypeDisplay" readonly placeholder="Will be auto-filled">
+            <label class="form-label">Course Type</label>
+            <input type="text" class="form-control bg-light" id="courseTypeDisplay">
           </div>
 
           <!-- Batch Code -->
@@ -726,7 +731,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
           <!-- Installment Dates -->
           <div class="mb-3">
-            <label class="form-label fw-bold">Installment Dates (Optional)</label>
+            <label class="form-label fw-bold">Installment Dates</label>
           </div>
 
           <div class="mb-3">
@@ -750,14 +755,14 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
           <div class="modal-footer" id="footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Create Batch</button>
+            <button type="submit" id="doneBtn" class="btn btn-primary">Create</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 // Auto-fill class name and course type based on selected course
 document.getElementById('courseSelect').addEventListener('change', function() {
@@ -849,51 +854,64 @@ document.getElementById('courseSelect').addEventListener('change', function() {
 
 <!-- AJAX Script: Handles dynamic user addition without page reload -->
 <script>
-  // Event handler for add user form submission
-  // Ajax for dynamic user addition without page reload
-  $('#addUserForm').on('submit', function (e) {
-    // Prevent default form submission behavior
-    e.preventDefault();
-    // Clear previous error messages
-    $('.text-danger').text('');
+// AJAX for dynamic batch addition without page reload
+$('#createBatchForm').on('submit', function (e) {
+    e.preventDefault(); // Prevent default form submission
+    $('.text-danger').text(''); // Clear previous errors
 
-
-    // AJAX POST request to add user
+    // AJAX POST request to add batch
     $.ajax({
-      url: "{{ route('users.add') }}",
-      method: 'POST',
-      data: $(this).serialize(),
-      success: function (response) {
-        // On successful user addition
-        if (response.status === 'success') {
-          // Close the modal
-          $('#addUserModal').modal('hide');
-          // Reset form fields
-          $('#addUserForm')[0].reset();
-
-          // Dynamically append new user row to table without page reload
-          // Append user to table
-          $('#users-table tbody').append(`
-                    <tr>
-                        <td>${response.user.name}</td>
-                        <td>${response.user.email}</td>
-                        <td>${response.user.phone}</td>
-                    </tr>
-                `);
+        url: "{{ route('batches.add') }}",
+        method: 'POST',
+        data: $(this).serialize(),
+        success: function (response) {
+            // Close the modal
+            $('#exampleModalOne').modal('hide');
+            
+            // Reset form
+            $('#createBatchForm')[0].reset();
+            
+            // Force page reload to show new batch
+            window.location.href = "{{ route('batches.index') }}";
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                // Display validation errors
+                const errors = xhr.responseJSON.errors;
+                for (let field in errors) {
+                    $('#error-' + field).text(errors[field][0]);
+                }
+            } else {
+                alert('An error occurred. Please try again.');
+            }
         }
-      },
-      error: function (xhr) {
-        // Handle validation errors (HTTP 422)
-        if (xhr.status === 422) {
-          const errors = xhr.responseJSON.errors;
-          // Display error messages for each field
-          for (let field in errors) {
-            $(#error - ${ field }).text(errors[field][0]);
-          }
-        }
-      }
     });
-  });
+});
+
+// Auto-fill class name and course type based on selected course
+document.getElementById('courseSelect').addEventListener('change', function() {
+    const courseMapping = {
+        'Anthesis 11th NEET': { class: '11th (XI)', type: 'Pre-Medical' },
+        'Momentum 12th NEET': { class: '12th (XII)', type: 'Pre-Medical' },
+        'Dynamic Target NEET': { class: 'Target (XII +)', type: 'Pre-Medical' },
+        'Impulse 11th IIT': { class: '11th (XI)', type: 'Pre-Engineering' },
+        'Intensity 12th IIT': { class: '12th (XII)', type: 'Pre-Engineering' },
+        'Thrust Target IIT': { class: 'Target (XII +)', type: 'Pre-Engineering' },
+        'Seedling 10th': { class: '10th (X)', type: 'Pre-Foundation' },
+        'Plumule 9th': { class: '9th (IX)', type: 'Pre-Foundation' },
+        'Radicle 8th': { class: '8th (VIII)', type: 'Pre-Foundation' },
+        'Nucleus 7th': { class: '7th (VII)', type: 'Pre-Foundation' },
+        'Atom 6th': { class: '6th (VI)', type: 'Pre-Foundation' }
+    };
+
+    const selectedCourse = this.value;
+    const courseData = courseMapping[selectedCourse];
+
+    if (courseData) {
+        document.getElementById('classNameDisplay').value = courseData.class;
+        document.getElementById('courseTypeDisplay').value = courseData.type;
+    }
+});
 </script>
 
 </html>

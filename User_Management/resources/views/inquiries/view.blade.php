@@ -14,36 +14,42 @@
       padding: 25px;
       margin-bottom: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
     .view-section h4 {
       color: #ff6b35;
       margin-bottom: 20px;
       padding-bottom: 10px;
       border-bottom: 2px solid #ff6b35;
     }
+
     .info-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
       margin-bottom: 15px;
     }
+
     .info-item {
       padding: 12px;
       background: #f8f9fa;
       border-radius: 5px;
       border-left: 3px solid #ff6b35;
     }
+
     .info-label {
       font-weight: 600;
       color: #555;
       font-size: 0.9rem;
       margin-bottom: 5px;
     }
+
     .info-value {
       color: #333;
       font-size: 1rem;
     }
+
     .back-btn {
       color: #ff6b35;
       text-decoration: none;
@@ -53,9 +59,11 @@
       gap: 5px;
       margin-bottom: 20px;
     }
+
     .back-btn:hover {
       color: #e55a2b;
     }
+
     .btn-edit {
       background-color: #ff6b35;
       color: white;
@@ -66,10 +74,12 @@
       text-decoration: none;
       display: inline-block;
     }
+
     .btn-edit:hover {
       background-color: #e55a2b;
       color: white;
     }
+
     .badge-status {
       padding: 8px 15px;
       border-radius: 20px;
@@ -116,8 +126,8 @@
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-      
-        <div class="accordion accordion-flush" id="accordionFlushExample">
+
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -128,8 +138,8 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
-                      id="side-icon"></i> Employee</a></li>
+                <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user" id="side-icon"></i>
+                    Employee</a></li>
                 <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
                       id="side-icon"></i> Batches Assignment</a></li>
               </ul>
@@ -155,10 +165,9 @@
                       id="side-icon"></i> Scholarship</a>
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
-<i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+                    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
                 <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
-                      id="side-icon"></i> Other Fees Master</a>
+"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
                       id="side-icon"></i> Branch
@@ -193,19 +202,19 @@
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button"> 
+              id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-          
+
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}">
-    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
-</a></li>
+                    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
+                  </a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
@@ -213,7 +222,7 @@
                       id="side-icon"></i>Students</a></li>
               </ul>
             </div>
-          </div>  
+          </div>
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -306,7 +315,8 @@
                 </li>
                 <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
                     Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file"
+                      id="side-icon"></i>Inquiry
                     History</a></li>
                 <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
                       id="side-icon"></i>Onboard History</a></li>
@@ -332,52 +342,65 @@
           <div class="form-row">
             <div class="form-group">
               <label>Student Name</label>
-<input type="text" class="form-control" value="{{ $inquiry->student_name ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $inquiry->student_name ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Father Name</label>
               <input type="text" class="form-control" value="{{ $inquiry->father_name ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Mother Name</label>
               <input type="text" class="form-control" value="{{ $inquiry->mother ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Date of Birth</label>
-              <input type="text" class="form-control" value="{{ $inquiry->dob ? date('d-m-Y', strtotime($student->dob)) : 'N/A' }}" readonly>
+              <input type="text" class="form-control"
+                value="{{ $inquiry->dob ? date('d-m-Y', strtotime($inquiry->dob)) : 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Father Contact No</label>
               <input type="text" class="form-control" value="{{ $inquiry->father_contact ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Father WhatsApp Number</label>
               <input type="text" class="form-control" value="{{ $inquiry->father_whatsapp ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Mother Contact No</label>
               <input type="text" class="form-control" value="{{ $inquiry->motherContact ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Student Contact No</label>
               <input type="text" class="form-control" value="{{ $inquiry->student_contact ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Category</label>
               <input type="text" class="form-control" value="{{ $inquiry->category ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Gender</label>
               <input type="text" class="form-control" value="{{ $inquiry->gender ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Father Occupation</label>
               <input type="text" class="form-control" value="{{ $inquiry->fatherOccupation ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Father's Grade</label>
               <input type="text" class="form-control" value="{{ $inquiry->fatherGrade ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Mother Occupation</label>
               <input type="text" class="form-control" value="{{ $inquiry->motherOccupation ?? 'N/A' }}" readonly>
@@ -393,30 +416,37 @@
               <label>State</label>
               <input type="text" class="form-control" value="{{ $inquiry->state ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>City</label>
               <input type="text" class="form-control" value="{{ $inquiry->city ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Pin Code</label>
               <input type="text" class="form-control" value="{{ $inquiry->pinCode ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group full-width">
               <label>Address</label>
               <textarea class="form-control" rows="2" readonly>{{ $inquiry->address ?? 'N/A' }}</textarea>
             </div>
+
             <div class="form-group">
               <label>Belong to Other City</label>
               <input type="text" class="form-control" value="{{ $inquiry->belongToOtherCity ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Economic Weaker Section</label>
               <input type="text" class="form-control" value="{{ $inquiry->economicWeakerSection ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Army/Police/Martyr Background</label>
               <input type="text" class="form-control" value="{{ $inquiry->armyPoliceBackground ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Specially Abled</label>
               <input type="text" class="form-control" value="{{ $inquiry->speciallyAbled ?? 'N/A' }}" readonly>
@@ -432,22 +462,27 @@
               <label>Course Type</label>
               <input type="text" class="form-control" value="{{ $inquiry->courseType ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Course Name</label>
               <input type="text" class="form-control" value="{{ $inquiry->course_name ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Delivery Mode</label>
               <input type="text" class="form-control" value="{{ $inquiry->delivery_mode ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Medium</label>
               <input type="text" class="form-control" value="{{ $inquiry->medium ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Board</label>
               <input type="text" class="form-control" value="{{ $inquiry->board ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Course Content</label>
               <input type="text" class="form-control" value="{{ $inquiry->course_content ?? 'N/A' }}" readonly>
@@ -463,25 +498,31 @@
               <label>Previous Class</label>
               <input type="text" class="form-control" value="{{ $inquiry->previousClass ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Previous Medium</label>
               <input type="text" class="form-control" value="{{ $inquiry->previousMedium ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>School Name</label>
               <input type="text" class="form-control" value="{{ $inquiry->schoolName ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Previous Board</label>
               <input type="text" class="form-control" value="{{ $inquiry->previousBoard ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Passing Year</label>
               <input type="text" class="form-control" value="{{ $inquiry->passingYear ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Percentage</label>
-              <input type="text" class="form-control" value="{{ $inquiry->percentage ?? 'N/A' }}{{ $inquiry->percentage ? '%' : '' }}" readonly>
+              <input type="text" class="form-control"
+                value="{{ $inquiry->percentage ?? 'N/A' }}{{ $inquiry->percentage ? '%' : '' }}" readonly>
             </div>
           </div>
         </div>
@@ -494,14 +535,19 @@
               <label>Is Repeater</label>
               <input type="text" class="form-control" value="{{ $inquiry->isRepeater ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Scholarship Test Appeared</label>
               <input type="text" class="form-control" value="{{ $inquiry->scholarshipTest ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
               <label>Last Board Percentage</label>
-              <input type="text" class="form-control" value="{{ $inquiry->lastBoardPercentage ?? 'N/A' }}{{ $inquiry->lastBoardPercentage ? '%' : '' }}" readonly>
+              <input type="text" class="form-control"
+                value="{{ $inquiry->lastBoardPercentage ?? 'N/A' }}{{ $inquiry->lastBoardPercentage ? '%' : '' }}"
+                readonly>
             </div>
+
             <div class="form-group">
               <label>Competition Exam Appeared</label>
               <input type="text" class="form-control" value="{{ $inquiry->competitionExam ?? 'N/A' }}" readonly>
@@ -518,7 +564,7 @@
               <input type="text" class="form-control" value="{{ $inquiry->batchName ?? 'N/A' }}" readonly>
             </div>
           </div>
-        </div>        
+        </div>
       </div>
     </div>
   </div>
@@ -528,4 +574,5 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{asset('js/emp.js')}}"></script>
 </body>
+
 </html>

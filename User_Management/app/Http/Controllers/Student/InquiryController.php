@@ -87,8 +87,24 @@ class InquiryController extends Controller
 }
 public function edit($id)
 {
-    $inquiry = Inquiry::findOrFail($id);
-    return view('inquiries.edit', compact('inquiry'));
+    try {
+        $inquiry = Inquiry::findOrFail($id);
+        
+        \Log::info('Edit inquiry data:', [
+            'id' => $id,
+            'student_name' => $inquiry->student_name,
+            'father_name' => $inquiry->father_name,
+            'father_contact' => $inquiry->father_contact,
+            'course_name' => $inquiry->course_name,
+            'courseType' => $inquiry->courseType,
+            'all_data' => $inquiry->toArray()
+        ]);
+        
+        return view('inquiries.edit', compact('inquiry'));
+    } catch (\Exception $e) {
+        \Log::error('Edit page error: ' . $e->getMessage());
+        return redirect()->route('inquiries.index')->with('error', 'Unable to load inquiry for editing.');
+    }
 }
 
     /**
@@ -174,60 +190,128 @@ public function edit($id)
     /**
      * Update an inquiry
      */
-    public function update(Request $request, $id)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($id);
+public function update(Request $request, $id)
+{
+    try {
+        $inquiry = Inquiry::findOrFail($id);
 
-            Log::info('Inquiry Update Request:', $request->all());
+        Log::info('Inquiry Update Request:', $request->all());
 
-            $validator = Validator::make($request->all(), [
-                'student_name'       => 'required|string|max:255',
-                'father_name'        => 'required|string|max:255',
-                'father_contact'     => 'required|string|max:20',
-                'father_whatsapp'    => 'nullable|string|max:20',
-                'student_contact'    => 'nullable|string|max:20',
-                'category'           => 'required|string|in:General,OBC,SC,ST',
-                'course_name'        => 'nullable|string|max:255',
-                'delivery_mode'      => 'nullable|string|in:Online,Offline,Hybrid',
-                'course_content'     => 'nullable|string|max:255',
-                'branch'             => 'required|string|max:255',
-                'state'              => 'nullable|string|max:255',
-                'city'               => 'nullable|string|max:255',
-                'address'            => 'nullable|string',
-                'ews'                => 'required|string|in:Yes,No',
-                'defense'            => 'required|string|in:Yes,No',
-                'specially_abled'    => 'required|string|in:Yes,No',
-                'status'             => 'nullable|string|in:Pending,Active,Closed,Converted',
-                'remarks'            => 'nullable|string',
-                'follow_up_date'     => 'nullable|date',
-            ]);
+        $validator = Validator::make($request->all(), [
+            // Required fields
+            'name' => 'required|string|max:255',
+            'father' => 'required|string|max:255',
+            'mobileNumber' => 'required|string|max:20',
+            'category' => 'required|string|in:GENERAL,OBC,SC,ST',
+            'gender' => 'required|string|in:Male,Female,Others',
+            'courseName' => 'required|string|max:255',
+            'courseType' => 'required|string|max:255',
+            'deliveryMode' => 'required|string|in:Offline,Online,Hybrid',
+            'medium' => 'required|string|max:255',
+            'board' => 'required|string|max:255',
+            'courseContent' => 'required|string|max:255',
+            
+            // Optional fields - removed 'required' rule
+            'fatherWhatsapp' => 'nullable|string|max:20',
+            'studentContact' => 'nullable|string|max:20',
+            'mother' => 'nullable|string|max:255',
+            'motherContact' => 'nullable|string|max:20',
+            'dob' => 'nullable|date',
+            'fatherOccupation' => 'nullable|string|max:255',
+            'fatherGrade' => 'nullable|string|max:255',
+            'motherOccupation' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'pinCode' => 'nullable|string|max:10',
+            'address' => 'nullable|string',
+            'belongToOtherCity' => 'nullable|string|in:Yes,No',
+            'economicWeakerSection' => 'nullable|string|in:Yes,No',
+            'armyPoliceBackground' => 'nullable|string|in:Yes,No',
+            'speciallyAbled' => 'nullable|string|in:Yes,No',
+            'previousClass' => 'nullable|string|max:255',
+            'previousMedium' => 'nullable|string|max:255',
+            'schoolName' => 'nullable|string|max:255',
+            'previousBoard' => 'nullable|string|max:255',
+            'passingYear' => 'nullable|string|max:4',
+            'percentage' => 'nullable|numeric|min:0|max:100',
+            'isRepeater' => 'nullable|string|in:Yes,No',
+            'scholarshipTest' => 'nullable|string|in:Yes,No',
+            'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
+            'competitionExam' => 'nullable|string|in:Yes,No',
+            'batchName' => 'nullable|string|max:255',
+        ]);
 
-            if ($validator->fails()) {
-                Log::error('Inquiry Update Validation Failed:', $validator->errors()->toArray());
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors(),
-                ], 422);
-            }
-
-            $inquiry->update($validator->validated());
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Inquiry updated successfully',
-                'data' => $inquiry,
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Inquiry Update Error: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error updating inquiry: ' . $e->getMessage(),
-            ], 500);
+        if ($validator->fails()) {
+            Log::error('Inquiry Update Validation Failed:', $validator->errors()->toArray());
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'Validation failed. Please check the form.');
         }
+
+        // Map form fields to database fields
+        $updateData = [
+            'student_name' => $request->input('name'),
+            'father_name' => $request->input('father'),
+            'father_contact' => $request->input('mobileNumber'),
+            'father_whatsapp' => $request->input('fatherWhatsapp'),
+            'student_contact' => $request->input('studentContact'),
+            'category' => $request->input('category'),
+            'course_name' => $request->input('courseName'),
+            'delivery_mode' => $request->input('deliveryMode'),
+            'course_content' => $request->input('courseContent'),
+            'courseType' => $request->input('courseType'),
+            'state' => $request->input('state'),
+            'city' => $request->input('city'),
+            'address' => $request->input('address'),
+            'economicWeakerSection' => $request->input('economicWeakerSection'),
+            'armyPoliceBackground' => $request->input('armyPoliceBackground'),
+            'speciallyAbled' => $request->input('speciallyAbled'),
+            'dob' => $request->input('dob'),
+            'mother' => $request->input('mother'),
+            'motherContact' => $request->input('motherContact'),
+            'gender' => $request->input('gender'),
+            'fatherOccupation' => $request->input('fatherOccupation'),
+            'fatherGrade' => $request->input('fatherGrade'),
+            'motherOccupation' => $request->input('motherOccupation'),
+            'pinCode' => $request->input('pinCode'),
+            'belongToOtherCity' => $request->input('belongToOtherCity'),
+            'medium' => $request->input('medium'),
+            'board' => $request->input('board'),
+            'previousClass' => $request->input('previousClass'),
+            'previousMedium' => $request->input('previousMedium'),
+            'schoolName' => $request->input('schoolName'),
+            'previousBoard' => $request->input('previousBoard'),
+            'passingYear' => $request->input('passingYear'),
+            'percentage' => $request->input('percentage'),
+            'isRepeater' => $request->input('isRepeater'),
+            'scholarshipTest' => $request->input('scholarshipTest'),
+            'lastBoardPercentage' => $request->input('lastBoardPercentage'),
+            'competitionExam' => $request->input('competitionExam'),
+            'batchName' => $request->input('batchName'),
+        ];
+
+        // Remove null values
+        $updateData = array_filter($updateData, function($value) {
+            return $value !== null;
+        });
+
+        $inquiry->update($updateData);
+
+        Log::info('Inquiry updated successfully:', ['id' => $id]);
+
+        return redirect()->route('inquiries.index')
+            ->with('success', 'Student details updated successfully!');
+
+    } catch (\Exception $e) {
+        Log::error('Inquiry Update Error: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return redirect()->back()
+            ->with('error', 'Error updating inquiry: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
     /**
      * Delete an inquiry
@@ -467,13 +551,15 @@ public function view($id)
 {
     try {
         $inquiry = Inquiry::findOrFail($id);
+        
+        \Log::info('View inquiry data:', $inquiry->toArray());
+        
         return view('inquiries.view', compact('inquiry'));
     } catch (\Exception $e) {
         \Log::error('Failed to load inquiry details: ' . $e->getMessage());
         return redirect()->route('inquiries.index')->with('error', 'Unable to load inquiry details.');
     }
 }
-
 }
 
 

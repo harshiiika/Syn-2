@@ -457,52 +457,52 @@
                    pattern="[0-9]{10}" maxlength="10">
           </div>
           
-          <div class="form-group">
-            <label>Category </label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="category" value="GENERAL" 
-                       {{ old('category', $student->category) == 'GENERAL' ? 'checked' : '' }} >
-                GENERAL
-              </label>
-              <label>
-                <input type="radio" name="category" value="OBC" 
-                       {{ old('category', $student->category) == 'OBC' ? 'checked' : '' }}>
-                OBC
-              </label>
-              <label>
-                <input type="radio" name="category" value="SC" 
-                       {{ old('category', $student->category) == 'SC' ? 'checked' : '' }}>
-                SC
-              </label>
-              <label>
-                <input type="radio" name="category" value="ST" 
-                       {{ old('category', $student->category) == 'ST' ? 'checked' : '' }}>
-                ST
-              </label>
-            </div>
-          </div>
+<div class="form-group">
+    <label>Category <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="category" value="GENERAL" 
+               {{ old('category', $student->category ?? 'GENERAL') == 'GENERAL' ? 'checked' : '' }} required>
+        GENERAL
+      </label>
+      <label>
+        <input type="radio" name="category" value="OBC" 
+               {{ old('category', $student->category) == 'OBC' ? 'checked' : '' }}>
+        OBC
+      </label>
+      <label>
+        <input type="radio" name="category" value="SC" 
+               {{ old('category', $student->category) == 'SC' ? 'checked' : '' }}>
+        SC
+      </label>
+      <label>
+        <input type="radio" name="category" value="ST" 
+               {{ old('category', $student->category) == 'ST' ? 'checked' : '' }}>
+        ST
+      </label>
+    </div>
+  </div>
           
-          <div class="form-group">
-            <label>Gender</label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="gender" value="Male" 
-                       {{ old('gender', $student->gender) == 'Male' ? 'checked' : '' }} >
-                Male
-              </label>
-              <label>
-                <input type="radio" name="gender" value="Female" 
-                       {{ old('gender', $student->gender) == 'Female' ? 'checked' : '' }}>
-                Female
-              </label>
-              <label>
-                <input type="radio" name="gender" value="Others" 
-                       {{ old('gender', $student->gender) == 'Others' ? 'checked' : '' }}>
-                Others
-              </label>
-            </div>
-          </div>
+         <div class="form-group">
+    <label>Gender <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="gender" value="Male" 
+               {{ old('gender', $student->gender ?? 'Male') == 'Male' ? 'checked' : '' }} required>
+        Male
+      </label>
+      <label>
+        <input type="radio" name="gender" value="Female" 
+               {{ old('gender', $student->gender) == 'Female' ? 'checked' : '' }}>
+        Female
+      </label>
+      <label>
+        <input type="radio" name="gender" value="Others" 
+               {{ old('gender', $student->gender) == 'Others' ? 'checked' : '' }}>
+        Others
+      </label>
+    </div>
+  </div>
           
           <div class="form-group">
             <label>Father Occupation</label>
@@ -556,68 +556,70 @@
           </div>
           
           <div class="form-group">
-            <label>Do you belong to another city?</label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="belongToOtherCity" value="Yes" 
-                       {{ old('belongToOtherCity', $student->belongToOtherCity) == 'Yes' ? 'checked' : '' }} >
-                Yes
-              </label>
-              <label>
-                <input type="radio" name="belongToOtherCity" value="No" 
-                       {{ old('belongToOtherCity', $student->belongToOtherCity) == 'No' ? 'checked' : '' }}>
-                No
-              </label>
-            </div>
-          </div>
+    <label>Do you belong to another city? <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="belongToOtherCity" value="Yes" 
+               {{ old('belongToOtherCity', $student->belongToOtherCity ?? 'No') == 'Yes' ? 'checked' : '' }} required>
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="belongToOtherCity" value="No" 
+               {{ old('belongToOtherCity', $student->belongToOtherCity ?? 'No') == 'No' ? 'checked' : '' }}>
+        No
+      </label>
+    </div>
+  </div>
+
+          
+<div class="form-group">
+    <label>Do You Belong to Economic Weaker Section? <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="economicWeakerSection" value="Yes" 
+               {{ old('economicWeakerSection', $student->economicWeakerSection ?? 'No') == 'Yes' ? 'checked' : '' }} required>
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="economicWeakerSection" value="No" 
+               {{ old('economicWeakerSection', $student->economicWeakerSection ?? 'No') == 'No' ? 'checked' : '' }}>
+        No
+      </label>
+    </div>
+  </div>
+
+<div class="form-group">
+    <label>Do You Belong to Any Army/Police/Martyr Background? <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="armyPoliceBackground" value="Yes" 
+               {{ old('armyPoliceBackground', $student->armyPoliceBackground ?? 'No') == 'Yes' ? 'checked' : '' }} required>
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="armyPoliceBackground" value="No" 
+               {{ old('armyPoliceBackground', $student->armyPoliceBackground ?? 'No') == 'No' ? 'checked' : '' }}>
+        No
+      </label>
+    </div>
+  </div>
+
           
           <div class="form-group">
-            <label>Do You Belong to Economic Weaker Section? </label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="economicWeakerSection" value="Yes" 
-                       {{ old('economicWeakerSection', $student->economicWeakerSection) == 'Yes' ? 'checked' : '' }} >
-                Yes
-              </label>
-              <label>
-                <input type="radio" name="economicWeakerSection" value="No" 
-                       {{ old('economicWeakerSection', $student->economicWeakerSection) == 'No' ? 'checked' : '' }}>
-                No
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label>Do You Belong to Any Army/Police/Martyr Background?</label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="armyPoliceBackground" value="Yes" 
-                       {{ old('armyPoliceBackground', $student->armyPoliceBackground) == 'Yes' ? 'checked' : '' }} >
-                Yes
-              </label>
-              <label>
-                <input type="radio" name="armyPoliceBackground" value="No" 
-                       {{ old('armyPoliceBackground', $student->armyPoliceBackground) == 'No' ? 'checked' : '' }}>
-                No
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label>Are You a Specially Abled? </label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="speciallyAbled" value="Yes" 
-                       {{ old('speciallyAbled', $student->speciallyAbled) == 'Yes' ? 'checked' : '' }} >
-                Yes
-              </label>
-              <label>
-                <input type="radio" name="speciallyAbled" value="No" 
-                       {{ old('speciallyAbled', $student->speciallyAbled) == 'No' ? 'checked' : '' }}>
-                No
-              </label>
-            </div>
-          </div>
+    <label>Are You a Specially Abled? <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="speciallyAbled" value="Yes" 
+               {{ old('speciallyAbled', $student->speciallyAbled ?? 'No') == 'Yes' ? 'checked' : '' }} required>
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="speciallyAbled" value="No" 
+               {{ old('speciallyAbled', $student->speciallyAbled ?? 'No') == 'No' ? 'checked' : '' }}>
+        No
+      </label>
+    </div>
+  </div>
         </div>
       </div>
 
@@ -745,36 +747,37 @@
         <h4>Scholarship Eligibility</h4>
         <div class="form-row">
           <div class="form-group">
-            <label>Is Repeater </label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="isRepeater" value="Yes" 
-                       {{ old('isRepeater', $student->isRepeater) == 'Yes' ? 'checked' : '' }} >
-                Yes
-              </label>
-              <label>
-                <input type="radio" name="isRepeater" value="No" 
-                       {{ old('isRepeater', $student->isRepeater) == 'No' ? 'checked' : '' }}>
-                No
-              </label>
-            </div>
-          </div>
+    <label>Is Repeater <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="isRepeater" value="Yes" 
+               {{ old('isRepeater', $student->isRepeater ?? 'No') == 'Yes' ? 'checked' : '' }} required>
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="isRepeater" value="No" 
+               {{ old('isRepeater', $student->isRepeater ?? 'No') == 'No' ? 'checked' : '' }}>
+        No
+      </label>
+    </div>
+  </div>
           
           <div class="form-group">
-            <label>Scholarship Test Appeared </label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="scholarshipTest" value="Yes" 
-                       {{ old('scholarshipTest', $student->scholarshipTest) == 'Yes' ? 'checked' : '' }} >
-                Yes
-              </label>
-              <label>
-                <input type="radio" name="scholarshipTest" value="No" 
-                       {{ old('scholarshipTest', $student->scholarshipTest) == 'No' ? 'checked' : '' }}>
-                No
-              </label>
-            </div>
-          </div>
+    <label>Scholarship Test Appeared <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="scholarshipTest" value="Yes" 
+               {{ old('scholarshipTest', $student->scholarshipTest ?? 'No') == 'Yes' ? 'checked' : '' }} required>
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="scholarshipTest" value="No" 
+               {{ old('scholarshipTest', $student->scholarshipTest ?? 'No') == 'No' ? 'checked' : '' }}>
+        No
+      </label>
+    </div>
+  </div>
+
           
           <div class="form-group">
             <label>Last Board Percentage</label>
@@ -784,20 +787,20 @@
           </div>
           
           <div class="form-group">
-            <label>Competition Exam Appeared </label>
-            <div class="radio-group">
-              <label>
-                <input type="radio" name="competitionExam" value="Yes" 
-                       {{ old('competitionExam', $student->competitionExam) == 'Yes' ? 'checked' : '' }} >
-                Yes
-              </label>
-              <label>
-                <input type="radio" name="competitionExam" value="No" 
-                       {{ old('competitionExam', $student->competitionExam) == 'No' ? 'checked' : '' }}>
-                No
-              </label>
-            </div>
-          </div>
+    <label>Competition Exam Appeared <span class="required">*</span></label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="competitionExam" value="Yes" 
+               {{ old('competitionExam', $student->competitionExam ?? 'No') == 'Yes' ? 'checked' : '' }} required>
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="competitionExam" value="No" 
+               {{ old('competitionExam', $student->competitionExam ?? 'No') == 'No' ? 'checked' : '' }}>
+        No
+      </label>
+    </div>
+  </div>
         </div>
       </div>
 

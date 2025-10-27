@@ -405,301 +405,484 @@
           </div>
         @endif
 
-        <form id="editStudentForm" method="POST" action="{{ route('inquiries.update', $inquiry->_id) }}">
-          @csrf
-          @method('PUT')
+<form id="editStudentForm" method="POST" action="{{ route('inquiries.update', $inquiry->_id) }}">
+  @csrf
+  @method('PUT')
 
-          <!-- Basic Details Section -->
-          <div class="form-section">
-            <h4>Basic Details</h4>
-            <div class="form-row-2col">
-              <div class="form-group">
-                <label>Student Name <span class="required">*</span></label>
-                <input type="text" name="name" class="form-control" value="{{ old('name', $inquiry->student_name ?? '') }}" required>
-              </div>
-              
-              <div class="form-group">
-                <label>Father Name</label>
-                <input type="text" name="father" class="form-control" value="{{ old('father', $inquiry->father_name ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Mother Name</label>
-                <input type="text" name="mother" class="form-control" value="{{ old('mother', $inquiry->mother ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>DOB</label>
-                <input type="date" name="dob" class="form-control" value="{{ old('dob', $inquiry->dob ? date('Y-m-d', strtotime($inquiry->dob)) : '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Father Contact No</label>
-                <input type="tel" name="mobileNumber" class="form-control" value="{{ old('mobileNumber', $inquiry->father_contact ?? '') }}" maxlength="15">
-              </div>
-              
-              <div class="form-group">
-                <label>Father Whatsapp Number</label>
-                <input type="tel" name="fatherWhatsapp" class="form-control" value="{{ old('fatherWhatsapp', $inquiry->father_whatsapp ?? '') }}" maxlength="15">
-              </div>
-              
-              <div class="form-group">
-                <label>Mother Contact No</label>
-                <input type="tel" name="motherContact" class="form-control" value="{{ old('motherContact', $inquiry->motherContact ?? '') }}" maxlength="15">
-              </div>
-              
-              <div class="form-group">
-                <label>Student Contact No</label>
-                <input type="tel" name="studentContact" class="form-control" value="{{ old('studentContact', $inquiry->student_contact ?? '') }}" maxlength="15">
-              </div>
-              
-              <div class="form-group">
-                <label>Category</label>
-                <div class="radio-group">
-                  <div class="radio-option">
-                    <input type="radio" name="category" value="OBC" id="cat-obc" {{ old('category', $inquiry->category ?? '') == 'OBC' ? 'checked' : '' }}>
-                    <label for="cat-obc">OBC</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" name="category" value="SC" id="cat-sc" {{ old('category', $inquiry->category ?? '') == 'SC' ? 'checked' : '' }}>
-                    <label for="cat-sc">SC</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" name="category" value="GENERAL" id="cat-general" {{ old('category', $inquiry->category ?? '') == 'GENERAL' ? 'checked' : '' }}>
-                    <label for="cat-general">GENERAL</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" name="category" value="ST" id="cat-st" {{ old('category', $inquiry->category ?? '') == 'ST' ? 'checked' : '' }}>
-                    <label for="cat-st">ST</label>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label>Gender</label>
-                <div class="radio-group">
-                  <div class="radio-option">
-                    <input type="radio" name="gender" value="Male" id="gender-male" {{ old('gender', $inquiry->gender ?? '') == 'Male' ? 'checked' : '' }}>
-                    <label for="gender-male">Male</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" name="gender" value="Female" id="gender-female" {{ old('gender', $inquiry->gender ?? '') == 'Female' ? 'checked' : '' }}>
-                    <label for="gender-female">Female</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" name="gender" value="Others" id="gender-others" {{ old('gender', $inquiry->gender ?? '') == 'Others' ? 'checked' : '' }}>
-                    <label for="gender-others">Others</label>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label>Father Occupation</label>
-                <input type="text" name="fatherOccupation" class="form-control" value="{{ old('fatherOccupation', $inquiry->fatherOccupation ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Father's Grade</label>
-                <input type="text" name="fatherGrade" class="form-control" value="{{ old('fatherGrade', $inquiry->fatherGrade ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Mother Occupation</label>
-                <input type="text" name="motherOccupation" class="form-control" value="{{ old('motherOccupation', $inquiry->motherOccupation ?? '') }}">
-              </div>
-            </div>
-          </div>
+  <!-- Basic Details Section -->
+  <div class="form-section">
+    <h4>Basic Details</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Student Name <span class="required">*</span></label>
+        <input type="text" name="name" class="form-control" 
+               value="{{ old('name', $inquiry->student_name ?? '') }}" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Father Name <span class="required">*</span></label>
+        <input type="text" name="father" class="form-control" 
+               value="{{ old('father', $inquiry->father_name ?? '') }}" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Mother Name</label>
+        <input type="text" name="mother" class="form-control" 
+               value="{{ old('mother', $inquiry->mother ?? '') }}">
+      </div>
+      
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" name="dob" class="form-control" 
+               value="{{ old('dob', $inquiry->dob ?? '') }}">
+      </div>
+      
+      <div class="form-group">
+        <label>Father Contact No <span class="required">*</span></label>
+        <input type="tel" name="mobileNumber" class="form-control" 
+               value="{{ old('mobileNumber', $inquiry->father_contact ?? '') }}" 
+               maxlength="15" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Father WhatsApp Number</label>
+        <input type="tel" name="fatherWhatsapp" class="form-control" 
+               value="{{ old('fatherWhatsapp', $inquiry->father_whatsapp ?? '') }}" 
+               maxlength="15">
+      </div>
+      
+      <div class="form-group">
+        <label>Mother Contact No</label>
+        <input type="tel" name="motherContact" class="form-control" 
+               value="{{ old('motherContact', $inquiry->motherContact ?? '') }}" 
+               maxlength="15">
+      </div>
+      
+      <div class="form-group">
+        <label>Student Contact No</label>
+        <input type="tel" name="studentContact" class="form-control" 
+               value="{{ old('studentContact', $inquiry->student_contact ?? '') }}" 
+               maxlength="15">
+      </div>
+      
+      <div class="form-group">
+        <label>Category <span class="required">*</span></label>
+        <div class="radio-group">
+          @php
+            $categoryValue = old('category', $inquiry->category ?? 'GENERAL');
+          @endphp
+          <label>
+            <input type="radio" name="category" value="GENERAL" 
+                   {{ $categoryValue == 'GENERAL' ? 'checked' : '' }} required>
+            GENERAL
+          </label>
+          <label>
+            <input type="radio" name="category" value="OBC" 
+                   {{ $categoryValue == 'OBC' ? 'checked' : '' }}>
+            OBC
+          </label>
+          <label>
+            <input type="radio" name="category" value="SC" 
+                   {{ $categoryValue == 'SC' ? 'checked' : '' }}>
+            SC
+          </label>
+          <label>
+            <input type="radio" name="category" value="ST" 
+                   {{ $categoryValue == 'ST' ? 'checked' : '' }}>
+            ST
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Gender <span class="required">*</span></label>
+        <div class="radio-group">
+          @php
+            $genderValue = old('gender', $inquiry->gender ?? 'Male');
+          @endphp
+          <label>
+            <input type="radio" name="gender" value="Male" 
+                   {{ $genderValue == 'Male' ? 'checked' : '' }} required>
+            Male
+          </label>
+          <label>
+            <input type="radio" name="gender" value="Female" 
+                   {{ $genderValue == 'Female' ? 'checked' : '' }}>
+            Female
+          </label>
+          <label>
+            <input type="radio" name="gender" value="Others" 
+                   {{ $genderValue == 'Others' ? 'checked' : '' }}>
+            Others
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Father Occupation</label>
+        <input type="text" name="fatherOccupation" class="form-control" 
+               value="{{ old('fatherOccupation', $inquiry->fatherOccupation ?? '') }}">
+      </div>
+      
+      <div class="form-group">
+        <label>Father's Grade</label>
+        <input type="text" name="fatherGrade" class="form-control" 
+               value="{{ old('fatherGrade', $inquiry->fatherGrade ?? '') }}">
+      </div>
+      
+      <div class="form-group">
+        <label>Mother Occupation</label>
+        <input type="text" name="motherOccupation" class="form-control" 
+               value="{{ old('motherOccupation', $inquiry->motherOccupation ?? '') }}">
+      </div>
+    </div>
+  </div>
 
-          <!-- Address Details Section -->
-          <div class="form-section">
-            <h4>Address Details</h4>
-            <div class="form-row-2col">
-              <div class="form-group">
-                <label>State</label>
-                <input type="text" name="state" class="form-control" value="{{ old('state', $inquiry->state ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>City</label>
-                <input type="text" name="city" class="form-control" value="{{ old('city', $inquiry->city ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Pin Code</label>
-                <input type="text" name="pinCode" class="form-control" value="{{ old('pinCode', $inquiry->pinCode ?? '') }}" maxlength="10">
-              </div>
-              
-              <div class="form-group full-width">
-                <label>Address</label>
-                <textarea name="address" class="form-control">{{ old('address', $inquiry->address ?? '') }}</textarea>
-              </div>
-              
-              <div class="form-group">
-                <label>Belong to Other City</label>
-                <select name="belongToOtherCity" class="form-select">
-                  <option value="">Select</option>
-                  <option value="Yes" {{ old('belongToOtherCity', $inquiry->belongToOtherCity ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('belongToOtherCity', $inquiry->belongToOtherCity ?? '') == 'No' ? 'selected' : '' }}>No</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label>Economic Weaker Section</label>
-                <select name="economicWeakerSection" class="form-select">
-                  <option value="">Select</option>
-                  <option value="Yes" {{ old('economicWeakerSection', $inquiry->economicWeakerSection ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('economicWeakerSection', $inquiry->economicWeakerSection ?? '') == 'No' ? 'selected' : '' }}>No</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label>Army/Police/Martyr Background</label>
-                <select name="armyPoliceBackground" class="form-select">
-                  <option value="">Select</option>
-                  <option value="Yes" {{ old('armyPoliceBackground', $inquiry->armyPoliceBackground ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('armyPoliceBackground', $inquiry->armyPoliceBackground ?? '') == 'No' ? 'selected' : '' }}>No</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label>Specially Abled</label>
-                <select name="speciallyAbled" class="form-select">
-                  <option value="">Select</option>
-                  <option value="Yes" {{ old('speciallyAbled', $inquiry->speciallyAbled ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('speciallyAbled', $inquiry->speciallyAbled ?? '') == 'No' ? 'selected' : '' }}>No</option>
-                </select>
-              </div>
-            </div>
-          </div>
+  <!-- Address Details Section -->
+  <div class="form-section">
+    <h4>Address Details</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>State</label>
+        <select name="state" class="form-select">
+          <option value="">Select State</option>
+          @php
+            $stateValue = old('state', $inquiry->state ?? '');
+          @endphp
+          <option value="Rajasthan" {{ $stateValue == 'Rajasthan' ? 'selected' : '' }}>Rajasthan</option>
+          <option value="Delhi" {{ $stateValue == 'Delhi' ? 'selected' : '' }}>Delhi</option>
+          <option value="Maharashtra" {{ $stateValue == 'Maharashtra' ? 'selected' : '' }}>Maharashtra</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" name="city" class="form-control" 
+               value="{{ old('city', $inquiry->city ?? '') }}">
+      </div>
+      
+      <div class="form-group">
+        <label>Pin Code</label>
+        <input type="text" name="pinCode" class="form-control" 
+               value="{{ old('pinCode', $inquiry->pinCode ?? '') }}" 
+               maxlength="6">
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Address</label>
+        <textarea name="address" class="form-control" rows="3">{{ old('address', $inquiry->address ?? '') }}</textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Do you belong to another city?</label>
+        <div class="radio-group">
+          @php
+            $belongValue = old('belongToOtherCity', $inquiry->belongToOtherCity ?? 'No');
+          @endphp
+          <label>
+            <input type="radio" name="belongToOtherCity" value="Yes" 
+                   {{ $belongValue == 'Yes' ? 'checked' : '' }}>
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="belongToOtherCity" value="No" 
+                   {{ $belongValue == 'No' ? 'checked' : '' }}>
+            No
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Economic Weaker Section?</label>
+        <div class="radio-group">
+          @php
+            $ewsValue = old('economicWeakerSection', $inquiry->economicWeakerSection ?? 'No');
+          @endphp
+          <label>
+            <input type="radio" name="economicWeakerSection" value="Yes" 
+                   {{ $ewsValue == 'Yes' ? 'checked' : '' }}>
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="economicWeakerSection" value="No" 
+                   {{ $ewsValue == 'No' ? 'checked' : '' }}>
+            No
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Army/Police/Martyr Background?</label>
+        <div class="radio-group">
+          @php
+            $armyValue = old('armyPoliceBackground', $inquiry->armyPoliceBackground ?? 'No');
+          @endphp
+          <label>
+            <input type="radio" name="armyPoliceBackground" value="Yes" 
+                   {{ $armyValue == 'Yes' ? 'checked' : '' }}>
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="armyPoliceBackground" value="No" 
+                   {{ $armyValue == 'No' ? 'checked' : '' }}>
+            No
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Specially Abled?</label>
+        <div class="radio-group">
+          @php
+            $speciallyValue = old('speciallyAbled', $inquiry->speciallyAbled ?? 'No');
+          @endphp
+          <label>
+            <input type="radio" name="speciallyAbled" value="Yes" 
+                   {{ $speciallyValue == 'Yes' ? 'checked' : '' }}>
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="speciallyAbled" value="No" 
+                   {{ $speciallyValue == 'No' ? 'checked' : '' }}>
+            No
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <!-- Course Details Section -->
-          <div class="form-section">
-            <h4>Course Details</h4>
-            <div class="form-row-2col">
-              <div class="form-group">
-                <label>Course Type</label>
-                <input type="text" name="courseType" class="form-control" value="{{ old('courseType', $inquiry->courseType ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Course Name</label>
-                <input type="text" name="courseName" class="form-control" value="{{ old('courseName', $inquiry->course_name ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Delivery Mode</label>
-                <input type="text" name="deliveryMode" class="form-control" value="{{ old('deliveryMode', $inquiry->delivery_mode ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Medium</label>
-                <input type="text" name="medium" class="form-control" value="{{ old('medium', $inquiry->medium ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Board</label>
-                <input type="text" name="board" class="form-control" value="{{ old('board', $inquiry->board ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Course Content</label>
-                <input type="text" name="courseContent" class="form-control" value="{{ old('courseContent', $inquiry->course_content ?? '') }}">
-              </div>
-            </div>
-          </div>
+  <!-- Course Details Section -->
+  <div class="form-section">
+    <h4>Course Details</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Course Type <span class="required">*</span></label>
+        <select class="form-select" name="courseType" id="course_type" required>
+          <option value="">Select Course Type</option>
+          @php
+            $courseTypeValue = old('courseType', $inquiry->courseType ?? '');
+          @endphp
+          <option value="Pre-Medical" {{ $courseTypeValue == 'Pre-Medical' ? 'selected' : '' }}>Pre-Medical</option>
+          <option value="Pre-Engineering" {{ $courseTypeValue == 'Pre-Engineering' ? 'selected' : '' }}>Pre-Engineering</option>
+          <option value="Pre-Foundation" {{ $courseTypeValue == 'Pre-Foundation' ? 'selected' : '' }}>Pre-Foundation</option>
+        </select>
+      </div>
 
-          <!-- Academic Details Section -->
-          <div class="form-section">
-            <h4>Academic Details</h4>
-            <div class="form-row-2col">
-              <div class="form-group">
-                <label>Previous Class</label>
-                <input type="text" name="previousClass" class="form-control" value="{{ old('previousClass', $inquiry->previousClass ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Previous Medium</label>
-                <input type="text" name="previousMedium" class="form-control" value="{{ old('previousMedium', $inquiry->previousMedium ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>School Name</label>
-                <input type="text" name="schoolName" class="form-control" value="{{ old('schoolName', $inquiry->schoolName ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Previous Board</label>
-                <input type="text" name="previousBoard" class="form-control" value="{{ old('previousBoard', $inquiry->previousBoard ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Passing Year</label>
-                <input type="text" name="passingYear" class="form-control" value="{{ old('passingYear', $inquiry->passingYear ?? '') }}">
-              </div>
-              
-              <div class="form-group">
-                <label>Percentage</label>
-                <input type="number" name="percentage" class="form-control" value="{{ old('percentage', $inquiry->percentage ?? '') }}" min="0" max="100" step="0.01">
-              </div>
-            </div>
-          </div>
+      <div class="form-group">
+        <label>Course Name <span class="required">*</span></label>
+        <select class="form-select" name="courseName" id="course" required>
+          <option value="">Select Course</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Delivery Mode <span class="required">*</span></label>
+        <select name="deliveryMode" class="form-select" required>
+          <option value="">Select Mode</option>
+          @php
+            $deliveryValue = old('deliveryMode', $inquiry->delivery_mode ?? '');
+          @endphp
+          <option value="Offline" {{ $deliveryValue == 'Offline' ? 'selected' : '' }}>Offline</option>
+          <option value="Online" {{ $deliveryValue == 'Online' ? 'selected' : '' }}>Online</option>
+          <option value="Hybrid" {{ $deliveryValue == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Medium <span class="required">*</span></label>
+        <select name="medium" class="form-select" required>
+          <option value="">Select Medium</option>
+          @php
+            $mediumValue = old('medium', $inquiry->medium ?? '');
+          @endphp
+          <option value="English" {{ $mediumValue == 'English' ? 'selected' : '' }}>English</option>
+          <option value="Hindi" {{ $mediumValue == 'Hindi' ? 'selected' : '' }}>Hindi</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Board <span class="required">*</span></label>
+        <select name="board" class="form-select" required>
+          <option value="">Select Board</option>
+          @php
+            $boardValue = old('board', $inquiry->board ?? '');
+          @endphp
+          <option value="CBSE" {{ $boardValue == 'CBSE' ? 'selected' : '' }}>CBSE</option>
+          <option value="RBSE" {{ $boardValue == 'RBSE' ? 'selected' : '' }}>RBSE</option>
+          <option value="ICSE" {{ $boardValue == 'ICSE' ? 'selected' : '' }}>ICSE</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Course Content <span class="required">*</span></label>
+        <select name="courseContent" class="form-select" required>
+          <option value="">Select Content</option>
+          @php
+            $contentValue = old('courseContent', $inquiry->course_content ?? '');
+          @endphp
+          <option value="Class Room Course" {{ $contentValue == 'Class Room Course' ? 'selected' : '' }}>Class Room Course</option>
+          <option value="Test Series Only" {{ $contentValue == 'Test Series Only' ? 'selected' : '' }}>Test Series Only</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-          <!-- Scholarship Eligibility Section -->
-          <div class="form-section">
-            <h4>Scholarship Eligibility</h4>
-            <div class="form-row-2col">
-              <div class="form-group">
-                <label>Is Repeater</label>
-                <select name="isRepeater" class="form-select">
-                  <option value="">Select</option>
-                  <option value="Yes" {{ old('isRepeater', $inquiry->isRepeater ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('isRepeater', $inquiry->isRepeater ?? '') == 'No' ? 'selected' : '' }}>No</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label>Scholarship Test Appeared</label>
-                <select name="scholarshipTest" class="form-select">
-                  <option value="">Select</option>
-                  <option value="Yes" {{ old('scholarshipTest', $inquiry->scholarshipTest ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('scholarshipTest', $inquiry->scholarshipTest ?? '') == 'No' ? 'selected' : '' }}>No</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label>Last Board Percentage</label>
-                <input type="number" name="lastBoardPercentage" class="form-control" value="{{ old('lastBoardPercentage', $inquiry->lastBoardPercentage ?? '') }}" min="0" max="100" step="0.01">
-              </div>
-              
-              <div class="form-group">
-                <label>Competition Exam Appeared</label>
-                <select name="competitionExam" class="form-select">
-                  <option value="">Select</option>
-                  <option value="Yes" {{ old('competitionExam', $inquiry->competitionExam ?? '') == 'Yes' ? 'selected' : '' }}>Yes</option>
-                  <option value="No" {{ old('competitionExam', $inquiry->competitionExam ?? '') == 'No' ? 'selected' : '' }}>No</option>
-                </select>
-              </div>
-            </div>
-          </div>
+  <!-- Academic Detail Section -->
+  <div class="form-section">
+    <h4>Academic Detail</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Previous Class</label>
+        <select name="previousClass" class="form-select">
+          <option value="">Select Previous Class</option>
+          @php
+            $prevClassValue = old('previousClass', $inquiry->previousClass ?? '');
+          @endphp
+          <option value="6th" {{ $prevClassValue == '6th' ? 'selected' : '' }}>6th</option>
+          <option value="7th" {{ $prevClassValue == '7th' ? 'selected' : '' }}>7th</option>
+          <option value="8th" {{ $prevClassValue == '8th' ? 'selected' : '' }}>8th</option>
+          <option value="9th" {{ $prevClassValue == '9th' ? 'selected' : '' }}>9th</option>
+          <option value="10th" {{ $prevClassValue == '10th' ? 'selected' : '' }}>10th</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Previous Medium</label>
+        <select name="previousMedium" class="form-select">
+          <option value="">Select Medium</option>
+          @php
+            $prevMediumValue = old('previousMedium', $inquiry->previousMedium ?? '');
+          @endphp
+          <option value="English" {{ $prevMediumValue == 'English' ? 'selected' : '' }}>English</option>
+          <option value="Hindi" {{ $prevMediumValue == 'Hindi' ? 'selected' : '' }}>Hindi</option>
+        </select>
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Name Of School</label>
+        <input type="text" name="schoolName" class="form-control" 
+               value="{{ old('schoolName', $inquiry->schoolName ?? '') }}">
+      </div>
+      
+      <div class="form-group">
+        <label>Previous Board</label>
+        <select name="previousBoard" class="form-select">
+          <option value="">Select Board</option>
+          @php
+            $prevBoardValue = old('previousBoard', $inquiry->previousBoard ?? '');
+          @endphp
+          <option value="CBSE" {{ $prevBoardValue == 'CBSE' ? 'selected' : '' }}>CBSE</option>
+          <option value="RBSE" {{ $prevBoardValue == 'RBSE' ? 'selected' : '' }}>RBSE</option>
+          <option value="ICSE" {{ $prevBoardValue == 'ICSE' ? 'selected' : '' }}>ICSE</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Passing Year</label>
+        <input type="text" name="passingYear" class="form-control" 
+               value="{{ old('passingYear', $inquiry->passingYear ?? '') }}" 
+               maxlength="4" placeholder="YYYY">
+      </div>
+      
+      <div class="form-group">
+        <label>Percentage</label>
+        <input type="number" name="percentage" class="form-control" 
+               value="{{ old('percentage', $inquiry->percentage ?? '') }}" 
+               min="0" max="100" step="0.01">
+      </div>
+    </div>
+  </div>
 
-          <!-- Batch Allocation Section -->
-          <div class="form-section">
-            <h4>Batch Allocation</h4>
-            <div class="form-row-2col">
-              <div class="form-group">
-                <label>Batch Name</label>
-                <input type="text" name="batchName" class="form-control" value="{{ old('batchName', $inquiry->batchName ?? '') }}">
-              </div>
-            </div>
-          </div>
+  <!-- Scholarship Eligibility Section -->
+  <div class="form-section">
+    <h4>Scholarship Eligibility</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Is Repeater</label>
+        <div class="radio-group">
+          @php
+            $repeaterValue = old('isRepeater', $inquiry->isRepeater ?? 'No');
+          @endphp
+          <label>
+            <input type="radio" name="isRepeater" value="Yes" 
+                   {{ $repeaterValue == 'Yes' ? 'checked' : '' }}>
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="isRepeater" value="No" 
+                   {{ $repeaterValue == 'No' ? 'checked' : '' }}>
+            No
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Scholarship Test Appeared</label>
+        <div class="radio-group">
+          @php
+            $scholarshipValue = old('scholarshipTest', $inquiry->scholarshipTest ?? 'No');
+          @endphp
+          <label>
+            <input type="radio" name="scholarshipTest" value="Yes" 
+                   {{ $scholarshipValue == 'Yes' ? 'checked' : '' }}>
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="scholarshipTest" value="No" 
+                   {{ $scholarshipValue == 'No' ? 'checked' : '' }}>
+            No
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Last Board Percentage</label>
+        <input type="number" name="lastBoardPercentage" class="form-control" 
+               value="{{ old('lastBoardPercentage', $inquiry->lastBoardPercentage ?? '') }}" 
+               min="0" max="100" step="0.01">
+      </div>
+      
+      <div class="form-group">
+        <label>Competition Exam Appeared</label>
+        <div class="radio-group">
+          @php
+            $competitionValue = old('competitionExam', $inquiry->competitionExam ?? 'No');
+          @endphp
+          <label>
+            <input type="radio" name="competitionExam" value="Yes" 
+                   {{ $competitionValue == 'Yes' ? 'checked' : '' }}>
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="competitionExam" value="No" 
+                   {{ $competitionValue == 'No' ? 'checked' : '' }}>
+            No
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <!-- Sticky Footer with Save Button -->
-          <div class="sticky-footer">
-            <button type="submit" class="btn-save" id="saveBtn">
-              <i class="fa-solid fa-save"></i> Save Changes
-            </button>
-          </div>
-        </form>
+  <!-- Batch Allocation Section -->
+  <div class="form-section">
+    <h4>Batch Allocation</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Batch Name</label>
+        <input type="text" name="batchName" class="form-control" 
+               value="{{ old('batchName', $inquiry->batchName ?? '') }}">
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Button -->
+  <div class="sticky-footer">
+    <button type="submit" class="btn-save" id="saveBtn">
+      <i class="fa-solid fa-check"></i> Save Changes
+    </button>
+  </div>
+</form>
+
       </div>
     </div>
   </div>
@@ -707,36 +890,62 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{asset('js/emp.js')}}"></script>
   
-  <script>
-    // Form submission handling
-    document.getElementById('editStudentForm').addEventListener('submit', function(e) {
-      const saveBtn = document.getElementById('saveBtn');
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const courseTypeSelect = document.getElementById("course_type");
+    const courseSelect = document.getElementById("course");
+
+    const courseOptions = {
+        "Pre-Medical": ["Anthesis 11th NEET", "Momentum 12th NEET", "Dynamic Target NEET"],
+        "Pre-Engineering": ["Impulse 11th IIT", "Intensity 12th IIT", "Thurst Target IIT"],
+        "Pre-Foundation": ["Seedling 10th", "Plumule 9th", "Radicle 8th"]
+    };
+
+    // Get values from server - FIXED to use correct DB fields
+    const selectedType = "{{ old('courseType', $inquiry->courseType ?? '') }}";
+    const selectedCourse = "{{ old('courseName', $inquiry->course_name ?? '') }}";
+
+    console.log('🔍 Page load - Course Type:', selectedType, 'Course Name:', selectedCourse);
+
+    // Pre-fill on page load
+    if (selectedType && courseOptions[selectedType]) {
+        updateCourses(selectedType);
+        
+        setTimeout(() => {
+            if (selectedCourse) {
+                courseSelect.value = selectedCourse;
+                console.log('✅ Pre-filled course name:', selectedCourse);
+            }
+        }, 100);
+    }
+
+    courseTypeSelect.addEventListener("change", function () {
+        updateCourses(this.value);
     });
 
-    // Re-enable button if there are errors
-    @if($errors->any())
-      window.addEventListener('DOMContentLoaded', function() {
-        const saveBtn = document.getElementById('saveBtn');
-        if (saveBtn) {
-          saveBtn.disabled = false;
-          saveBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes';
+    function updateCourses(type) {
+        courseSelect.innerHTML = '<option value="">Select Course</option>';
+        
+        if (!type || !courseOptions[type]) {
+            return;
         }
-      });
-    @endif
 
-    // Auto-hide success message after 5 seconds
-    @if(session('success'))
-      setTimeout(function() {
-        const alert = document.querySelector('.alert-success');
-        if (alert) {
-          alert.style.transition = 'opacity 0.5s';
-          alert.style.opacity = '0';
-          setTimeout(() => alert.remove(), 500);
-        }
-      }, 5000);
-    @endif
-  </script>
+        courseOptions[type].forEach(course => {
+            const option = document.createElement("option");
+            option.value = course;
+            option.textContent = course;
+            
+            if (course === selectedCourse) {
+                option.selected = true;
+            }
+            
+            courseSelect.appendChild(option);
+        });
+        
+        console.log('✅ Updated courses for type:', type);
+    }
+});
+</script>
+
 </body>
 </html>

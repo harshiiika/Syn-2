@@ -952,6 +952,41 @@
                             <textarea class="form-control" id="address_name" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Select Branch Name</label>
+                            <select class="form-select" id="branch_name">
+                                <option value="">Select Branch</option>
+                                <option value="Bikaner">Bikaner</option>
+                                <option value="Jaipur">Jaipur</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Course Name <span class="text-danger">*</span></label>
+                                <select class="form-select" id="course_name" required>
+                                    <option value="">Select...</option>
+                                    <option value="Anthesis 11th NEET">Anthesis 11th NEET</option>
+                                    <option value="Momentum 12th NEET">Momentum 12th NEET</option>
+                                    <option value="Dynamic Target NEET">Dynamic Target NEET</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Delivery Mode</label>
+                                <select class="form-select" id="delivery_mode">
+                                    <option value="Offline">Offline</option>
+                                    <option value="Online">Online</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Course Content</label>
+                            <select class="form-select" id="course_content">
+                                <option value="Class Room Course">Class Room Course</option>
+                                <option value="Online Course">Online Course</option>
+                                <option value="Study Material">Study Material</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Do You Belong to Economic Weaker Section?</label>
                             <div class="d-flex gap-4">
                                 <div class="form-check">
@@ -1019,8 +1054,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-
-    
     document.addEventListener('DOMContentLoaded', () => {
         const ENDPOINT = '/inquiries';
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
@@ -1035,11 +1068,7 @@
             saveBtn: document.getElementById('saveBtn'),
             form: document.getElementById('inquiryForm')
         };
-const inquiryViewRoute = "{{ route('inquiries.view', ':id') }}";
-function viewInquiry(id) {
-    const url = inquiryViewRoute.replace(':id', id);
-    window.location.href = url; // Redirect to Laravel route
-}
+
         const modals = {
             inquiry: new bootstrap.Modal(document.getElementById('inquiryModal')),
             view: new bootstrap.Modal(document.getElementById('viewModal'))
@@ -1086,52 +1115,54 @@ function viewInquiry(id) {
             }
         }
 
-        function renderTable(data) {
-            console.log('Rendering table with data:', data);
-            
-            if (!data || data.length === 0) {
-                elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No data available</td></tr>';
-                return;
-            }
+function renderTable(data) {
+    console.log('Rendering table with data:', data);
+    
+    if (!data || data.length === 0) {
+        elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No data available</td></tr>';
+        return;
+    }
 
-            elements.tableBody.innerHTML = data.map((item, index) => {
-                const serialNo = (state.page - 1) * state.per_page + index + 1;
-                const id = item._id ? (typeof item._id === 'object' ? item._id.$oid : item._id) : '';
-                
-                console.log('Rendering item:', item, 'ID:', id);
-                
-                return `
-                    <tr>
-                        <td><input type="checkbox" class="row-checkbox" data-id="${id}"></td>
-                        <td>${serialNo}</td>
-                        <td>${escapeHtml(item.student_name || '')}</td>
-                        <td>${escapeHtml(item.father_name || '')}</td>
-                        <td>${escapeHtml(item.father_contact || '')}</td>
-                        <td>${escapeHtml(item.course_name || '')}</td>
-                        <td>${escapeHtml(item.delivery_mode || 'Offline')}</td>
-                        <td>${escapeHtml(item.course_content || 'Class Room Course')}</td>
-                        <td><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span></td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="/inquiries/${id}">View</a></li>
-                                    <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="deleteInquiry('${id}'); return false;">Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-function editInquiry(id) {
-    window.location.href = `/inquiries/${id}/edit`;
+    elements.tableBody.innerHTML = data.map((item, index) => {
+        const serialNo = (state.page - 1) * state.per_page + index + 1;
+        const id = item._id ? (typeof item._id === 'object' ? item._id.$oid : item._id) : '';
+        
+        console.log('Rendering item:', item, 'ID:', id);
+        
+        return `
+            <tr>
+                <td><input type="checkbox" class="row-checkbox" data-id="${id}"></td>
+                <td>${serialNo}</td>
+                <td>${escapeHtml(item.student_name || '')}</td>
+                <td>${escapeHtml(item.father_name || '')}</td>
+                <td>${escapeHtml(item.father_contact || '')}</td>
+                <td>${escapeHtml(item.course_name || '')}</td>
+                <td>${escapeHtml(item.delivery_mode || 'Offline')}</td>
+                <td>${escapeHtml(item.course_content || 'Class Room Course')}</td>
+                <td><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span></td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/inquiries/${id}">View</a></li>
+                            <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="deleteInquiry('${id}'); return false;">Delete</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
         function renderPagination(json) {
             const currentPage = json.current_page || 1;
             const lastPage = json.last_page || 1;
@@ -1164,6 +1195,120 @@ function editInquiry(id) {
             elements.showingInfo.textContent = `Showing ${from} to ${to} of ${json.total || 0} entries`;
         }
 
+        window.viewInquiry = async function(id) {
+            try {
+                console.log('Viewing inquiry:', id);
+                const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
+                const json = await response.json();
+                if (!json.success) throw new Error(json.message);
+                
+                const item = json.data;
+                document.getElementById('viewModalBody').innerHTML = `
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Student Name:</strong><span>${escapeHtml(item.student_name || '')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Father Name:</strong><span>${escapeHtml(item.father_name || '')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Father Contact:</strong><span>${escapeHtml(item.father_contact || '')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Father WhatsApp:</strong><span>${escapeHtml(item.father_whatsapp || 'N/A')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Student Contact:</strong><span>${escapeHtml(item.student_contact || 'N/A')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Category:</strong><span>${escapeHtml(item.category || 'General')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>State:</strong><span>${escapeHtml(item.state || 'N/A')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>City:</strong><span>${escapeHtml(item.city || 'N/A')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Address:</strong><span>${escapeHtml(item.address || 'N/A')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Branch Name:</strong><span>${escapeHtml(item.branch || 'N/A')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Course Name:</strong><span>${escapeHtml(item.course_name || '')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Delivery Mode:</strong><span>${escapeHtml(item.delivery_mode || 'Offline')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Course Content:</strong><span>${escapeHtml(item.course_content || 'Class Room Course')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Economic Weaker:</strong><span>${escapeHtml(item.ews || 'No')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Army Background:</strong><span>${escapeHtml(item.defense || 'No')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                        <strong>Specially Abled:</strong><span>${escapeHtml(item.specially_abled || 'No')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0;">
+                        <strong>Status:</strong><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span>
+                    </div>
+                `;
+                modals.view.show();
+            } catch (error) {
+                console.error('View error:', error);
+                alert('Failed to load inquiry details: ' + error.message);
+            }
+        };
+
+        window.editInquiry = async function(id) {
+            try {
+                console.log('Editing inquiry:', id);
+                const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
+                const json = await response.json();
+                if (!json.success) throw new Error(json.message);
+                
+                const item = json.data;
+                document.getElementById('inquiry_id').value = id;
+                document.getElementById('student_name').value = item.student_name || '';
+                document.getElementById('father_name').value = item.father_name || '';
+                document.getElementById('father_contact').value = item.father_contact || '';
+                document.getElementById('father_whatsapp').value = item.father_whatsapp || '';
+                document.getElementById('student_contact').value = item.student_contact || '';
+                
+                const categoryValue = item.category || 'General';
+                const categoryInput = document.querySelector(`input[name="category"][value="${categoryValue}"]`);
+                if (categoryInput) categoryInput.checked = true;
+                
+                document.getElementById('state').value = item.state || '';
+                document.getElementById('city').value = item.city || '';
+                document.getElementById('address_name').value = item.address || '';
+                document.getElementById('branch_name').value = item.branch || '';
+                document.getElementById('course_name').value = item.course_name || '';
+                document.getElementById('delivery_mode').value = item.delivery_mode || 'Offline';
+                document.getElementById('course_content').value = item.course_content || 'Class Room Course';
+                
+                const economicValue = item.ews || 'No';
+                const economicInput = document.querySelector(`input[name="economic_weaker"][value="${economicValue}"]`);
+                if (economicInput) economicInput.checked = true;
+                
+                const armyValue = item.defense || 'No';
+                const armyInput = document.querySelector(`input[name="army_background"][value="${armyValue}"]`);
+                if (armyInput) armyInput.checked = true;
+                
+                const speciallyValue = item.specially_abled || 'No';
+                const speciallyInput = document.querySelector(`input[name="specially_abled"][value="${speciallyValue}"]`);
+                if (speciallyInput) speciallyInput.checked = true;
+                
+                document.getElementById('inquiryModalLabel').textContent = 'Edit Inquiry';
+                modals.inquiry.show();
+            } catch (error) {
+                console.error('Edit error:', error);
+                alert('Failed to load inquiry for editing: ' + error.message);
+            }
+        };
 
         window.deleteInquiry = async function(id) {
             if (!confirm('Are you sure you want to delete this inquiry?')) return;
