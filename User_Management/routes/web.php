@@ -261,3 +261,14 @@ Route::post('/students/convert/{inquiryId}', [StudentController::class, 'convert
 Route::get('/inquiries/{id}', [InquiryController::class, 'view'])->name('inquiries.view');
 Route::get('/inquiries/{id}/edit', [InquiryController::class, 'edit'])->name('inquiries.edit');
 Route::put('/inquiries/{id}', [InquiryController::class, 'update'])->name('inquiries.update');
+
+Route::get('/inquiries/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])
+    ->name('inquiries.scholarship.show');
+
+Route::put('/inquiries/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])
+    ->name('inquiries.scholarship.update');
+
+// Your existing inquiry routes
+Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
+Route::get('/inquiries/{id}/edit', [InquiryController::class, 'edit'])->name('inquiries.edit');
+Route::put('/inquiries/{id}', [InquiryController::class, 'update'])->name('inquiries.update');

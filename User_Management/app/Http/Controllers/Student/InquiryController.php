@@ -7,6 +7,8 @@ use App\Models\Student\Inquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Models\Master\Scholarship;
+use App\Models\Master\FeesMaster;
 
 class InquiryController extends Controller
 {
@@ -186,132 +188,6 @@ public function edit($id)
             ], 500);
         }
     }
-
-    /**
-     * Update an inquiry
-     */
-public function update(Request $request, $id)
-{
-    try {
-        $inquiry = Inquiry::findOrFail($id);
-
-        Log::info('Inquiry Update Request:', $request->all());
-
-        $validator = Validator::make($request->all(), [
-            // Required fields
-            'name' => 'required|string|max:255',
-            'father' => 'required|string|max:255',
-            'mobileNumber' => 'required|string|max:20',
-            'category' => 'required|string|in:GENERAL,OBC,SC,ST',
-            'gender' => 'required|string|in:Male,Female,Others',
-            'courseName' => 'required|string|max:255',
-            'courseType' => 'required|string|max:255',
-            'deliveryMode' => 'required|string|in:Offline,Online,Hybrid',
-            'medium' => 'required|string|max:255',
-            'board' => 'required|string|max:255',
-            'courseContent' => 'required|string|max:255',
-            
-            // Optional fields - removed 'required' rule
-            'fatherWhatsapp' => 'nullable|string|max:20',
-            'studentContact' => 'nullable|string|max:20',
-            'mother' => 'nullable|string|max:255',
-            'motherContact' => 'nullable|string|max:20',
-            'dob' => 'nullable|date',
-            'fatherOccupation' => 'nullable|string|max:255',
-            'fatherGrade' => 'nullable|string|max:255',
-            'motherOccupation' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'pinCode' => 'nullable|string|max:10',
-            'address' => 'nullable|string',
-            'belongToOtherCity' => 'nullable|string|in:Yes,No',
-            'economicWeakerSection' => 'nullable|string|in:Yes,No',
-            'armyPoliceBackground' => 'nullable|string|in:Yes,No',
-            'speciallyAbled' => 'nullable|string|in:Yes,No',
-            'previousClass' => 'nullable|string|max:255',
-            'previousMedium' => 'nullable|string|max:255',
-            'schoolName' => 'nullable|string|max:255',
-            'previousBoard' => 'nullable|string|max:255',
-            'passingYear' => 'nullable|string|max:4',
-            'percentage' => 'nullable|numeric|min:0|max:100',
-            'isRepeater' => 'nullable|string|in:Yes,No',
-            'scholarshipTest' => 'nullable|string|in:Yes,No',
-            'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
-            'competitionExam' => 'nullable|string|in:Yes,No',
-            'batchName' => 'nullable|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            Log::error('Inquiry Update Validation Failed:', $validator->errors()->toArray());
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', 'Validation failed. Please check the form.');
-        }
-
-        // Map form fields to database fields
-        $updateData = [
-            'student_name' => $request->input('name'),
-            'father_name' => $request->input('father'),
-            'father_contact' => $request->input('mobileNumber'),
-            'father_whatsapp' => $request->input('fatherWhatsapp'),
-            'student_contact' => $request->input('studentContact'),
-            'category' => $request->input('category'),
-            'course_name' => $request->input('courseName'),
-            'delivery_mode' => $request->input('deliveryMode'),
-            'course_content' => $request->input('courseContent'),
-            'courseType' => $request->input('courseType'),
-            'state' => $request->input('state'),
-            'city' => $request->input('city'),
-            'address' => $request->input('address'),
-            'economicWeakerSection' => $request->input('economicWeakerSection'),
-            'armyPoliceBackground' => $request->input('armyPoliceBackground'),
-            'speciallyAbled' => $request->input('speciallyAbled'),
-            'dob' => $request->input('dob'),
-            'mother' => $request->input('mother'),
-            'motherContact' => $request->input('motherContact'),
-            'gender' => $request->input('gender'),
-            'fatherOccupation' => $request->input('fatherOccupation'),
-            'fatherGrade' => $request->input('fatherGrade'),
-            'motherOccupation' => $request->input('motherOccupation'),
-            'pinCode' => $request->input('pinCode'),
-            'belongToOtherCity' => $request->input('belongToOtherCity'),
-            'medium' => $request->input('medium'),
-            'board' => $request->input('board'),
-            'previousClass' => $request->input('previousClass'),
-            'previousMedium' => $request->input('previousMedium'),
-            'schoolName' => $request->input('schoolName'),
-            'previousBoard' => $request->input('previousBoard'),
-            'passingYear' => $request->input('passingYear'),
-            'percentage' => $request->input('percentage'),
-            'isRepeater' => $request->input('isRepeater'),
-            'scholarshipTest' => $request->input('scholarshipTest'),
-            'lastBoardPercentage' => $request->input('lastBoardPercentage'),
-            'competitionExam' => $request->input('competitionExam'),
-            'batchName' => $request->input('batchName'),
-        ];
-
-        // Remove null values
-        $updateData = array_filter($updateData, function($value) {
-            return $value !== null;
-        });
-
-        $inquiry->update($updateData);
-
-        Log::info('Inquiry updated successfully:', ['id' => $id]);
-
-        return redirect()->route('inquiries.index')
-            ->with('success', 'Student details updated successfully!');
-
-    } catch (\Exception $e) {
-        Log::error('Inquiry Update Error: ' . $e->getMessage());
-        Log::error('Stack trace: ' . $e->getTraceAsString());
-        
-        return redirect()->back()
-            ->with('error', 'Error updating inquiry: ' . $e->getMessage())
-            ->withInput();
-    }
-}
 
     /**
      * Delete an inquiry
@@ -558,6 +434,351 @@ public function view($id)
     } catch (\Exception $e) {
         \Log::error('Failed to load inquiry details: ' . $e->getMessage());
         return redirect()->route('inquiries.index')->with('error', 'Unable to load inquiry details.');
+    }
+}
+
+/**
+     * Show scholarship details page after updating inquiry
+     */
+public function showScholarshipDetails($id)
+{
+    try {
+        $inquiry = Inquiry::findOrFail($id);
+        
+        \Log::info('Scholarship Details Page - Inquiry Data:', [
+            'id' => $inquiry->_id,
+            'course_name' => $inquiry->course_name,
+            'scholarshipTest' => $inquiry->scholarshipTest ?? 'No',
+            'lastBoardPercentage' => $inquiry->lastBoardPercentage ?? null,
+            'competitionExam' => $inquiry->competitionExam ?? 'No',
+        ]);
+        
+        // Course fees mapping
+        $courseFees = [
+            'Anthesis 11th NEET' => 88000,
+            'Momentum 12th NEET' => 88000,
+            'Dynamic Target NEET' => 88000,
+            'Impulse 11th IIT' => 88000,
+            'Intensity 12th IIT' => 88000,
+            'Thurst Target IIT' => 88000,
+            'Seedling 10th' => 60000,
+            'Plumule 9th' => 55000,
+            'Radicle 8th' => 50000
+        ];
+
+        // Get base fee
+        $courseName = $inquiry->course_name ?? '';
+        $totalFeeBeforeDiscount = $courseFees[$courseName] ?? 88000;
+
+        // Initialize scholarship variables
+        $eligibleForScholarship = false;
+        $scholarship = null;
+        $discountPercentage = 0;
+        $scholarshipDiscountedFees = $totalFeeBeforeDiscount;
+
+        // Check eligibility: Scholarship Test OR Board >= 75% OR Competition Exam
+        if (($inquiry->scholarshipTest === 'Yes') || 
+            ($inquiry->lastBoardPercentage && $inquiry->lastBoardPercentage >= 75) ||
+            ($inquiry->competitionExam === 'Yes')) {
+            
+            $eligibleForScholarship = true;
+
+            // Priority 1: Scholarship Test
+            if ($inquiry->scholarshipTest === 'Yes') {
+                $scholarship = Scholarship::where('scholarship_type', 'Test Based')
+                    ->where('is_active', true)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
+            }
+            
+            // Priority 2: Board Percentage
+            if (!$scholarship && $inquiry->lastBoardPercentage >= 75) {
+                $percentage = $inquiry->lastBoardPercentage;
+                
+                $scholarship = Scholarship::where('scholarship_type', 'Board Examination Scholarship')
+                    ->where('is_active', true)
+                    ->where('min_percentage', '<=', $percentage)
+                    ->where('max_percentage', '>=', $percentage)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
+            }
+            
+            // Priority 3: Competition Exam
+            if (!$scholarship && $inquiry->competitionExam === 'Yes') {
+                $scholarship = Scholarship::where('scholarship_type', 'Competition Exam Scholarship')
+                    ->where('is_active', true)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
+            }
+
+            // Calculate discount if scholarship found
+            if ($scholarship) {
+                $discountPercentage = $scholarship->discount_percentage ?? 0;
+                $discountAmount = ($totalFeeBeforeDiscount * $discountPercentage) / 100;
+                $scholarshipDiscountedFees = $totalFeeBeforeDiscount - $discountAmount;
+            }
+        }
+
+        // Final fees (before discretionary discount)
+        $finalFees = $scholarshipDiscountedFees;
+
+        \Log::info('Scholarship Calculation Results:', [
+            'eligibleForScholarship' => $eligibleForScholarship,
+            'scholarship_found' => $scholarship ? true : false,
+            'discountPercentage' => $discountPercentage,
+            'totalFeeBeforeDiscount' => $totalFeeBeforeDiscount,
+            'scholarshipDiscountedFees' => $scholarshipDiscountedFees,
+        ]);
+
+        return view('inquiries.scholarship-details', compact(
+            'inquiry',
+            'eligibleForScholarship',
+            'scholarship',
+            'totalFeeBeforeDiscount',
+            'discountPercentage',
+            'scholarshipDiscountedFees',
+            'finalFees'
+        ));
+
+    } catch (\Exception $e) {
+        \Log::error('Scholarship details error: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+return redirect()->route('inquiries.scholarship.show', ['id' => $id])
+            ->with('error', 'Error loading scholarship details: ' . $e->getMessage());
+    }
+}
+
+    /**
+     * Update scholarship and fees information
+     */
+   public function updateScholarshipDetails(Request $request, $id)
+{
+    try {
+        $inquiry = Inquiry::findOrFail($id);
+
+        // Validate discretionary discount
+        if ($request->add_discretionary_discount === 'Yes') {
+            $request->validate([
+                'discretionary_discount_type' => 'required|in:percentage,fixed',
+                'discretionary_discount_value' => 'required|numeric|min:0',
+                'discretionary_discount_reason' => 'required|string|max:500',
+            ]);
+
+            // Validate percentage <= 100%
+            if ($request->discretionary_discount_type === 'percentage' && 
+                $request->discretionary_discount_value > 100) {
+                return back()->with('error', 'Discount percentage cannot exceed 100%');
+            }
+
+            // Validate fixed amount <= discounted fees
+            if ($request->discretionary_discount_type === 'fixed' && 
+                $request->discretionary_discount_value > $request->scholarship_discounted_fees) {
+                return back()->with('error', 'Discount amount cannot exceed the discounted fees');
+            }
+        }
+
+        // Prepare update data
+        $updateData = [
+            'total_fee_before_discount' => $request->total_fee_before_discount,
+            'scholarship_discount_percentage' => $request->scholarship_discount_percentage ?? 0,
+            'scholarship_discounted_fees' => $request->scholarship_discounted_fees,
+            'final_fees' => $request->final_fees,
+            'eligible_for_scholarship' => $request->scholarship_discount_percentage > 0,
+        ];
+
+        // Handle discretionary discount
+        if ($request->add_discretionary_discount === 'Yes') {
+            $updateData['has_discretionary_discount'] = true;
+            $updateData['discretionary_discount_type'] = $request->discretionary_discount_type;
+            $updateData['discretionary_discount_value'] = $request->discretionary_discount_value;
+            $updateData['discretionary_discount_reason'] = $request->discretionary_discount_reason;
+        } else {
+            $updateData['has_discretionary_discount'] = false;
+            $updateData['discretionary_discount_type'] = null;
+            $updateData['discretionary_discount_value'] = null;
+            $updateData['discretionary_discount_reason'] = null;
+        }
+
+        // Update inquiry
+        $inquiry->update($updateData);
+
+        // Now create student record and move to onboarding
+        $student = \App\Models\Student\Student::create([
+            'name' => $inquiry->student_name,
+            'father' => $inquiry->father_name,
+            'mother' => $inquiry->mother,
+            'dob' => $inquiry->dob,
+            'mobileNumber' => $inquiry->father_contact,
+            'alternateNumber' => $inquiry->father_whatsapp,
+            'studentContact' => $inquiry->student_contact,
+            'email' => $inquiry->student_contact ?? $inquiry->student_name . '@temp.com',
+            
+            // Address
+            'state' => $inquiry->state,
+            'city' => $inquiry->city,
+            'pinCode' => $inquiry->pinCode,
+            'address' => $inquiry->address,
+            
+            // Category & Background
+            'category' => $inquiry->category,
+            'gender' => $inquiry->gender,
+            'economicWeakerSection' => $inquiry->economicWeakerSection ?? 'No',
+            'armyPoliceBackground' => $inquiry->armyPoliceBackground ?? 'No',
+            'speciallyAbled' => $inquiry->speciallyAbled ?? 'No',
+            'belongToOtherCity' => $inquiry->belongToOtherCity ?? 'No',
+            
+            // Course Details
+            'courseType' => $inquiry->courseType,
+            'courseName' => $inquiry->course_name,
+            'deliveryMode' => $inquiry->delivery_mode,
+            'medium' => $inquiry->medium,
+            'board' => $inquiry->board,
+            'courseContent' => $inquiry->course_content,
+            
+            // Fees Details
+            'total_fees' => $inquiry->final_fees,
+            'paid_fees' => 0,
+            'remaining_fees' => $inquiry->final_fees,
+            
+            // Scholarship Details (if applicable)
+            'scholarship_discount' => $inquiry->scholarship_discount_percentage ?? 0,
+            'discretionary_discount' => $inquiry->has_discretionary_discount ? $inquiry->discretionary_discount_value : 0,
+            
+            // Status
+            'status' => 'pending_fees',
+            'fee_status' => 'pending',
+            'admission_date' => now(),
+            'session' => session('current_session', '2025-2026'),
+        ]);
+
+        // Mark inquiry as converted
+        $inquiry->update(['status' => 'converted']);
+
+        \Log::info('Student created from inquiry', [
+            'student_id' => $student->_id,
+            'inquiry_id' => $inquiry->_id,
+            'total_fees' => $inquiry->final_fees,
+            'scholarship_discount' => $inquiry->scholarship_discount_percentage,
+        ]);
+
+        // Redirect to pending fees page
+        return redirect()->route('student.pendingfees.pending')
+            ->with('success', 'Student onboarded successfully! Pending fees: ₹' . number_format($inquiry->final_fees, 2));
+
+    } catch (\Exception $e) {
+        \Log::error('Scholarship update error: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return back()
+            ->with('error', 'Error updating scholarship details: ' . $e->getMessage())
+            ->withInput();
+    }
+}
+
+    /**
+     * Update inquiry
+     */
+public function update(Request $request, $id)
+{
+    \Log::info('UPDATE METHOD CALLED', [
+        'id' => $id,
+        'all_data' => $request->all()
+    ]);
+
+    // Validate only the REQUIRED fields - make everything else optional
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'father' => 'required|string|max:255',
+        'mother' => 'nullable|string|max:255',
+        'dob' => 'nullable|date',
+        'mobileNumber' => 'required|string|max:15',
+        'fatherWhatsapp' => 'nullable|string|max:15',
+        'motherContact' => 'nullable|string|max:15',
+        'studentContact' => 'nullable|string|max:15',
+        'category' => 'required|in:GENERAL,OBC,SC,ST',
+        'gender' => 'required|in:Male,Female,Others',
+        'fatherOccupation' => 'nullable|string|max:255',
+        'fatherGrade' => 'nullable|string|max:255',
+        'motherOccupation' => 'nullable|string|max:255',
+        'state' => 'nullable|string|max:255',
+        'city' => 'nullable|string|max:255',
+        'pinCode' => 'nullable|string|max:6',
+        'address' => 'nullable|string',
+        'belongToOtherCity' => 'nullable|in:Yes,No',
+        'economicWeakerSection' => 'nullable|in:Yes,No',
+        'armyPoliceBackground' => 'nullable|in:Yes,No',
+        'speciallyAbled' => 'nullable|in:Yes,No',
+        'courseType' => 'nullable|string|max:255',  // Changed to nullable
+        'courseName' => 'nullable|string|max:255',  // Changed to nullable
+        'deliveryMode' => 'nullable|in:Offline,Online,Hybrid',  // Changed to nullable
+        'medium' => 'nullable|in:English,Hindi',  // Changed to nullable
+        'board' => 'nullable|in:CBSE,RBSE,ICSE',  // Changed to nullable
+        'courseContent' => 'nullable|string|max:255',  // Changed to nullable
+        'isRepeater' => 'nullable|in:Yes,No',
+        'scholarshipTest' => 'nullable|in:Yes,No',
+        'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
+        'competitionExam' => 'nullable|in:Yes,No',
+    ]);
+
+    \Log::info('VALIDATION PASSED');
+
+    try {
+        $inquiry = Inquiry::findOrFail($id);
+        
+        \Log::info('INQUIRY FOUND', ['inquiry_id' => $inquiry->_id]);
+        
+        // Map form fields to database fields - save whatever is provided
+        $updateData = [
+            'student_name' => $validatedData['name'],
+            'father_name' => $validatedData['father'],
+            'mother' => $validatedData['mother'] ?? null,
+            'dob' => $validatedData['dob'] ?? null,
+            'father_contact' => $validatedData['mobileNumber'],
+            'father_whatsapp' => $validatedData['fatherWhatsapp'] ?? null,
+            'motherContact' => $validatedData['motherContact'] ?? null,
+            'student_contact' => $validatedData['studentContact'] ?? null,
+            'category' => $validatedData['category'],
+            'gender' => $validatedData['gender'],
+            'fatherOccupation' => $validatedData['fatherOccupation'] ?? null,
+            'fatherGrade' => $validatedData['fatherGrade'] ?? null,
+            'motherOccupation' => $validatedData['motherOccupation'] ?? null,
+            'state' => $validatedData['state'] ?? null,
+            'city' => $validatedData['city'] ?? null,
+            'pinCode' => $validatedData['pinCode'] ?? null,
+            'address' => $validatedData['address'] ?? null,
+            'belongToOtherCity' => $validatedData['belongToOtherCity'] ?? 'No',
+            'economicWeakerSection' => $validatedData['economicWeakerSection'] ?? 'No',
+            'armyPoliceBackground' => $validatedData['armyPoliceBackground'] ?? 'No',
+            'speciallyAbled' => $validatedData['speciallyAbled'] ?? 'No',
+            'courseType' => $validatedData['courseType'] ?? null,
+            'course_name' => $validatedData['courseName'] ?? null,
+            'delivery_mode' => $validatedData['deliveryMode'] ?? null,
+            'medium' => $validatedData['medium'] ?? null,
+            'board' => $validatedData['board'] ?? null,
+            'course_content' => $validatedData['courseContent'] ?? null,
+            'isRepeater' => $validatedData['isRepeater'] ?? 'No',
+            'scholarshipTest' => $validatedData['scholarshipTest'] ?? 'No',
+            'lastBoardPercentage' => $validatedData['lastBoardPercentage'] ?? null,
+            'competitionExam' => $validatedData['competitionExam'] ?? 'No',
+        ];
+
+        $inquiry->update($updateData);
+
+        \Log::info('INQUIRY UPDATED SUCCESSFULLY', [
+            'updated_data' => $updateData
+        ]);
+        
+        // ALWAYS redirect to scholarship details page regardless of form completion
+return redirect()->route('inquiries.scholarship.show', ['id' => $id])
+            ->with('success', 'Inquiry saved! Please review scholarship details.');
+
+    } catch (\Exception $e) {
+        \Log::error('ERROR IN UPDATE: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        // Even on error, try to redirect to scholarship page with error message
+return redirect()->route('inquiries.scholarship.show', ['id' => $id])
+            ->with('error', 'Some data may not have been saved: ' . $e->getMessage());
     }
 }
 }
