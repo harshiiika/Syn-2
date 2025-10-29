@@ -429,7 +429,7 @@
 
       const footerLeft = document.querySelector('.left-footer p');
       const paginationContainer = document.querySelector('#pagination');
-
+//pagination control 
       let state = {
         page: 1,
         per_page: parseInt(perPageBtn?.textContent.trim()) || 10,
@@ -466,6 +466,7 @@
       // Load data
       async function loadData() {
         try {
+          //pagination (sends per_page and page parameters to your Laravel backend)
           const url = `${DATA_URL}?per_page=${state.per_page}&search=${encodeURIComponent(state.search)}&page=${state.page}`;
           const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
           if (!res.ok) throw new Error('Failed to load');
@@ -532,7 +533,7 @@
         tableBody.querySelectorAll('.edit-btn').forEach(b => b.addEventListener('click', onEdit));
         tableBody.querySelectorAll('.toggle-btn').forEach(b => b.addEventListener('click', onToggleStatus));
       }
-
+//creates the Previous/Next buttons and page numbers
       function renderFooter(json) {
         const from = json.data.length ? ((json.current_page - 1) * json.per_page + 1) : 0;
         const to = json.data.length ? ((json.current_page - 1) * json.per_page + json.data.length) : 0;
@@ -540,6 +541,7 @@
 
         paginationContainer.innerHTML = '';
 
+  // Previous button
         const prevLi = document.createElement('li');
         prevLi.className = 'page-item' + (json.current_page <= 1 ? ' disabled' : '');
         prevLi.innerHTML = `<a class="page-link" href="#">Previous</a>`;
@@ -552,12 +554,14 @@
           });
         }
 
+  // Page numbers
         const last = json.last_page || 1;
         const current = json.current_page || 1;
         const start = Math.max(1, current - 2);
         const end = Math.min(last, current + 2);
 
         for (let p = start; p <= end; p++) {
+           // Creates page number buttons dynamically
           const li = document.createElement('li');
           li.className = 'page-item';
           li.innerHTML = `<a class="page-link ${p === current ? 'active' : ''}" href="#" style="${p === current ? 'background-color: rgb(224, 83, 1); color: white;' : ''}">${p}</a>`;
@@ -568,7 +572,7 @@
           });
           paginationContainer.appendChild(li);
         }
-
+ // Next button
         const nextLi = document.createElement('li');
         nextLi.className = 'page-item' + (json.current_page >= last ? ' disabled' : '');
         nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;

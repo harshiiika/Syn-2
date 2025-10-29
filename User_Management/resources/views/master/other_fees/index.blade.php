@@ -718,6 +718,21 @@
         </div>
       </div>
 
+<!-- ADD THIS SUCCESS/ERROR ALERT -->
+@if(session('success'))
+  <div class="alert alert-success alert-dismissible fade show" style="width: 95%; margin: 10px auto;">
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+@endif
+
+@if(session('error'))
+  <div class="alert alert-danger alert-dismissible fade show" style="width: 95%; margin: 10px auto;">
+    {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+@endif
+
       <div class="whole">
         <div class="dd">
           <div class="line">
@@ -901,54 +916,58 @@
         }
       }
 
-      function renderTable(items) {
-        tableBody.innerHTML = '';
-        if (!items || items.length === 0) {
-          dataMsg.style.display = 'block';
-          dataMsg.textContent = 'No data available in the table';
-          return;
-        }
-        dataMsg.style.display = 'none';
+    function renderTable(items) {
+  tableBody.innerHTML = '';
+  if (!items || items.length === 0) {
+    dataMsg.style.display = 'block';
+    dataMsg.textContent = 'No data available in the table';
+    return;
+  }
+  dataMsg.style.display = 'none';
 
-        items.forEach((it, idx) => {
-          const id = it._id || it.id || '';
-          const serialNo = (state.page - 1) * state.per_page + idx + 1;
-          
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${serialNo}</td>
-            <td>${escapeHtml(it.fee_type || '')}</td>
-            <td>₹${parseFloat(it.amount || 0).toFixed(2)}</td>
-            <td>
-              ${it.status === 'active' 
-                ? '<span class="status-badge">Active</span>' 
-                : '<span class="status-badge">Inactive</span>'}
-            </td>
-            <td>
-              <div class="dropdown">
-                <button class="action-dots-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fa-solid fa-ellipsis-vertical"></i>
+  items.forEach((it, idx) => {
+    const id = it._id || it.id || '';
+    const serialNo = (state.page - 1) * state.per_page + idx + 1;
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${serialNo}</td>
+      <td>${escapeHtml(it.fee_type || '')}</td>
+      <td>₹${parseFloat(it.amount || 0).toFixed(2)}</td>
+      <td>
+        ${it.status === 'active' 
+          ? '<span class="status-badge text-success">Active</span>' 
+          : '<span class="status-badge text-danger">Inactive</span>'}
+      </td>
+      <td>
+        <div class="dropdown">
+          <button class="action-dots-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item view-btn" href="javascript:void(0)" data-id="${id}">View</a></li>
+            <li><a class="dropdown-item edit-btn" href="javascript:void(0)" data-id="${id}">Edit</a></li>
+            <li>
+              <form action="${ENDPOINT_BASE}/${id}/toggle" method="POST" style="margin:0; display:inline;" onsubmit="return confirm('Are you sure you want to ${it.status === 'active' ? 'deactivate' : 'activate'} this fee?')">
+                <input type="hidden" name="_token" value="${csrfToken}">
+                <button type="submit" class="dropdown-item" style="background:none; border:none; text-align:left; width:100%; cursor:pointer; padding:10px 16px;">
+                  ${it.status === 'active' ? 'Deactivate' : 'Activate'}
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item view-btn" href="#" data-id="${id}">View</a></li>
-                  <li><a class="dropdown-item edit-btn" href="#" data-id="${id}">Edit</a></li>
-                  <li><a class="dropdown-item toggle-btn" href="#" data-id="${id}" data-status="${it.status}">
-                    ${it.status === 'active' ? 'Deactivate' : 'Activate'}
-                  </a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item text-danger delete-btn" href="#" data-id="${id}">Delete</a></li>
-                </ul>
-              </div>
-            </td>
-          `;
-          tableBody.appendChild(tr);
-        });
+              </form>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger delete-btn" href="javascript:void(0)" data-id="${id}">Delete</a></li>
+          </ul>
+        </div>
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
 
-        tableBody.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', onView));
-        tableBody.querySelectorAll('.edit-btn').forEach(b => b.addEventListener('click', onEdit));
-        tableBody.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', onDelete));
-        tableBody.querySelectorAll('.toggle-btn').forEach(b => b.addEventListener('click', onToggleStatus));
-      }
+  tableBody.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', onView));
+  tableBody.querySelectorAll('.edit-btn').forEach(b => b.addEventListener('click', onEdit));
+  tableBody.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', onDelete));
+}
 
       function renderFooter(json) {
         const from = json.data.length ? ((json.current_page - 1) * json.per_page + 1) : 0;
@@ -1095,33 +1114,6 @@
         } catch (err) {
           console.error(err);
           alert('Delete failed: ' + err.message);
-        }
-      }
-
-      async function onToggleStatus(e) {
-        e.preventDefault();
-        const id = e.currentTarget.dataset.id;
-        const currentStatus = e.currentTarget.dataset.status;
-        const action = currentStatus === 'active' ? 'deactivate' : 'activate';
-        
-        if (!confirm(`Are you sure you want to ${action} this fee?`)) return;
-        
-        try {
-          const res = await fetch(`${ENDPOINT_BASE}/${id}/toggle`, {
-            method: 'POST',
-            headers: {
-              'X-CSRF-TOKEN': csrfToken,
-              'Accept': 'application/json'
-            },
-          });
-          const json = await res.json();
-          if (!json.success) throw new Error(json.message || 'Toggle failed');
-          
-          alert(`Fee ${action}d successfully`);
-          await loadData();
-        } catch (err) {
-          console.error(err);
-          alert('Toggle status failed: ' + err.message);
         }
       }
 

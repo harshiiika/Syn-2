@@ -471,3 +471,441 @@ height: 30px;
     color: #fff;
     text-align: left;
 }
+.pfp {
+      justify-content: center;
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+
+    .pfp select {
+      height: 30px;
+      width: 110px;
+      border: 0.5px solid orangered;
+      border-radius: 5px;
+    }
+
+    .session {
+      align-items: center;
+      flex-direction: row;
+      display: flex;
+      margin: 10px;
+    }
+
+    .session h5 {
+      color: black;
+      margin: 7px;
+      font-size: 15px;
+    }
+
+    .fa-bell, .fa-user {
+      margin: 5px;
+      color: rgb(190, 51, 0);
+      font-size: 18px;
+    }
+
+    .logo {
+      height: 60px;
+      width: 300px;
+      border: 0.1px solid #d8d8d8;
+      margin: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .img {
+      height: 50px;
+      width: 150px;
+      margin: 4px;
+    }
+
+    .main-container {
+      max-width: 100%;
+      flex-direction: row;
+      display: flex;
+    }
+
+    .left {
+      height: 100vh;
+      width: 20%;
+      overflow-y: scroll;
+    }
+
+    .left h6 {
+      display: flex;
+      margin: 5px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .left p {
+      display: flex;
+      margin-bottom: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fa-solid, .fa-regular {
+      margin: 0px 10px 0px 5px;
+      font-size: 15px;
+    }
+
+    .accordion-body {
+      padding: 10px !important;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    #accordion-button {
+      font-size: 17px;
+      border: none;
+      height: 38px;
+      padding: 10px !important;
+    }
+
+    .item {
+      text-decoration: none;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .menu li {
+      list-style: none;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 17px;
+      text-decoration: none;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .right {
+      height: 90vh;
+      width: 80%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      overflow-y: scroll;
+      background-color: #e7e7e7;
+    }
+
+    .whole {
+      margin: 5px;
+      padding: 20px;
+      gap: 25px;
+      width: 97%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      background-color: #ffffff;
+      border: 1px solid #d6d6d6;
+    }
+
+    .right h1 {
+      color: rgb(190, 51, 0);
+      margin: 10px;
+    }
+
+    #table {
+      font-size: 12px;
+      flex-direction: column;
+    }
+
+    .top {
+      justify-content: space-between;
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .top h4 {
+      font-size: 20px;
+      color: rgb(224, 83, 1);
+      margin: 10px;
+    }
+
+    .buttons {
+      flex-direction: row;
+      margin: 10px;
+      display: flex;
+    }
+
+    #add {
+      background-color: rgb(224, 83, 1);
+      color: #edfeff;
+      height: 40px;
+      width: 190px;
+      border-radius: 7px;
+      border: 0;
+      margin: 10px;
+    }
+
+    .dd {
+      margin: 5px;
+      width: 100%;
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .line {
+      flex-direction: row;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-left: 10px;
+    }
+
+    .search {
+      flex-direction: row;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .search-text {
+      font-size: 15px;
+      margin: 5px;
+    }
+
+    #one {
+      color: rgb(224, 83, 1);
+    }
+
+    .search-holder {
+      border: 1px solid rgb(224, 83, 1);
+      border-radius: 5px;
+      outline: none;
+      padding: 5px;
+    }
+
+    #bottom {
+      display: flex;
+      align-items: center;
+      width: 98%;
+      justify-content: flex-end;
+    }
+
+    .footer {
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 95%;
+    }
+
+    .left-footer p {
+      font-size: 12px;
+    }
+
+    .data {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .action-dots-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #333;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+    }
+
+    .action-dots-btn:hover {
+      color: rgb(224, 83, 1);
+    }
+
+    .dropdown-menu {
+      min-width: 150px;
+    }
+
+    .dropdown-item {
+      padding: 10px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f8f9fa;
+      color: rgb(224, 83, 1);
+    }
+
+    .detail-row {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      width: 150px;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .detail-value {
+      flex: 1;
+      color: #212529;
+      font-size: 14px;
+    }
+
+    .status-badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .text {
+      justify-content: center;
+      align-items: center;
+    }
+
+    #dropdown-body {
+      padding: 0 !important;
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin: 0 !important;
+    }
+
+    .btn-secondary {
+      margin: 5px 0px 10px 5px;
+      align-items: center;
+      outline: none;
+      background-color: #ffffff;
+      border: none;
+    }
+
+    #number {
+      margin: 5px 0px 10px 5px;
+      align-items: center;
+      border: 1px solid #000;
+      background-color: #ffffff;
+      color: #000;
+    }
+
+    /* Modal Styling Improvements */
+    .modal-header {
+      background-color: rgb(224, 83, 1);
+      color: white;
+      padding: 15px 20px;
+      border-bottom: none;
+    }
+
+    .modal-header .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .modal-header .btn-close {
+      filter: brightness(0) invert(1);
+      opacity: 1;
+    }
+
+    .modal-body {
+      padding: 25px;
+      background-color: #f8f9fa;
+    }
+
+    .modal-body .form-label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .modal-body .form-control,
+    .modal-body .form-select {
+      padding: 10px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .modal-body .form-control:focus,
+    .modal-body .form-select:focus {
+      border-color: rgb(224, 83, 1);
+      box-shadow: 0 0 0 0.2rem rgba(224, 83, 1, 0.25);
+    }
+
+    .modal-footer {
+      padding: 15px 20px;
+      background-color: #fff;
+      border-top: 1px solid #dee2e6;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Button Styling - Making them visible */
+    .modal-footer .btn-secondary {
+      background-color: #6c757d !important;
+      color: white !important;
+      border: 1px solid #6c757d !important;
+      padding: 8px 20px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0 !important;
+      cursor: pointer;
+    }
+
+    .modal-footer .btn-secondary:hover {
+      background-color: #5a6268 !important;
+      border-color: #545b62 !important;
+    }
+
+    .modal-footer .btn-primary {
+      background-color: rgb(224, 83, 1) !important;
+      color: white !important;
+      border: 1px solid rgb(224, 83, 1) !important;
+      padding: 8px 20px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .modal-footer .btn-primary:hover {
+      background-color: rgb(200, 70, 0) !important;
+      border-color: rgb(200, 70, 0) !important;
+    }
+
+    /* View Modal Specific Styling */
+    #viewModalBody {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    #viewModalBody .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Form spacing */
+    .mb-3 {
+      margin-bottom: 20px !important;
+    }
+
+    .text-danger {
+      color: #dc3545;
+    }

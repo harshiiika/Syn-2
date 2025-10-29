@@ -10,34 +10,44 @@ use Illuminate\Support\Facades\Validator;
 class OtherFeeController extends Controller
 {
     /**
-     * Display list of other fees or return paginated JSON
+     * Display the main page
      */
-    public function index(Request $request)
+    public function index()
     {
-        // If API request, return JSON
-        if ($request->expectsJson() || $request->wantsJson()) {
-            $query = OtherFee::query();
+        $otherFees = OtherFee::paginate(10);
+        return view('master.other_fees.index', compact('otherFees'));
+    }
 
-            if ($request->has('search') && $request->search) {
-                $query->where('fee_type', 'like', '%' . $request->search . '%');
-            }
+    /**
+     * Get paginated data for AJAX (for table)
+     */
+    public function getData(Request $request)
+    {
+        $perPage = $request->get('per_page', 10);
+        $search = $request->get('search', '');
 
-            $perPage = $request->get('per_page', 10);
-            $fees = $query->paginate($perPage);
+        $query = OtherFee::query();
 
-            return response()->json([
-                'success' => true,
-                'data' => $fees->items(),
-                'current_page' => $fees->currentPage(),
-                'last_page' => $fees->lastPage(),
-                'per_page' => $fees->perPage(),
-                'total' => $fees->total(),
-            ], 200);
+        // Search filter
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('fee_type', 'like', "%{$search}%")
+                  ->orWhere('amount', 'like', "%{$search}%")
+                  ->orWhere('status', 'like', "%{$search}%");
+            });
         }
 
-        // For page load, return the view with all fees
-        $otherFees = OtherFee::all();
-        return view('master.other_fees.index', compact('otherFees'));
+        $query->orderBy('created_at', 'desc');
+        $fees = $query->paginate($perPage);
+
+        return response()->json([
+            'success' => true,
+            'data' => $fees->items(),
+            'current_page' => $fees->currentPage(),
+            'per_page' => $fees->perPage(),
+            'total' => $fees->total(),
+            'last_page' => $fees->lastPage()
+        ]);
     }
 
     /**
@@ -68,34 +78,26 @@ class OtherFeeController extends Controller
         $validator = Validator::make($request->all(), [
             'fee_type' => 'required|string|unique:other_fees,fee_type',
             'amount' => 'required|numeric|min:0',
-            'status' => 'nullable|in:active,inactive',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
         try {
-            $fee = OtherFee::create([
+            OtherFee::create([
                 'fee_type' => $request->fee_type,
                 'amount' => $request->amount,
-                'status' => $request->status ?? 'active',
+                'status' => 'active',
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Other fee created successfully',
-                'data' => $fee,
-            ], 200);
+            return redirect()->route('master.other_fees.index')
+                ->with('success', 'Other fee created successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create other fee',
-            ], 500);
+            return redirect()->back()
+                ->with('error', 'Failed to create other fee: ' . $e->getMessage());
         }
     }
 
@@ -108,61 +110,46 @@ class OtherFeeController extends Controller
             $fee = OtherFee::findOrFail($id);
 
             $validator = Validator::make($request->all(), [
-                'fee_type' => 'required|string|unique:other_fees,fee_type,' . $id . ',_id',
+                'fee_type' => 'required|string',
                 'amount' => 'required|numeric|min:0',
-                'status' => 'nullable|in:active,inactive',
             ]);
 
             if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors(),
-                ], 422);
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
 
             $fee->update([
                 'fee_type' => $request->fee_type,
                 'amount' => $request->amount,
-                'status' => $request->status ?? $fee->status,
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Fee updated successfully',
-                'data' => $fee,
-            ], 200);
+            return redirect()->route('master.other_fees.index')
+                ->with('success', 'Fee updated successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error updating fee: ' . $e->getMessage(),
-            ], 500);
+            return redirect()->back()
+                ->with('error', 'Error updating fee: ' . $e->getMessage());
         }
     }
 
     /**
      * Toggle fee status (active/inactive)
      */
-    public function toggle($id)
-    {
-        try {
-            $fee = OtherFee::findOrFail($id);
-            $fee->status = $fee->status === 'active' ? 'inactive' : 'active';
-            $fee->save();
+  public function toggle($id)
+{
+    try {
+        $fee = OtherFee::findOrFail($id);
+        $fee->status = ($fee->status === 'active') ? 'inactive' : 'active';
+        $fee->save();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Status updated successfully',
-                'new_status' => $fee->status,
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error toggling status: ' . $e->getMessage(),
-            ], 500);
-        }
+        return redirect()->route('master.other_fees.index')
+            ->with('success', 'Fee status updated successfully to ' . ucfirst($fee->status));
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'Failed to update status: ' . $e->getMessage());
     }
-
+}
     /**
      * Delete a fee
      */

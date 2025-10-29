@@ -10,12 +10,12 @@
   <link rel="stylesheet" href="{{ asset('css/FeesMaster.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-  </head>
+</head>
 
-  <body>
+<body>
   <div class="header">
     <div class="logo">
-         <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="{{asset('images/logo.png.jpg')}}" class="img">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -47,7 +47,7 @@
         <p>synthesisbikaner@gmail.com</p>
       </div>
       
-    <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -86,13 +86,11 @@
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
                     <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
-                      id="side-icon"></i> Branch
-                    Management</a></li>
+                      id="side-icon"></i> Branch Management</a></li>
               </ul>
             </div>
           </div>
@@ -138,8 +136,7 @@
                     <i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Pending Fees
-                    Students</a></li>
+                      id="side-icon"></i>Pending Fees Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Students</a></li>
               </ul>
@@ -288,7 +285,7 @@
       <div class="whole">
         <div class="dd">
           <div class="line">
-            <h6>Show Enteries:</h6>
+            <h6>Show Entries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">10</button>
@@ -307,7 +304,7 @@
           </div>
         </div>
 
-      <table class="table table-hover" id="table">
+        <table class="table table-hover" id="table">
           <thead>
             <tr>
               <th scope="col">Serial No.</th>
@@ -319,83 +316,21 @@
             </tr>
           </thead>
           <tbody>
-            @forelse($fees as $index => $fee)
-            <tr>
-<td>{{ $index + 1 }}</td>              
-<td>{{ $fee->course }}</td>
-              <td>{{ $fee->course_type ?? 'N/A' }}</td>
-              <td>{{ $fee->class_name ?? 'N/A' }}</td>
-              <td class="{{ $fee->status === 'Active' ? 'text-success' : 'text-danger' }}">{{ $fee->status }}</td>
-              <td>
-                <div class="dropdown">
-                  <button class="btn btn-secondary" type="button" data-bs-toggle="dropdown">
-                    <i class="fa-solid fa-ellipsis-vertical" style="color:#000"></i>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a href="#" class="dropdown-item btn-view" data-id="{{ $fee->id }}">View Fees</a></li>
-                    <li>
-                      <a href="#" class="dropdown-item btn-edit"
-                         data-bs-toggle="modal" data-bs-target="#editModal"
-                         data-id="{{ $fee->id }}"
-                         data-course="{{ $fee->course }}"
-                         data-gst="{{ $fee->gst_percent }}"
-                         data-classroom="{{ $fee->classroom_fee }}"
-                         data-live="{{ $fee->live_fee }}"
-                         data-recorded="{{ $fee->recorded_fee }}"
-                         data-study="{{ $fee->study_fee }}"
-                         data-test="{{ $fee->test_fee }}"
-                         data-status="{{ $fee->status }}">Edit</a>
-                    </li>
-                    <li>
-                      <form action="{{ route('fees.toggle', $fee) }}" method="POST">
-                        @csrf @method('PATCH')
-                        <button class="dropdown-item" type="submit">
-                          {{ $fee->status === 'Active' ? 'Deactivate' : 'Activate' }}
-                        </button>
-                      </form>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            @empty
-            <tr><td colspan="6" class="text-center">No Records</td></tr>
-            @endforelse
+            <!-- Data loaded via JavaScript -->
           </tbody>
         </table>
 
-        @if(session('status'))
-        <div class="alert alert-success mt-2">{{ session('status') }}</div>
-        @endif
-        @if ($errors->any())
-        <div class="alert alert-danger mt-2">
-          <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-          </ul>
-        </div>
-        @endif
-
-        <div class="mt-3">
-          {{ $fees->withQueryString()->links() }}
-        </div>
-      </div>
-    </div>
-  </div>
-      
-      <div class="footer">
-        <div class="left-footer">
-<p>Showing {{ $fees->firstItem() }} to {{ $fees->lastItem() }} of {{ $fees->total() }} Entries</p>
-        </div>
-        <div class="right-footer">
-          <nav aria-label="Page navigation example" id="bottom">
-            <ul class="pagination" id="pagination">
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Previous</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg2">1</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
-            </ul>
-          </nav>
+        <div class="footer">
+          <div class="left-footer">
+            <p id="entriesInfo">Showing 0 to 0 of 0 Entries</p>
+          </div>
+          <div class="right-footer">
+            <nav aria-label="Page navigation example" id="bottom">
+              <ul class="pagination" id="pagination">
+                <!-- Pagination generated by JavaScript -->
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
     </div>
@@ -403,7 +338,7 @@
 
   <!-- Create Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content" id="content">
         <form action="{{ route('fees.store') }}" method="POST">
           @csrf
@@ -415,7 +350,7 @@
             <div class="mb-3">
               <label for="basic-url" class="form-label">Course</label>
               <div class="input-group">
-                <select class="btn btn-secondary dropdown-toggle" id="scroll" name="course" required style="width: 100%; text-align: left;">
+                <select class="form-control" id="scroll" name="course" required>
                   <option value="">Select Course</option>
                   <option value="Impulse">Impulse</option>
                   <option value="Momentum">Momentum</option>
@@ -438,122 +373,38 @@
               </div>
             </div>
             <p style="color: orangered;">Fees After GST</p>
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Class Room Course</label>
-                <div class="input-group" id="placeholder">
-                  <input type="number" class="form-control" name="classroom_course" step="0.01" placeholder="Enter amount" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group" id="placeholder">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group" id="placeholder">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Class Room Course</label>
+              <div class="input-group">
+                <input type="number" class="form-control" name="classroom_course" step="0.01" placeholder="Enter amount" required>
               </div>
             </div>
 
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Live online class course</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" name="live_online_course" step="0.01" placeholder="Enter amount" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Live online class course</label>
+              <div class="input-group">
+                <input type="number" class="form-control" name="live_online_course" step="0.01" placeholder="Enter amount" required>
               </div>
             </div>
 
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Recorded online class course</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" name="recorded_online_course" step="0.01" placeholder="Enter amount" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Recorded online class course</label>
+              <div class="input-group">
+                <input type="number" class="form-control" name="recorded_online_course" step="0.01" placeholder="Enter amount" required>
               </div>
             </div>
 
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Study Material only</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" name="study_material_only" step="0.01" placeholder="Enter amount" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Study Material only</label>
+              <div class="input-group">
+                <input type="number" class="form-control" name="study_material_only" step="0.01" placeholder="Enter amount" required>
               </div>
             </div>
 
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Test series only</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" name="test_series_only" step="0.01" placeholder="Enter amount" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-            </div>
-
-            <div class="written">
-              <div class="hori-text">
-                <p>Installment Types</p>
-                <p>First Installment</p>
-                <p>Second Installment</p>
-                <p>Third Installment</p>
-              </div>
-              <div class="ver-text">
-                <p>Class room course</p>
-                <p>Live online class course</p>
-                <p>Recorded online class course</p>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Test series only</label>
+              <div class="input-group">
+                <input type="number" class="form-control" name="test_series_only" step="0.01" placeholder="Enter amount" required>
               </div>
             </div>
           </div>
@@ -569,11 +420,11 @@
 
   <!-- Edit Modal -->
   <div class="modal fade" id="exampleModalTwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content" id="content">
         <form id="editForm" method="POST">
           @csrf
-          @method('PUT')
+          @method('PATCH')
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Fees</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -582,7 +433,7 @@
             <div class="mb-3">
               <label for="basic-url" class="form-label">Course</label>
               <div class="input-group">
-                <select class="btn btn-secondary dropdown-toggle" id="edit_course" name="course" required style="width: 100%; text-align: left;">
+                <select class="form-control" id="edit_course" name="course" required>
                   <option value="">Select Course</option>
                   <option value="Impulse">Impulse</option>
                   <option value="Momentum">Momentum</option>
@@ -605,122 +456,38 @@
               </div>
             </div>
             <p style="color: orangered;">Fees After GST</p>
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Class Room Course</label>
-                <div class="input-group" id="placeholder">
-                  <input type="number" class="form-control" id="edit_classroom_course" name="classroom_course" step="0.01" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group" id="placeholder">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group" id="placeholder">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Class Room Course</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="edit_classroom_course" name="classroom_course" step="0.01" required>
               </div>
             </div>
 
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Live online class course</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" id="edit_live_online_course" name="live_online_course" step="0.01" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Live online class course</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="edit_live_online_course" name="live_online_course" step="0.01" required>
               </div>
             </div>
 
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Recorded online class course</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" id="edit_recorded_online_course" name="recorded_online_course" step="0.01" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Recorded online class course</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="edit_recorded_online_course" name="recorded_online_course" step="0.01" required>
               </div>
             </div>
 
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Study Material only</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" id="edit_study_material_only" name="study_material_only" step="0.01" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Study Material only</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="edit_study_material_only" name="study_material_only" step="0.01" required>
               </div>
             </div>
 
-            <div class="fees">
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Test series only</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" id="edit_test_series_only" name="test_series_only" step="0.01" required>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">GST</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Total</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Auto calculated" readonly>
-                </div>
-              </div>
-            </div>
-
-            <div class="written">
-              <div class="hori-text">
-                <p>Installment Types</p>
-                <p>First Installment</p>
-                <p>Second Installment</p>
-                <p>Third Installment</p>
-              </div>
-              <div class="ver-text">
-                <p>Class room course</p>
-                <p>Live online class course</p>
-                <p>Recorded online class course</p>
+            <div class="mb-3">
+              <label for="basic-url" class="form-label">Test series only</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="edit_test_series_only" name="test_series_only" step="0.01" required>
               </div>
             </div>
           </div>
@@ -736,7 +503,7 @@
 
   <!-- View Modal -->
   <div class="modal fade" id="exampleModalThree" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content" id="content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">View Fees</h1>
@@ -756,125 +523,70 @@
               <input type="number" class="form-control" id="view_gst_percentage" readonly>
             </div>
           </div>
-          <p style="color: orangered;">Fees After GST</p>
-          <div class="fees">
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Class Room Course</label>
-              <div class="input-group" id="placeholder">
-                <input type="number" class="form-control" id="view_classroom_course" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">GST</label>
-              <div class="input-group" id="placeholder">
-                <input type="text" class="form-control" id="view_classroom_gst" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Total</label>
-              <div class="input-group" id="placeholder">
-                <input type="text" class="form-control" id="view_classroom_total" readonly>
-              </div>
-            </div>
+          <p style="color: orangered;">Fees Details</p>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Class Room Course</label>
+            <input type="number" class="form-control" id="view_classroom_course" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Classroom GST</label>
+            <input type="text" class="form-control" id="view_classroom_gst" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Classroom Total</label>
+            <input type="text" class="form-control" id="view_classroom_total" readonly>
           </div>
 
-          <div class="fees">
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Live online class course</label>
-              <div class="input-group">
-                <input type="number" class="form-control" id="view_live_online_course" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">GST</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="view_live_online_gst" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Total</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="view_live_online_total" readonly>
-              </div>
-            </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Live online class course</label>
+            <input type="number" class="form-control" id="view_live_online_course" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Live Online GST</label>
+            <input type="text" class="form-control" id="view_live_online_gst" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Live Online Total</label>
+            <input type="text" class="form-control" id="view_live_online_total" readonly>
           </div>
 
-          <div class="fees">
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Recorded online class course</label>
-              <div class="input-group">
-                <input type="number" class="form-control" id="view_recorded_online_course" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">GST</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="view_recorded_online_gst" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Total</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="view_recorded_online_total" readonly>
-              </div>
-            </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Recorded online class course</label>
+            <input type="number" class="form-control" id="view_recorded_online_course" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Recorded Online GST</label>
+            <input type="text" class="form-control" id="view_recorded_online_gst" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Recorded Online Total</label>
+            <input type="text" class="form-control" id="view_recorded_online_total" readonly>
           </div>
 
-          <div class="fees">
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Study Material only</label>
-              <div class="input-group">
-                <input type="number" class="form-control" id="view_study_material_only" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">GST</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="view_study_material_gst" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Total</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="view_study_material_total" readonly>
-              </div>
-            </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Study Material only</label>
+            <input type="number" class="form-control" id="view_study_material_only" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Study Material GST</label>
+            <input type="text" class="form-control" id="view_study_material_gst" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Study Material Total</label>
+            <input type="text" class="form-control" id="view_study_material_total" readonly>
           </div>
 
-          <div class="fees">
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Test series only</label>
-              <div class="input-group">
-                <input type="number" class="form-control" id="view_test_series_only" readonly>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">GST</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="view_test_series_gst" readonly>
-              </div>
-        
-            </div>
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Total</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="view_test_series_total" readonly>
-              </div>
-            </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Test series only</label>
+            <input type="number" class="form-control" id="view_test_series_only" readonly>
           </div>
-
-          <div class="written">
-            <div class="hori-text">
-              <p>Installment Types</p>
-              <p>First Installment</p>
-              <p>Second Installment</p>
-              <p>Third Installment</p>
-            </div>
-            <div class="ver-text">
-              <p>Class room course</p>
-              <p>Live online class course</p>
-              <p>Recorded online class course</p>
-            </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Test Series GST</label>
+            <input type="text" class="form-control" id="view_test_series_gst" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="basic-url" class="form-label">Test Series Total</label>
+            <input type="text" class="form-control" id="view_test_series_total" readonly>
           </div>
         </div>
 
@@ -884,105 +596,287 @@
       </div>
     </div>
   </div>
+<script src="{{asset('js/emp.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 
+<script>
+// CSRF Token Setup
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-  <script src="{{asset('js/emp.js')}}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-  
-  <script>
-    // CSRF Token Setup
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    // Edit Fee Function
-    function editFee(id) {
-      fetch(`/fees-master/${id}`, {
-        headers: {
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('edit_course').value = data.course;
-        document.getElementById('edit_gst_percentage').value = data.gst_percentage;
-        document.getElementById('edit_classroom_course').value = data.classroom_course;
-        document.getElementById('edit_live_online_course').value = data.live_online_course;
-        document.getElementById('edit_recorded_online_course').value = data.recorded_online_course;
-        document.getElementById('edit_study_material_only').value = data.study_material_only;
-        document.getElementById('edit_test_series_only').value = data.test_series_only;
-        
-        document.getElementById('editForm').action = `/fees-master/${id}`;
-        
-        var editModal = new bootstrap.Modal(document.getElementById('exampleModalTwo'));
-        editModal.show();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to load fee details');
-      });
+// Edit Fee Function - FIXED
+function editFee(id) {
+  fetch(`/fees-master/${id}`, {
+    headers: {
+      'X-CSRF-TOKEN': csrfToken,
+      'Accept': 'application/json'
     }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Edit Data:', data); // Debug log
+    
+    document.getElementById('edit_course').value = data.course || '';
+    document.getElementById('edit_gst_percentage').value = data.gst_percentage || '';
+    document.getElementById('edit_classroom_course').value = data.classroom_course || '';
+    document.getElementById('edit_live_online_course').value = data.live_online_course || '';
+    document.getElementById('edit_recorded_online_course').value = data.recorded_online_course || '';
+    document.getElementById('edit_study_material_only').value = data.study_material_only || '';
+    document.getElementById('edit_test_series_only').value = data.test_series_only || '';
+    
+    document.getElementById('editForm').action = `/fees-master/${id}`;
+    
+    var editModal = new bootstrap.Modal(document.getElementById('exampleModalTwo'));
+    editModal.show();
+  })
+  .catch(error => {
+    console.error('Edit Error:', error);
+    alert('Failed to load fee details for editing');
+  });
+}
 
-    // View Fee Function
-    function viewFee(id) {
-      fetch(`/fees-master/${id}`, {
-        headers: {
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('view_course').value = data.course;
-        document.getElementById('view_gst_percentage').value = data.gst_percentage;
-        
-        document.getElementById('view_classroom_course').value = data.classroom_course;
-        document.getElementById('view_classroom_gst').value = data.classroom_gst;
-        document.getElementById('view_classroom_total').value = data.classroom_total;
-        
-        document.getElementById('view_live_online_course').value = data.live_online_course;
-        document.getElementById('view_live_online_gst').value = data.live_online_gst;
-        document.getElementById('view_live_online_total').value = data.live_online_total;
-        
-        document.getElementById('view_recorded_online_course').value = data.recorded_online_course;
-        document.getElementById('view_recorded_online_gst').value = data.recorded_online_gst;
-        document.getElementById('view_recorded_online_total').value = data.recorded_online_total;
-        
-        document.getElementById('view_study_material_only').value = data.study_material_only;
-        document.getElementById('view_study_material_gst').value = data.study_material_gst;
-        document.getElementById('view_study_material_total').value = data.study_material_total;
-        
-        document.getElementById('view_test_series_only').value = data.test_series_only;
-        document.getElementById('view_test_series_gst').value = data.test_series_gst;
-        document.getElementById('view_test_series_total').value = data.test_series_total;
-        
-        var viewModal = new bootstrap.Modal(document.getElementById('exampleModalThree'));
-        viewModal.show();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to load fee details');
-      });
+// View Fee Function - FIXED
+function viewFee(id) {
+  fetch(`/fees-master/${id}`, {
+    headers: {
+      'X-CSRF-TOKEN': csrfToken,
+      'Accept': 'application/json'
     }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('View Data:', data); // Debug log
+    
+    // Basic fields
+    document.getElementById('view_course').value = data.course || 'N/A';
+    document.getElementById('view_gst_percentage').value = data.gst_percentage || 'N/A';
+    
+    // Classroom fields
+    document.getElementById('view_classroom_course').value = data.classroom_course || 'N/A';
+    document.getElementById('view_classroom_gst').value = data.classroom_gst || 'N/A';
+    document.getElementById('view_classroom_total').value = data.classroom_total || 'N/A';
+    
+    // Live Online fields
+    document.getElementById('view_live_online_course').value = data.live_online_course || 'N/A';
+    document.getElementById('view_live_online_gst').value = data.live_online_gst || 'N/A';
+    document.getElementById('view_live_online_total').value = data.live_online_total || 'N/A';
+    
+    // Recorded Online fields
+    document.getElementById('view_recorded_online_course').value = data.recorded_online_course || 'N/A';
+    document.getElementById('view_recorded_online_gst').value = data.recorded_online_gst || 'N/A';
+    document.getElementById('view_recorded_online_total').value = data.recorded_online_total || 'N/A';
+    
+    // Study Material fields
+    document.getElementById('view_study_material_only').value = data.study_material_only || 'N/A';
+    document.getElementById('view_study_material_gst').value = data.study_material_gst || 'N/A';
+    document.getElementById('view_study_material_total').value = data.study_material_total || 'N/A';
+    
+    // Test Series fields
+    document.getElementById('view_test_series_only').value = data.test_series_only || 'N/A';
+    document.getElementById('view_test_series_gst').value = data.test_series_gst || 'N/A';
+    document.getElementById('view_test_series_total').value = data.test_series_total || 'N/A';
+    
+    var viewModal = new bootstrap.Modal(document.getElementById('exampleModalThree'));
+    viewModal.show();
+  })
+  .catch(error => {
+    console.error('View Error:', error);
+    alert('Failed to load fee details for viewing');
+  });
+}
 
-    // Search Functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-      const searchValue = this.value.toLowerCase();
-      const tableRows = document.querySelectorAll('#feesTableBody tr');
+// Sidebar Toggle
+document.getElementById('toggleBtn')?.addEventListener('click', function() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+});
+
+// PAGINATION CODE
+document.addEventListener('DOMContentLoaded', () => {
+  const tableBody = document.querySelector('#table tbody');
+  const entriesInfo = document.getElementById('entriesInfo');
+  const paginationContainer = document.getElementById('pagination');
+  const perPageBtn = document.getElementById('number');
+  const searchInput = document.getElementById('searchInput');
+
+  let state = {
+    page: 1,
+    per_page: 10,
+    search: ''
+  };
+
+  // Per page dropdown handler
+  const dropdownItems = document.querySelectorAll('.dd .dropdown-menu .dropdown-item');
+  dropdownItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      const value = parseInt(e.currentTarget.textContent.trim());
+      if (isNaN(value)) return;
+      state.per_page = value;
+      perPageBtn.textContent = value;
+      state.page = 1;
+      loadData();
+    });
+  });
+
+  // Search handler
+  searchInput.addEventListener('input', debounce(() => {
+    state.search = searchInput.value.trim();
+    state.page = 1;
+    loadData();
+  }, 400));
+
+  function debounce(fn, wait) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn.apply(this, args), wait);
+    };
+  }
+
+  // Load data function
+  async function loadData() {
+    try {
+      const url = `/fees-master/data?per_page=${state.per_page}&search=${encodeURIComponent(state.search)}&page=${state.page}`;
+      const response = await fetch(url, {
+        headers: {
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': csrfToken
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to load');
+      const json = await response.json();
       
-      tableRows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchValue) ? '' : 'none';
-      });
-    });
+      console.log('Loaded Data:', json); // Debug log
+      
+      renderTable(json.data);
+      renderPagination(json);
+      updateEntriesInfo(json);
+    } catch (error) {
+      console.error('Load Data Error:', error);
+      tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Failed to load data</td></tr>';
+    }
+  }
 
-    // Sidebar Toggle
-    document.getElementById('toggleBtn')?.addEventListener('click', function() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
-    });
-  </script>
-</body>
-</html>
+  // Render table
+ function renderTable(fees) {
+  if (!fees || fees.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No Records</td></tr>';
+    return;
+  }
+
+  tableBody.innerHTML = fees.map((fee, index) => {
+    const serialNo = (state.page - 1) * state.per_page + index + 1;
+    const statusClass = (fee.status === 'Active' || fee.status === 'active') ? 'text-success' : 'text-danger';
+    const statusText = (fee.status === 'Active' || fee.status === 'active') ? 'Active' : 'Inactive';
+    
+    // MongoDB uses _id, not id
+    const feeId = fee._id || fee.id;
+    
+    return `
+      <tr>
+        <td>${serialNo}</td>
+        <td>${escapeHtml(fee.course || 'N/A')}</td>
+        <td>${escapeHtml(fee.course_type || 'N/A')}</td>
+        <td>${escapeHtml(fee.class_name || 'N/A')}</td>
+        <td class="${statusClass}">${statusText}</td>
+        <td>
+          <div class="dropdown">
+            <button class="btn btn-secondary" type="button" data-bs-toggle="dropdown">
+              <i class="fa-solid fa-ellipsis-vertical" style="color:#000"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="javascript:void(0)" class="dropdown-item" onclick="viewFee('${feeId}')">View Fees</a></li>
+              <li><a href="javascript:void(0)" class="dropdown-item" onclick="editFee('${feeId}')">Edit</a></li>
+              <li>
+                <form action="/fees-master/${feeId}/toggle" method="POST" style="margin:0" onsubmit="return confirm('Are you sure?')">
+                  <input type="hidden" name="_token" value="${csrfToken}">
+                  <input type="hidden" name="_method" value="PATCH">
+                  <button class="dropdown-item" type="submit">
+                    ${statusText === 'Active' ? 'Deactivate' : 'Activate'}
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+  // Escape HTML to prevent XSS
+  function escapeHtml(text) {
+    if (!text) return 'N/A';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Render pagination
+  function renderPagination(json) {
+    paginationContainer.innerHTML = '';
+
+    // Previous button
+    const prevLi = document.createElement('li');
+    prevLi.className = 'page-item' + (json.current_page <= 1 ? ' disabled' : '');
+    prevLi.innerHTML = '<a class="page-link" href="javascript:void(0)">Previous</a>';
+    paginationContainer.appendChild(prevLi);
+    
+    if (json.current_page > 1) {
+      prevLi.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.page = json.current_page - 1;
+        loadData();
+      });
+    }
+
+    // Page numbers
+    const current = json.current_page;
+    const last = json.last_page;
+    const start = Math.max(1, current - 2);
+    const end = Math.min(last, current + 2);
+
+    for (let p = start; p <= end; p++) {
+      const li = document.createElement('li');
+      li.className = 'page-item' + (p === current ? ' active' : '');
+      li.innerHTML = `<a class="page-link" href="javascript:void(0)" style="${p === current ? 'background-color: rgb(224, 83, 1); color: white;' : ''}">${p}</a>`;
+      
+      li.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.page = p;
+        loadData();
+      });
+      
+      paginationContainer.appendChild(li);
+    }
+
+    // Next button
+    const nextLi = document.createElement('li');
+    nextLi.className = 'page-item' + (json.current_page >= last ? ' disabled' : '');
+    nextLi.innerHTML = '<a class="page-link" href="javascript:void(0)">Next</a>';
+    paginationContainer.appendChild(nextLi);
+    
+    if (json.current_page < last) {
+      nextLi.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.page = json.current_page + 1;
+        loadData();
+      });
+    }
+  }
+
+  // Update entries info
+  function updateEntriesInfo(json) {
+    const from = json.data.length ? ((json.current_page - 1) * json.per_page + 1) : 0;
+    const to = json.data.length ? ((json.current_page - 1) * json.per_page + json.data.length) : 0;
+    entriesInfo.textContent = `Showing ${from} to ${to} of ${json.total} Entries`;
+  }
+
+  // Initial load
+  loadData();
+});
+</script>
+ 
 </body>
 </html>

@@ -153,35 +153,58 @@ Route::prefix('master/batch')->name('batches.')->group(function () {
 //feesmaster//
  
 // Fees Master Routes
-Route::prefix('fees-master')->name('fees.')->group(function () {
-    // List all fees
-    Route::get('/', [FeesMasterController::class, 'index'])->name('index');
+// Route::prefix('fees-master')->name('fees.')->group(function () {
+//     // List all fees
+//     Route::get('/', [FeesMasterController::class, 'index'])->name('index');
    
+//     // Create new fee
+//     Route::post('/', [FeesMasterController::class, 'store'])->name('store');
+   
+//     // Show single fee details (for View modal)
+//     Route::get('/{id}', [FeesMasterController::class, 'show'])->name('show');
+   
+//     // Update fee
+//     Route::patch('/{id}', [FeesMasterController::class, 'update'])->name('update');
+   
+//     // Toggle status (Activate/Deactivate)
+//     Route::patch('/{fee}/toggle', [FeesMasterController::class, 'toggle'])->name('toggle');
+// });
+// Fees Master Routes
+Route::prefix('fees-master')->name('fees.')->group(function () {
+    // List all fees (main page)
+    Route::get('/', [FeesMasterController::class, 'index'])->name('index');
+    
+    // 👇 AJAX data endpoint for pagination (MUST come before /{id})
+    Route::get('/data', [FeesMasterController::class, 'getData'])->name('data');
+    
     // Create new fee
     Route::post('/', [FeesMasterController::class, 'store'])->name('store');
-   
+    
     // Show single fee details (for View modal)
     Route::get('/{id}', [FeesMasterController::class, 'show'])->name('show');
-   
+    
     // Update fee
     Route::patch('/{id}', [FeesMasterController::class, 'update'])->name('update');
-   
-    // Toggle status (Activate/Deactivate)
-    Route::patch('/{fee}/toggle', [FeesMasterController::class, 'toggle'])->name('toggle');
+    
+    // Toggle status (Activate/Deactivate) - FIXED
+    Route::patch('/{id}/toggle', [FeesMasterController::class, 'toggle'])->name('toggle');
 });
- 
- 
-// Other Fees Routes
-Route::prefix('master/other_fees')->group(function () {
-    Route::get('/', [OtherFeeController::class, 'index'])->name('master.other_fees.index');
-    Route::get('/data', [OtherFeeController::class, 'index']);
-    Route::get('/{id}', [OtherFeeController::class, 'show']);
-    Route::post('/', [OtherFeeController::class, 'store']);
-    Route::put('/{id}', [OtherFeeController::class, 'update']);
-    Route::post('/{id}/toggle', [OtherFeeController::class, 'toggle']);
-    Route::delete('/{id}', [OtherFeeController::class, 'destroy']);
+
+//otherfee
+Route::prefix('master/other_fees')->name('master.other_fees.')->group(function () {
+    // Main page
+    Route::get('/', [OtherFeeController::class, 'index'])->name('index');
+    
+    // AJAX data endpoint (MUST come before /{id})
+    Route::get('/data', [OtherFeeController::class, 'getData'])->name('data');
+    
+    // CRUD operations
+    Route::post('/', [OtherFeeController::class, 'store'])->name('store');
+    Route::get('/{id}', [OtherFeeController::class, 'show'])->name('show');
+    Route::patch('/{id}', [OtherFeeController::class, 'update'])->name('update');
+   Route::post('/{id}/toggle', [OtherFeeController::class, 'toggle'])->name('toggle');
+    Route::delete('/{id}', [OtherFeeController::class, 'destroy'])->name('destroy');
 });
- 
 //branch Routes
 Route::prefix('master/branch')->name('branches.')->group(function () {
     // Display all branches

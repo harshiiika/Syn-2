@@ -12,6 +12,7 @@ class OtherFee extends Model
     protected $fillable = [
         'fee_type',
         'amount',
+        'status',        // ADD THIS
         'session_id',
         'branch_id',
         'created_by'

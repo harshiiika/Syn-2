@@ -176,8 +176,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
                 <li><a class="item" href="{{ route('fees.index') }}">
 <i class="fa-solid fa-credit-card"
                       id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
@@ -400,11 +399,9 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
             <button type="submit" class="btn btn-primary" style="background-color: #ff6600; color: white;">
     <i class="fa-solid fa-magnifying-glass"></i>
 </button>
-
         </div>
     </form>
 </div>
-
     </div>
     <table class="table table-hover" id="table">
       <thead>
@@ -494,7 +491,6 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
       <div>
         {{ $courses->links() }}
       </div>
-
 
       <!-- UPLOAD MODAL - NEW FEATURE -->
 <div class="modal fade" id="uploadCourseModal" tabindex="-1" aria-hidden="true">

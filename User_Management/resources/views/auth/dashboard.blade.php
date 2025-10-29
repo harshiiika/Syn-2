@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -40,17 +39,16 @@
       </div>
     </div>
   </div>
+  
   <div class="main-container">
-
     <div class="left" id="sidebar">
-
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
       <!-- Left side bar accordian -->
-        <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -70,6 +68,7 @@
             </div>
           </div>
         </div>
+
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -85,31 +84,12 @@
                 <li><a class="item" href="{{ route('batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
-
                 <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
-                      id="side-icon"></i> Scholarship</a>
-                </li>
-                <li><a class="item" href="{{ route('fees.index') }}">
-<i class="fa-solid fa-credit-card"
+                      id="side-icon"></i> Scholarship</a></li>
+                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card"
                       id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="/Master/other fees/other.html"><i class="fa-solid fa-wallet"
-
-                            <li>
-    <a class="item" href="{{ route('master.scholarship.index') }}">
-        <i class="fa-solid fa-graduation-cap" id="side-icon"></i>
-        Scholarship
-    </a>
-</li>
-
-
-             <li>
-  <a class="item" href="{{ route('fees.index') }}">
-    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master
-  </a>
-</li>
-     <li><a class="item active" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
-                      id="side-icon"></i> Other Fees Master</a>
-                </li>
+                <li><a class="item active" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
+                      id="side-icon"></i> Other Fees Master</a></li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
                       id="side-icon"></i> Branch
                     Management</a></li>
@@ -117,6 +97,7 @@
             </div>
           </div>
         </div>
+
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -140,6 +121,7 @@
             </div>
           </div>
         </div>
+
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -153,16 +135,8 @@
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry Management </a></li>
-                <li>
-                  <!-- <a class="item" href="student.html"> -->
-                  <i class="fa-solid fa-user-check"
-                <li><a class="item" href="{{ route('master.student.pending') }}"><i class="fa-solid fa-user-check"
-            
-              <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-      id="side-icon"></i> Inquiry Management</a></li>
-      
-              <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="/student management/stu onboard/onstu.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Student Onboard</a>
                 </li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
@@ -174,6 +148,7 @@
             </div>
           </div>
         </div>
+
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -275,13 +250,16 @@
         </div>
       </div>
     </div>
+
     <div class="right" id="right">
-        <h2>Welcome to Dashboard</h2>
-        <p>This is the dashboard page.</p>
+      <h2>Welcome to Dashboard</h2>
+      <p>This is the dashboard page.</p>
     </div>
+  </div>
  
+  <script src="{{asset('js/emp.js')}}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </body>
-<script src="{{asset('js/emp.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
 </html>
