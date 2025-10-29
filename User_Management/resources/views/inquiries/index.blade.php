@@ -1163,37 +1163,82 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
-        function renderPagination(json) {
-            const currentPage = json.current_page || 1;
-            const lastPage = json.last_page || 1;
-            
-            let html = '';
-            
-            html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>
-            </li>`;
-            
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(lastPage, currentPage + 2);
-            
-            for (let i = startPage; i <= endPage; i++) {
-                html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
-                    <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
-                </li>`;
-            }
-            
-            html += `<li class="page-item ${currentPage === lastPage ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>
-            </li>`;
-            
-            elements.pagination.innerHTML = html;
-        }
 
-        function updateShowingInfo(json) {
-            const from = json.data.length ? (json.current_page - 1) * json.per_page + 1 : 0;
-            const to = json.data.length ? (json.current_page - 1) * json.per_page + json.data.length : 0;
-            elements.showingInfo.textContent = `Showing ${from} to ${to} of ${json.total || 0} entries`;
+function renderPagination(json) {
+    const currentPage = json.current_page || 1;
+    const lastPage = json.last_page || 1;
+    const total = json.total || 0;
+    
+    if (total === 0) {
+        elements.pagination.innerHTML = '';
+        return;
+    }
+    
+    let html = '';
+    
+    // Previous button with better styling
+    html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+        </a>
+    </li>`;
+    
+    // First page always visible if we're past page 3
+    if (currentPage > 3) {
+        html += `<li class="page-item">
+            <a class="page-link" href="#" onclick="changePage(1); return false;">1</a>
+        </li>`;
+        
+        // Ellipsis after first page
+        if (currentPage > 4) {
+            html += `<li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>`;
         }
+    }
+    
+    // Calculate visible page range (2 before and 2 after current)
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(lastPage, currentPage + 2);
+    
+    // Render page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
+        </li>`;
+    }
+    
+    // Last page always visible if we're before last-2 pages
+    if (currentPage < lastPage - 2) {
+        // Ellipsis before last page
+        if (currentPage < lastPage - 3) {
+            html += `<li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>`;
+        }
+        
+        html += `<li class="page-item">
+            <a class="page-link" href="#" onclick="changePage(${lastPage}); return false;">${lastPage}</a>
+        </li>`;
+    }
+    
+    // Next button with better styling
+    html += `<li class="page-item ${currentPage === lastPage ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;" aria-label="Next">
+            <span aria-hidden="true">»</span>
+        </a>
+    </li>`;
+    
+    elements.pagination.innerHTML = html;
+}
+
+function updateShowingInfo(json) {
+    const from = json.data && json.data.length > 0 ? (json.current_page - 1) * json.per_page + 1 : 0;
+    const to = json.data && json.data.length > 0 ? (json.current_page - 1) * json.per_page + json.data.length : 0;
+    const total = json.total || 0;
+    
+    elements.showingInfo.textContent = `Showing ${from} to ${to} of ${total} entries`;
+}
 
         window.viewInquiry = async function(id) {
             try {
@@ -1492,25 +1537,41 @@ document.querySelector('.btn-onboard').addEventListener('click', async function(
         this.textContent = 'Onboard';
     }
 });
-        window.changePage = function(page) {
-            state.page = page;
-            loadData();
-        };
 
-        elements.searchInput.addEventListener('input', debounce(() => {
+window.changePage = function(page) {
+    if (page < 1) return;
+    
+    // Don't change if clicking current page
+    if (page === state.page) return;
+    
+    state.page = page;
+    loadData();
+    
+    // Smooth scroll to top of table
+    const tableContainer = document.querySelector('.whole');
+    if (tableContainer) {
+        tableContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+};
+
+
+elements.searchInput.addEventListener('input', debounce(() => {
             state.search = elements.searchInput.value.trim();
             state.page = 1;
             loadData();
         }, 400));
-
         elements.perPage.addEventListener('click', (e) => {
-            if (e.target.tagName === 'A') {
-                state.per_page = parseInt(e.target.textContent);
-                state.page = 1;
-                elements.perPage.textContent = state.per_page;
-                loadData();
-            }
-        });
+    if (e.target.tagName === 'A') {
+        e.preventDefault();
+        const newPerPage = parseInt(e.target.textContent);
+        if (newPerPage !== state.per_page) {
+            state.per_page = newPerPage;
+            state.page = 1; // Reset to first page
+            elements.perPage.textContent = state.per_page;
+            loadData();
+        }
+    }
+});
 
         document.getElementById('inquiryModal').addEventListener('hidden.bs.modal', () => {
             elements.form.reset();

@@ -384,3 +384,105 @@ cursor: pointer;
     display: flex;  
     flex-direction: row;
 }
+
+/* Enhanced Pagination Styles - Match Scholarship/Fees Master */
+.pagination {
+    margin: 0;
+    display: flex;
+    list-style: none;
+    border-radius: 0.25rem;
+}
+
+.page-item {
+    margin: 0 2px;
+}
+
+.page-link {
+    color: rgb(224, 83, 1);
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    background-color: #fff;
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+.page-link:hover {
+    background-color: rgba(224, 83, 1, 0.1);
+    border-color: rgb(224, 83, 1);
+    color: rgb(190, 51, 0);
+    text-decoration: none;
+    z-index: 2;
+}
+
+.page-item.active .page-link {
+    background-color: rgb(224, 83, 1);
+    border-color: rgb(224, 83, 1);
+    color: white;
+    z-index: 3;
+    font-weight: 600;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: default;
+    background-color: #fff;
+    border-color: #dee2e6;
+    opacity: 0.6;
+}
+
+.page-link:focus {
+    box-shadow: 0 0 0 0.2rem rgba(224, 83, 1, 0.25);
+    z-index: 2;
+    outline: 0;
+}
+
+/* First and Last page styling */
+.page-item:first-child .page-link {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.page-item:last-child .page-link {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+/* Ellipsis styling */
+.page-item.disabled .page-link {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+/* Footer styling to match */
+.footer {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+    padding: 15px 0;
+    margin-top: 10px;
+}
+
+.left-footer p {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 0;
+    font-weight: 500;
+}
+
+.right-footer {
+    display: flex;
+    align-items: center;
+}
+
+#bottom {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
+}
