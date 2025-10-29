@@ -412,7 +412,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
       const ENDPOINT_BASE = '/master/scholarship';
-      const DATA_URL = `${ENDPOINT_BASE}/data`;
+      const DATA_URL = ${ENDPOINT_BASE}/data;
       const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
       const tableBody = document.querySelector('#table tbody');
@@ -466,8 +466,7 @@
       // Load data
       async function loadData() {
         try {
-          //pagination (sends per_page and page parameters to your Laravel backend)
-          const url = `${DATA_URL}?per_page=${state.per_page}&search=${encodeURIComponent(state.search)}&page=${state.page}`;
+          const url = ${DATA_URL}?per_page=${state.per_page}&search=${encodeURIComponent(state.search)}&page=${state.page};
           const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
           if (!res.ok) throw new Error('Failed to load');
           const json = await res.json();
@@ -537,14 +536,14 @@
       function renderFooter(json) {
         const from = json.data.length ? ((json.current_page - 1) * json.per_page + 1) : 0;
         const to = json.data.length ? ((json.current_page - 1) * json.per_page + json.data.length) : 0;
-        footerLeft && (footerLeft.textContent = `Showing ${from} to ${to} of ${json.total} Enteries`);
+        footerLeft && (footerLeft.textContent = Showing ${from} to ${to} of ${json.total} Enteries);
 
         paginationContainer.innerHTML = '';
 
   // Previous button
         const prevLi = document.createElement('li');
         prevLi.className = 'page-item' + (json.current_page <= 1 ? ' disabled' : '');
-        prevLi.innerHTML = `<a class="page-link" href="#">Previous</a>`;
+        prevLi.innerHTML = <a class="page-link" href="#">Previous</a>;
         paginationContainer.appendChild(prevLi);
         if (json.current_page > 1) {
           prevLi.addEventListener('click', (e) => {
@@ -564,7 +563,7 @@
            // Creates page number buttons dynamically
           const li = document.createElement('li');
           li.className = 'page-item';
-          li.innerHTML = `<a class="page-link ${p === current ? 'active' : ''}" href="#" style="${p === current ? 'background-color: rgb(224, 83, 1); color: white;' : ''}">${p}</a>`;
+          li.innerHTML = <a class="page-link ${p === current ? 'active' : ''}" href="#" style="${p === current ? 'background-color: rgb(224, 83, 1); color: white;' : ''}">${p}</a>;
           li.addEventListener('click', (e) => {
             e.preventDefault();
             state.page = p;
@@ -575,7 +574,7 @@
  // Next button
         const nextLi = document.createElement('li');
         nextLi.className = 'page-item' + (json.current_page >= last ? ' disabled' : '');
-        nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
+        nextLi.innerHTML = <a class="page-link" href="#">Next</a>;
         paginationContainer.appendChild(nextLi);
         if (json.current_page < last) {
           nextLi.addEventListener('click', (e) => {
@@ -601,7 +600,7 @@
         e.preventDefault();
         const id = e.currentTarget.dataset.id;
         try {
-          const res = await fetch(`${ENDPOINT_BASE}/${id}`, {
+          const res = await fetch(${ENDPOINT_BASE}/${id}, {
             headers: { 'Accept': 'application/json' }
           });
           const json = await res.json();
@@ -664,7 +663,7 @@
         e.preventDefault();
         const id = e.currentTarget.dataset.id;
         try {
-          const res = await fetch(`${ENDPOINT_BASE}/${id}`, {
+          const res = await fetch(${ENDPOINT_BASE}/${id}, {
             headers: { 'Accept': 'application/json' }
           });
           const json = await res.json();
@@ -694,10 +693,10 @@
         const currentStatus = e.currentTarget.dataset.status;
         const action = currentStatus === 'active' ? 'deactivate' : 'activate';
         
-        if (!confirm(`Are you sure you want to ${action} this scholarship?`)) return;
+        if (!confirm(Are you sure you want to ${action} this scholarship?)) return;
         
         try {
-          const res = await fetch(`${ENDPOINT_BASE}/${id}/toggle-status`, {  // ✅ Changed from /toggle to /toggle-status
+          const res = await fetch(${ENDPOINT_BASE}/${id}/toggle-status, {  // ✅ Changed from /toggle to /toggle-status
             method: 'PATCH',  // ✅ Changed from POST to PATCH
             headers: {
               'X-CSRF-TOKEN': csrfToken,
@@ -707,7 +706,7 @@
           const json = await res.json();
           if (!json.success) throw new Error(json.message || 'Toggle failed');
           
-          alert(`Scholarship ${action}d successfully`);
+          alert(Scholarship ${action}d successfully);
           await loadData();
         } catch (err) {
           console.error(err);
@@ -737,7 +736,7 @@
 
         try {
           const method = id ? 'PUT' : 'POST';
-          const url = id ? `${ENDPOINT_BASE}/${id}` : `${ENDPOINT_BASE}/`;
+          const url = id ? ${ENDPOINT_BASE}/${id} : ${ENDPOINT_BASE}/;
           
           const res = await fetch(url, {
             method,

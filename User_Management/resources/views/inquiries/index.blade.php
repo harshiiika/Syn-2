@@ -1115,49 +1115,54 @@
             }
         }
 
-        function renderTable(data) {
-            console.log('Rendering table with data:', data);
-            
-            if (!data || data.length === 0) {
-                elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No data available</td></tr>';
-                return;
-            }
+function renderTable(data) {
+    console.log('Rendering table with data:', data);
+    
+    if (!data || data.length === 0) {
+        elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No data available</td></tr>';
+        return;
+    }
 
-            elements.tableBody.innerHTML = data.map((item, index) => {
-                const serialNo = (state.page - 1) * state.per_page + index + 1;
-                const id = item._id ? (typeof item._id === 'object' ? item._id.$oid : item._id) : '';
-                
-                console.log('Rendering item:', item, 'ID:', id);
-                
-                return `
-                    <tr>
-                        <td><input type="checkbox" class="row-checkbox" data-id="${id}"></td>
-                        <td>${serialNo}</td>
-                        <td>${escapeHtml(item.student_name || '')}</td>
-                        <td>${escapeHtml(item.father_name || '')}</td>
-                        <td>${escapeHtml(item.father_contact || '')}</td>
-                        <td>${escapeHtml(item.course_name || '')}</td>
-                        <td>${escapeHtml(item.delivery_mode || 'Offline')}</td>
-                        <td>${escapeHtml(item.course_content || 'Class Room Course')}</td>
-                        <td><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span></td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#" onclick="viewInquiry('${id}'); return false;">View</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="editInquiry('${id}'); return false;">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="deleteInquiry('${id}'); return false;">Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
+    elements.tableBody.innerHTML = data.map((item, index) => {
+        const serialNo = (state.page - 1) * state.per_page + index + 1;
+        const id = item._id ? (typeof item._id === 'object' ? item._id.$oid : item._id) : '';
+        
+        console.log('Rendering item:', item, 'ID:', id);
+        
+        return `
+            <tr>
+                <td><input type="checkbox" class="row-checkbox" data-id="${id}"></td>
+                <td>${serialNo}</td>
+                <td>${escapeHtml(item.student_name || '')}</td>
+                <td>${escapeHtml(item.father_name || '')}</td>
+                <td>${escapeHtml(item.father_contact || '')}</td>
+                <td>${escapeHtml(item.course_name || '')}</td>
+                <td>${escapeHtml(item.delivery_mode || 'Offline')}</td>
+                <td>${escapeHtml(item.course_content || 'Class Room Course')}</td>
+                <td><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span></td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/inquiries/${id}">View</a></li>
+                            <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="deleteInquiry('${id}'); return false;">Delete</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
         function renderPagination(json) {
             const currentPage = json.current_page || 1;
             const lastPage = json.last_page || 1;

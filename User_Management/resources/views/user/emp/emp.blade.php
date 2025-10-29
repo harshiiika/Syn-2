@@ -422,41 +422,49 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </span>
               </td>
 
-              <td>
-                <div class="dropdown">
-                 
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-                      data-bs-toggle="dropdown" aria-expanded="false">
+             <td>
+  <div class="dropdown">
+    <button class="btn btn-sm btn-outline-secondary" type="button" 
+            id="dropdownMenu{{ $loop->index }}" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
       <i class="fas fa-ellipsis-v"></i>
     </button>
-                  <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-                    <li>
-                      <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $user->_id }}">
-                        View Details
-                      </button>
-                    </li>
-                    <li>
-                      <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->_id }}">
-                        Edit Details
-                      </button>
-                    </li>
-                    <li>
-                      <button class="dropdown-item" data-bs-toggle="modal"
-                        data-bs-target="#passwordModal{{ $user->_id }}">
-                        Password Update
-                      </button>
-                    </li>
-                    <li>
-                      <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item">
-                          {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
-                        </button>
-                      </form>
-                    </li>
-                  </ul>
-                </div>
-              </td>
+    <ul class="dropdown-menu dropdown-menu-end" 
+        aria-labelledby="dropdownMenu{{ $loop->index }}">
+      <li>
+        <a class="dropdown-item" href="#" 
+           data-bs-toggle="modal"
+           data-bs-target="#viewModal{{ $user->_id }}">
+          <i class="fas fa-eye me-2"></i>View Details
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#" 
+           data-bs-toggle="modal"
+           data-bs-target="#editModal{{ $user->_id }}">
+          <i class="fas fa-edit me-2"></i>Edit Details
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#" 
+           data-bs-toggle="modal"
+           data-bs-target="#passwordModal{{ $user->_id }}">
+          <i class="fas fa-key me-2"></i>Password Update
+        </a>
+      </li>
+      <li>
+        <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}" style="display: inline;">
+          @csrf
+          <button type="submit" class="dropdown-item">
+            <i class="fas fa-toggle-{{ $user->status === 'Active' ? 'off' : 'on' }} me-2"></i>
+            {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+          </button>
+        </form>
+      </li>
+    </ul>
+  </div>
+</td>
             </tr>
           @endforeach
 
@@ -643,106 +651,82 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </div>
   <!-- Modal Form with fillables for add employee starts here -->
 
-  <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-      <div class="modal-content" id="content-one">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Employee</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form method="POST" action="{{ route('users.add') }}">
-            @csrf
-            <div class="mb-3">
-              <label for="basic-url" class="form-label">Name</label>
-              <div class="input-group">
-                <input type="text" name="name" class="form-control" id="basic-url"
-                  aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Your Name" required>
-              </div>
-              <div class="mb-3">
-                <label for="basic-url" class="form-label">Mobile No.</label>
-                <div class="input-group">
-                  <input type="tel" name="mobileNumber" class="form-control" id="basic-url"
-                    aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Your Mobile Number" required>
-                </div>
+<div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content" id="content-one">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Employee</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{ route('users.add') }}" id="addEmployeeForm">
+          @csrf
+          <div class="mb-3">
+            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" required>
+            <span class="text-danger" id="error-name"></span>
+          </div>
 
-                <div class="mb-3">
-                  <label for="basic-url" class="form-label">Alternate Mobile No.</label>
-                  <div class="input-group">
-                    <input type="tel" name="alternateNumber" class="form-control" id="basic-url"
-                      aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Your Alternate Mobile Number"
-                      required>
-                  </div>
+          <div class="mb-3">
+            <label for="mobileNumber" class="form-label">Mobile No. <span class="text-danger">*</span></label>
+            <input type="tel" name="mobileNumber" class="form-control" placeholder="Enter Your Mobile Number" required>
+            <span class="text-danger" id="error-mobileNumber"></span>
+          </div>
 
-                  <div class="mb-3">
-                    <label for="basic-url" class="form-label">Email</label>
-                    <div class="input-group">
-                      <input type="email" name="email" class="form-control" id="basic-url"
-                        aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Your Email id" required>
-                    </div>
+          <div class="mb-3">
+            <label for="alternateNumber" class="form-label">Alternate Mobile No.</label>
+            <input type="tel" name="alternateNumber" class="form-control" placeholder="Enter Your Alternate Mobile Number">
+          </div>
 
-                    <div class="mb-3">
-                      <label for="basic-url" class="form-label">Select Branch</label>
-                      <div class="input-group">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+            <input type="email" name="email" class="form-control" placeholder="Enter Your Email" required>
+            <span class="text-danger" id="error-email"></span>
+          </div>
 
-                        <div class="dropdown">
-                          <select class="form-select" name="branch" required>
-                            <option selected disabled>Select Branch</option>
-                            <option value="Bikaner ">Bikaner</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
+          <div class="mb-3">
+            <label for="branch" class="form-label">Select Branch <span class="text-danger">*</span></label>
+            <select class="form-select" name="branch" required>
+              <option selected disabled>Select Branch</option>
+              <option value="Bikaner">Bikaner</option>
+            </select>
+          </div>
 
-                    <div class="mb-3">
-                      <label for="basic-url" class="form-label">Select Department</label>
-                      <div class="input-group">
+          <div class="mb-3">
+            <label for="departments" class="form-label">Select Department <span class="text-danger">*</span></label>
+            <select class="form-select" name="departments[]" required>
+              <option selected disabled>Select Department</option>
+              <option value="Front Office">Front Office</option>
+              <option value="Back Office">Back Office</option>
+              <option value="Office">Office</option>
+              <option value="Test Management">Test Management</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
 
-                        <div class="dropdown">
-                          <select class="form-select" name="departments[]" required>
-                            <option selected disabled>Select Department</option>
-                            <option value="Front Office">Front Office</option>
-                            <option value="Back Office">Back Office</option>
-                            <option value="Office">Office</option>
-                            <option value="Test Management">Test Management</option>
-                            <option value="Admin">Admin</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+            <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
+            <span class="text-danger" id="error-password"></span>
+          </div>
 
-                    <div class="mb-3">
-                      <label for="basic-url" class="form-label">Password</label>
-                      <div class="input-group">
-                        <input type="password" name="password" class="form-control" id="basic-url"
-                          aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Password" required>
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="basic-url" class="form-label">Confirm Password</label>
-                      <div class="input-group">
-                        <input type="password" name="confirm_password" class="form-control" id="basic-url"
-                          aria-describedby="basic-addon3 basic-addon4" placeholder="Enter Confirm Password" required>
-                        @error('confirm_password')
-                          <div class="text-danger">{{ $message }}</div>
-                        @enderror
+          <div class="mb-3">
+            <label for="confirm_password" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+            <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+            <span class="text-danger" id="error-confirm_password"></span>
+          </div>
 
-                      </div>
-                    </div>
-                    <div class="input-group mb-3">
-                      <input type="file" class="form-control" id="inputGroupFile01">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer" id="footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="submit" id="submit" class="btn btn-primary" id="add">Submit</button>
-            </div>
-        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
+</div>
+
+    <!-- Upload Modal -->
     <div class="modal fade" id="exampleModalTwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
 
@@ -771,60 +755,47 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </div>
 
 </body>
-<!-- External JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <!-- Bootstrap Bundle JS (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+<!-- Custom JS -->
 <script src="{{asset('js/emp.js')}}"></script>
 
-
-<!-- AJAX Script: Handles dynamic user addition without page reload -->
+<!-- AJAX Script -->
 <script>
-  // Event handler for add user form submission
-  // Ajax for dynamic user addition without page reload
-  $('#addUserForm').on('submit', function (e) {
-    // Prevent default form submission behavior
+$('#addEmployeeForm').on('submit', function (e) {
     e.preventDefault();
-    // Clear previous error messages
-    $('.text-danger').text('');
+    $('.text-danger').text(''); // Clear errors
 
-
-    // AJAX POST request to add user
     $.ajax({
-      url: "{{ route('users.add') }}",
-      method: 'POST',
-      data: $(this).serialize(),
-      success: function (response) {
-        // On successful user addition
-        if (response.status === 'success') {
-          // Close the modal
-          $('#addUserModal').modal('hide');
-          // Reset form fields
-          $('#addUserForm')[0].reset();
-
-          // Dynamically append new user row to table without page reload
-          // Append user to table
-          $('#users-table tbody').append(`
-                    <tr>
-                        <td>${response.user.name}</td>
-                        <td>${response.user.email}</td>
-                        <td>${response.user.phone}</td>
-                    </tr>
-                `);
+        url: "{{ route('users.add') }}",
+        method: 'POST',
+        data: $(this).serialize(),
+        success: function (response) {
+            // Close modal
+            $('#exampleModalOne').modal('hide');
+            
+            // Reset form
+            $('#addEmployeeForm')[0].reset();
+            
+            // Reload page to show new employee
+            window.location.href = "{{ route('user.emp.emp') }}";
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
+                for (let field in errors) {
+                    $('#error-' + field).text(errors[field][0]);
+                }
+            } else {
+                alert('An error occurred. Please try again.');
+            }
         }
-      },
-      error: function (xhr) {
-        // Handle validation errors (HTTP 422)
-        if (xhr.status === 422) {
-          const errors = xhr.responseJSON.errors;
-          // Display error messages for each field
-          for (let field in errors) {
-            $(#error - ${ field }).text(errors[field][0]);
-          }
-        }
-      }
     });
-  });
+});
 </script>
 
 </html>
