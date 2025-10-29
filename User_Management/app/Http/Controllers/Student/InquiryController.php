@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Master\Scholarship;
 use App\Models\Master\FeesMaster;
 
+
 class InquiryController extends Controller
 {
     /**
@@ -430,10 +431,29 @@ public function view($id)
         
         \Log::info('View inquiry data:', $inquiry->toArray());
         
-        return view('inquiries.view', compact('inquiry'));
+        // Prepare fees and scholarship data
+        $feesData = [
+            'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
+            'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
+            'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
+            'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
+            'discount_percentage' => $inquiry->discount_percentage ?? 0,
+            'discounted_fee' => $inquiry->discounted_fee ?? 0,
+            'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
+            'total_fees' => $inquiry->total_fees ?? 0,
+            'gst_amount' => $inquiry->gst_amount ?? 0,
+            'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax ?? 0,
+            'single_installment_amount' => $inquiry->single_installment_amount ?? 0,
+            'installment_1' => $inquiry->installment_1 ?? 0,
+            'installment_2' => $inquiry->installment_2 ?? 0,
+            'installment_3' => $inquiry->installment_3 ?? 0,
+        ];
+        
+        return view('inquiries.view', compact('inquiry', 'feesData'));
     } catch (\Exception $e) {
         \Log::error('Failed to load inquiry details: ' . $e->getMessage());
-        return redirect()->route('inquiries.index')->with('error', 'Unable to load inquiry details.');
+        return redirect()->route('inquiries.index')
+            ->with('error', 'Unable to load inquiry details.');
     }
 }
 
@@ -443,14 +463,14 @@ public function view($id)
 public function showScholarshipDetails($id)
 {
     try {
+        \Log::info('=== SCHOLARSHIP PAGE LOADING ===', ['inquiry_id' => $id]);
+        
         $inquiry = Inquiry::findOrFail($id);
         
-        \Log::info('Scholarship Details Page - Inquiry Data:', [
+        \Log::info('Inquiry found:', [
             'id' => $inquiry->_id,
+            'student_name' => $inquiry->student_name,
             'course_name' => $inquiry->course_name,
-            'scholarshipTest' => $inquiry->scholarshipTest ?? 'No',
-            'lastBoardPercentage' => $inquiry->lastBoardPercentage ?? null,
-            'competitionExam' => $inquiry->competitionExam ?? 'No',
         ]);
         
         // Course fees mapping
@@ -470,19 +490,144 @@ public function showScholarshipDetails($id)
         $courseName = $inquiry->course_name ?? '';
         $totalFeeBeforeDiscount = $courseFees[$courseName] ?? 88000;
 
+        \Log::info('Base fee calculated:', [
+            'course_name' => $courseName,
+            'total_fee' => $totalFeeBeforeDiscount
+        ]);
+
         // Initialize scholarship variables
         $eligibleForScholarship = false;
         $scholarship = null;
         $discountPercentage = 0;
         $scholarshipDiscountedFees = $totalFeeBeforeDiscount;
 
-        // Check eligibility: Scholarship Test OR Board >= 75% OR Competition Exam
+        // Check eligibility
         if (($inquiry->scholarshipTest === 'Yes') || 
             ($inquiry->lastBoardPercentage && $inquiry->lastBoardPercentage >= 75) ||
             ($inquiry->competitionExam === 'Yes')) {
             
+            \Log::info('Student is eligible for scholarship');
             $eligibleForScholarship = true;
 
+            // Priority 1: Scholarship Test
+            if ($inquiry->scholarshipTest === 'Yes') {
+                \Log::info('Checking Test Based scholarship');
+                $scholarship = Scholarship::where('scholarship_type', 'Test Based')
+                    ->where('is_active', true)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
+            }
+            
+            // Priority 2: Board Percentage
+            if (!$scholarship && $inquiry->lastBoardPercentage >= 75) {
+                $percentage = $inquiry->lastBoardPercentage;
+                \Log::info('Checking Board scholarship for percentage: ' . $percentage);
+                
+                $scholarship = Scholarship::where('scholarship_type', 'Board Examination Scholarship')
+                    ->where('is_active', true)
+                    ->where('min_percentage', '<=', $percentage)
+                    ->where('max_percentage', '>=', $percentage)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
+            }
+            
+            // Priority 3: Competition Exam
+            if (!$scholarship && $inquiry->competitionExam === 'Yes') {
+                \Log::info('Checking Competition Exam scholarship');
+                $scholarship = \App\Models\Master\Scholarship::where('scholarship_type', 'Competition Exam Scholarship')
+                    ->where('is_active', true)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
+            }
+
+            // Calculate discount if scholarship found
+            if ($scholarship) {
+                \Log::info('Scholarship found:', [
+                    'name' => $scholarship->scholarship_name,
+                    'discount' => $scholarship->discount_percentage
+                ]);
+                
+                $discountPercentage = $scholarship->discount_percentage ?? 0;
+                $discountAmount = ($totalFeeBeforeDiscount * $discountPercentage) / 100;
+                $scholarshipDiscountedFees = $totalFeeBeforeDiscount - $discountAmount;
+            } else {
+                \Log::warning('No matching scholarship found');
+            }
+        } else {
+            \Log::info('Student is NOT eligible for scholarship');
+        }
+
+        // Final fees
+        $finalFees = $scholarshipDiscountedFees;
+        
+        // ADD THIS LINE - Create alias for backward compatibility
+        $discountedFees = $scholarshipDiscountedFees;
+
+        \Log::info('=== SCHOLARSHIP PAGE DATA READY ===', [
+            'eligible' => $eligibleForScholarship,
+            'discount_percentage' => $discountPercentage,
+            'final_fees' => $finalFees
+        ]);
+
+        return view('inquiries.scholarship-details', compact(
+            'inquiry',
+            'eligibleForScholarship',
+            'scholarship',
+            'totalFeeBeforeDiscount',
+            'discountPercentage',
+            'scholarshipDiscountedFees',
+            'discountedFees',  // ADD THIS
+            'finalFees'
+        ));
+
+    } catch (\Exception $e) {
+        \Log::error('=== SCHOLARSHIP PAGE ERROR ===');
+        \Log::error('Error message: ' . $e->getMessage());
+        \Log::error('File: ' . $e->getFile() . ':' . $e->getLine());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        // Go back to edit page with error
+        return redirect()->route('inquiries.edit', $id)
+            ->with('error', 'Error loading scholarship details: ' . $e->getMessage());
+    }
+}
+
+    /**
+     * Update scholarship and fees information
+     */
+public function updateScholarshipDetails(Request $request, $id)
+{
+    try {
+        \Log::info('=== SCHOLARSHIP UPDATE START ===', ['inquiry_id' => $id]);
+        
+        $inquiry = Inquiry::findOrFail($id);
+        
+        // Validate the request
+        $validated = $request->validate([
+            'total_fee_before_discount' => 'required|numeric',
+            'scholarship_discount_percentage' => 'required|numeric|min:0|max:100',
+            'scholarship_discounted_fees' => 'required|numeric',
+            'final_fees' => 'required|numeric',
+            'add_discretionary_discount' => 'required|in:Yes,No',
+            'discretionary_discount_type' => 'nullable|in:percentage,fixed',
+            'discretionary_discount_value' => 'nullable|numeric|min:0',
+            'discretionary_discount_reason' => 'nullable|string',
+        ]);
+
+        // ✅ CRITICAL: Determine scholarship eligibility and name
+        $eligibleForScholarship = 'No';
+        $scholarshipName = 'N/A';
+        
+        // Check if student is eligible for scholarship
+        if (($inquiry->scholarshipTest === 'Yes') || 
+            ($inquiry->lastBoardPercentage && $inquiry->lastBoardPercentage >= 75) ||
+            ($inquiry->competitionExam === 'Yes')) {
+            
+            $eligibleForScholarship = 'Yes';
+            
+            // Find the scholarship that was applied
+            $scholarship = null;
+            
             // Priority 1: Scholarship Test
             if ($inquiry->scholarshipTest === 'Yes') {
                 $scholarship = Scholarship::where('scholarship_type', 'Test Based')
@@ -494,7 +639,6 @@ public function showScholarshipDetails($id)
             // Priority 2: Board Percentage
             if (!$scholarship && $inquiry->lastBoardPercentage >= 75) {
                 $percentage = $inquiry->lastBoardPercentage;
-                
                 $scholarship = Scholarship::where('scholarship_type', 'Board Examination Scholarship')
                     ->where('is_active', true)
                     ->where('min_percentage', '<=', $percentage)
@@ -510,167 +654,78 @@ public function showScholarshipDetails($id)
                     ->orderBy('discount_percentage', 'desc')
                     ->first();
             }
-
-            // Calculate discount if scholarship found
+            
+            // Set scholarship name if found
             if ($scholarship) {
-                $discountPercentage = $scholarship->discount_percentage ?? 0;
-                $discountAmount = ($totalFeeBeforeDiscount * $discountPercentage) / 100;
-                $scholarshipDiscountedFees = $totalFeeBeforeDiscount - $discountAmount;
+                $scholarshipName = $scholarship->scholarship_name;
             }
         }
 
-        // Final fees (before discretionary discount)
-        $finalFees = $scholarshipDiscountedFees;
-
-        \Log::info('Scholarship Calculation Results:', [
-            'eligibleForScholarship' => $eligibleForScholarship,
-            'scholarship_found' => $scholarship ? true : false,
-            'discountPercentage' => $discountPercentage,
-            'totalFeeBeforeDiscount' => $totalFeeBeforeDiscount,
-            'scholarshipDiscountedFees' => $scholarshipDiscountedFees,
-        ]);
-
-        return view('inquiries.scholarship-details', compact(
-            'inquiry',
-            'eligibleForScholarship',
-            'scholarship',
-            'totalFeeBeforeDiscount',
-            'discountPercentage',
-            'scholarshipDiscountedFees',
-            'finalFees'
-        ));
-
-    } catch (\Exception $e) {
-        \Log::error('Scholarship details error: ' . $e->getMessage());
-        \Log::error('Stack trace: ' . $e->getTraceAsString());
-return redirect()->route('inquiries.scholarship.show', ['id' => $id])
-            ->with('error', 'Error loading scholarship details: ' . $e->getMessage());
-    }
-}
-
-    /**
-     * Update scholarship and fees information
-     */
-   public function updateScholarshipDetails(Request $request, $id)
-{
-    try {
-        $inquiry = Inquiry::findOrFail($id);
-
-        // Validate discretionary discount
-        if ($request->add_discretionary_discount === 'Yes') {
-            $request->validate([
-                'discretionary_discount_type' => 'required|in:percentage,fixed',
-                'discretionary_discount_value' => 'required|numeric|min:0',
-                'discretionary_discount_reason' => 'required|string|max:500',
-            ]);
-
-            // Validate percentage <= 100%
-            if ($request->discretionary_discount_type === 'percentage' && 
-                $request->discretionary_discount_value > 100) {
-                return back()->with('error', 'Discount percentage cannot exceed 100%');
-            }
-
-            // Validate fixed amount <= discounted fees
-            if ($request->discretionary_discount_type === 'fixed' && 
-                $request->discretionary_discount_value > $request->scholarship_discounted_fees) {
-                return back()->with('error', 'Discount amount cannot exceed the discounted fees');
-            }
-        }
-
-        // Prepare update data
-        $updateData = [
-            'total_fee_before_discount' => $request->total_fee_before_discount,
-            'scholarship_discount_percentage' => $request->scholarship_discount_percentage ?? 0,
-            'scholarship_discounted_fees' => $request->scholarship_discounted_fees,
-            'final_fees' => $request->final_fees,
-            'eligible_for_scholarship' => $request->scholarship_discount_percentage > 0,
-        ];
-
-        // Handle discretionary discount
-        if ($request->add_discretionary_discount === 'Yes') {
-            $updateData['has_discretionary_discount'] = true;
-            $updateData['discretionary_discount_type'] = $request->discretionary_discount_type;
-            $updateData['discretionary_discount_value'] = $request->discretionary_discount_value;
-            $updateData['discretionary_discount_reason'] = $request->discretionary_discount_reason;
-        } else {
-            $updateData['has_discretionary_discount'] = false;
-            $updateData['discretionary_discount_type'] = null;
-            $updateData['discretionary_discount_value'] = null;
-            $updateData['discretionary_discount_reason'] = null;
-        }
-
-        // Update inquiry
-        $inquiry->update($updateData);
-
-        // Now create student record and move to onboarding
-        $student = \App\Models\Student\Student::create([
-            'name' => $inquiry->student_name,
-            'father' => $inquiry->father_name,
-            'mother' => $inquiry->mother,
-            'dob' => $inquiry->dob,
-            'mobileNumber' => $inquiry->father_contact,
-            'alternateNumber' => $inquiry->father_whatsapp,
-            'studentContact' => $inquiry->student_contact,
-            'email' => $inquiry->student_contact ?? $inquiry->student_name . '@temp.com',
-            
-            // Address
-            'state' => $inquiry->state,
-            'city' => $inquiry->city,
-            'pinCode' => $inquiry->pinCode,
-            'address' => $inquiry->address,
-            
-            // Category & Background
-            'category' => $inquiry->category,
-            'gender' => $inquiry->gender,
-            'economicWeakerSection' => $inquiry->economicWeakerSection ?? 'No',
-            'armyPoliceBackground' => $inquiry->armyPoliceBackground ?? 'No',
-            'speciallyAbled' => $inquiry->speciallyAbled ?? 'No',
-            'belongToOtherCity' => $inquiry->belongToOtherCity ?? 'No',
-            
-            // Course Details
-            'courseType' => $inquiry->courseType,
-            'courseName' => $inquiry->course_name,
-            'deliveryMode' => $inquiry->delivery_mode,
-            'medium' => $inquiry->medium,
-            'board' => $inquiry->board,
-            'courseContent' => $inquiry->course_content,
-            
-            // Fees Details
-            'total_fees' => $inquiry->final_fees,
-            'paid_fees' => 0,
-            'remaining_fees' => $inquiry->final_fees,
-            
-            // Scholarship Details (if applicable)
-            'scholarship_discount' => $inquiry->scholarship_discount_percentage ?? 0,
-            'discretionary_discount' => $inquiry->has_discretionary_discount ? $inquiry->discretionary_discount_value : 0,
-            
-            // Status
-            'status' => 'pending_fees',
-            'fee_status' => 'pending',
-            'admission_date' => now(),
-            'session' => session('current_session', '2025-2026'),
-        ]);
-
-        // Mark inquiry as converted
-        $inquiry->update(['status' => 'converted']);
-
-        \Log::info('Student created from inquiry', [
-            'student_id' => $student->_id,
-            'inquiry_id' => $inquiry->_id,
-            'total_fees' => $inquiry->final_fees,
-            'scholarship_discount' => $inquiry->scholarship_discount_percentage,
-        ]);
-
-        // Redirect to pending fees page
-        return redirect()->route('student.pendingfees.pending')
-            ->with('success', 'Student onboarded successfully! Pending fees: ₹' . number_format($inquiry->final_fees, 2));
-
-    } catch (\Exception $e) {
-        \Log::error('Scholarship update error: ' . $e->getMessage());
-        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        // ✅ Update inquiry with scholarship eligibility and name
+        $inquiry->eligible_for_scholarship = $eligibleForScholarship;
+        $inquiry->scholarship_name = $scholarshipName;
+        $inquiry->total_fee_before_discount = $validated['total_fee_before_discount'];
+        $inquiry->discount_percentage = $validated['scholarship_discount_percentage'];
+        $inquiry->discounted_fee = $validated['scholarship_discounted_fees'];
         
-        return back()
-            ->with('error', 'Error updating scholarship details: ' . $e->getMessage())
+        // Save discretionary discount details if applicable
+        if ($validated['add_discretionary_discount'] === 'Yes') {
+            $inquiry->discretionary_discount = 'Yes';
+            $inquiry->discretionary_discount_type = $request->discretionary_discount_type;
+            $inquiry->discretionary_discount_value = $request->discretionary_discount_value;
+            $inquiry->discretionary_discount_reason = $request->discretionary_discount_reason;
+        } else {
+            $inquiry->discretionary_discount = 'No';
+            $inquiry->discretionary_discount_type = null;
+            $inquiry->discretionary_discount_value = null;
+            $inquiry->discretionary_discount_reason = null;
+        }
+        
+        // Calculate and store fees breakdown
+        $finalFees = $validated['final_fees'];
+        
+        // GST calculation (18%)
+        $gstAmount = ($finalFees * 18) / 100;
+        $totalFeesInclusiveTax = $finalFees + $gstAmount;
+        
+        // Installment calculations
+        $singleInstallment = $totalFeesInclusiveTax;
+        $installment1 = round($totalFeesInclusiveTax * 0.40, 2); // 40%
+        $installment2 = round($totalFeesInclusiveTax * 0.30, 2); // 30%
+        $installment3 = round($totalFeesInclusiveTax * 0.30, 2); // 30%
+        
+        // Store fees breakdown
+        $inquiry->fees_breakup = 'Class room course (with test series & study material)';
+        $inquiry->total_fees = $finalFees;
+        $inquiry->gst_amount = $gstAmount;
+        $inquiry->total_fees_inclusive_tax = $totalFeesInclusiveTax;
+        $inquiry->single_installment_amount = $singleInstallment;
+        $inquiry->installment_1 = $installment1;
+        $inquiry->installment_2 = $installment2;
+        $inquiry->installment_3 = $installment3;
+        $inquiry->fees_calculated_at = now();
+        
+        $inquiry->save();
+        
+        \Log::info('Scholarship data saved successfully', [
+            'inquiry_id' => $id,
+            'eligible_for_scholarship' => $eligibleForScholarship,
+            'scholarship_name' => $scholarshipName,
+            'final_fees' => $finalFees,
+            'total_with_tax' => $totalFeesInclusiveTax
+        ]);
+        
+        // Redirect to fees and batches details page
+        return redirect()->route('inquiries.fees-batches.show', $id)
+            ->with('success', 'Scholarship details saved successfully!');
+            
+    } catch (\Exception $e) {
+        \Log::error('=== SCHOLARSHIP UPDATE ERROR ===');
+        \Log::error('Error: ' . $e->getMessage());
+        \Log::error('Trace: ' . $e->getTraceAsString());
+        
+        return redirect()->back()
+            ->with('error', 'Error saving scholarship details: ' . $e->getMessage())
             ->withInput();
     }
 }
@@ -708,12 +763,12 @@ public function update(Request $request, $id)
         'economicWeakerSection' => 'nullable|in:Yes,No',
         'armyPoliceBackground' => 'nullable|in:Yes,No',
         'speciallyAbled' => 'nullable|in:Yes,No',
-        'courseType' => 'nullable|string|max:255',  // Changed to nullable
-        'courseName' => 'nullable|string|max:255',  // Changed to nullable
-        'deliveryMode' => 'nullable|in:Offline,Online,Hybrid',  // Changed to nullable
-        'medium' => 'nullable|in:English,Hindi',  // Changed to nullable
-        'board' => 'nullable|in:CBSE,RBSE,ICSE',  // Changed to nullable
-        'courseContent' => 'nullable|string|max:255',  // Changed to nullable
+        'courseType' => 'nullable|string|max:255',
+        'courseName' => 'nullable|string|max:255',
+        'deliveryMode' => 'nullable|in:Offline,Online,Hybrid',
+        'medium' => 'nullable|in:English,Hindi',
+        'board' => 'nullable|in:CBSE,RBSE,ICSE',
+        'courseContent' => 'nullable|string|max:255',
         'isRepeater' => 'nullable|in:Yes,No',
         'scholarshipTest' => 'nullable|in:Yes,No',
         'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
@@ -727,7 +782,7 @@ public function update(Request $request, $id)
         
         \Log::info('INQUIRY FOUND', ['inquiry_id' => $inquiry->_id]);
         
-        // Map form fields to database fields - save whatever is provided
+        // Map form fields to database fields
         $updateData = [
             'student_name' => $validatedData['name'],
             'father_name' => $validatedData['father'],
@@ -768,17 +823,61 @@ public function update(Request $request, $id)
             'updated_data' => $updateData
         ]);
         
-        // ALWAYS redirect to scholarship details page regardless of form completion
-return redirect()->route('inquiries.scholarship.show', ['id' => $id])
+        // ✅ FIX: Redirect to scholarship page WITHOUT try-catch that causes loop
+        return redirect()->route('inquiries.scholarship.show', $id)
             ->with('success', 'Inquiry saved! Please review scholarship details.');
 
     } catch (\Exception $e) {
         \Log::error('ERROR IN UPDATE: ' . $e->getMessage());
         \Log::error('Stack trace: ' . $e->getTraceAsString());
         
-        // Even on error, try to redirect to scholarship page with error message
-return redirect()->route('inquiries.scholarship.show', ['id' => $id])
-            ->with('error', 'Some data may not have been saved: ' . $e->getMessage());
+        // ✅ FIX: On error, go back to edit page, NOT scholarship page
+        return redirect()->route('inquiries.edit', $id)
+            ->with('error', 'Error updating inquiry: ' . $e->getMessage())
+            ->withInput();
+    }
+}
+public function showFeesBatchesDetails($id)
+{
+    try {
+        \Log::info('=== FEES & BATCHES PAGE LOADING ===', ['inquiry_id' => $id]);
+        
+        $inquiry = Inquiry::findOrFail($id);
+        
+        // Check if fees have been calculated
+        if (!$inquiry->total_fees || !$inquiry->fees_calculated_at) {
+            return redirect()->route('inquiries.scholarship.show', $id)
+                ->with('error', 'Please complete the scholarship details first.');
+        }
+        
+        // Prepare data for display
+        $feesData = [
+            'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
+            'scholarship_name' => $inquiry->scholarship_name ?? '-',
+            'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
+            'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
+            'discount_percentage' => $inquiry->discount_percentage ?? 0,
+            'discounted_fee' => $inquiry->discounted_fee ?? 0,
+            'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
+            'total_fees' => $inquiry->total_fees,
+            'gst_amount' => $inquiry->gst_amount,
+            'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax,
+            'single_installment_amount' => $inquiry->single_installment_amount,
+            'installment_1' => $inquiry->installment_1,
+            'installment_2' => $inquiry->installment_2,
+            'installment_3' => $inquiry->installment_3,
+        ];
+        
+        \Log::info('Fees data loaded', $feesData);
+        
+        return view('inquiries.fees-batches-details', compact('inquiry', 'feesData'));
+        
+    } catch (\Exception $e) {
+        \Log::error('=== FEES & BATCHES PAGE ERROR ===');
+        \Log::error('Error: ' . $e->getMessage());
+        
+        return redirect()->route('inquiries.edit', $id)
+            ->with('error', 'Error loading fees details: ' . $e->getMessage());
     }
 }
 }

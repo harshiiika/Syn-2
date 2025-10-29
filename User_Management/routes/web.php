@@ -272,3 +272,11 @@ Route::put('/inquiries/{id}/scholarship', [InquiryController::class, 'updateScho
 Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
 Route::get('/inquiries/{id}/edit', [InquiryController::class, 'edit'])->name('inquiries.edit');
 Route::put('/inquiries/{id}', [InquiryController::class, 'update'])->name('inquiries.update');
+
+// Show fees and batches details 
+Route::get('/inquiries/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])
+    ->name('inquiries.fees-batches.show');
+
+// Update fees and batches (if you need to save batch selection later)
+Route::put('/inquiries/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])
+    ->name('inquiries.fees-batches.update');
