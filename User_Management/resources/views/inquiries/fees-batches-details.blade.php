@@ -1,101 +1,141 @@
-{{--
-
-PENDING INQUIRIES BLADE FILE - CODE SUMMARY
-
-
-LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title, 
-           external CSS (Font Awesome, custom emp.css, Bootstrap)
-
-LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
-            notification bell, user dropdown menu with profile and login options
-
-LINE 50-51: Main container div starts
-
-LINE 52-233: Left Sidebar Navigation
-  - LINE 52-58: Sidebar container and admin info display
-  - LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
-    * LINE 61-75: User Management (Employee, Batches Assignment)
-    * LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
-    * LINE 100-114: Session Management (Session, Calendar, Student Migrate)
-    * LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
-    * LINE 132-142: Fees Management (Fees Collection)
-    * LINE 143-155: Attendance Management (Student, Employee)
-    * LINE 156-168: Study Material (Units, Dispatch Material)
-    * LINE 169-179: Test Series Management (Test Master)
-    * LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
-
-LINE 234-252: Right Content Area Header
-  - LINE 236-238: Page title "Pending Inquiries"
-  - LINE 239-246: Action buttons
-
-LINE 253-282: Table Controls
-  - LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
-  - LINE 269-274: Search input field with icon
-
-LINE 275-295: Onboarding Table Structure
-  - LINE 276-286: Table headers 
-  - LINE 287-289: Empty tbody tag
-  - LINE 290-294: Comment indicating modal fillables location
-
-LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
-  - Displays user data from database
-  - Status badge with color coding
-  - Action dropdown with 4 options: View, Edit, Transfer, History
-
-LINE 340-342: Comment for options modals section
-
-LINE 344-375: View Modal (foreach loop for each user)
-  - Read-only display of employee details
-  - Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
-
-LINE 377-445: Edit Modal (foreach loop for each user)
-  - LINE 379-382: PHP variables setup for current department and roles
-  - LINE 384-443: Edit form with PUT method
-
-  LINE 481-498: Footer Section
-  - LINE 482-484: Pagination info text
-  - LINE 485-493: Pagination controls (Previous, page numbers, Next)
-
-LINE 499-500: Closing divs for main container
-
-
-LINE 622-624: Closing divs and body tag
-
-LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js, jQuery)
-
-LINE 629-665: AJAX Script for Dynamic User Addition
-  - Prevents page reload on form submit
-  - Handles form validation errors
-  - Appends new user to table without refresh
---}}
-
 <!DOCTYPE html>
-
-
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pending Fees Students</title>
-  <!-- Font Awesome Icons -->
+  <title>Fees and Available Batches Details</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-    <!-- Custom CSS -->
-  <link rel="stylesheet" href="{{asset('css/onboard.css')}}">
-   <!-- Bootstrap 5.3.6 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-
+  <link rel="stylesheet" href="{{asset('css/emp.css')}}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    .container-custom {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .form-section {
+      background: #fff;
+      padding: 30px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .form-section h4 {
+      color: #ff6b35;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #ff6b35;
+      font-weight: 600;
+    }
+    
+    .detail-row {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .detail-label {
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .detail-value {
+      color: #666;
+    }
+    
+    .detail-value.highlight {
+      color: #ff6b35;
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+    
+    .amount-header {
+      color: #ff6b35;
+      font-weight: 600;
+      text-align: right;
+    }
+    
+    .sticky-footer {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      margin-top: 30px;
+      border-radius: 8px;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .btn-back {
+      background: #6c757d;
+      color: white;
+      padding: 12px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-back:hover {
+      background: #5a6268;
+      color: white;
+    }
+    
+    .btn-next {
+      background: #ff6513ff;
+      color: white;
+      padding: 12px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-next:hover {
+      background: #e55a2b;
+      transform: translateY(-2px);
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .page-title {
+      color: #ff6b35;
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Header Section: Contains logo, sidebar toggle, session selector, notifications, and user menu -->
- 
+  <!-- Include your header here -->
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img">
-
-      <!-- Sidebar toggle button -->
+      <img src="{{asset('images/logo.png.jpg')}}" class="img" alt="Logo">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -103,33 +143,31 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <h5>Session:</h5>
         <select>
           <option>2024-2025</option>
-          <option>2026</option>
+          <option>2025-2026</option>
         </select>
       </div>
       <i class="fa-solid fa-bell"></i>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown">
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
         </ul>
       </div>
     </div>
   </div>
   <div class="main-container">
- <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
+    <!-- Include your sidebar here -->
     <div class="left" id="sidebar">
-
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-
-      <!-- Left side bar accordian -->
+      
       <div class="accordion accordion-flush" id="accordionFlushExample">
+        <!-- Same accordion structure as edit page -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -328,175 +366,131 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
       </div>
     </div>
+    <!-- Main Content Area -->
     <div class="right" id="right">
-      <div class="top">
-        <div class="top-text">
+      <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h3 class="page-title">Fees and Available Batches Details</h3>
         </div>
-            <div class="btns">
-               <a href="{{ route('student.student.pending') }}"><button type="button" class="onboardbtn">Pending Fees Students</button></a>
-            </div>
 
-      </div>
-      <div class="whole">
-         <!-- Table controls: entries dropdown and search -->
-        <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                10
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
+        @if(session('success'))
+          <div class="alert alert-success">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>{{ session('success') }}</span>
           </div>
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-        </div>
-        <table class="table table-hover" id="table">
-          <thead>
-            <tr>
-              <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Student Name</th>
-              <th scope="col" id="one">Father Name</th>
-              <th scope="col" id="one">Father Contact No.</th>
-              <th scope="col" id="one">Course Name</th>
-              <th scope="col" id="one">Delivery Mode</th>
-              <th scope="col" id="one">Course Content</th>
-              <th scope="col" id="one">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-            </tr>
-          </tbody>
-<!-- Modal fillables where roles are assigned according to dept automatically -->
+        @endif
 
-@foreach($pendingFees as $index => $pending)
-<tr>
-   <!-- Serial number (index + 1) -->
-  <td>{{ $index + 1 }}</td>
-  <td>{{ $pending->name }}</td>
-  <td>{{ $pending->father }}</td>
-  <td>{{ $pending->mobileNumber ?? '—' }}</td>
-<td>{{ $pending->courseName ?? '—' }}</td>
-<td>{{ $pending->deliveryMode ?? '—' }}</td>
-<td>{{ $pending->courseContent ?? '—' }}</td>
-  <td>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-      <li>
-  <a class="dropdown-item" href="{{ route('student.pendingfees.edit', $pending->_id) }}">Edit</a>
-      </li>
-      <li>
-       <a class="dropdown-item" href="{{ route('student.pendingfees.view', $pending->_id) }}">
-    View Details
-</a>
-      </li>
-      <li>
-        <!-- Updated Pay Fees button -->
-        <a class="dropdown-item" href="{{ route('student.payment.show', $pending->_id) }}">
-        Pay Fees
-        </a>
-      </li>
-      <li>
-        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#historyModal{{ $pending->_id }}">
-        History
-        </button>
-      </li>
-    </ul>
-    </div>
-  </td>
-</tr>
-@endforeach
-        </table>
-      </div>
-      <div class="footer">
-        <div class="left-footer">
-          <p>Showing 1 to 10 of 10 Enteries</p>
+        <!-- Fees Details Section -->
+        <div class="form-section">
+          <h4>Fees and Available Batches Details</h4>
+          
+          <div class="detail-row">
+            <div class="detail-label">Eligible For Scholarship</div>
+            <div class="detail-value">{{ $feesData['eligible_for_scholarship'] }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Name of Scholarship</div>
+            <div class="detail-value">{{ $feesData['scholarship_name'] }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Total Fee Before Discount</div>
+            <div class="detail-value">{{ number_format($feesData['total_fee_before_discount']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Discretionary Discount</div>
+            <div class="detail-value">{{ $feesData['discretionary_discount'] }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Discount Percentage</div>
+            <div class="detail-value">{{ $feesData['discount_percentage'] }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Discounted Fee</div>
+            <div class="detail-value">{{ number_format($feesData['discounted_fee']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Fees Breakup</div>
+            <div class="detail-value amount-header">Amount</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label" style="padding-left: 20px; color: #ff6b35;">
+              {{ $feesData['fees_breakup'] }}
+            </div>
+            <div class="detail-value"></div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Total Fees</div>
+            <div class="detail-value">{{ number_format($feesData['total_fees']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">GST Amount</div>
+            <div class="detail-value">{{ number_format($feesData['gst_amount']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Total Fees inclusive tax</div>
+            <div class="detail-value highlight">{{ number_format($feesData['total_fees_inclusive_tax']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">If Fees Deposited In Single Installment</div>
+            <div class="detail-value highlight">{{ number_format($feesData['single_installment_amount']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">If Fees Deposited In Three Installments</div>
+            <div class="detail-value"></div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Installment 1</div>
+            <div class="detail-value">{{ number_format($feesData['installment_1']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Installment 2</div>
+            <div class="detail-value">{{ number_format($feesData['installment_2']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Installment 3</div>
+            <div class="detail-value">{{ number_format($feesData['installment_3']) }}</div>
+          </div>
         </div>
-        <div class="right-footer">
-          <nav aria-label="...">
-            <ul class="pagination">
-              <li class="page-item"><a href="#" class="page-link" id="pg1">Previous</a></li>
-              <li class="page-item active">
-                <a class="page-link" href="#" aria-current="page" id="pg2">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="/user management/emp/emp2.html" id="pg3">2</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
-            </ul>
-          </nav>
-        </div>
+
+        <!-- Footer with Navigation Buttons -->
+        <div class="sticky-footer">
+  <a href="{{ route('inquiries.scholarship.show', $inquiry->_id) }}" class="btn-back">
+    <i class="fa-solid fa-arrow-left"></i> Back
+  </a>
+  <button type="button" class="btn-next" onclick="proceedToNextStep()">
+    Complete <i class="fa-solid fa-check"></i>
+  </button>
+</div>
+
       </div>
     </div>
   </div>
-  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{asset('js/emp.js')}}"></script>
+  
+  <script>
+     function proceedToNextStep() {
+    // Show success message and redirect to inquiries index
+    window.location.href = "{{ route('inquiries.index') }}";
+  }
+  </script>
+
 </body>
-<!-- External JavaScript Libraries -->
-<!-- Bootstrap Bundle JS (includes Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-<script src="{{asset('js/emp.js')}}"></script>
-
-
-<!-- AJAX Script: Handles dynamic user addition without page reload -->
-<script>
-// Event handler for add user form submission
-  // Ajax for dynamic user addition without page reload
-  $('#addUserForm').on('submit', function (e) {
-    // Prevent default form submission behavior
-    e.preventDefault();
-    // Clear previous error messages
-    $('.text-danger').text('');
-
-
-    // AJAX POST request to add user
-    $.ajax({
-      url: "{{ route('users.add') }}",
-      method: 'POST',
-      data: $(this).serialize(),
-      success: function (response) {
-        // On successful user addition
-        if (response.status === 'success') {
-          // Close the modal
-          $('#addUserModal').modal('hide');
-          // Reset form fields
-          $('#addUserForm')[0].reset();
-
-          // Dynamically append new user row to table without page reload
-          // Append user to table
-          $('#users-table tbody').append(`
-                    <tr>
-                        <td>${response.user.name}</td>
-                        <td>${response.user.email}</td>
-                        <td>${response.user.phone}</td>
-                    </tr>
-                `);
-        }
-      },
-      error: function (xhr) {
-        // Handle validation errors (HTTP 422)
-        if (xhr.status === 422) {
-          const errors = xhr.responseJSON.errors;
-          // Display error messages for each field
-          for (let field in errors) {
-            $(#error-${field}).text(errors[field][0]);
-          }
-        }
-      }
-    });
-  });
-</script>
 </html>

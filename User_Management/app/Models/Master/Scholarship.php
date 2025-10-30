@@ -14,22 +14,33 @@ class Scholarship extends Eloquent
     protected $connection = 'mongodb';
     protected $collection = 'scholarships';
 
-    protected $fillable = [
-        'scholarship_type',
+   protected $fillable = [
         'scholarship_name',
-        'short_name',
+        'scholarship_type', // 'Test Based', 'Board Based', 'Competition Based'
+        'discount_percentage',
+        'min_percentage', // For board-based scholarships
+        'max_percentage', // For board-based scholarships
+        'min_score', // For test-based scholarships
+        'max_score', // For test-based scholarships
         'description',
-        'category',
-        'applicable_for',
-        'status',
-        'created_by',
-        'updated_by',
+        'is_active',
+        'applicable_courses', // Array of course names
+        'valid_from',
+        'valid_to',
+        'created_at',
+        'updated_at'
     ];
 
     protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+        'discount_percentage' => 'float',
+        'min_percentage' => 'float',
+        'max_percentage' => 'float',
+        'min_score' => 'integer',
+        'max_score' => 'integer',
+        'is_active' => 'boolean',
+        'applicable_courses' => 'array',
+        'valid_from' => 'date',
+        'valid_to' => 'date',
     ];
 
     protected $dates = ['deleted_at'];
@@ -120,5 +131,79 @@ class Scholarship extends Eloquent
     protected static function newFactory()
     {
         return \Database\Factories\ScholarshipFactory::new();
+    }
+
+     /**
+     * Check if scholarship is valid for the given date
+     */
+    public function isValidForDate($date = null)
+    {
+        $date = $date ?? now();
+        
+        if (!$this->is_active) {
+            return false;
+        }
+
+        if ($this->valid_from && $date < $this->valid_from) {
+            return false;
+        }
+
+        if ($this->valid_to && $date > $this->valid_to) {
+            return false;
+        }
+
+        return true;
+    }
+
+     /**
+     * Check if scholarship applies to a specific course
+     */
+    public function appliesToCourse($courseName)
+    {
+        if (!$this->applicable_courses || empty($this->applicable_courses)) {
+            return true; // If no courses specified, applies to all
+        }
+
+        return in_array($courseName, $this->applicable_courses);
+    }
+
+    /**
+     * Get scholarship by percentage range
+     */
+    public static function getByPercentage($percentage, $courseName = null)
+    {
+        $query = self::where('scholarship_type', 'Board Based')
+            ->where('is_active', true)
+            ->where('min_percentage', '<=', $percentage)
+            ->where('max_percentage', '>=', $percentage);
+
+        if ($courseName) {
+            $query->where(function($q) use ($courseName) {
+                $q->whereNull('applicable_courses')
+                  ->orWhere('applicable_courses', 'all', [$courseName]);
+            });
+        }
+
+        return $query->orderBy('discount_percentage', 'desc')->first();
+    }
+
+    /**
+     * Get scholarship by test score range
+     */
+    public static function getByTestScore($score, $courseName = null)
+    {
+        $query = self::where('scholarship_type', 'Test Based')
+            ->where('is_active', true)
+            ->where('min_score', '<=', $score)
+            ->where('max_score', '>=', $score);
+
+        if ($courseName) {
+            $query->where(function($q) use ($courseName) {
+                $q->whereNull('applicable_courses')
+                  ->orWhere('applicable_courses', 'all', [$courseName]);
+            });
+        }
+
+        return $query->orderBy('discount_percentage', 'desc')->first();
     }
 }

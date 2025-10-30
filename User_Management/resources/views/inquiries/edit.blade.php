@@ -78,7 +78,7 @@
     }
     
     .btn-save {
-      background: #28a745;
+      background: #ff6513ff;
       color: white;
       padding: 12px 40px;
       border: none;
@@ -87,12 +87,6 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
-    }
-    
-    .btn-save:hover {
-      background: #218838;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     
     .btn-save:disabled {
@@ -375,11 +369,12 @@
        <div class="right" id="right">
       <div class="container-fluid py-4">
         <!-- Page Header -->
-        <div class="page-header">
-          <h1 class="page-title">Update Student</h1>
+        <div class="page-header"> 
           <a href="{{ route('inquiries.index') }}" class="back-btn" style="border: 1px solid #ff6b35; padding: 8px 16px; border-radius: 6px;">
             <i class="fa-solid fa-arrow-left"></i> Back
           </a>
+          <h3 class="page-title" style="color: orangered;">Update Student</h3>
+         
         </div>
 
         <!-- Success Message -->
@@ -727,94 +722,10 @@
     </div>
   </div>
 
-  <!-- Academic Detail Section -->
-  <div class="form-section">
-    <h4>Academic Detail</h4>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Previous Class</label>
-        <select name="previousClass" class="form-select">
-          <option value="">Select Previous Class</option>
-          @php
-            $prevClassValue = old('previousClass', $inquiry->previousClass ?? '');
-          @endphp
-          <option value="6th" {{ $prevClassValue == '6th' ? 'selected' : '' }}>6th</option>
-          <option value="7th" {{ $prevClassValue == '7th' ? 'selected' : '' }}>7th</option>
-          <option value="8th" {{ $prevClassValue == '8th' ? 'selected' : '' }}>8th</option>
-          <option value="9th" {{ $prevClassValue == '9th' ? 'selected' : '' }}>9th</option>
-          <option value="10th" {{ $prevClassValue == '10th' ? 'selected' : '' }}>10th</option>
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label>Previous Medium</label>
-        <select name="previousMedium" class="form-select">
-          <option value="">Select Medium</option>
-          @php
-            $prevMediumValue = old('previousMedium', $inquiry->previousMedium ?? '');
-          @endphp
-          <option value="English" {{ $prevMediumValue == 'English' ? 'selected' : '' }}>English</option>
-          <option value="Hindi" {{ $prevMediumValue == 'Hindi' ? 'selected' : '' }}>Hindi</option>
-        </select>
-      </div>
-      
-      <div class="form-group full-width">
-        <label>Name Of School</label>
-        <input type="text" name="schoolName" class="form-control" 
-               value="{{ old('schoolName', $inquiry->schoolName ?? '') }}">
-      </div>
-      
-      <div class="form-group">
-        <label>Previous Board</label>
-        <select name="previousBoard" class="form-select">
-          <option value="">Select Board</option>
-          @php
-            $prevBoardValue = old('previousBoard', $inquiry->previousBoard ?? '');
-          @endphp
-          <option value="CBSE" {{ $prevBoardValue == 'CBSE' ? 'selected' : '' }}>CBSE</option>
-          <option value="RBSE" {{ $prevBoardValue == 'RBSE' ? 'selected' : '' }}>RBSE</option>
-          <option value="ICSE" {{ $prevBoardValue == 'ICSE' ? 'selected' : '' }}>ICSE</option>
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label>Passing Year</label>
-        <input type="text" name="passingYear" class="form-control" 
-               value="{{ old('passingYear', $inquiry->passingYear ?? '') }}" 
-               maxlength="4" placeholder="YYYY">
-      </div>
-      
-      <div class="form-group">
-        <label>Percentage</label>
-        <input type="number" name="percentage" class="form-control" 
-               value="{{ old('percentage', $inquiry->percentage ?? '') }}" 
-               min="0" max="100" step="0.01">
-      </div>
-    </div>
-  </div>
-
   <!-- Scholarship Eligibility Section -->
   <div class="form-section">
     <h4>Scholarship Eligibility</h4>
     <div class="form-row">
-      <div class="form-group">
-        <label>Is Repeater</label>
-        <div class="radio-group">
-          @php
-            $repeaterValue = old('isRepeater', $inquiry->isRepeater ?? 'No');
-          @endphp
-          <label>
-            <input type="radio" name="isRepeater" value="Yes" 
-                   {{ $repeaterValue == 'Yes' ? 'checked' : '' }}>
-            Yes
-          </label>
-          <label>
-            <input type="radio" name="isRepeater" value="No" 
-                   {{ $repeaterValue == 'No' ? 'checked' : '' }}>
-            No
-          </label>
-        </div>
-      </div>
       
       <div class="form-group">
         <label>Scholarship Test Appeared</label>
@@ -833,13 +744,6 @@
             No
           </label>
         </div>
-      </div>
-      
-      <div class="form-group">
-        <label>Last Board Percentage</label>
-        <input type="number" name="lastBoardPercentage" class="form-control" 
-               value="{{ old('lastBoardPercentage', $inquiry->lastBoardPercentage ?? '') }}" 
-               min="0" max="100" step="0.01">
       </div>
       
       <div class="form-group">
@@ -863,22 +767,10 @@
     </div>
   </div>
 
-  <!-- Batch Allocation Section -->
-  <div class="form-section">
-    <h4>Batch Allocation</h4>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Batch Name</label>
-        <input type="text" name="batchName" class="form-control" 
-               value="{{ old('batchName', $inquiry->batchName ?? '') }}">
-      </div>
-    </div>
-  </div>
-
   <!-- Save Button -->
   <div class="sticky-footer">
     <button type="submit" class="btn-save" id="saveBtn">
-      <i class="fa-solid fa-check"></i> Save Changes
+      Save
     </button>
   </div>
 </form>
@@ -942,8 +834,78 @@ document.addEventListener("DOMContentLoaded", function () {
             courseSelect.appendChild(option);
         });
         
-        console.log('✅ Updated courses for type:', type);
+        console.log(' Updated courses for type:', type);
     }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const courseTypeSelect = document.getElementById("course_type");
+    const courseSelect = document.getElementById("course");
+    const form = document.getElementById("editStudentForm");
+
+    // Remove HTML5 required validation for course fields
+    courseTypeSelect.removeAttribute('required');
+    courseSelect.removeAttribute('required');
+    document.querySelector('[name="deliveryMode"]').removeAttribute('required');
+    document.querySelector('[name="medium"]').removeAttribute('required');
+    document.querySelector('[name="board"]').removeAttribute('required');
+    document.querySelector('[name="courseContent"]').removeAttribute('required');
+
+    const courseOptions = {
+        "Pre-Medical": ["Anthesis 11th NEET", "Momentum 12th NEET", "Dynamic Target NEET"],
+        "Pre-Engineering": ["Impulse 11th IIT", "Intensity 12th IIT", "Thurst Target IIT"],
+        "Pre-Foundation": ["Seedling 10th", "Plumule 9th", "Radicle 8th"]
+    };
+
+    // Get values from server
+    const selectedType = "{{ old('courseType', $inquiry->courseType ?? '') }}";
+    const selectedCourse = "{{ old('courseName', $inquiry->course_name ?? '') }}";
+
+    console.log('🔍 Page load - Course Type:', selectedType, 'Course Name:', selectedCourse);
+
+    // Pre-fill on page load
+    if (selectedType && courseOptions[selectedType]) {
+        updateCourses(selectedType);
+        
+        setTimeout(() => {
+            if (selectedCourse) {
+                courseSelect.value = selectedCourse;
+                console.log('✅ Pre-filled course name:', selectedCourse);
+            }
+        }, 100);
+    }
+
+    courseTypeSelect.addEventListener("change", function () {
+        updateCourses(this.value);
+    });
+
+    function updateCourses(type) {
+        courseSelect.innerHTML = '<option value="">Select Course</option>';
+        
+        if (!type || !courseOptions[type]) {
+            return;
+        }
+
+        courseOptions[type].forEach(course => {
+            const option = document.createElement("option");
+            option.value = course;
+            option.textContent = course;
+            
+            if (course === selectedCourse) {
+                option.selected = true;
+            }
+            
+            courseSelect.appendChild(option);
+        });
+        
+        console.log('📋 Updated courses for type:', type);
+    }
+
+    // Allow form submission even if course fields are empty
+    form.addEventListener('submit', function(e) {
+        console.log('✅ Form submitting - allowing partial data');
+        return true;
+    });
 });
 </script>
 
