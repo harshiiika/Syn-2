@@ -12,7 +12,11 @@ use Illuminate\Support\Facades\DB;
 class OnboardController extends Controller
 {
     /**
+<<<<<<< HEAD
      * Display all onboarded students
+=======
+     * Display all onboarded students (students with status = 'onboarded')
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
      */
     public function index()
     {
@@ -43,24 +47,70 @@ class OnboardController extends Controller
     }
 
     /**
+<<<<<<< HEAD
      * Show single student details
+=======
+     * View onboarded student details with scholarship and fees information
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
      */
     public function show($id)
     {
         try {
             $student = Onboard::findOrFail($id);
+<<<<<<< HEAD
             return view('student.onboard.show', compact('student'));
         } catch (\Exception $e) {
             Log::error('Error showing student: ' . $e->getMessage());
             return back()->with('error', 'Student not found');
+=======
+            
+            Log::info('=== VIEWING ONBOARDED STUDENT DETAILS ===', [
+                'student_id' => $id,
+                'student_name' => $student->name,
+                'has_scholarship_data' => !empty($student->eligible_for_scholarship),
+                'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'NOT SET',
+                'scholarship_name' => $student->scholarship_name ?? 'NOT SET',
+                'total_fee_before_discount' => $student->total_fee_before_discount ?? 'NOT SET',
+                'total_fees' => $student->total_fees ?? 'NOT SET',
+                'gst_amount' => $student->gst_amount ?? 'NOT SET',
+            ]);
+            
+            // ✅ Prepare fees data array (same structure as InquiryController and StudentController)
+            $feesData = [
+                'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
+                'scholarship_name' => $student->scholarship_name ?? 'N/A',
+                'total_fee_before_discount' => $student->total_fee_before_discount ?? 0,
+                'discretionary_discount' => $student->discretionary_discount ?? 'No',
+                'discount_percentage' => $student->discount_percentage ?? 0,
+                'discounted_fee' => $student->discounted_fee ?? 0,
+                'fees_breakup' => $student->fees_breakup ?? 'Class room course (with test series & study material)',
+                'total_fees' => $student->total_fees ?? 0,
+                'gst_amount' => $student->gst_amount ?? 0,
+                'total_fees_inclusive_tax' => $student->total_fees_inclusive_tax ?? 0,
+                'single_installment_amount' => $student->single_installment_amount ?? 0,
+                'installment_1' => $student->installment_1 ?? 0,
+                'installment_2' => $student->installment_2 ?? 0,
+                'installment_3' => $student->installment_3 ?? 0,
+            ];
+            
+            Log::info('✅ Fees data prepared for view:', $feesData);
+            
+            return view('student.onboard.view', compact('student', 'feesData'));
+            
+        } catch (\Exception $e) {
+            Log::error("❌ View failed for onboarded student ID {$id}: " . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            return redirect()->route('student.onboard.onboard')
+                ->with('error', 'Student not found');
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
         }
     }
-
 
     /**
      * Show edit form
      */
-   public function edit($id)
+    public function edit($id)
     {
         try {
             $student = Onboard::findOrFail($id);
@@ -73,8 +123,8 @@ class OnboardController extends Controller
                 'student_name' => $student->name
             ]);
             
-            // Use the same edit view
-            return view('student.student.edit', compact('student'));
+            // Use the same edit view as pending students
+            return view('student.onboard.edit', compact('student'));
             
 >>>>>>> a1a91f1a0f647cf13c380af20e246aef0762b52e
         } catch (\Exception $e) {
@@ -88,8 +138,11 @@ class OnboardController extends Controller
      * Update student details
 =======
      * Update onboarded student information
+<<<<<<< HEAD
      * This uses the same update logic as StudentController
 >>>>>>> a1a91f1a0f647cf13c380af20e246aef0762b52e
+=======
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
      */
     public function update(Request $request, $id)
     {

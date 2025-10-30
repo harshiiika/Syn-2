@@ -78,6 +78,37 @@
       background-color: #ffc107;
       color: #000;
     }
+    .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 1rem;
+}
   </style>
 </head>
 
@@ -489,39 +520,92 @@
           </div>
         </div>
 
-        <!-- Scholarship Eligibility Section -->
+
+        <!-- Scholarship Details Section -->
         <div class="view-section">
-          <h4>Scholarship Eligibility</h4>
+          <h4>Scholarship Details</h4>
           <div class="form-row">
             <div class="form-group">
-              <label>Is Repeater</label>
-              <input type="text" class="form-control" value="{{ $student->isRepeater ?? 'N/A' }}" readonly>
+              <label>Eligible For Scholarship</label>
+              <input type="text" class="form-control" value="{{ $feesData['eligible_for_scholarship'] ?? 'No' }}" readonly>
             </div>
+
             <div class="form-group">
-              <label>Scholarship Test Appeared</label>
-              <input type="text" class="form-control" value="{{ $student->scholarshipTest ?? 'N/A' }}" readonly>
+              <label>Name of Scholarship</label>
+              <input type="text" class="form-control" value="{{ $feesData['scholarship_name'] ?? 'N/A' }}" readonly>
             </div>
+
             <div class="form-group">
-              <label>Last Board Percentage</label>
-              <input type="text" class="form-control" value="{{ $student->lastBoardPercentage ?? 'N/A' }}{{ $student->lastBoardPercentage ? '%' : '' }}" readonly>
+              <label>Total Fee Before Discount</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fee_before_discount'] ?? 0) }}" readonly>
             </div>
+
             <div class="form-group">
-              <label>Competition Exam Appeared</label>
-              <input type="text" class="form-control" value="{{ $student->competitionExam ?? 'N/A' }}" readonly>
+              <label>Discretionary Discount</label>
+              <input type="text" class="form-control" value="{{ $feesData['discretionary_discount'] ?? 'No' }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Discount Percentage</label>
+              <input type="text" class="form-control" value="{{ $feesData['discount_percentage'] ?? 0 }}%" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Discounted Fee</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['discounted_fee'] ?? 0) }}" readonly>
             </div>
           </div>
         </div>
 
-        <!-- Batch Allocation Section -->
+        <!--Fees and Available Batches Details Section -->
         <div class="view-section">
-          <h4>Batch Allocation</h4>
+          <h4>Fees and Available Batches Details</h4>
           <div class="form-row">
+            <div class="form-group full-width">
+              <label>Fees Breakup</label>
+              <input type="text" class="form-control" value="{{ $feesData['fees_breakup'] ?? 'Class room course (with test series & study material)' }}" readonly style="color: #ff6b35; font-weight: 600;">
+            </div>
+
             <div class="form-group">
-              <label>Batch Name</label>
-              <input type="text" class="form-control" value="{{ $student->batchName ?? 'N/A' }}" readonly>
+              <label>Total Fees</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fees'] ?? 0) }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>GST Amount</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['gst_amount'] ?? 0) }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Total Fees Inclusive Tax</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fees_inclusive_tax'] ?? 0) }}" readonly style="color: #ff6b35; font-weight: 600;">
+            </div>
+
+            <div class="form-group">
+              <label>If Fees Deposited In Single Installment</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['single_installment_amount'] ?? 0) }}" readonly style="color: #ff6b35; font-weight: 600;">
+            </div>
+
+            <div class="form-group full-width" style="margin-top: 15px; margin-bottom: 5px;">
+              <label style="font-weight: 700; color: #ff6b35;">If Fees Deposited In Three Installments</label>
+            </div>
+
+            <div class="form-group">
+              <label>Installment 1 (40%)</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_1'] ?? 0) }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Installment 2 (30%)</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_2'] ?? 0) }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Installment 3 (30%)</label>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_3'] ?? 0) }}" readonly>
             </div>
           </div>
-        </div>        
+        </div>      
       </div>
     </div>
   </div>

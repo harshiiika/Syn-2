@@ -8,12 +8,21 @@ class Student extends Model
 {
     protected $connection = 'mongodb';
     protected $collection = 'students';
-
+    
     // Status constants
     const STATUS_INQUIRY = 'inquiry';
     const STATUS_PENDING_FEES = 'pending_fees';
     const STATUS_ACTIVE = 'active';
+    const STATUS_ONBOARDED = 'onboarded';
 
+<<<<<<< HEAD
+=======
+    public $timestamps = true;
+
+    // Allow mass assignment for ALL fields
+    protected $guarded = [];
+
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
     protected $fillable = [
         // Basic Details
         'name',
@@ -21,7 +30,10 @@ class Student extends Model
         'mother',
         'dob',
         'mobileNumber',
+<<<<<<< HEAD
         'alternateNumber',
+=======
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
         'fatherWhatsapp',
         'motherContact',
         'studentContact',
@@ -44,14 +56,22 @@ class Student extends Model
         // Course Details
         'course_type',
         'course',
+<<<<<<< HEAD
         'courseName',
         'courseType',
+=======
+        'courseType',
+        'courseName',
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
         'deliveryMode',
         'medium',
         'board',
         'courseContent',
+<<<<<<< HEAD
         'email',
         'branch',
+=======
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
         
         // Academic Details
         'previousClass',
@@ -67,6 +87,7 @@ class Student extends Model
         'lastBoardPercentage',
         'competitionExam',
         
+<<<<<<< HEAD
         // Batch & Fees
         'batchName',
         'batchStartDate', // ADD THIS
@@ -84,13 +105,66 @@ class Student extends Model
         // Transfer Metadata - ADD THESE
         'onboardedAt',
         'transferredToPendingFeesAt',
+=======
+        // Batch Details
+        'batchName',
+        'batchStartDate',
+        
+        // Metadata
+        'email',
+        'alternateNumber',
+        'branch',
+        'session',
+        'status',
+        'admission_date',
+        
+        // ✅ SCHOLARSHIP & FEES DETAILS
+        'eligible_for_scholarship',
+        'scholarship_name',
+        'total_fee_before_discount',
+        'discretionary_discount',
+        'discretionary_discount_type',
+        'discretionary_discount_value',
+        'discretionary_discount_reason',
+        'discount_percentage',
+        'discounted_fee',
+        'fees_breakup',
+        'total_fees',
+        'gst_amount',
+        'total_fees_inclusive_tax',
+        'single_installment_amount',
+        'installment_1',
+        'installment_2',
+        'installment_3',
+        'fees_calculated_at',
+        
+        // Fee tracking fields
+        'paid_fees',
+        'remaining_fees',
+        'fee_status',
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
     ];
 
     protected $casts = [
+        'dob' => 'date',
+        'batchStartDate' => 'date',
+        'admission_date' => 'datetime',
+        'percentage' => 'float',
+        'lastBoardPercentage' => 'float',
+        'total_fee_before_discount' => 'float',
+        'discount_percentage' => 'float',
+        'discounted_fee' => 'float',
         'total_fees' => 'float',
+        'gst_amount' => 'float',
+        'total_fees_inclusive_tax' => 'float',
+        'single_installment_amount' => 'float',
+        'installment_1' => 'float',
+        'installment_2' => 'float',
+        'installment_3' => 'float',
         'paid_fees' => 'float',
         'paid_amount' => 'float',
         'remaining_fees' => 'float',
+<<<<<<< HEAD
         'admission_date' => 'datetime',
         'dob' => 'date',
         'batchStartDate' => 'date', // ADD THIS
@@ -100,23 +174,31 @@ class Student extends Model
         'lastBoardPercentage' => 'float',
         'paymentHistory' => 'array',
         'payment_history' => 'array',
+=======
+        'fees_calculated_at' => 'datetime',
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
     ];
 
     /**
-     * Get all students
+     * Get all pending fees students
      */
-    public static function getAllStudents()
+    public static function getPendingFeesStudents()
     {
-        return self::all();
+        return self::where('status', self::STATUS_PENDING_FEES)
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     /**
-     * Get student by ID
+     * Get all active students
      */
-    public static function getStudentById($id)
+    public static function getActiveStudents()
     {
-        return self::find($id);
+        return self::where('status', self::STATUS_ACTIVE)
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
+<<<<<<< HEAD
 
     /**
      * Check if student has pending fees
@@ -281,4 +363,6 @@ class Student extends Model
         // This method would create an Onboard record and delete this inquiry
         // Implemented in PendingFeesController->update() method
     }
+=======
+>>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
 }

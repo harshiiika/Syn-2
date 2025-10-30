@@ -1,49 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Onboarding Students</title>
+  <title>Fees and Available Batches Details</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="{{asset('css/onboard.css')}}">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{asset('css/emp.css')}}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    .container-custom {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .form-section {
+      background: #fff;
+      padding: 30px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .form-section h4 {
+      color: #ff6b35;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #ff6b35;
+      font-weight: 600;
+    }
+    
+    .detail-row {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .detail-label {
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .detail-value {
+      color: #666;
+    }
+    
+    .detail-value.highlight {
+      color: #ff6b35;
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+    
+    .amount-header {
+      color: #ff6b35;
+      font-weight: 600;
+      text-align: right;
+    }
+    
+    .sticky-footer {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      margin-top: 30px;
+      border-radius: 8px;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .btn-back {
+      background: #6c757d;
+      color: white;
+      padding: 12px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-back:hover {
+      background: #5a6268;
+      color: white;
+    }
+    
+    .btn-next {
+      background: #ff6513ff;
+      color: white;
+      padding: 12px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-next:hover {
+      background: #e55a2b;
+      transform: translateY(-2px);
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .page-title {
+      color: #ff6b35;
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Success/Error Messages -->
-  @if(session('success'))
-  <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 9999; min-width: 300px;">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
-
-  @if(session('error'))
-  <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 9999; min-width: 300px;">
-    {{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
-
-  @if(session('warning'))
-  <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 9999; min-width: 300px;">
-    {{ session('warning') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
-
-  @if(session('info'))
-  <div class="alert alert-info alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 9999; min-width: 300px;">
-    {{ session('info') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
-
+  <!-- Include your header here -->
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="{{asset('images/logo.png.jpg')}}" class="img" alt="Logo">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -51,31 +143,31 @@
         <h5>Session:</h5>
         <select>
           <option>2024-2025</option>
-          <option>2026</option>
+          <option>2025-2026</option>
         </select>
       </div>
       <i class="fa-solid fa-bell"></i>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown">
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
         </ul>
       </div>
     </div>
   </div>
-
   <div class="main-container">
+    <!-- Include your sidebar here -->
     <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-
+      
       <div class="accordion accordion-flush" id="accordionFlushExample">
+        <!-- Same accordion structure as edit page -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -113,8 +205,9 @@
                       id="side-icon"></i> Scholarship</a>
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
-                    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
+<i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="{{ route('master.other_fees.index') }}
+"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
@@ -150,19 +243,19 @@
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
+              id="accordion-button"> 
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-
+          
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}">
-                    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
-                  </a></li>
+    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
+</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
@@ -170,7 +263,7 @@
                       id="side-icon"></i>Students</a></li>
               </ul>
             </div>
-          </div>
+          </div>  
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -263,8 +356,7 @@
                 </li>
                 <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
                     Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file"
-                      id="side-icon"></i>Inquiry
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
                     History</a></li>
                 <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
                       id="side-icon"></i>Onboard History</a></li>
@@ -274,196 +366,131 @@
         </div>
       </div>
     </div>
-
+    <!-- Main Content Area -->
     <div class="right" id="right">
-      <div class="top">
-        <div class="top-text">
+      <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h3 class="page-title">Fees and Available Batches Details</h3>
         </div>
-        <div class="btns">
-          <a href="{{ route('student.student.pending') }}"><button type="button" class="pendingbtn">Pending Inquiries</button></a>
-          <a class="item" href="{{ route('student.pendingfees.pending') }}"><button type="button" class="onboardbtn">Pending Fees Students</button></a>
+
+        @if(session('success'))
+          <div class="alert alert-success">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>{{ session('success') }}</span>
+          </div>
+        @endif
+
+        <!-- Fees Details Section -->
+        <div class="form-section">
+          <h4>Fees and Available Batches Details</h4>
           
-          @if($students->count() > 0)
-          <form action="{{ route('student.onboard.transfer-all') }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to transfer all {{ $students->count() }} students to Pending Fees?');">
-            @csrf
-            <button type="submit" class="onboardbtn">Transfer All Students</button>
-          </form>
-          @endif
-        </div>
-      </div>
+          <div class="detail-row">
+            <div class="detail-label">Eligible For Scholarship</div>
+            <div class="detail-value">{{ $feesData['eligible_for_scholarship'] }}</div>
+          </div>
 
-      <div class="whole">
-        <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                10
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
+          <div class="detail-row">
+            <div class="detail-label">Name of Scholarship</div>
+            <div class="detail-value">{{ $feesData['scholarship_name'] }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Total Fee Before Discount</div>
+            <div class="detail-value">{{ number_format($feesData['total_fee_before_discount']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Discretionary Discount</div>
+            <div class="detail-value">{{ $feesData['discretionary_discount'] }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Discount Percentage</div>
+            <div class="detail-value">{{ $feesData['discount_percentage'] }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Discounted Fee</div>
+            <div class="detail-value">{{ number_format($feesData['discounted_fee']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Fees Breakup</div>
+            <div class="detail-value amount-header">Amount</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label" style="padding-left: 20px; color: #ff6b35;">
+              {{ $feesData['fees_breakup'] }}
             </div>
+            <div class="detail-value"></div>
           </div>
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
+
+          <div class="detail-row">
+            <div class="detail-label">Total Fees</div>
+            <div class="detail-value">{{ number_format($feesData['total_fees']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">GST Amount</div>
+            <div class="detail-value">{{ number_format($feesData['gst_amount']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Total Fees inclusive tax</div>
+            <div class="detail-value highlight">{{ number_format($feesData['total_fees_inclusive_tax']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">If Fees Deposited In Single Installment</div>
+            <div class="detail-value highlight">{{ number_format($feesData['single_installment_amount']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">If Fees Deposited In Three Installments</div>
+            <div class="detail-value"></div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Installment 1</div>
+            <div class="detail-value">{{ number_format($feesData['installment_1']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Installment 2</div>
+            <div class="detail-value">{{ number_format($feesData['installment_2']) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Installment 3</div>
+            <div class="detail-value">{{ number_format($feesData['installment_3']) }}</div>
           </div>
         </div>
 
-        <table class="table table-hover" id="table">
-          <thead>
-            <tr>
-              <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Student Name</th>
-              <th scope="col" id="one">Father Name</th>
-              <th scope="col" id="one">Father Contact No.</th>
-              <th scope="col" id="one">Course Name</th>
-              <th scope="col" id="one">Delivery Mode</th>
-              <th scope="col" id="one">Course Content</th>
-              <th scope="col" id="one">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($students as $index => $student)
-            <tr>
-              <td>{{ $index + 1 }}</td>
-              <td>{{ $student->name }}</td>
-              <td>{{ $student->father }}</td>
-              <td>{{ $student->mobileNumber ?? '—' }}</td>
-              <td>{{ $student->courseName ?? '—' }}</td>
-              <td>{{ $student->deliveryMode ?? '—' }}</td>
-              <td>{{ $student->courseContent ?? '—' }}</td>
-              <td>
-                <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton{{ $student->_id }}"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="actionMenuButton{{ $student->_id }}">
-                    <li>
-                      <a class="dropdown-item" href="{{ route('student.onboard.edit', $student->_id) }}">
-                        Edit Details
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="{{ route('student.onboard.show', $student->_id) }}">
-                        View Details
-                      </a>
-                    </li>
-                    <li>
-                      <form action="{{ route('student.onboard.transfer', $student->_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Transfer {{ $student->name }} to Pending Fees?');">
-                        @csrf
-                        <button type="submit" class="dropdown-item">
-                          Transfer Student
-                        </button>
-                      </form>
-                    </li>
-                    <li>
-                      <button class="dropdown-item">
-                        History
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            @endforeach
-          </tbody>
-<<<<<<< HEAD
-=======
-<!-- Modal fillables where roles are assigned according to dept automatically -->
-
-      @foreach($students as $index => $student)
-<tr>
-   <!-- Serial number (index + 1) -->
-  <td>{{ $index + 1 }}</td>
-  <td>{{ $student->name }}</td>
-  <td>{{ $student->father }}</td>
-  <td>{{ $student->mobileNumber ?? '—' }}</td>
-<td>{{ $student->courseName ?? '—' }}</td>
-<td>{{ $student->deliveryMode ?? '—' }}</td>
-<td>{{ $student->courseContent ?? '—' }}</td>
-  <td>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-        <li>
-           <a href="{{ route('student.onboard.edit', $student->_id) }}">
-<button class="dropdown-item">
-            Edit Details
-          </button></a>
-          <li>
-  <a href="{{ route('student.onboard.show', $student->_id) }}">
-    <button class="dropdown-item">View Details</button>
+        <!-- Footer with Navigation Buttons -->
+        <div class="sticky-footer">
+  <a href="{{ route('inquiries.scholarship.show', $inquiry->_id) }}" class="btn-back">
+    <i class="fa-solid fa-arrow-left"></i> Back
   </a>
-</li>
-        <li>
-<button class="dropdown-item">
-            Transfer Student
-          </button></a>
-        </li>
-        <li>
-<button class="dropdown-item">
-            History
-          </button></a>
-        </li>
-        </li>
-      </ul>
-    </div>
-  </td>
-</tr>
-@endforeach
+  <button type="button" class="btn-next" onclick="proceedToNextStep()">
+    Complete <i class="fa-solid fa-check"></i>
+  </button>
+</div>
 
->>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
-        </table>
-      </div>
-
-      <div class="footer">
-        <div class="left-footer">
-          <p>Showing 1 to {{ $students->count() }} of {{ $students->count() }} Enteries</p>
-        </div>
-        <div class="right-footer">
-          <nav aria-label="...">
-            <ul class="pagination">
-              <li class="page-item"><a href="#" class="page-link" id="pg1">Previous</a></li>
-              <li class="page-item active">
-                <a class="page-link" href="#" aria-current="page" id="pg2">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="/user management/emp/emp2.html" id="pg3">2</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
-            </ul>
-          </nav>
-        </div>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{asset('js/emp.js')}}"></script>
-
+  
   <script>
-    // Auto-dismiss alerts after 5 seconds
-    document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(function () {
-        var alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function (alert) {
-          var bsAlert = new bootstrap.Alert(alert);
-          bsAlert.close();
-        });
-      }, 5000);
-    });
+     function proceedToNextStep() {
+    // Show success message and redirect to inquiries index
+    window.location.href = "{{ route('inquiries.index') }}";
+  }
   </script>
 
 </body>
-
 </html>

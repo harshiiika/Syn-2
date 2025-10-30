@@ -76,8 +76,26 @@ class Onboard extends Model
         'status',
         'onboardedAt',
         
-        // Fee Details (if any)
+        'eligible_for_scholarship',
+        'scholarship_name',
+        'total_fee_before_discount',
+        'discretionary_discount',
+        'discretionary_discount_type',
+        'discretionary_discount_value',
+        'discretionary_discount_reason',
+        'discount_percentage',
+        'discounted_fee',
+        'fees_breakup',
         'total_fees',
+        'gst_amount',
+        'total_fees_inclusive_tax',
+        'single_installment_amount',
+        'installment_1',
+        'installment_2',
+        'installment_3',
+        'fees_calculated_at',
+        
+        // Existing fee fields
         'paid_fees',
         'remaining_fees',
         'fee_status',
@@ -89,9 +107,19 @@ class Onboard extends Model
         'onboardedAt' => 'datetime',
         'percentage' => 'float',
         'lastBoardPercentage' => 'float',
+        'total_fee_before_discount' => 'float',
+        'discount_percentage' => 'float',
+        'discounted_fee' => 'float',
         'total_fees' => 'float',
+        'gst_amount' => 'float',
+        'total_fees_inclusive_tax' => 'float',
+        'single_installment_amount' => 'float',
+        'installment_1' => 'float',
+        'installment_2' => 'float',
+        'installment_3' => 'float',
         'paid_fees' => 'float',
         'remaining_fees' => 'float',
+        'fees_calculated_at' => 'datetime',
     ];
 
     /**
