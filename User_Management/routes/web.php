@@ -280,7 +280,10 @@ Route::get('/inquiries/{id}', [InquiryController::class, 'view'])->name('inquiri
 Route::get('/inquiries/{id}/edit', [InquiryController::class, 'edit'])->name('inquiries.edit');
 Route::put('/inquiries/{id}', [InquiryController::class, 'update'])->name('inquiries.update');
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
 
 Route::get('/inquiries/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])
     ->name('inquiries.scholarship.show');
@@ -325,4 +328,7 @@ Route::prefix('student/payment')->name('student.payment.')->group(function () {
 Route::get('/test-payment/{id}', function($id) {
     return "Payment route working for ID: " . $id;
 })->name('test.payment');
+<<<<<<< HEAD
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed

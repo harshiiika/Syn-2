@@ -16,13 +16,19 @@ class Student extends Model
     const STATUS_ONBOARDED = 'onboarded';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
     public $timestamps = true;
 
     // Allow mass assignment for ALL fields
     protected $guarded = [];
 
+<<<<<<< HEAD
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
     protected $fillable = [
         // Basic Details
         'name',
@@ -31,9 +37,12 @@ class Student extends Model
         'dob',
         'mobileNumber',
 <<<<<<< HEAD
+<<<<<<< HEAD
         'alternateNumber',
 =======
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         'fatherWhatsapp',
         'motherContact',
         'studentContact',
@@ -57,21 +66,29 @@ class Student extends Model
         'course_type',
         'course',
 <<<<<<< HEAD
+<<<<<<< HEAD
         'courseName',
         'courseType',
 =======
         'courseType',
         'courseName',
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+        'courseType',
+        'courseName',
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         'deliveryMode',
         'medium',
         'board',
         'courseContent',
 <<<<<<< HEAD
+<<<<<<< HEAD
         'email',
         'branch',
 =======
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         
         // Academic Details
         'previousClass',
@@ -87,6 +104,7 @@ class Student extends Model
         'lastBoardPercentage',
         'competitionExam',
         
+<<<<<<< HEAD
 <<<<<<< HEAD
         // Batch & Fees
         'batchName',
@@ -106,6 +124,8 @@ class Student extends Model
         'onboardedAt',
         'transferredToPendingFeesAt',
 =======
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         // Batch Details
         'batchName',
         'batchStartDate',
@@ -142,7 +162,10 @@ class Student extends Model
         'paid_fees',
         'remaining_fees',
         'fee_status',
+<<<<<<< HEAD
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
     ];
 
     protected $casts = [
@@ -162,8 +185,8 @@ class Student extends Model
         'installment_2' => 'float',
         'installment_3' => 'float',
         'paid_fees' => 'float',
-        'paid_amount' => 'float',
         'remaining_fees' => 'float',
+<<<<<<< HEAD
 <<<<<<< HEAD
         'admission_date' => 'datetime',
         'dob' => 'date',
@@ -177,6 +200,9 @@ class Student extends Model
 =======
         'fees_calculated_at' => 'datetime',
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+        'fees_calculated_at' => 'datetime',
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
     ];
 
     /**
@@ -198,6 +224,7 @@ class Student extends Model
             ->orderBy('created_at', 'desc')
             ->get();
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     /**
@@ -365,4 +392,6 @@ class Student extends Model
     }
 =======
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
 }

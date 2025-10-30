@@ -7,9 +7,10 @@ use MongoDB\Laravel\Eloquent\Model;
 class Pending extends Model
 {
     protected $connection = 'mongodb';
-    protected $collection = 'pending_fees_students'; // This is the collection for pending fees
+    protected $collection = 'students';
     
     public $timestamps = true;
+<<<<<<< HEAD
 <<<<<<< HEAD
     
     protected $fillable = [
@@ -22,6 +23,8 @@ class Pending extends Model
         'fatherWhatsapp',
         'motherContact',
 =======
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
     
     // Allow mass assignment for ALL fields
     protected $guarded = [];
@@ -35,15 +38,19 @@ class Pending extends Model
         'mobileNumber', 
         'fatherWhatsapp', 
         'motherContact', 
+<<<<<<< HEAD
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         'studentContact',
-        'category',
-        'gender',
-        'fatherOccupation',
-        'fatherGrade',
+        'category', 
+        'gender', 
+        'fatherOccupation', 
+        'fatherGrade', 
         'motherOccupation',
         
         // Address Details
+<<<<<<< HEAD
 <<<<<<< HEAD
         'state',
         'city',
@@ -76,6 +83,8 @@ class Pending extends Model
         'lastBoardPercentage',
         'competitionExam',
 =======
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         'state', 
         'city', 
         'pinCode', 
@@ -107,7 +116,10 @@ class Pending extends Model
         'scholarshipTest', 
         'lastBoardPercentage',
         'competitionExam', 
+<<<<<<< HEAD
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         
         // Batch Details
         'batchName',
@@ -118,6 +130,7 @@ class Pending extends Model
         'alternateNumber',
         'branch',
         'session',
+<<<<<<< HEAD
 <<<<<<< HEAD
         'onboardedAt',
         'transferredToPendingFeesAt',
@@ -142,6 +155,8 @@ class Pending extends Model
         'paymentHistory' => 'array',
     ];
 =======
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         'status',
         'admission_date',
         
@@ -213,5 +228,8 @@ class Pending extends Model
             \Log::info('Pending model updated event fired for: ' . $model->name);
         });
     }
+<<<<<<< HEAD
 >>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
+=======
+>>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
 }
