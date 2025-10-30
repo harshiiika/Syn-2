@@ -104,7 +104,7 @@ class OnboardController extends Controller
             ]);
             
             // Use the same edit view as pending students
-            return view('student.pending.edit', compact('student'));
+            return view('student.onboard.edit', compact('student'));
             
         } catch (\Exception $e) {
             Log::error("Edit failed for student ID {$id}: " . $e->getMessage());
