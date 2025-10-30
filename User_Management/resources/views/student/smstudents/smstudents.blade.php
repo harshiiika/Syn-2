@@ -11,6 +11,7 @@
 </head>
 
 <body>
+  <!-- Flash Messages -->
   <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
     @if(session('success'))
       <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -27,9 +28,10 @@
     @endif
   </div>
 
+  <!-- Header -->
   <div class="header">
     <div class="logo">
-      <img src="{{ asset('images/logo.png.jpg') }}" class="img">
+      <img src="{{ asset('images/logo.png.jpg') }}" class="img" alt="Logo">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -47,14 +49,15 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
         </ul>
       </div>
     </div>
   </div>
 
   <div class="main-container">
+    <!-- Sidebar -->
     <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>Admin</h6>
@@ -234,17 +237,19 @@
       </div>
     </div>
 
+    <!-- Main Content -->
     <div class="right" id="right">
       <div class="top">
         <div class="top-text">
           <h4>STUDENTS MANAGEMENT</h4>
         </div>
         <a href="{{ route('smstudents.export') }}" class="btn btn-success">
-          <i class="fas fa-file-export me-2"></i>Export
+          Export
         </a>
       </div>
 
       <div class="whole">
+        <!-- Controls -->
         <div class="dd">
           <div class="line">
             <h6>Show Entries:</h6>
@@ -252,34 +257,35 @@
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">10</button>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item entries-option" data-value="10">10</a></li>
-                <li><a class="dropdown-item entries-option" data-value="25">25</a></li>
-                <li><a class="dropdown-item entries-option" data-value="50">50</a></li>
-                <li><a class="dropdown-item entries-option" data-value="100">100</a></li>
+                <li><a class="dropdown-item entries-option" href="#" data-value="10">10</a></li>
+                <li><a class="dropdown-item entries-option" href="#" data-value="25">25</a></li>
+                <li><a class="dropdown-item entries-option" href="#" data-value="50">50</a></li>
+                <li><a class="dropdown-item entries-option" href="#" data-value="100">100</a></li>
               </ul>
             </div>
           </div>
           <div class="search">
             <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" id="searchInput" required>
+            <input type="search" placeholder="" class="search-holder" id="searchInput">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
 
+        <!-- Table -->
         <table class="table table-hover" id="table">
           <thead>
             <tr>
-              <th scope="col" id="one">Roll No.</th>
-              <th scope="col" id="one">Student Name</th>
-              <th scope="col" id="one">Batch Name</th>
-              <th scope="col" id="one">Course Name</th>
-              <th scope="col" id="one">Course Content</th>
-              <th scope="col" id="one">Delivery Mode</th>
-              <th scope="col" id="one">Shift</th>
-              <th scope="col" id="one">Action</th>
+              <th scope="col">Roll No.</th>
+              <th scope="col">Student Name</th>
+              <th scope="col">Batch Name</th>
+              <th scope="col">Course Name</th>
+              <th scope="col">Course Content</th>
+              <th scope="col">Delivery Mode</th>
+              <th scope="col">Shift</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="tableBody">
             @forelse($students as $student)
               @php
                 $studentId = $student->_id ?? $student->id ?? null;
@@ -287,14 +293,14 @@
                   $studentId = (string) $studentId;
                 }
               @endphp
-              <tr>
-                <td>{{ $student->roll_no }}</td>
-                <td>{{ $student->student_name ?? $student->name }}</td>
-                <td>{{ $student->batch_name ?? $student->batch->name ?? 'N/A' }}</td>
-                <td>{{ $student->course_name ?? $student->course->name ?? 'N/A' }}</td>
-                <td>{{ $student->course_content }}</td>
-                <td>{{ $student->delivery ?? $student->delivery_mode }}</td>
-                <td>{{ $student->shift }}</td>
+              <tr data-row="true">
+                <td>{{ $student->roll_no ?? 'N/A' }}</td>
+                <td>{{ $student->student_name ?? $student->name ?? 'N/A' }}</td>
+                <td>{{ $student->batch_name ?? ($student->batch->name ?? 'N/A') }}</td>
+                <td>{{ $student->course_name ?? ($student->course->name ?? 'N/A') }}</td>
+                <td>{{ $student->course_content ?? 'N/A' }}</td>
+                <td>{{ $student->delivery ?? $student->delivery_mode ?? 'N/A' }}</td>
+                <td>{{ $student->shift ?? 'N/A' }}</td>
                 <td>
                   <div class="dropdown">
                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
@@ -304,37 +310,33 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown{{ $studentId }}">
                       <li>
                         <a class="dropdown-item" href="{{ route('smstudents.show', $studentId) }}">
-                          <i class="fas fa-eye me-2"></i>View Details
+                         View Details
                         </a>
                       </li>
                       @if(($student->status ?? 'active') === 'active')
                         <li>
-                          <button class="dropdown-item" type="button" data-bs-toggle="modal"
-                            data-bs-target="#editStudentModal{{ $studentId }}">
-                            <i class="fas fa-edit me-2"></i>Edit Details
-                          </button>
+                          <a class="dropdown-item" href="{{ route('smstudents.edit', $studentId) }}">
+                          Edit Details
+                          </a>
                         </li>
                         <li>
                           <button class="dropdown-item" type="button" data-bs-toggle="modal"
                             data-bs-target="#passwordModal{{ $studentId }}">
-                            <i class="fas fa-key me-2"></i>Password Update
+                            Password Update
                           </button>
                         </li>
                         <li>
                           <button class="dropdown-item" type="button" data-bs-toggle="modal"
                             data-bs-target="#batchModal{{ $studentId }}">
-                            <i class="fas fa-users me-2"></i>Batch Update
+                            Batch Update
                           </button>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
                         <li>
-                          <form method="POST" action="{{ route('smstudents.deactivate', $studentId) }}" class="d-inline w-100">
-                            @csrf
-                            <button type="submit" class="dropdown-item text-danger"
-                              onclick="return confirm('Are you sure you want to deactivate this student?')">
-                              <i class="fas fa-ban me-2"></i>Deactivate Student
-                            </button>
-                          </form>
+                          <button class="dropdown-item" type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#historyModal{{ $studentId }}">
+                           History
+                          </button>
                         </li>
                       @else
                         <li><span class="dropdown-item-text text-muted"><i class="fas fa-info-circle me-2"></i> Student Inactive</span></li>
@@ -344,17 +346,29 @@
                 </td>
               </tr>
             @empty
-              <tr>
+              <tr id="noResultsRow">
                 <td colspan="8" class="text-center">No students found</td>
               </tr>
             @endforelse
           </tbody>
         </table>
+
+        <!-- Pagination Info -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div id="paginationInfo">
+            Showing <span id="showingFrom">1</span> to <span id="showingTo">10</span> of <span id="totalEntries">{{ $students->count() }}</span> entries
+          </div>
+          <nav>
+            <ul class="pagination" id="pagination">
+              <!-- Pagination buttons will be generated by JavaScript -->
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Edit, Password, and Batch Update Modals -->
+  <!-- Modals: Password Update, Batch Update, History (NO EDIT MODAL) -->
   @foreach($students as $student)
     @php
       $studentId = $student->_id ?? $student->id ?? null;
@@ -362,101 +376,6 @@
         $studentId = (string) $studentId;
       }
     @endphp
-
-    <!-- Edit Modal -->
-    <div class="modal fade" id="editStudentModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <form method="POST" action="{{ route('smstudents.update', $studentId) }}" class="modal-content">
-          @csrf
-          <div class="modal-header">
-            <h5 class="modal-title">Edit Student</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Roll Number</label>
-                <input type="text" name="roll_no" class="form-control" value="{{ $student->roll_no }}" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Student Name</label>
-                <input type="text" name="name" class="form-control" value="{{ $student->student_name ?? $student->name }}" required>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" value="{{ $student->email }}" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Phone</label>
-                <input type="text" name="phone" class="form-control" value="{{ $student->phone }}" required>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Batch</label>
-                <select name="batch_id" class="form-select" required>
-                  @foreach($batches as $batch)
-                    <option value="{{ $batch->_id }}" {{ $student->batch_id == $batch->_id ? 'selected' : '' }}>
-                      {{ $batch->name }}
-                    </option>
-                  @endforeach
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Course</label>
-                <select name="course_id" class="form-select" required>
-                  @foreach($courses as $course)
-                    <option value="{{ $course->_id }}" {{ $student->course_id == $course->_id ? 'selected' : '' }}>
-                      {{ $course->name }}
-                    </option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Course Content</label>
-                <select name="course_content" class="form-select" required>
-                  <option value="Test Series Only" {{ $student->course_content == 'Test Series Only' ? 'selected' : '' }}>Test Series Only</option>
-                  <option value="Class Room Course" {{ $student->course_content == 'Class Room Course' ? 'selected' : '' }}>Class Room Course</option>
-                  <option value="Both" {{ $student->course_content == 'Both' ? 'selected' : '' }}>Both</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Delivery Mode</label>
-                <select name="delivery_mode" class="form-select" required>
-                  <option value="Offline" {{ ($student->delivery ?? $student->delivery_mode) == 'Offline' ? 'selected' : '' }}>Offline</option>
-                  <option value="Online" {{ ($student->delivery ?? $student->delivery_mode) == 'Online' ? 'selected' : '' }}>Online</option>
-                  <option value="Hybrid" {{ ($student->delivery ?? $student->delivery_mode) == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Shift</label>
-                <select name="shift" class="form-select" required>
-                  <option value="Morning" {{ $student->shift == 'Morning' ? 'selected' : '' }}>Morning</option>
-                  <option value="Evening" {{ $student->shift == 'Evening' ? 'selected' : '' }}>Evening</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Status</label>
-                <select name="status" class="form-select" required>
-                  <option value="active" {{ ($student->status ?? 'active') == 'active' ? 'selected' : '' }}>Active</option>
-                  <option value="inactive" {{ ($student->status ?? 'active') == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Update</button>
-          </div>
-        </form>
-      </div>
-    </div>
 
     <!-- Password Update Modal -->
     <div class="modal fade" id="passwordModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
@@ -499,7 +418,7 @@
               <label class="form-label">Select New Batch</label>
               <select name="batch_id" class="form-select" required>
                 @foreach($batches as $batch)
-                  <option value="{{ $batch->_id }}" {{ $student->batch_id == $batch->_id ? 'selected' : '' }}>
+                  <option value="{{ $batch->_id ?? $batch->id }}" {{ ($student->batch_id == ($batch->_id ?? $batch->id)) ? 'selected' : '' }}>
                     {{ $batch->name }}
                   </option>
                 @endforeach
@@ -513,9 +432,314 @@
         </form>
       </div>
     </div>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal{{ $studentId }}" tabindex="-1" aria-labelledby="historyModalLabel{{ $studentId }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-3">
+          
+          <!-- Modal Header -->
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title fw-semibold" id="historyModalLabel{{ $studentId }}">
+              Student History - {{ $student->student_name ?? $student->name ?? 'N/A' }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Roll No</label>
+                <div class="border rounded p-2 bg-light">{{ $student->roll_no ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Student Name</label>
+                <div class="border rounded p-2 bg-light">{{ $student->student_name ?? $student->name ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Email</label>
+                <div class="border rounded p-2 bg-light">{{ $student->email ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Phone</label>
+                <div class="border rounded p-2 bg-light">{{ $student->phone ?? $student->mobileNumber ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Course Name</label>
+                <div class="border rounded p-2 bg-light">{{ $student->course->name ?? $student->course_name ?? $student->courseName ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Batch</label>
+                <div class="border rounded p-2 bg-light">{{ $student->batch->name ?? $student->batch_name ?? $student->batchName ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Course Content</label>
+                <div class="border rounded p-2 bg-light">{{ $student->course_content ?? $student->courseContent ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Delivery Mode</label>
+                <div class="border rounded p-2 bg-light">{{ $student->delivery ?? $student->delivery_mode ?? $student->deliveryMode ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Shift</label>
+                <div class="border rounded p-2 bg-light">{{ $student->shift ?? 'N/A' }}</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Status</label>
+                <div class="border rounded p-2 bg-light">
+                  <span class="badge {{ ($student->status ?? 'active') == 'active' ? 'bg-success' : 'bg-danger' }}">
+                    {{ ucfirst($student->status ?? 'active') }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Created At</label>
+                <div class="border rounded p-2 bg-light">
+                  @if(isset($student->created_at))
+                    {{ $student->created_at->format('d M Y, h:i A') }}
+                  @else
+                    N/A
+                  @endif
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-semibold text-secondary">Last Updated</label>
+                <div class="border rounded p-2 bg-light">
+                  @if(isset($student->updated_at))
+                    {{ $student->updated_at->format('d M Y, h:i A') }}
+                  @else
+                    N/A
+                  @endif
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   @endforeach
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="{{ asset('js/smstudents.js') }}"></script>
+  <script>
+    // Sidebar toggle
+    const toggleBtn = document.getElementById('toggleBtn');
+    const sidebar = document.getElementById('sidebar');
+    const right = document.getElementById('right');
+    const text = document.getElementById('text');
+
+    if (toggleBtn && sidebar && right && text) {
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        right.classList.toggle('expanded');
+        text.classList.toggle('hidden');
+      });
+    }
+
+    // Auto-hide flash messages
+    setTimeout(() => {
+      document.querySelectorAll('.alert').forEach(alert => {
+        alert.classList.remove('show');
+        setTimeout(() => alert.remove(), 150);
+      });
+    }, 5000);
+
+    // Table functionality
+    let currentPage = 1;
+    let entriesPerPage = 10;
+    let allRows = [];
+    let filteredRows = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const tableBody = document.getElementById('tableBody');
+      
+      // Get all data rows (exclude "No students found" row)
+      allRows = Array.from(tableBody.querySelectorAll('tr[data-row="true"]'));
+      filteredRows = [...allRows];
+      
+      // Initialize
+      updateTable();
+      
+      // Entries per page dropdown
+      document.querySelectorAll('.entries-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+          e.preventDefault();
+          entriesPerPage = parseInt(this.dataset.value);
+          document.getElementById('number').textContent = entriesPerPage;
+          currentPage = 1;
+          updateTable();
+        });
+      });
+      
+      // Search functionality
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          const searchTerm = this.value.toLowerCase().trim();
+          
+          if (searchTerm === '') {
+            filteredRows = [...allRows];
+          } else {
+            filteredRows = allRows.filter(row => {
+              const text = row.textContent.toLowerCase();
+              return text.includes(searchTerm);
+            });
+          }
+          
+          currentPage = 1;
+          updateTable();
+        });
+      }
+    });
+
+    function updateTable() {
+      const tableBody = document.getElementById('tableBody');
+      const start = (currentPage - 1) * entriesPerPage;
+      const end = start + entriesPerPage;
+      const pageRows = filteredRows.slice(start, end);
+      
+      // Hide all rows first
+      allRows.forEach(row => row.style.display = 'none');
+      
+      // Remove "no results" message if exists
+      const noResultsRow = document.getElementById('noResultsRow');
+      if (noResultsRow) {
+        noResultsRow.style.display = 'none';
+      }
+      
+      // Show current page rows
+      if (pageRows.length > 0) {
+        pageRows.forEach(row => row.style.display = '');
+      } else {
+        // Show no results message
+        if (noResultsRow) {
+          noResultsRow.style.display = '';
+        } else {
+          // Create temporary no results row
+          const tempRow = document.createElement('tr');
+          tempRow.innerHTML = '<td colspan="8" class="text-center">No matching students found</td>';
+          tempRow.id = 'tempNoResults';
+          tableBody.appendChild(tempRow);
+        }
+      }
+      
+      // Update pagination info
+      const totalEntries = filteredRows.length;
+      const showingFrom = document.getElementById('showingFrom');
+      const showingTo = document.getElementById('showingTo');
+      const totalEntriesSpan = document.getElementById('totalEntries');
+      
+      if (showingFrom) showingFrom.textContent = totalEntries > 0 ? start + 1 : 0;
+      if (showingTo) showingTo.textContent = Math.min(end, totalEntries);
+      if (totalEntriesSpan) totalEntriesSpan.textContent = totalEntries;
+      
+      // Update pagination buttons
+      updatePagination();
+    }
+
+    function updatePagination() {
+      const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
+      const pagination = document.getElementById('pagination');
+      
+      if (!pagination) return;
+      
+      pagination.innerHTML = '';
+      
+      if (totalPages === 0) {
+        return; // No pagination needed
+      }
+      
+      // Previous button
+      const prevLi = document.createElement('li');
+      prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+      prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
+      pagination.appendChild(prevLi);
+      
+      // Page numbers
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      
+      if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+      
+      // First page button
+      if (startPage > 1) {
+        const li = document.createElement('li');
+        li.className = 'page-item';
+        li.innerHTML = `<a class="page-link" href="#" onclick="changePage(1); return false;">1</a>`;
+        pagination.appendChild(li);
+        
+        if (startPage > 2) {
+          const dots = document.createElement('li');
+          dots.className = 'page-item disabled';
+          dots.innerHTML = `<span class="page-link">...</span>`;
+          pagination.appendChild(dots);
+        }
+      }
+      
+      // Page number buttons
+      for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
+        pagination.appendChild(li);
+      }
+      
+      // Last page button
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          const dots = document.createElement('li');
+          dots.className = 'page-item disabled';
+          dots.innerHTML = `<span class="page-link">...</span>`;
+          pagination.appendChild(dots);
+        }
+        
+        const li = document.createElement('li');
+        li.className = 'page-item';
+        li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a>`;
+        pagination.appendChild(li);
+      }
+      
+      // Next button
+      const nextLi = document.createElement('li');
+      nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+      nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
+      pagination.appendChild(nextLi);
+    }
+
+    function changePage(page) {
+      const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
+      if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        updateTable();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  </script>
 </body>
 </html>
+
+ 

@@ -286,8 +286,17 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
 });
 
+//transfer Logic 
 
-// Students Management Routes 
+// Individual student transfer
+Route::post('/student/onboard/{id}/transfer', [OnboardController::class, 'transferToPending'])
+    ->name('student.onboard.transfer');
+
+// Bulk transfer all students
+Route::post('/student/onboard/transfer-all', [OnboardController::class, 'transferAllToPending'])
+    ->name('student.onboard.transfer-all');
+
+// Students Management Routes
 Route::prefix('smstudents')->name('smstudents.')->group(function () {
     
     // List all students
@@ -295,6 +304,9 @@ Route::prefix('smstudents')->name('smstudents.')->group(function () {
     
     // Export students to CSV
     Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
+    
+    // *** ADD THIS NEW ROUTE FOR EDIT FORM ***
+    Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
     
     // View single student details
     Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');

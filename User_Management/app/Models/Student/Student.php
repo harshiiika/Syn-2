@@ -14,76 +14,92 @@ class Student extends Model
     const STATUS_PENDING_FEES = 'pending_fees';
     const STATUS_ACTIVE = 'active';
 
-protected $fillable = [
-    // Basic Details
-    'name',
-    'father',
-    'mother',
-    'dob',
-    'mobileNumber',
-    'alternateNumber',
-    'fatherWhatsapp',
-    'motherContact',
-    'studentContact',
-    'category',
-    'gender',
-    'fatherOccupation',
-    'fatherGrade',
-    'motherOccupation',
-    
-    // Address Details
-    'state',
-    'city',
-    'pinCode',
-    'address',
-    'belongToOtherCity',
-    'economicWeakerSection',
-    'armyPoliceBackground',
-    'speciallyAbled',
-    
-    // Course Details (IMPORTANT - note the field names)
-    'course_type',      // NEW FIELD
-    'course',           // NEW FIELD
-    'courseName',       // Keep for backward compatibility
-    'courseType',       // Keep for backward compatibility
-    'deliveryMode',
-    'medium',
-    'board',
-    'courseContent',
-    'email',
-    'branch',
-    
-    // Academic Details
-    'previousClass',
-    'previousMedium',
-    'schoolName',
-    'previousBoard',
-    'passingYear',
-    'percentage',
-    
-    // Scholarship Eligibility
-    'isRepeater',
-    'scholarshipTest',
-    'lastBoardPercentage',
-    'competitionExam',
-    
-    // Batch & Fees
-    'batchName',
-    'status',
-    'total_fees',
-    'paid_fees',
-    'remaining_fees',
-    'fee_status',
-    'admission_date',
-    'session',
-    'paymentHistory'
-];
+    protected $fillable = [
+        // Basic Details
+        'name',
+        'father',
+        'mother',
+        'dob',
+        'mobileNumber',
+        'alternateNumber',
+        'fatherWhatsapp',
+        'motherContact',
+        'studentContact',
+        'category',
+        'gender',
+        'fatherOccupation',
+        'fatherGrade',
+        'motherOccupation',
+        
+        // Address Details
+        'state',
+        'city',
+        'pinCode',
+        'address',
+        'belongToOtherCity',
+        'economicWeakerSection',
+        'armyPoliceBackground',
+        'speciallyAbled',
+        
+        // Course Details
+        'course_type',
+        'course',
+        'courseName',
+        'courseType',
+        'deliveryMode',
+        'medium',
+        'board',
+        'courseContent',
+        'email',
+        'branch',
+        
+        // Academic Details
+        'previousClass',
+        'previousMedium',
+        'schoolName',
+        'previousBoard',
+        'passingYear',
+        'percentage',
+        
+        // Scholarship Eligibility
+        'isRepeater',
+        'scholarshipTest',
+        'lastBoardPercentage',
+        'competitionExam',
+        
+        // Batch & Fees
+        'batchName',
+        'batchStartDate', // ADD THIS
+        'status',
+        'total_fees',
+        'paid_fees',
+        'paid_amount', // ADD THIS (alias for paid_fees)
+        'remaining_fees',
+        'fee_status',
+        'admission_date',
+        'session',
+        'paymentHistory',
+        'payment_history', // ADD THIS (alias for paymentHistory)
+        
+        // Transfer Metadata - ADD THESE
+        'onboardedAt',
+        'transferredToPendingFeesAt',
+    ];
 
     protected $casts = [
         'total_fees' => 'float',
         'paid_fees' => 'float',
+        'paid_amount' => 'float',
         'remaining_fees' => 'float',
         'admission_date' => 'datetime',
+        'dob' => 'date',
+        'batchStartDate' => 'date', // ADD THIS
+        'onboardedAt' => 'datetime', // ADD THIS
+        'transferredToPendingFeesAt' => 'datetime', // ADD THIS
+        'percentage' => 'float',
+        'lastBoardPercentage' => 'float',
+        'paymentHistory' => 'array',
+        'payment_history' => 'array',
     ];
 
     /**
@@ -196,36 +212,73 @@ protected $fillable = [
         });
     }
 
+    /**
+     * Get students for "Pending Inquiries" tab (incomplete profiles)
+     */
+    public static function getPendingStudents()
+    {
+        return self::where('status', self::STATUS_INQUIRY)
+                   ->orWhere(function($query) {
+                       $query->whereNull('status')
+                             ->where('remaining_fees', '>', 0);
+                   })
+                   ->orderBy('created_at', 'desc')
+                   ->get();
+    }
 
     /**
- * Get students for "Pending Inquires" tab (with any remaining fees)
- */
-public static function getPendingStudents()
-{
-    return self::where('remaining_fees', '>', 0)
-               ->where('status', self::STATUS_PENDING_FEES)
-               ->orderBy('created_at', 'desc')
-               ->get();
-}
+     * Get students for "Pending Fees Students" page (transferred from onboard)
+     * UPDATED: Now fetches students with pending_fees status
+     */
+    public static function getPendingFeesStudents()
+    {
+        return self::where(function($query) {
+                    $query->where('status', self::STATUS_PENDING_FEES)
+                          ->orWhere('remaining_fees', '>', 0);
+                })
+                ->orderBy('transferredToPendingFeesAt', 'desc')
+                ->get();
+    }
 
-/**
- * Get students for "Pending Fees Students" page (same as pending)
- */
-public static function getPendingFeesStudents()
-{
-    return self::where('remaining_fees', '>', 0)
-               ->orderBy('created_at', 'desc')
-               ->get();
-}
+    /**
+     * Get students for "Onboarding Students" tab (from onboarded_students collection)
+     * NOTE: This is handled by the Onboard model, not this Student model
+     */
+    public static function getActiveStudents()
+    {
+        return self::where('remaining_fees', '<=', 0)
+                   ->where('status', self::STATUS_ACTIVE)
+                   ->orderBy('created_at', 'desc')
+                   ->get();
+    }
 
-/**
- * Get students for "Onboarding Students" tab (fully paid)
- */
-public static function getActiveStudents()
-{
-    return self::where('remaining_fees', '<=', 0)
-               ->where('status', self::STATUS_ACTIVE)
-               ->orderBy('created_at', 'desc')
-               ->get();
-}
+    /**
+     * NEW: Check if student profile is complete
+     */
+    public function isProfileComplete()
+    {
+        $requiredFields = [
+            'name', 'father', 'mother', 'dob', 'mobileNumber',
+            'category', 'gender', 'state', 'city', 'pinCode',
+            'courseName', 'deliveryMode', 'medium', 'board',
+            'batchName'
+        ];
+
+        foreach ($requiredFields as $field) {
+            if (empty($this->$field)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * NEW: Transfer from Pending Inquiry to Onboarded (when profile is complete)
+     */
+    public function transferToOnboarded()
+    {
+        // This method would create an Onboard record and delete this inquiry
+        // Implemented in PendingFeesController->update() method
+    }
 }

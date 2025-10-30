@@ -9,7 +9,7 @@ use MongoDB\Laravel\Eloquent\Model;
 class SMstudents extends Model
 {
     protected $connection = 'mongodb';
-    protected $collection = 'smstudents';
+    protected $collection = 's_mstudents';
 
     protected $fillable = [
     'roll_no',
