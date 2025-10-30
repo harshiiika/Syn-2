@@ -18,7 +18,10 @@ use App\Http\Controllers\Master\ScholarshipController;
 use App\Http\Controllers\Student\PendingFeesController;
 use App\Http\Controllers\Student\OnboardController;
 use App\Http\Controllers\Student\PaymentController;
+use App\Http\Controllers\Student\SmStudentsController;
 
+ 
+ 
 // -------------------------
 // Authentication Routes
 // -------------------------
@@ -220,6 +223,54 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
 // ========================================
 Route::get('/students/active', [StudentController::class, 'activeStudents'])->name('students.active');
 
+// Onboarded Students Routes (from onboarded_students collection)
+Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
+    Route::get('/', [OnboardController::class, 'index'])->name('onboard');
+    Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
+});
+
+//transfer Logic 
+
+// Individual student transfer
+Route::post('/student/onboard/{id}/transfer', [OnboardController::class, 'transferToPending'])
+    ->name('student.onboard.transfer');
+
+// Bulk transfer all students
+Route::post('/student/onboard/transfer-all', [OnboardController::class, 'transferAllToPending'])
+    ->name('student.onboard.transfer-all');
+
+// Students Management Routes
+Route::prefix('smstudents')->name('smstudents.')->group(function () {
+    
+    // List all students
+    Route::get('/', [SmStudentsController::class, 'index'])->name('index');
+    
+    // Export students to CSV
+    Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
+    
+    // *** ADD THIS NEW ROUTE FOR EDIT FORM ***
+    Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
+    
+    // View single student details
+    Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
+    
+    // Update student details
+    Route::post('/{id}/update', [SmStudentsController::class, 'update'])->name('update');
+    
+    // Update student password
+    Route::post('/{id}/password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
+    
+    // Update student batch
+    Route::post('/{id}/batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
+    
+    // Deactivate student
+    Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
+    
+    // Student history
+    Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
+});
 
 Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
 Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees'])->name('students.updateFees');
