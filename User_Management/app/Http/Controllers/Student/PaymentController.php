@@ -13,96 +13,139 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-    
+    /**
+     * Show payment page for a student
+     */
     public function showPaymentPage($id)
-{
-    try {
-        Log::info('Attempting to load payment page', ['id' => $id]);
-        
-        // Find student using where clause instead of findOrFail
-        $student = Pending::where('_id', $id)->first();
-        
-        if (!$student) {
-            Log::error("Student not found", ['id' => $id]);
+    {
+        try {
+            Log::info('Loading payment page for student', ['id' => $id]);
+            
+            // Try to find student in Pending collection first, then Onboard
+            $student = Pending::where('_id', $id)->first();
+            $isPending = true;
+            
+            if (!$student) {
+                $student = Onboard::where('_id', $id)->first();
+                $isPending = false;
+            }
+            
+            if (!$student) {
+                Log::error("Student not found", ['id' => $id]);
+                return redirect()->route('student.pendingfees.pending')
+                    ->with('error', 'Student not found');
+            }
+            
+            Log::info('Student found for payment', [
+                'id' => $id,
+                'name' => $student->name,
+                'collection' => $isPending ? 'pending' : 'onboard',
+                'total_fees' => $student->total_fees_inclusive_tax ?? $student->total_fees ?? 0,
+                'paid_amount' => $student->paidAmount ?? 0,
+                'remaining_amount' => $student->remainingAmount ?? 0
+            ]);
+            
+            // Calculate payment details
+            $totalFees = $student->total_fees ?? 100000; // Base fees before GST
+            $gstRate = 0.18;
+            $gstAmount = $totalFees * $gstRate;
+            $totalFeesWithGST = $totalFees + $gstAmount;
+            
+            // Calculate installment amount (40% of total with GST)
+            $firstInstallment = $totalFeesWithGST * 0.40;
+            
+            // Get previous payments
+            $previousPayments = Payment::where('student_id', (string)$id)->get();
+            $totalPaid = Payment::where('student_id', (string)$id)
+                              ->where('payment_status', 'completed')
+                              ->sum('payment_amount') ?? 0;
+            
+            $remainingBalance = $totalFeesWithGST - $totalPaid;
+            
+            Log::info('Payment calculations', [
+                'total_fees' => $totalFees,
+                'gst_amount' => $gstAmount,
+                'total_with_gst' => $totalFeesWithGST,
+                'first_installment' => $firstInstallment,
+                'total_paid' => $totalPaid,
+                'remaining_balance' => $remainingBalance
+            ]);
+            
+            return view('student.payment.pay', compact(
+                'student', 
+                'previousPayments', 
+                'totalPaid',
+                'totalFees',
+                'gstAmount',
+                'totalFeesWithGST',
+                'firstInstallment',
+                'remainingBalance'
+            ));
+            
+        } catch (\Exception $e) {
+            Log::error("Payment page error", [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return redirect()->route('student.pendingfees.pending')
-                ->with('error', 'Student not found');
+                ->with('error', 'Error loading payment page: ' . $e->getMessage());
         }
-        
-        Log::info('Student found', [
-            'id' => $id,
-            'name' => $student->name,
-            'student_data' => $student->toArray()
-        ]);
-        
-        // Calculate previous payments
-        $previousPayments = Payment::where('student_id', (string)$id)->get();
-        $totalPaid = Payment::where('student_id', (string)$id)
-                          ->where('payment_status', 'completed')
-                          ->sum('payment_amount') ?? 0;
-        
-        Log::info('Payment calculations', [
-            'previous_payments_count' => $previousPayments->count(),
-            'total_paid' => $totalPaid
-        ]);
-        
-        return view('student.payment.pay', compact('student', 'previousPayments', 'totalPaid'));
-        
-    } catch (\Exception $e) {
-        Log::error("Payment page error", [
-            'id' => $id,
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        
-        return redirect()->route('student.pendingfees.pending')
-            ->with('error', 'Error loading payment page: ' . $e->getMessage());
     }
-}
 
     /**
-     * Process payment - both installment and full payment
+     * Process payment
      */
     public function processPayment(Request $request, $id)
     {
         DB::beginTransaction();
         
         try {
-            Log::info('Processing payment', [
+            Log::info('=== PROCESSING PAYMENT ===', [
                 'student_id' => $id,
                 'data' => $request->all()
             ]);
 
-            // Validate the payment request
+            // Validate payment request
             $validated = $request->validate([
                 'payment_type' => 'required|in:single,installment',
                 'payment_date' => 'required|date',
                 'payment_method' => 'required|in:cash,online,cheque,card',
                 'payment_amount' => 'required|numeric|min:1',
                 'total_fees' => 'required|numeric|min:0',
-                'gst_amount' => 'nullable|numeric|min:0',
                 'other_charges' => 'nullable|numeric|min:0',
-                'other_charges_description' => 'nullable|string',
-                
-                // Transaction details based on payment method
                 'transaction_id' => 'nullable|string',
                 'reference_number' => 'nullable|string',
                 'bank_name' => 'nullable|string',
                 'cheque_number' => 'nullable|string',
                 'cheque_date' => 'nullable|date',
                 'upi_id' => 'nullable|string',
-                
                 'remarks' => 'nullable|string',
-                'session' => 'nullable|string',
             ]);
 
-            // Find the student in Pending collection
-            $student = Pending::findOrFail($id);
+            // Find student in Pending first, then Onboard
+            $student = Pending::where('_id', $id)->first();
+            $isPending = true;
             
-            Log::info('Student found', ['name' => $student->name]);
+            if (!$student) {
+                $student = Onboard::where('_id', $id)->first();
+                $isPending = false;
+            }
+            
+            if (!$student) {
+                throw new \Exception('Student not found');
+            }
+            
+            Log::info('Student found for payment processing', [
+                'name' => $student->name,
+                'collection' => $isPending ? 'pending' : 'onboard'
+            ]);
 
             // Calculate fees
             $totalFees = $validated['total_fees'];
-            $gstAmount = $validated['gst_amount'] ?? ($totalFees * 0.18);
+            $gstRate = 0.18;
+            $gstAmount = $totalFees * $gstRate;
             $otherCharges = $validated['other_charges'] ?? 0;
             $grandTotal = $totalFees + $gstAmount + $otherCharges;
             $paymentAmount = $validated['payment_amount'];
@@ -119,6 +162,9 @@ class PaymentController extends Controller
             $receiptNumber = Payment::generateReceiptNumber();
             
             Log::info('Payment calculation', [
+                'total_fees' => $totalFees,
+                'gst_amount' => $gstAmount,
+                'other_charges' => $otherCharges,
                 'grand_total' => $grandTotal,
                 'payment_amount' => $paymentAmount,
                 'previous_paid' => $previousPaid,
@@ -128,7 +174,7 @@ class PaymentController extends Controller
 
             // Create payment record
             $paymentRecord = Payment::create([
-                'student_id' => $student->_id,
+                'student_id' => (string)$student->_id,
                 'student_name' => $student->name,
                 'father_name' => $student->father,
                 'contact_number' => $student->mobileNumber,
@@ -147,7 +193,6 @@ class PaymentController extends Controller
                 'total_fees' => $totalFees,
                 'gst_amount' => $gstAmount,
                 'other_charges' => $otherCharges,
-                'other_charges_description' => $validated['other_charges_description'] ?? null,
                 'grand_total' => $grandTotal,
                 
                 'transaction_id' => $validated['transaction_id'] ?? null,
@@ -168,80 +213,83 @@ class PaymentController extends Controller
                 
                 'remarks' => $validated['remarks'] ?? null,
                 'receipt_number' => $receiptNumber,
-                'session' => $validated['session'] ?? '2025-2026',
+                'session' => '2025-2026',
                 'academic_year' => date('Y'),
                 'recorded_by' => Auth::user()->name ?? 'Admin',
                 'branch' => $student->branch ?? 'Main Branch',
             ]);
 
+            Log::info('Payment record created', ['payment_id' => $paymentRecord->_id]);
+
             // Update payment history in student record
             $paymentHistory = $student->paymentHistory ?? [];
             $paymentHistory[] = [
-                'payment_id' => $paymentRecord->_id,
+                'payment_id' => (string)$paymentRecord->_id,
                 'amount' => $paymentAmount,
                 'date' => $validated['payment_date'],
                 'method' => $validated['payment_method'],
                 'type' => $validated['payment_type'],
                 'receipt_number' => $receiptNumber,
-                'recorded_at' => now()
+                'recorded_at' => now()->toDateTimeString()
             ];
+
+            // Update student fees information
+            $updateData = [
+                'totalFees' => $grandTotal,
+                'paidAmount' => $totalPaidNow,
+                'remainingAmount' => max(0, $remainingAmount),
+                'paymentHistory' => $paymentHistory,
+                'fee_status' => $remainingAmount <= 0 ? 'paid' : 'partial',
+            ];
+
+            Log::info('Updating student with payment data', $updateData);
 
             // Check if full payment is made
             if ($remainingAmount <= 0) {
-                // FULL PAYMENT - Move to Onboard collection
-                $onboardData = $student->toArray();
-                unset($onboardData['_id']); // Remove old ID
+                Log::info('FULL PAYMENT - Moving to Onboard');
                 
-                $onboardData['totalFees'] = $grandTotal;
-                $onboardData['paidAmount'] = $totalPaidNow;
-                $onboardData['remainingAmount'] = 0;
-                $onboardData['paymentStatus'] = 'fully_paid';
-                $onboardData['paymentHistory'] = $paymentHistory;
-                $onboardData['onboardedAt'] = now();
-                
-                // Create in Onboard collection
-                $onboardedStudent = Onboard::create($onboardData);
-                
-                // Update payment record with onboarded status
-                $paymentRecord->update([
-                    'remarks' => ($paymentRecord->remarks ?? '') . ' [Student Onboarded]'
-                ]);
-                
-                // Delete from Pending collection
-                $student->delete();
-                
-                DB::commit();
-                
-                Log::info('Student fully paid and onboarded', [
-                    'student_id' => $id,
-                    'student_name' => $student->name,
-                    'receipt_number' => $receiptNumber
-                ]);
-                
-                return redirect()->route('student.onboard')
-                    ->with('success', "Payment completed! Student onboarded successfully. Receipt: {$receiptNumber}");
+                if ($isPending) {
+                    // Move from Pending to Onboard
+                    $onboardData = $student->toArray();
+                    unset($onboardData['_id']);
                     
+                    $onboardData = array_merge($onboardData, $updateData);
+                    $onboardData['paymentStatus'] = 'fully_paid';
+                    $onboardData['onboardedAt'] = now();
+                    
+                    $onboardedStudent = Onboard::create($onboardData);
+                    
+                    Log::info('Student moved to Onboard', [
+                        'onboard_id' => $onboardedStudent->_id
+                    ]);
+                    
+                    $student->delete();
+                    
+                    DB::commit();
+                    
+                    return redirect()->route('student.onboard.onboard')
+                        ->with('success', "Payment completed! Student onboarded. Receipt: {$receiptNumber}");
+                } else {
+                    // Already in Onboard, just update
+                    $student->update($updateData);
+                    
+                    DB::commit();
+                    
+                    return redirect()->route('student.onboard.onboard')
+                        ->with('success', "Payment completed! Receipt: {$receiptNumber}");
+                }
             } else {
-                // PARTIAL PAYMENT - Update in Pending collection
-                $student->update([
-                    'totalFees' => $grandTotal,
-                    'paidAmount' => $totalPaidNow,
-                    'remainingAmount' => $remainingAmount,
-                    'paymentStatus' => 'partial',
-                    'paymentHistory' => $paymentHistory
-                ]);
+                // PARTIAL PAYMENT
+                Log::info('PARTIAL PAYMENT - Updating student');
+                
+                $student->update($updateData);
                 
                 DB::commit();
                 
-                Log::info('Partial payment recorded', [
-                    'student_id' => $id,
-                    'amount_paid' => $paymentAmount,
-                    'remaining' => $remainingAmount,
-                    'receipt_number' => $receiptNumber
-                ]);
+                $redirectRoute = $isPending ? 'student.pendingfees.pending' : 'student.onboard.onboard';
                 
-                return redirect()->route('student.pendingfees.pending')
-                    ->with('success', "Payment of ₹{$paymentAmount} recorded successfully. Receipt: {$receiptNumber}. Remaining: ₹{$remainingAmount}");
+                return redirect()->route($redirectRoute)
+                    ->with('success', "Payment of ₹" . number_format($paymentAmount, 2) . " recorded. Receipt: {$receiptNumber}. Remaining: ₹" . number_format($remainingAmount, 2));
             }
             
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -250,12 +298,6 @@ class PaymentController extends Controller
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->withInput();
-                
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            DB::rollBack();
-            Log::error('Student not found:', ['id' => $id]);
-            return redirect()->route('student.pendingfees.pending')
-                ->with('error', 'Student not found');
                 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -277,7 +319,6 @@ class PaymentController extends Controller
     public function viewHistory($id)
     {
         try {
-            // Check in both Pending and Onboard collections
             $student = Pending::find($id);
             $isOnboarded = false;
             
@@ -286,7 +327,6 @@ class PaymentController extends Controller
                 $isOnboarded = true;
             }
             
-            // Get all payment records from Payment model
             $payments = Payment::getStudentPayments($id);
             $totalPaid = Payment::getTotalPaid($id);
             
@@ -307,8 +347,6 @@ class PaymentController extends Controller
         try {
             $payment = Payment::findOrFail($paymentId);
             
-            // Generate PDF receipt (you can use dompdf or similar)
-            // For now, return a view
             return view('student.payment.receipt', compact('payment'));
             
         } catch (\Exception $e) {
