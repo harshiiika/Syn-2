@@ -9,10 +9,13 @@ class Pending extends Model
     protected $connection = 'mongodb';
     protected $collection = 'students';
     
-    // CRITICAL: Make sure this is set
-    public $timestamps = true; // or false if you don't have timestamps
+    public $timestamps = true;
+    
+    // Allow mass assignment for ALL fields
+    protected $guarded = [];
     
     protected $fillable = [
+        // Basic Details
         'name', 
         'father', 
         'mother', 
@@ -26,6 +29,8 @@ class Pending extends Model
         'fatherOccupation', 
         'fatherGrade', 
         'motherOccupation',
+        
+        // Address Details
         'state', 
         'city', 
         'pinCode', 
@@ -34,23 +39,95 @@ class Pending extends Model
         'economicWeakerSection',
         'armyPoliceBackground', 
         'speciallyAbled', 
+        
+        // Course Details
+        'course_type',
         'courseType', 
         'courseName', 
         'deliveryMode',
         'medium', 
         'board', 
         'courseContent', 
+        
+        // Academic Details
         'previousClass', 
         'previousMedium', 
         'schoolName',
         'previousBoard', 
         'passingYear', 
         'percentage', 
+        
+        // Scholarship Eligibility
         'isRepeater', 
         'scholarshipTest', 
         'lastBoardPercentage',
         'competitionExam', 
-        'batchName'
+        
+        // Batch Details
+        'batchName',
+        'batchStartDate',
+        
+        // Metadata
+        'email',
+        'alternateNumber',
+        'branch',
+        'session',
+        'status',
+        'admission_date',
+        
+        // ✅ SCHOLARSHIP & FEES DETAILS
+        'eligible_for_scholarship',
+        'scholarship_name',
+        'total_fee_before_discount',
+        'discretionary_discount',
+        'discretionary_discount_type',
+        'discretionary_discount_value',
+        'discretionary_discount_reason',
+        'discount_percentage',
+        'discounted_fee',
+        'fees_breakup',
+        'total_fees',
+        'gst_amount',
+        'total_fees_inclusive_tax',
+        'single_installment_amount',
+        'installment_1',
+        'installment_2',
+        'installment_3',
+        'fees_calculated_at',
+        
+        // Fee tracking fields
+        'paid_fees',
+        'remaining_fees',
+        'fee_status',
+        'totalFees',
+        'paidAmount',
+        'remainingAmount',
+        'paymentHistory',
+    ];
+    
+    protected $casts = [
+        'dob' => 'date',
+        'batchStartDate' => 'date',
+        'admission_date' => 'datetime',
+        'percentage' => 'float',
+        'lastBoardPercentage' => 'float',
+        'total_fee_before_discount' => 'float',
+        'discount_percentage' => 'float',
+        'discounted_fee' => 'float',
+        'total_fees' => 'float',
+        'gst_amount' => 'float',
+        'total_fees_inclusive_tax' => 'float',
+        'single_installment_amount' => 'float',
+        'installment_1' => 'float',
+        'installment_2' => 'float',
+        'installment_3' => 'float',
+        'paid_fees' => 'float',
+        'remaining_fees' => 'float',
+        'fees_calculated_at' => 'datetime',
+        'totalFees' => 'float',
+        'paidAmount' => 'float',
+        'remainingAmount' => 'float',
+        'paymentHistory' => 'array',
     ];
     
     // Add this to help with debugging
@@ -59,20 +136,11 @@ class Pending extends Model
         parent::boot();
         
         static::updating(function ($model) {
-            \Log::info('Model updating event fired for: ' . $model->name);
+            \Log::info('Pending model updating event fired for: ' . $model->name);
         });
         
         static::updated(function ($model) {
-            \Log::info('Model updated event fired for: ' . $model->name);
+            \Log::info('Pending model updated event fired for: ' . $model->name);
         });
     }
-
-    protected $casts = [
-        'totalFees' => 'float',
-        'paidAmount' => 'float',
-        'remainingAmount' => 'float',
-        'paymentHistory' => 'array',
-        'dob' => 'date',
-        'batchStartDate' => 'date'
-    ];
 }

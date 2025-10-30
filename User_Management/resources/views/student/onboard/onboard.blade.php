@@ -404,10 +404,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             Edit Details
           </button></a>
           <li>
-<button class="dropdown-item">
-            View Details
-          </button></a>
-        </li>
+  <a href="{{ route('student.onboard.show', $student->_id) }}">
+    <button class="dropdown-item">View Details</button>
+  </a>
+</li>
         <li>
 <button class="dropdown-item">
             Transfer Student

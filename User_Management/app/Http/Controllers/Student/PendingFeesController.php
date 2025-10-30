@@ -43,8 +43,7 @@ class PendingFeesController extends Controller
     }
 
     /**
-     * Display the student details (read-only view)
-     * This is the 'view' method that your route is calling
+     * Display the student details (read-only view) with scholarship/fees data
      */
     public function view(string $id)
     {
@@ -59,16 +58,44 @@ class PendingFeesController extends Controller
                 $student = Pending::findOrFail($id);
             }
             
-            Log::info('Viewing pending student details:', [
+            Log::info('=== VIEWING PENDING FEES STUDENT DETAILS ===', [
                 'student_id' => $id,
-                'student_name' => $student->name ?? 'N/A'
+                'student_name' => $student->name ?? 'N/A',
+                'has_scholarship_data' => !empty($student->eligible_for_scholarship),
+                'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'NOT SET',
+                'scholarship_name' => $student->scholarship_name ?? 'NOT SET',
+                'total_fee_before_discount' => $student->total_fee_before_discount ?? 'NOT SET',
+                'total_fees' => $student->total_fees ?? 'NOT SET',
+                'gst_amount' => $student->gst_amount ?? 'NOT SET',
             ]);
             
-            // Return the view with student data
-            return view('student.pendingfees.view', compact('student'));
+            // ✅ Prepare fees data array (same as StudentController and OnboardController)
+            $feesData = [
+                'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
+                'scholarship_name' => $student->scholarship_name ?? 'N/A',
+                'total_fee_before_discount' => $student->total_fee_before_discount ?? 0,
+                'discretionary_discount' => $student->discretionary_discount ?? 'No',
+                'discount_percentage' => $student->discount_percentage ?? 0,
+                'discounted_fee' => $student->discounted_fee ?? 0,
+                'fees_breakup' => $student->fees_breakup ?? 'Class room course (with test series & study material)',
+                'total_fees' => $student->total_fees ?? 0,
+                'gst_amount' => $student->gst_amount ?? 0,
+                'total_fees_inclusive_tax' => $student->total_fees_inclusive_tax ?? 0,
+                'single_installment_amount' => $student->single_installment_amount ?? 0,
+                'installment_1' => $student->installment_1 ?? 0,
+                'installment_2' => $student->installment_2 ?? 0,
+                'installment_3' => $student->installment_3 ?? 0,
+            ];
+            
+            Log::info('✅ Fees data prepared for pending fees view:', $feesData);
+            
+            // Return the view with student data AND feesData
+            return view('student.pendingfees.view', compact('student', 'feesData'));
             
         } catch (\Exception $e) {
-            Log::error("View failed for student ID {$id}: " . $e->getMessage());
+            Log::error("❌ View failed for pending fees student ID {$id}: " . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
             return redirect()->route('student.pendingfees.pending')
                 ->with('error', 'Student not found');
         }
@@ -252,16 +279,39 @@ class PendingFeesController extends Controller
                     'name' => $student->name
                 ]);
 
-                // Create entry in Onboard collection
-                $onboardData = array_merge($validated, [
-                    'onboardedAt' => now(),
-                    'email' => $student->email ?? null,
-                    'alternateNumber' => $student->alternateNumber ?? null,
-                    'branch' => $student->branch ?? null,
-                    'session' => $student->session ?? null,
+                // ✅ Get ALL student data including scholarship/fees
+                $onboardData = $student->toArray();
+                
+                // Remove MongoDB _id to create new document
+                unset($onboardData['_id']);
+                
+                // Add onboarded timestamp
+                $onboardData['onboardedAt'] = now();
+                $onboardData['status'] = 'onboarded';
+                
+                // Merge with validated data
+                $onboardData = array_merge($onboardData, $validated);
+
+                // ✅ Log scholarship data before creating onboarded student
+                Log::info('=== SCHOLARSHIP DATA IN PENDING FEES STUDENT ===', [
+                    'student_id' => $student->_id,
+                    'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'NOT SET',
+                    'scholarship_name' => $student->scholarship_name ?? 'NOT SET',
+                    'total_fee_before_discount' => $student->total_fee_before_discount ?? 'NOT SET',
+                    'total_fees' => $student->total_fees ?? 'NOT SET',
+                    'gst_amount' => $student->gst_amount ?? 'NOT SET',
                 ]);
 
-                Onboard::create($onboardData);
+                // Create entry in Onboard collection
+                $onboardedStudent = Onboard::create($onboardData);
+
+                Log::info('✓ Onboarded student created from pending fees:', [
+                    'onboarded_id' => $onboardedStudent->_id,
+                    'name' => $onboardedStudent->name,
+                    'eligible_for_scholarship' => $onboardedStudent->eligible_for_scholarship ?? 'NOT SAVED',
+                    'scholarship_name' => $onboardedStudent->scholarship_name ?? 'NOT SAVED',
+                    'total_fees' => $onboardedStudent->total_fees ?? 'NOT SAVED',
+                ]);
 
                 // Delete from original Student/Pending collection
                 $student->delete();
@@ -272,7 +322,7 @@ class PendingFeesController extends Controller
                 ]);
 
                 return redirect()
-                    ->route('student.pendingfees.pending')
+                    ->route('student.onboard.onboard')
                     ->with('success', 'Student profile completed and moved to onboard successfully!');
             }
 

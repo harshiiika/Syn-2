@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 class OnboardController extends Controller
 {
     /**
-     /**
      * Display all onboarded students (students with status = 'onboarded')
      */
     public function index()
@@ -42,32 +41,59 @@ class OnboardController extends Controller
     }
 
     /**
-     * View onboarded student details
+     * View onboarded student details with scholarship and fees information
      */
     public function show($id)
     {
         try {
             $student = Onboard::findOrFail($id);
             
-            Log::info('Viewing onboarded student details:', [
+            Log::info('=== VIEWING ONBOARDED STUDENT DETAILS ===', [
                 'student_id' => $id,
-                'student_name' => $student->name
+                'student_name' => $student->name,
+                'has_scholarship_data' => !empty($student->eligible_for_scholarship),
+                'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'NOT SET',
+                'scholarship_name' => $student->scholarship_name ?? 'NOT SET',
+                'total_fee_before_discount' => $student->total_fee_before_discount ?? 'NOT SET',
+                'total_fees' => $student->total_fees ?? 'NOT SET',
+                'gst_amount' => $student->gst_amount ?? 'NOT SET',
             ]);
             
-            return view('student.onboard.view', compact('student'));
+            // ✅ Prepare fees data array (same structure as InquiryController and StudentController)
+            $feesData = [
+                'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
+                'scholarship_name' => $student->scholarship_name ?? 'N/A',
+                'total_fee_before_discount' => $student->total_fee_before_discount ?? 0,
+                'discretionary_discount' => $student->discretionary_discount ?? 'No',
+                'discount_percentage' => $student->discount_percentage ?? 0,
+                'discounted_fee' => $student->discounted_fee ?? 0,
+                'fees_breakup' => $student->fees_breakup ?? 'Class room course (with test series & study material)',
+                'total_fees' => $student->total_fees ?? 0,
+                'gst_amount' => $student->gst_amount ?? 0,
+                'total_fees_inclusive_tax' => $student->total_fees_inclusive_tax ?? 0,
+                'single_installment_amount' => $student->single_installment_amount ?? 0,
+                'installment_1' => $student->installment_1 ?? 0,
+                'installment_2' => $student->installment_2 ?? 0,
+                'installment_3' => $student->installment_3 ?? 0,
+            ];
+            
+            Log::info('✅ Fees data prepared for view:', $feesData);
+            
+            return view('student.onboard.view', compact('student', 'feesData'));
             
         } catch (\Exception $e) {
-            Log::error("View failed for student ID {$id}: " . $e->getMessage());
+            Log::error("❌ View failed for onboarded student ID {$id}: " . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
             return redirect()->route('student.onboard.onboard')
                 ->with('error', 'Student not found');
         }
     }
 
-
     /**
      * Edit onboarded student
      */
-   public function edit($id)
+    public function edit($id)
     {
         try {
             $student = Onboard::findOrFail($id);
@@ -77,8 +103,8 @@ class OnboardController extends Controller
                 'student_name' => $student->name
             ]);
             
-            // Use the same edit view
-            return view('student.student.edit', compact('student'));
+            // Use the same edit view as pending students
+            return view('student.pending.edit', compact('student'));
             
         } catch (\Exception $e) {
             Log::error("Edit failed for student ID {$id}: " . $e->getMessage());
@@ -89,7 +115,6 @@ class OnboardController extends Controller
 
     /**
      * Update onboarded student information
-     * This uses the same update logic as StudentController
      */
     public function update(Request $request, $id)
     {

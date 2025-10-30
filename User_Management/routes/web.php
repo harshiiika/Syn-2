@@ -44,18 +44,6 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Inquiry Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/inquiries/data', [InquiryController::class, 'data'])->name('inquiries.data');
-Route::post('/inquiries/upload', [InquiryController::class, 'upload'])->name('inquiries.upload');
-Route::post('/inquiries/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('inquiries.bulk.onboard');
-Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
-Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
-Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.destroy');
-
-/*
-|--------------------------------------------------------------------------
 | Session Management Routes
 |--------------------------------------------------------------------------
 */
@@ -201,16 +189,9 @@ Route::prefix('master')->name('master.')->group(function () {
 // 1. PENDING INQUIRY STUDENTS (status = 'pending_fees', incomplete forms)
 // ========================================
 Route::prefix('students')->name('student.student.')->group(function () {
-    // List pending inquiry students
     Route::get('/pending', [StudentController::class, 'index'])->name('pending');
-    
-    // Edit pending inquiry student
     Route::get('/{id}/edit', [StudentController::class, 'edit'])->name('edit');
-    
-    // Update pending inquiry student (auto-moves to onboarded if complete)
     Route::put('/{id}', [StudentController::class, 'update'])->name('update');
-    
-    // View pending inquiry student details
     Route::get('/{id}', [StudentController::class, 'show'])->name('show');
 });
 
@@ -218,16 +199,9 @@ Route::prefix('students')->name('student.student.')->group(function () {
 // 2. ONBOARDED STUDENTS
 // ========================================
 Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
-    // List all onboarded students (THIS IS THE CORRECT ROUTE FOR YOUR BUTTON)
     Route::get('/', [OnboardController::class, 'index'])->name('onboard');
-    
-    // View onboarded student details
     Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
-    
-    // Edit onboarded student
     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
-    
-    // Update onboarded student
     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
 });
 
@@ -235,16 +209,9 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
 // 3. PENDING FEES STUDENTS
 // ========================================
 Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(function () {
-    // List pending fees students
     Route::get('/', [PendingFeesController::class, 'index'])->name('pending');
-    
-    // Edit pending fees student
     Route::get('/{id}/edit', [PendingFeesController::class, 'edit'])->name('edit');
-    
-    // Update pending fees student
     Route::put('/{id}', [PendingFeesController::class, 'update'])->name('update');
-    
-    // View pending fees student
     Route::get('/{id}', [PendingFeesController::class, 'view'])->name('view');
 });
 
@@ -280,3 +247,28 @@ Route::get('/inquiries/{id}/fees-batches', [InquiryController::class, 'showFeesB
 // Update fees and batches (if you need to save batch selection later)
 Route::put('/inquiries/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])
     ->name('inquiries.fees-batches.update');
+
+    
+// ========================================
+// 5. PAYMENT ROUTES
+// ========================================
+
+// Payment Routes
+Route::prefix('student/payment')->name('student.payment.')->group(function () {
+    // Show payment page
+    Route::get('/{id}', [PaymentController::class, 'showPaymentPage'])->name('show');
+    
+    // Process payment
+    Route::post('/{id}/process', [PaymentController::class, 'processPayment'])->name('process');
+    
+    // View payment history
+    Route::get('/{id}/history', [PaymentController::class, 'viewHistory'])->name('history');
+    
+    // Download receipt
+    Route::get('/receipt/{paymentId}', [PaymentController::class, 'downloadReceipt'])->name('receipt');
+});
+
+// Debug route - add this temporarily to test
+Route::get('/test-payment/{id}', function($id) {
+    return "Payment route working for ID: " . $id;
+})->name('test.payment');
