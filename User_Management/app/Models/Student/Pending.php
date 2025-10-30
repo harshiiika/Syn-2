@@ -7,72 +7,87 @@ use MongoDB\Laravel\Eloquent\Model;
 class Pending extends Model
 {
     protected $connection = 'mongodb';
-    protected $collection = 'students';
+    protected $collection = 'pending_fees_students'; // This is the collection for pending fees
     
-    // CRITICAL: Make sure this is set
-    public $timestamps = true; // or false if you don't have timestamps
+    public $timestamps = true;
     
     protected $fillable = [
-        'name', 
-        'father', 
-        'mother', 
-        'dob', 
-        'mobileNumber', 
-        'fatherWhatsapp', 
-        'motherContact', 
+        // Basic Details
+        'name',
+        'father',
+        'mother',
+        'dob',
+        'mobileNumber',
+        'fatherWhatsapp',
+        'motherContact',
         'studentContact',
-        'category', 
-        'gender', 
-        'fatherOccupation', 
-        'fatherGrade', 
+        'category',
+        'gender',
+        'fatherOccupation',
+        'fatherGrade',
         'motherOccupation',
-        'state', 
-        'city', 
-        'pinCode', 
-        'address', 
-        'belongToOtherCity', 
+        
+        // Address Details
+        'state',
+        'city',
+        'pinCode',
+        'address',
+        'belongToOtherCity',
         'economicWeakerSection',
-        'armyPoliceBackground', 
-        'speciallyAbled', 
-        'courseType', 
-        'courseName', 
+        'armyPoliceBackground',
+        'speciallyAbled',
+        
+        // Course Details
+        'courseType',
+        'courseName',
         'deliveryMode',
-        'medium', 
-        'board', 
-        'courseContent', 
-        'previousClass', 
-        'previousMedium', 
+        'medium',
+        'board',
+        'courseContent',
+        
+        // Academic Details
+        'previousClass',
+        'previousMedium',
         'schoolName',
-        'previousBoard', 
-        'passingYear', 
-        'percentage', 
-        'isRepeater', 
-        'scholarshipTest', 
+        'previousBoard',
+        'passingYear',
+        'percentage',
+        
+        // Additional Details
+        'isRepeater',
+        'scholarshipTest',
         'lastBoardPercentage',
-        'competitionExam', 
-        'batchName'
+        'competitionExam',
+        
+        // Batch Details
+        'batchName',
+        'batchStartDate',
+        
+        // Metadata
+        'email',
+        'alternateNumber',
+        'branch',
+        'session',
+        'onboardedAt',
+        'transferredToPendingFeesAt',
+        
+        // Fees Details (for pending fees)
+        'totalFees',
+        'paidAmount',
+        'remainingAmount',
+        'paymentHistory'
     ];
-    
-    // Add this to help with debugging
-    protected static function boot()
-    {
-        parent::boot();
-        
-        static::updating(function ($model) {
-            \Log::info('Model updating event fired for: ' . $model->name);
-        });
-        
-        static::updated(function ($model) {
-            \Log::info('Model updated event fired for: ' . $model->name);
-        });
-    }
 
     protected $casts = [
+        'dob' => 'date',
+        'batchStartDate' => 'date',
+        'onboardedAt' => 'datetime',
+        'transferredToPendingFeesAt' => 'datetime',
+        'percentage' => 'float',
+        'lastBoardPercentage' => 'float',
         'totalFees' => 'float',
         'paidAmount' => 'float',
         'remainingAmount' => 'float',
         'paymentHistory' => 'array',
-        'dob' => 'date',
-        'batchStartDate' => 'date'
     ];
 }
