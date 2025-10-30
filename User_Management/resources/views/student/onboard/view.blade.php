@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>View Student Details - Pending Fees</title>
+  <title>View Student Details</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{{asset('css/emp.css')}}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,28 +24,34 @@
       border-bottom: 2px solid #ff6b35;
     }
 
-    .info-row {
+    .form-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
       margin-bottom: 15px;
     }
 
-    .info-item {
-      padding: 12px;
-      background: #f8f9fa;
-      border-radius: 5px;
-      border-left: 3px solid #ff6b35;
+    .form-group {
+      display: flex;
+      flex-direction: column;
     }
 
-    .info-label {
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
       font-weight: 600;
       color: #555;
       font-size: 0.9rem;
       margin-bottom: 5px;
     }
 
-    .info-value {
+    .form-control {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background-color: #f8f9fa;
       color: #333;
       font-size: 1rem;
     }
@@ -78,15 +84,6 @@
     .btn-edit:hover {
       background-color: #e55a2b;
       color: white;
-    }
-
-    .badge-status {
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-weight: 600;
-      display: inline-block;
-      background-color: #ffc107;
-      color: #000;
     }
   </style>
 </head>
@@ -166,12 +163,11 @@
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
                     <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a>
+                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
+                      id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
-                      id="side-icon"></i> Branch
-                    Management</a></li>
+                      id="side-icon"></i> Branch Management</a></li>
               </ul>
             </div>
           </div>
@@ -216,8 +212,7 @@
                     <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
                   </a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Pending Fees
-                    Students</a></li>
+                      id="side-icon"></i>Pending Fees Students</a></li>
                 <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Students</a></li>
               </ul>
@@ -316,8 +311,7 @@
                 <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
                     Series</a></li>
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file"
-                      id="side-icon"></i>Inquiry
-                    History</a></li>
+                      id="side-icon"></i>Inquiry History</a></li>
                 <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
                       id="side-icon"></i>Onboard History</a></li>
               </ul>
@@ -330,80 +324,81 @@
     <!-- Main Content Area -->
     <div class="right" id="right">
       <div class="container-fluid py-4">
-        <a href="{{ route('inquiries.index') }}" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i> Back
+        <a href="{{ route('student.student.pending') }}" class="back-btn">
+          <i class="fa-solid fa-arrow-left"></i> Back to Pending Inquiries
         </a>
         <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 style="color: #ff6b35;">View Student Details - Pending Inquiry</h4>
         </div>
 
         <!-- Basic Details Section -->
         <div class="view-section">
-          <h4>View Basic Details</h4>
+          <h4>Basic Details</h4>
           <div class="form-row">
             <div class="form-group">
               <label>Student Name</label>
-              <input type="text" class="form-control" value="{{ $inquiry->student_name ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->name ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Father Name</label>
-              <input type="text" class="form-control" value="{{ $inquiry->father_name ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->father ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Mother Name</label>
-              <input type="text" class="form-control" value="{{ $inquiry->mother ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->mother ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Date of Birth</label>
               <input type="text" class="form-control"
-                value="{{ $inquiry->dob ? date('d-m-Y', strtotime($inquiry->dob)) : 'N/A' }}" readonly>
+                value="{{ $student->dob ? date('d-m-Y', strtotime($student->dob)) : 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Father Contact No</label>
-              <input type="text" class="form-control" value="{{ $inquiry->father_contact ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->mobileNumber ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Father WhatsApp Number</label>
-              <input type="text" class="form-control" value="{{ $inquiry->father_whatsapp ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->fatherWhatsapp ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Mother Contact No</label>
-              <input type="text" class="form-control" value="{{ $inquiry->motherContact ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->motherContact ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Student Contact No</label>
-              <input type="text" class="form-control" value="{{ $inquiry->student_contact ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->studentContact ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Category</label>
-              <input type="text" class="form-control" value="{{ $inquiry->category ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->category ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Gender</label>
-              <input type="text" class="form-control" value="{{ $inquiry->gender ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->gender ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Father Occupation</label>
-              <input type="text" class="form-control" value="{{ $inquiry->fatherOccupation ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->fatherOccupation ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Father's Grade</label>
-              <input type="text" class="form-control" value="{{ $inquiry->fatherGrade ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->fatherGrade ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Mother Occupation</label>
-              <input type="text" class="form-control" value="{{ $inquiry->motherOccupation ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->motherOccupation ?? 'N/A' }}" readonly>
             </div>
           </div>
         </div>
@@ -414,42 +409,42 @@
           <div class="form-row">
             <div class="form-group">
               <label>State</label>
-              <input type="text" class="form-control" value="{{ $inquiry->state ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->state ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>City</label>
-              <input type="text" class="form-control" value="{{ $inquiry->city ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->city ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Pin Code</label>
-              <input type="text" class="form-control" value="{{ $inquiry->pinCode ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->pinCode ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group full-width">
               <label>Address</label>
-              <textarea class="form-control" rows="2" readonly>{{ $inquiry->address ?? 'N/A' }}</textarea>
+              <textarea class="form-control" rows="2" readonly>{{ $student->address ?? 'N/A' }}</textarea>
             </div>
 
             <div class="form-group">
               <label>Belong to Other City</label>
-              <input type="text" class="form-control" value="{{ $inquiry->belongToOtherCity ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->belongToOtherCity ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Economic Weaker Section</label>
-              <input type="text" class="form-control" value="{{ $inquiry->economicWeakerSection ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->economicWeakerSection ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Army/Police/Martyr Background</label>
-              <input type="text" class="form-control" value="{{ $inquiry->armyPoliceBackground ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->armyPoliceBackground ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Specially Abled</label>
-              <input type="text" class="form-control" value="{{ $inquiry->speciallyAbled ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->speciallyAbled ?? 'N/A' }}" readonly>
             </div>
           </div>
         </div>
@@ -460,32 +455,32 @@
           <div class="form-row">
             <div class="form-group">
               <label>Course Type</label>
-              <input type="text" class="form-control" value="{{ $inquiry->courseType ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->course_type ?? $student->courseType ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Course Name</label>
-              <input type="text" class="form-control" value="{{ $inquiry->course_name ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->courseName ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Delivery Mode</label>
-              <input type="text" class="form-control" value="{{ $inquiry->delivery_mode ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->deliveryMode ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Medium</label>
-              <input type="text" class="form-control" value="{{ $inquiry->medium ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->medium ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Board</label>
-              <input type="text" class="form-control" value="{{ $inquiry->board ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->board ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Course Content</label>
-              <input type="text" class="form-control" value="{{ $inquiry->course_content ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->courseContent ?? 'N/A' }}" readonly>
             </div>
           </div>
         </div>
@@ -496,100 +491,138 @@
           <div class="form-row">
             <div class="form-group">
               <label>Previous Class</label>
-              <input type="text" class="form-control" value="{{ $inquiry->previousClass ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->previousClass ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Previous Medium</label>
-              <input type="text" class="form-control" value="{{ $inquiry->previousMedium ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->previousMedium ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>School Name</label>
-              <input type="text" class="form-control" value="{{ $inquiry->schoolName ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->schoolName ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Previous Board</label>
-              <input type="text" class="form-control" value="{{ $inquiry->previousBoard ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->previousBoard ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Passing Year</label>
-              <input type="text" class="form-control" value="{{ $inquiry->passingYear ?? 'N/A' }}" readonly>
+              <input type="text" class="form-control" value="{{ $student->passingYear ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Percentage</label>
               <input type="text" class="form-control"
-                value="{{ $inquiry->percentage ?? 'N/A' }}{{ $inquiry->percentage ? '%' : '' }}" readonly>
+                value="{{ $student->percentage ?? 'N/A' }}{{ $student->percentage ? '%' : '' }}" readonly>
             </div>
           </div>
         </div>
 
-<!-- Scholarship Details Section -->
+        <!-- Scholarship Eligibility Section -->
+        <div class="view-section">
+          <h4>Scholarship Eligibility</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Is Repeater</label>
+              <input type="text" class="form-control" value="{{ $student->isRepeater ?? 'N/A' }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Scholarship Test Appeared</label>
+              <input type="text" class="form-control" value="{{ $student->scholarshipTest ?? 'N/A' }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Last Board Percentage</label>
+              <input type="text" class="form-control"
+                value="{{ $student->lastBoardPercentage ?? 'N/A' }}{{ $student->lastBoardPercentage ? '%' : '' }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Competition Exam Appeared</label>
+              <input type="text" class="form-control" value="{{ $student->competitionExam ?? 'N/A' }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Allocation Section -->
+        <div class="view-section">
+          <h4>Batch Allocation</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Batch Name</label>
+              <input type="text" class="form-control" value="{{ $student->batchName ?? 'N/A' }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ NEW: Scholarship Details Section -->
         <div class="view-section">
           <h4>Scholarship Details</h4>
           <div class="form-row">
             <div class="form-group">
               <label>Eligible For Scholarship</label>
-              <input type="text" class="form-control" value="{{ $feesData['eligible_for_scholarship'] }}" readonly>
+              <input type="text" class="form-control" value="{{ $feesData['eligible_for_scholarship'] ?? 'No' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Name of Scholarship</label>
-              <input type="text" class="form-control" value="{{ $feesData['scholarship_name'] }}" readonly>
+              <input type="text" class="form-control" value="{{ $feesData['scholarship_name'] ?? 'N/A' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Total Fee Before Discount</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fee_before_discount']) }}" readonly>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fee_before_discount'] ?? 0) }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Discretionary Discount</label>
-              <input type="text" class="form-control" value="{{ $feesData['discretionary_discount'] }}" readonly>
+              <input type="text" class="form-control" value="{{ $feesData['discretionary_discount'] ?? 'No' }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Discount Percentage</label>
-              <input type="text" class="form-control" value="{{ $feesData['discount_percentage'] }}%" readonly>
+              <input type="text" class="form-control" value="{{ $feesData['discount_percentage'] ?? 0 }}%" readonly>
             </div>
 
             <div class="form-group">
               <label>Discounted Fee</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['discounted_fee']) }}" readonly>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['discounted_fee'] ?? 0) }}" readonly>
             </div>
           </div>
         </div>
 
-        <!-- Fees and Available Batches Details Section -->
+        <!-- ✅ NEW: Fees and Available Batches Details Section -->
         <div class="view-section">
           <h4>Fees and Available Batches Details</h4>
           <div class="form-row">
             <div class="form-group full-width">
               <label>Fees Breakup</label>
-              <input type="text" class="form-control" value="{{ $feesData['fees_breakup'] }}" readonly style="color: #ff6b35; font-weight: 600;">
+              <input type="text" class="form-control" value="{{ $feesData['fees_breakup'] ?? 'Class room course (with test series & study material)' }}" readonly style="color: #ff6b35; font-weight: 600;">
             </div>
 
             <div class="form-group">
               <label>Total Fees</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fees']) }}" readonly>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fees'] ?? 0) }}" readonly>
             </div>
 
             <div class="form-group">
               <label>GST Amount</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['gst_amount']) }}" readonly>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['gst_amount'] ?? 0) }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Total Fees Inclusive Tax</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fees_inclusive_tax']) }}" readonly style="color: #ff6b35; font-weight: 600;">
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['total_fees_inclusive_tax'] ?? 0) }}" readonly style="color: #ff6b35; font-weight: 600;">
             </div>
 
             <div class="form-group">
               <label>If Fees Deposited In Single Installment</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['single_installment_amount']) }}" readonly style="color: #ff6b35; font-weight: 600;">
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['single_installment_amount'] ?? 0) }}" readonly style="color: #ff6b35; font-weight: 600;">
             </div>
 
             <div class="form-group full-width" style="margin-top: 15px; margin-bottom: 5px;">
@@ -598,24 +631,23 @@
 
             <div class="form-group">
               <label>Installment 1 (40%)</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_1']) }}" readonly>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_1'] ?? 0) }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Installment 2 (30%)</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_2']) }}" readonly>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_2'] ?? 0) }}" readonly>
             </div>
 
             <div class="form-group">
               <label>Installment 3 (30%)</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_3']) }}" readonly>
+              <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_3'] ?? 0) }}" readonly>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>

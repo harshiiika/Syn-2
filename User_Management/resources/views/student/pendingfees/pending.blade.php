@@ -380,7 +380,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </tbody>
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-      @foreach($pendingFees as $index => $pending)
+@foreach($pendingFees as $index => $pending)
 <tr>
    <!-- Serial number (index + 1) -->
   <td>{{ $index + 1 }}</td>
@@ -406,10 +406,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </a>
       </li>
       <li>
-<button class="dropdown-item">
-          Pay Fees
-              </button>   
-            </a> 
+        <!-- Updated Pay Fees button -->
+        <a class="dropdown-item" href="{{ route('student.payment.show', $pending->_id) }}">
+        Pay Fees
+        </a>
       </li>
       <li>
         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#historyModal{{ $pending->_id }}">
