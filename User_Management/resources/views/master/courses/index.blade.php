@@ -606,7 +606,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
         <input type="text" 
               id="subjectInput" 
               class="form-control" 
-              placeholder="Type subject name (auto-suggest enabled)"
+              placeholder="Subject name"
               autocomplete="off">
         
         <!-- Autocomplete dropdown -->
@@ -742,7 +742,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
     <input type="text" 
            id="editSubjectInput{{ $courseId }}" 
            class="form-control" 
-           placeholder="Type subject name (auto-suggest enabled)"
+           placeholder="Subject name"
            autocomplete="off">
     
     <div id="editSubjectSuggestions{{ $courseId }}" 

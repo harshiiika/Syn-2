@@ -554,7 +554,7 @@ height: 30px;
 }
 
 #doneBtn{
-    height: 50px;
+    height: 40px;
     width: 90px;
     background-color: #ff6200;
     color: #fff;
@@ -562,4 +562,5 @@ height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-color: #ff6200;
 }

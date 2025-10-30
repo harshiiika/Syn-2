@@ -11,6 +11,9 @@ class Onboard extends Model
     
     public $timestamps = true;
 
+    // Allow mass assignment for ALL fields
+    protected $guarded = [];
+
     protected $fillable = [
         // Basic Details
         'name',
@@ -38,6 +41,8 @@ class Onboard extends Model
         'speciallyAbled',
         
         // Course Details
+        'course_type',
+        'course',
         'courseType',
         'courseName',
         'deliveryMode',
@@ -53,7 +58,7 @@ class Onboard extends Model
         'passingYear',
         'percentage',
         
-        // Additional Details
+        // Scholarship Eligibility
         'isRepeater',
         'scholarshipTest',
         'lastBoardPercentage',
@@ -68,7 +73,14 @@ class Onboard extends Model
         'alternateNumber',
         'branch',
         'session',
-        'onboardedAt'
+        'status',
+        'onboardedAt',
+        
+        // Fee Details (if any)
+        'total_fees',
+        'paid_fees',
+        'remaining_fees',
+        'fee_status',
     ];
 
     protected $casts = [
@@ -77,6 +89,9 @@ class Onboard extends Model
         'onboardedAt' => 'datetime',
         'percentage' => 'float',
         'lastBoardPercentage' => 'float',
+        'total_fees' => 'float',
+        'paid_fees' => 'float',
+        'remaining_fees' => 'float',
     ];
 
     /**
