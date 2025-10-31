@@ -408,10 +408,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </a>
 </li>
         <li>
-<button class="dropdown-item">
-            Transfer Student
-          </button></a>
-        </li>
+  <form action="{{ route('student.onboard.transfer', $student->_id) }}" method="POST" style="display: inline;">
+    @csrf
+    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to transfer this student to Pending Fees?')">Transfer Student</button>
+  </form>
+</li>
         <li>
 <button class="dropdown-item">
             History
