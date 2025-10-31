@@ -20,7 +20,7 @@ use App\Http\Controllers\Student\OnboardController;
 use App\Http\Controllers\Student\PaymentController;
 
 // -------------------------
-// Authentication Routes
+// Authentication Routes+++++
 // -------------------------
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
@@ -210,10 +210,15 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
 // ========================================
 Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(function () {
     Route::get('/', [PendingFeesController::class, 'index'])->name('pending');
+    Route::get('/{id}', [PendingFeesController::class, 'view'])->name('view');
     Route::get('/{id}/edit', [PendingFeesController::class, 'edit'])->name('edit');
     Route::put('/{id}', [PendingFeesController::class, 'update'])->name('update');
-    Route::get('/{id}', [PendingFeesController::class, 'view'])->name('view');
+    
+    // Payment routes
+    Route::get('/{id}/pay', [PendingFeesController::class, 'pay'])->name('pay');
+    Route::post('/{id}/pay', [PendingFeesController::class, 'processPayment'])->name('processPayment');
 });
+
 
 // ========================================
 // 4. ACTIVE STUDENTS
@@ -248,25 +253,6 @@ Route::get('/inquiries/{id}/fees-batches', [InquiryController::class, 'showFeesB
 Route::put('/inquiries/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])
     ->name('inquiries.fees-batches.update');
 
-    
-// ========================================
-// 5. PAYMENT ROUTES
-// ========================================
-
-// Payment Routes
-Route::prefix('student/payment')->name('student.payment.')->group(function () {
-    // Show payment page
-    Route::get('/{id}', [PaymentController::class, 'showPaymentPage'])->name('show');
-    
-    // Process payment
-    Route::post('/{id}/process', [PaymentController::class, 'processPayment'])->name('process');
-    
-    // View payment history
-    Route::get('/{id}/history', [PaymentController::class, 'viewHistory'])->name('history');
-    
-    // Download receipt
-    Route::get('/receipt/{paymentId}', [PaymentController::class, 'downloadReceipt'])->name('receipt');
-});
 
 // Debug route - add this temporarily to test
 Route::get('/test-payment/{id}', function($id) {

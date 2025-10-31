@@ -357,4 +357,187 @@ class PendingFeesController extends Controller
                 ->withInput();
         }
     }
+
+    /**
+ * Show payment form
+ */
+public function pay($id)
+{
+    try {
+        // Find student in all collections
+        $student = null;
+        
+        if ($student = Student::find($id)) {
+            $collection = 'students';
+        } elseif ($student = Pending::find($id)) {
+            $collection = 'pending';
+        } elseif ($student = Onboard::find($id)) {
+            $collection = 'onboard';
+        }
+        
+        if (!$student) {
+            throw new \Exception('Student not found');
+        }
+        
+        // Get fee details
+        $totalFees = floatval($student->total_fees ?? $student->total_fee_before_discount ?? 0);
+        $gstAmount = floatval($student->gst_amount ?? 0);
+        
+        if ($gstAmount == 0 && $totalFees > 0) {
+            $gstAmount = $totalFees * 0.18;
+        }
+        
+        if ($totalFees == 0) {
+            $totalFees = 100000;
+            $gstAmount = 18000;
+        }
+        
+        $totalFeesWithGST = $totalFees + $gstAmount;
+        
+        // Calculate paid amount
+        $totalPaid = 0;
+        if (isset($student->paymentHistory) && is_array($student->paymentHistory)) {
+            foreach ($student->paymentHistory as $payment) {
+                $totalPaid += floatval($payment['amount'] ?? 0);
+            }
+        } else {
+            $totalPaid = floatval($student->paid_fees ?? $student->paidAmount ?? 0);
+        }
+        
+        $remainingBalance = max(0, $totalFeesWithGST - $totalPaid);
+        $firstInstallment = $totalFeesWithGST * 0.40;
+        
+        Log::info('Payment form opened:', [
+            'student_id' => $id,
+            'total_fees' => $totalFees,
+            'total_paid' => $totalPaid,
+            'remaining' => $remainingBalance
+        ]);
+        
+        return view('student.pendingfees.pay', compact(
+            'student',
+            'totalFees',
+            'gstAmount',
+            'totalFeesWithGST',
+            'totalPaid',
+            'remainingBalance',
+            'firstInstallment'
+        ));
+        
+    } catch (\Exception $e) {
+        Log::error('Payment form error:', [
+            'id' => $id,
+            'error' => $e->getMessage()
+        ]);
+        
+        return redirect()->route('student.pendingfees.pending')
+            ->with('error', 'Unable to load payment form');
+    }
+}
+
+/**
+ * Process payment
+ */
+public function processPayment(Request $request, $id)
+{
+    try {
+        Log::info('=== PAYMENT PROCESSING ===', ['id' => $id]);
+        
+        // Validate
+        $validated = $request->validate([
+            'payment_date' => 'required|date',
+            'payment_type' => 'required|in:cash,online,cheque,card',
+            'payment_amount' => 'required|numeric|min:1',
+            'transaction_id' => 'nullable|string',
+            'remarks' => 'nullable|string',
+            'do_you_want_to_pay_fees' => 'required|in:single_payment,in_installment',
+            'other_charges' => 'nullable|numeric|min:0'
+        ]);
+        
+        // Find student
+        $student = Student::find($id) ?? Pending::find($id) ?? Onboard::findOrFail($id);
+        
+        // Calculate totals
+        $paymentAmount = floatval($validated['payment_amount']);
+        $otherCharges = floatval($validated['other_charges'] ?? 0);
+        
+        // Create payment record
+        $paymentRecord = [
+            'date' => $validated['payment_date'],
+            'amount' => $paymentAmount,
+            'method' => $validated['payment_type'],
+            'transaction_id' => $validated['transaction_id'] ?? null,
+            'remarks' => $validated['remarks'] ?? null,
+            'type' => $validated['do_you_want_to_pay_fees'],
+            'other_charges' => $otherCharges,
+            'recorded_at' => now()->toDateTimeString()
+        ];
+        
+        // Update payment history
+        $paymentHistory = $student->paymentHistory ?? [];
+        if (!is_array($paymentHistory)) {
+            $paymentHistory = [];
+        }
+        $paymentHistory[] = $paymentRecord;
+        
+        // Calculate new totals
+        $totalFees = floatval($student->total_fees ?? $student->total_fee_before_discount ?? 0);
+        $gstAmount = floatval($student->gst_amount ?? 0);
+        
+        if ($gstAmount == 0 && $totalFees > 0) {
+            $gstAmount = $totalFees * 0.18;
+        }
+        
+        $totalFeesWithGST = $totalFees + $gstAmount;
+        
+        // Calculate total paid
+        $newPaidAmount = 0;
+        foreach ($paymentHistory as $payment) {
+            $newPaidAmount += floatval($payment['amount'] ?? 0);
+        }
+        
+        $newRemainingBalance = max(0, $totalFeesWithGST - $newPaidAmount);
+        
+        // Determine status
+        $feeStatus = $newRemainingBalance <= 0 ? 'paid' : ($newPaidAmount > 0 ? 'partial' : 'pending');
+        
+        // Update student
+        $student->update([
+            'paymentHistory' => $paymentHistory,
+            'paid_fees' => $newPaidAmount,
+            'paidAmount' => $newPaidAmount,
+            'remaining_fees' => $newRemainingBalance,
+            'remainingAmount' => $newRemainingBalance,
+            'fee_status' => $feeStatus,
+            'last_payment_date' => $validated['payment_date'],
+            'total_fees' => $totalFees,
+            'gst_amount' => $gstAmount,
+            'total_fees_inclusive_tax' => $totalFeesWithGST,
+            'updated_at' => now()
+        ]);
+        
+        Log::info('✓ Payment processed', [
+            'amount' => $paymentAmount,
+            'new_paid' => $newPaidAmount,
+            'remaining' => $newRemainingBalance
+        ]);
+        
+        $message = "Payment of ₹" . number_format($paymentAmount, 2) . " recorded successfully!";
+        if ($newRemainingBalance > 0) {
+            $message .= " Remaining: ₹" . number_format($newRemainingBalance, 2);
+        } else {
+            $message .= " All fees paid!";
+        }
+        
+        return redirect()->route('student.pendingfees.pending')
+            ->with('success', $message);
+            
+    } catch (\Exception $e) {
+        Log::error('Payment failed:', ['error' => $e->getMessage()]);
+        
+        return redirect()->back()
+            ->with('error', 'Payment failed: ' . $e->getMessage())
+            ->withInput();
+    }
+}
 }

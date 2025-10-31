@@ -605,7 +605,51 @@
               <input type="text" class="form-control" value="₹{{ number_format($feesData['installment_3'] ?? 0) }}" readonly>
             </div>
           </div>
-        </div>      
+        </div>  
+        
+<!-- Payment Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Total Fees</h6>
+                <h4 class="text-primary">₹{{ number_format(($student->total_fees ?? 0) + ($student->gst_amount ?? 0), 0) }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Paid Amount</h6>
+                <h4 class="text-success">₹{{ number_format($student->paid_fees ?? 0, 0) }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Remaining</h6>
+                <h4 class="text-danger">₹{{ number_format($student->remaining_fees ?? 0, 0) }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Status</h6>
+                <h4>
+                    @if(($student->remaining_fees ?? 0) <= 0)
+                        <span class="badge bg-success">Paid</span>
+                    @elseif(($student->paid_fees ?? 0) > 0)
+                        <span class="badge bg-warning">Partial</span>
+                    @else
+                        <span class="badge bg-danger">Pending</span>
+                    @endif
+                </h4>
+            </div>
+        </div>
+    </div>
+</div>
       </div>
     </div>
   </div>
