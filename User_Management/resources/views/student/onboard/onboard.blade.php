@@ -379,11 +379,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <tr>
             </tr>
           </tbody>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
+
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
       @foreach($students as $index => $student)
@@ -430,10 +426,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </tr>
 @endforeach
 
-<<<<<<< HEAD
->>>>>>> f511f3813e8a0d0efe4af9d77513ecef0a386326
-=======
->>>>>>> 119b3e2f306b00c0441094f32a236d5c2973aaed
         </table>
 
 

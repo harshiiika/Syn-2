@@ -208,6 +208,7 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
 // ========================================
 // 3. PENDING FEES STUDENTS
 // ========================================
+
 Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(function () {
     Route::get('/', [PendingFeesController::class, 'index'])->name('pending');
     Route::get('/{id}', [PendingFeesController::class, 'view'])->name('view');
@@ -219,12 +220,10 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
     Route::post('/{id}/pay', [PendingFeesController::class, 'processPayment'])->name('processPayment');
 });
 
-
 // ========================================
 // 4. ACTIVE STUDENTS
 // ========================================
 Route::get('/students/active', [StudentController::class, 'activeStudents'])->name('students.active');
-
 
 Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
 Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees'])->name('students.updateFees');
@@ -240,7 +239,6 @@ Route::get('/inquiries/{id}/scholarship', [InquiryController::class, 'showSchola
 Route::put('/inquiries/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])
     ->name('inquiries.scholarship.update');
 
-// Your existing inquiry routes
 Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
 Route::get('/inquiries/{id}/edit', [InquiryController::class, 'edit'])->name('inquiries.edit');
 Route::put('/inquiries/{id}', [InquiryController::class, 'update'])->name('inquiries.update');
@@ -253,8 +251,7 @@ Route::get('/inquiries/{id}/fees-batches', [InquiryController::class, 'showFeesB
 Route::put('/inquiries/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])
     ->name('inquiries.fees-batches.update');
 
-
 // Debug route - add this temporarily to test
-Route::get('/test-payment/{id}', function($id) {
-    return "Payment route working for ID: " . $id;
-})->name('test.payment');
+// Route::get('/test-payment/{id}', function($id) {
+//     return "Payment route working for ID: " . $id;
+// })->name('test.payment');

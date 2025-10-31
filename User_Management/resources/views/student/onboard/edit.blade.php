@@ -381,7 +381,7 @@
     <!-- Main Content Area -->
     <div class="right" id="right">
       <div class="container-fluid py-4">
-        <a href="{{ route('student.student.pending') }}" class="back-btn">
+        <a href="{{ route('student.onboard.onboard') }}" class="back-btn">
           <i class="fa-solid fa-arrow-left"></i> Back
         </a>
 
