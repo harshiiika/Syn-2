@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Student\Onboard;
 use Illuminate\Support\Facades\Log;
+use App\Models\Student\Pending;
 
 class OnboardController extends Controller
 {
@@ -225,4 +226,72 @@ class OnboardController extends Controller
                 ->withInput();
         }
     }
-}
+
+/**
+ * Transfer an onboarded student to Pending Fees Students.
+ */
+public function transfer(Request $request, $id)
+{
+    try {
+        Log::info('=== STUDENT TRANSFER INITIATED ===', [
+            'onboard_id' => $id,
+            'request' => $request->all()
+        ]);
+
+        $onboardStudent = Onboard::findOrFail($id);
+
+        // Optional validation
+        $validated = $request->validate([
+            'transfer_reason' => 'nullable|string|max:255',
+            'batchName' => 'nullable|string|max:255',
+            'transfer_date' => 'nullable|date',
+        ]);
+
+        // Prepare data for Pending model
+        $pendingData = $onboardStudent->toArray();
+        unset($pendingData['_id']); // Remove for new document
+
+        // Set status and audit fields
+        $pendingData['status'] = 'pending_fees';
+        $pendingData['transferred_from'] = 'onboard';
+        $pendingData['transfer_reason'] = $validated['transfer_reason'] ?? null;
+        $pendingData['batchName'] = $validated['batchName'] ?? $onboardStudent->batchName;
+        $pendingData['transfer_date'] = $validated['transfer_date'] ?? now();
+        $pendingData['transferred_at'] = now();
+        $pendingData['updated_at'] = now();
+
+        // Ensure remaining_fees is set
+        if (empty($pendingData['remaining_fees']) && !empty($pendingData['total_fees'])) {
+            $pendingData['remaining_fees'] = $pendingData['total_fees'];
+        }
+
+        // Create in Pending model
+        $pendingStudent = Pending::create($pendingData);
+
+        Log::info('✅ Student transferred to Pending Fees', [
+            'new_pending_id' => $pendingStudent->_id,
+            'old_onboard_id' => $onboardStudent->_id,
+            'name' => $pendingStudent->name,
+        ]);
+
+        // Delete from Onboard
+        $onboardStudent->delete();
+
+        return redirect()->route('student.onboard.onboard')
+            ->with('success', 'Student transferred to Pending Fees successfully!');
+
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        Log::error('❌ Onboard student not found for transfer', ['id' => $id]);
+        return redirect()->back()->with('error', 'Student not found.');
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::error('❌ Validation failed during transfer', ['errors' => $e->errors()]);
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        Log::error('❌ Transfer failed: ' . $e->getMessage(), [
+            'trace' => $e->getTraceAsString()
+        ]);
+        return redirect()->back()
+            ->with('error', 'Transfer failed: ' . $e->getMessage())
+            ->withInput();
+    }
+}}

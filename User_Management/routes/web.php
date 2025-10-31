@@ -204,6 +204,9 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
     Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
+    
+   
+    Route::post('/transfer/{id}', [OnboardController::class, 'transfer'])->name('transfer');
 });
 
 // ========================================
