@@ -17,8 +17,8 @@ use App\Http\Controllers\Master\OtherFeeController;
 use App\Http\Controllers\Master\ScholarshipController;
 use App\Http\Controllers\Student\PendingFeesController;
 use App\Http\Controllers\Student\OnboardController;
-use App\Http\Controllers\Student\SmStudentsController;
 use App\Http\Controllers\Student\PaymentController;
+use App\Http\Controllers\Student\SmStudentsController;
 
 // -------------------------
 // Authentication Routes+++++
@@ -189,12 +189,14 @@ Route::prefix('master')->name('master.')->group(function () {
 // ========================================
 // 1. PENDING INQUIRY STUDENTS (status = 'pending_fees', incomplete forms)
 // ========================================
-Route::prefix('students')->name('student.student.')->group(function () {
-    Route::get('/pending', [StudentController::class, 'index'])->name('pending');
-    Route::get('/{id}/edit', [StudentController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [StudentController::class, 'update'])->name('update');
-    Route::get('/{id}', [StudentController::class, 'show'])->name('show');
-});
+Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
+Route::get('/inquiries/data', [InquiryController::class, 'data'])->name('inquiries.data');
+Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
+Route::get('/inquiries/{id}', [InquiryController::class, 'show'])->name('inquiries.show');
+Route::put('/inquiries/{id}', [InquiryController::class, 'update'])->name('inquiries.update');
+Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.destroy');
+Route::post('/inquiries/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('inquiries.bulkOnboard');
+
 
 // ========================================
 // 2. ONBOARDED STUDENTS
@@ -204,9 +206,6 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
     Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
-    
-   
-    Route::post('/transfer/{id}', [OnboardController::class, 'transfer'])->name('transfer');
 });
 
 // ========================================
@@ -262,7 +261,6 @@ Route::put('/inquiries/{id}/fees-batches', [InquiryController::class, 'updateFee
 Route::get('/test-payment/{id}', function($id) {
     return "Payment route working for ID: " . $id;
 })->name('test.payment');
-
 
 // Student Management (SM Students)
 Route::prefix('smstudents')
