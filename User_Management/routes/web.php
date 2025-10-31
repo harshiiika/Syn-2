@@ -17,6 +17,7 @@ use App\Http\Controllers\Master\OtherFeeController;
 use App\Http\Controllers\Master\ScholarshipController;
 use App\Http\Controllers\Student\PendingFeesController;
 use App\Http\Controllers\Student\OnboardController;
+use App\Http\Controllers\Student\SmStudentsController;
 use App\Http\Controllers\Student\PaymentController;
 
 // -------------------------
@@ -252,6 +253,40 @@ Route::put('/inquiries/{id}/fees-batches', [InquiryController::class, 'updateFee
     ->name('inquiries.fees-batches.update');
 
 // Debug route - add this temporarily to test
-// Route::get('/test-payment/{id}', function($id) {
-//     return "Payment route working for ID: " . $id;
-// })->name('test.payment');
+Route::get('/test-payment/{id}', function($id) {
+    return "Payment route working for ID: " . $id;
+})->name('test.payment');
+
+
+// Student Management (SM Students)
+Route::prefix('smstudents')
+    ->name('smstudents.')
+    ->group(function () {
+
+        //  List all students
+        Route::get('/', [SmStudentsController::class, 'index'])->name('index');
+
+        //  Export data as CSV (moved before {id} routes to avoid conflicts)
+        Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
+
+        //  View student details
+        Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
+
+        //  Edit student
+        Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
+
+        //  Update student
+        Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
+
+        // Update student password
+        Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
+
+        //  Update student batch
+        Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
+
+        //  Deactivate student
+        Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
+
+        //  View student history
+        Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
+    });

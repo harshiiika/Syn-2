@@ -221,8 +221,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
-                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Students</a></li>
+                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>  
@@ -379,7 +378,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <tr>
             </tr>
           </tbody>
-
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
       @foreach($students as $index => $student)
@@ -425,7 +423,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </td>
 </tr>
 @endforeach
-
         </table>
 
 

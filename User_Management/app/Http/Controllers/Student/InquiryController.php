@@ -269,7 +269,7 @@ class InquiryController extends Controller
             $onboardedCount = 0;
 
             foreach ($inquiries as $inquiry) {
-                // ✅ DEBUG: Log inquiry data before creating student
+                //   DEBUG: Log inquiry data before creating student
                 \Log::info('=== INQUIRY DATA BEFORE ONBOARD ===', [
                     'inquiry_id' => $inquiry->_id,
                     'student_name' => $inquiry->student_name,
@@ -282,7 +282,7 @@ class InquiryController extends Controller
                     'installment_1' => $inquiry->installment_1 ?? 'NOT SET',
                 ]);
 
-                // ✅ Create student record in 'students' collection with ALL fields
+                //   Create student record in 'students' collection with ALL fields
                 $student = \App\Models\Student\Student::create([
                     // Basic Details
                     'name' => $inquiry->student_name,
@@ -334,7 +334,7 @@ class InquiryController extends Controller
                     // Batch Details
                     'batchName' => $inquiry->batchName ?? null,
                     
-                    // ✅ SCHOLARSHIP & FEES DETAILS (all fields from inquiry)
+                    //   SCHOLARSHIP & FEES DETAILS (all fields from inquiry)
                     'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
                     'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
                     'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
@@ -354,12 +354,12 @@ class InquiryController extends Controller
                     'installment_3' => $inquiry->installment_3 ?? 0,
                     'fees_calculated_at' => $inquiry->fees_calculated_at ?? null,
                     
-                    // ✅ METADATA & STATUS FIELDS
+                    //   METADATA & STATUS FIELDS
                     'email' => $inquiry->student_name . '@temp.com',
                     'branch' => $inquiry->branch ?? 'Main Branch',
                     'session' => session('current_session', '2025-2026'),
                     
-                    // ✅ PAYMENT STATUS (for pending fees tracking) - FIXED: No duplicate total_fees
+                    //   PAYMENT STATUS (for pending fees tracking) - FIXED: No duplicate total_fees
                     'paid_fees' => 0,
                     'remaining_fees' => $inquiry->total_fees_inclusive_tax ?? 0,
                     'status' => 'pending_fees',
@@ -367,7 +367,7 @@ class InquiryController extends Controller
                     'admission_date' => now(),
                 ]);
 
-                \Log::info('✅ Student created with scholarship data:', [
+                \Log::info('  Student created with scholarship data:', [
                     'id' => $student->_id,
                     'name' => $student->name,
                     'status' => $student->status,
@@ -381,7 +381,7 @@ class InquiryController extends Controller
                     'remaining_fees' => $student->remaining_fees
                 ]);
 
-                // ✅ Mark inquiry as onboarded
+                //   Mark inquiry as onboarded
                 $inquiry->update(['status' => 'onboarded']);
                 
                 $onboardedCount++;

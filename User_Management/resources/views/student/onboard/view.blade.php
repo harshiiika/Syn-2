@@ -560,7 +560,7 @@
           </div>
         </div>
 
-        <!-- ✅ NEW: Scholarship Details Section -->
+        <!--   NEW: Scholarship Details Section -->
         <div class="view-section">
           <h4>Scholarship Details</h4>
           <div class="form-row">
@@ -596,7 +596,7 @@
           </div>
         </div>
 
-        <!-- ✅ NEW: Fees and Available Batches Details Section -->
+        <!--   NEW: Fees and Available Batches Details Section -->
         <div class="view-section">
           <h4>Fees and Available Batches Details</h4>
           <div class="form-row">

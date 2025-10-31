@@ -584,14 +584,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ✅ Make loadData global so jQuery can call it
+  //   Make loadData global so jQuery can call it
   window.loadData = loadData;
 
   // Initial load
   loadData();
 });
 
-// ✅ jQuery form submit
+//   jQuery form submit
 $(document).ready(function () {
   $('#scholarshipForm').on('submit', function (e) {
     e.preventDefault();

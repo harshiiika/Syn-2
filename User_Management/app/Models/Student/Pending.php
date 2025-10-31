@@ -3,6 +3,8 @@
 namespace App\Models\Student;
 
 use MongoDB\Laravel\Eloquent\Model;
+use App\Models\Master\Batch;
+use App\Models\Master\Courses;
 
 class Pending extends Model
 {
@@ -11,98 +13,55 @@ class Pending extends Model
     
     public $timestamps = true;
     
-    // Allow mass assignment for ALL fields
     protected $guarded = [];
     
     protected $fillable = [
         // Basic Details
-        'name', 
-        'father', 
-        'mother', 
-        'dob', 
-        'mobileNumber', 
-        'fatherWhatsapp', 
-        'motherContact', 
-        'studentContact',
-        'category', 
-        'gender', 
-        'fatherOccupation', 
-        'fatherGrade', 
-        'motherOccupation',
+        'name', 'father', 'mother', 'dob', 
+        'mobileNumber', 'fatherWhatsapp', 'motherContact', 'studentContact',
+        'category', 'gender', 'fatherOccupation', 'fatherGrade', 'motherOccupation',
         
         // Address Details
-        'state', 
-        'city', 
-        'pinCode', 
-        'address', 
-        'belongToOtherCity', 
-        'economicWeakerSection',
-        'armyPoliceBackground', 
-        'speciallyAbled', 
+        'state', 'city', 'pinCode', 'address', 
+        'belongToOtherCity', 'economicWeakerSection',
+        'armyPoliceBackground', 'speciallyAbled',
         
         // Course Details
-        'course_type',
-        'courseType', 
-        'courseName', 
-        'deliveryMode',
-        'medium', 
-        'board', 
-        'courseContent', 
+        'course_type', 'courseType', 'courseName', 'deliveryMode',
+        'medium', 'board', 'courseContent',
         
         // Academic Details
-        'previousClass', 
-        'previousMedium', 
-        'schoolName',
-        'previousBoard', 
-        'passingYear', 
-        'percentage', 
+        'previousClass', 'previousMedium', 'schoolName',
+        'previousBoard', 'passingYear', 'percentage',
         
         // Scholarship Eligibility
-        'isRepeater', 
-        'scholarshipTest', 
-        'lastBoardPercentage',
-        'competitionExam', 
+        'isRepeater', 'scholarshipTest', 'lastBoardPercentage', 'competitionExam',
         
         // Batch Details
-        'batchName',
-        'batchStartDate',
+        'batchName', 'batchStartDate', 'batch_id', 'course_id',
         
         // Metadata
-        'email',
-        'alternateNumber',
-        'branch',
-        'session',
-        'status',
-        'admission_date',
+        'email', 'alternateNumber', 'branch', 'session', 'status', 'admission_date',
         
-        // ✅ SCHOLARSHIP & FEES DETAILS
-        'eligible_for_scholarship',
-        'scholarship_name',
-        'total_fee_before_discount',
-        'discretionary_discount',
-        'discretionary_discount_type',
-        'discretionary_discount_value',
-        'discretionary_discount_reason',
-        'discount_percentage',
-        'discounted_fee',
-        'fees_breakup',
-        'total_fees',
-        'gst_amount',
-        'total_fees_inclusive_tax',
-        'single_installment_amount',
-        'installment_1',
-        'installment_2',
-        'installment_3',
+        // Scholarship & Fees
+        'eligible_for_scholarship', 'scholarship_name', 'total_fee_before_discount',
+        'discretionary_discount', 'discretionary_discount_type', 'discretionary_discount_value',
+        'discretionary_discount_reason', 'discount_percentage', 'discounted_fee',
+        'fees_breakup', 'total_fees', 'gst_amount', 'total_fees_inclusive_tax',
+        'single_installment_amount', 'installment_1', 'installment_2', 'installment_3',
         'fees_calculated_at',
         
-        // Fee tracking fields
-        'paid_fees',
-        'remaining_fees',
-        'fee_status',
-        'totalFees',
-        'paidAmount',
-        'remainingAmount',
-        'paymentHistory',
+        // Payment Tracking
+        'paid_fees', 'remaining_fees', 'fee_status',
+        'totalFees', 'paidAmount', 'remainingAmount', 'paymentHistory',
+        'last_payment_date',
+        
+        // Documents
+        'passport_photo', 'marksheet', 'caste_certificate', 'scholarship_proof',
+        'secondary_marksheet', 'senior_secondary_marksheet',
+        
+        // Audit
+        'onboardedAt', 'transferred_from', 'transferred_at', 'created_by', 'updated_by'
     ];
     
     protected $casts = [
@@ -123,24 +82,178 @@ class Pending extends Model
         'installment_3' => 'float',
         'paid_fees' => 'float',
         'remaining_fees' => 'float',
-        'fees_calculated_at' => 'datetime',
         'totalFees' => 'float',
         'paidAmount' => 'float',
         'remainingAmount' => 'float',
         'paymentHistory' => 'array',
+        'fees_calculated_at' => 'datetime',
+        'onboardedAt' => 'datetime',
+        'transferred_at' => 'datetime',
     ];
     
-    // Add this to help with debugging
-    protected static function boot()
+    // Relationships
+    public function batch()
     {
-        parent::boot();
-        
-        static::updating(function ($model) {
-            \Log::info('Pending model updating event fired for: ' . $model->name);
-        });
-        
-        static::updated(function ($model) {
-            \Log::info('Pending model updated event fired for: ' . $model->name);
-        });
+        return $this->belongsTo(Batch::class, 'batch_id', '_id');
+    }
+    
+    public function course()
+    {
+        return $this->belongsTo(Courses::class, 'course_id', '_id');
+    }
+    
+    // Scopes
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending_fees');
+    }
+    
+    public function scopeOnboarded($query)
+    {
+        return $query->where('status', 'onboarded');
     }
 }
+// namespace App\Models\Student;
+
+// use MongoDB\Laravel\Eloquent\Model;
+
+// class Pending extends Model
+// {
+//     protected $connection = 'mongodb';
+//     protected $collection = 'students';
+    
+//     public $timestamps = true;
+    
+//     // Allow mass assignment for ALL fields
+//     protected $guarded = [];
+    
+//     protected $fillable = [
+//         // Basic Details
+//         'name', 
+//         'father', 
+//         'mother', 
+//         'dob', 
+//         'mobileNumber', 
+//         'fatherWhatsapp', 
+//         'motherContact', 
+//         'studentContact',
+//         'category', 
+//         'gender', 
+//         'fatherOccupation', 
+//         'fatherGrade', 
+//         'motherOccupation',
+        
+//         // Address Details
+//         'state', 
+//         'city', 
+//         'pinCode', 
+//         'address', 
+//         'belongToOtherCity', 
+//         'economicWeakerSection',
+//         'armyPoliceBackground', 
+//         'speciallyAbled', 
+        
+//         // Course Details
+//         'course_type',
+//         'courseType', 
+//         'courseName', 
+//         'deliveryMode',
+//         'medium', 
+//         'board', 
+//         'courseContent', 
+        
+//         // Academic Details
+//         'previousClass', 
+//         'previousMedium', 
+//         'schoolName',
+//         'previousBoard', 
+//         'passingYear', 
+//         'percentage', 
+        
+//         // Scholarship Eligibility
+//         'isRepeater', 
+//         'scholarshipTest', 
+//         'lastBoardPercentage',
+//         'competitionExam', 
+        
+//         // Batch Details
+//         'batchName',
+//         'batchStartDate',
+        
+//         // Metadata
+//         'email',
+//         'alternateNumber',
+//         'branch',
+//         'session',
+//         'status',
+//         'admission_date',
+        
+//         //   SCHOLARSHIP & FEES DETAILS
+//         'eligible_for_scholarship',
+//         'scholarship_name',
+//         'total_fee_before_discount',
+//         'discretionary_discount',
+//         'discretionary_discount_type',
+//         'discretionary_discount_value',
+//         'discretionary_discount_reason',
+//         'discount_percentage',
+//         'discounted_fee',
+//         'fees_breakup',
+//         'total_fees',
+//         'gst_amount',
+//         'total_fees_inclusive_tax',
+//         'single_installment_amount',
+//         'installment_1',
+//         'installment_2',
+//         'installment_3',
+//         'fees_calculated_at',
+        
+//         // Fee tracking fields
+//         'paid_fees',
+//         'remaining_fees',
+//         'fee_status',
+//         'totalFees',
+//         'paidAmount',
+//         'remainingAmount',
+//         'paymentHistory',
+//     ];
+    
+//     protected $casts = [
+//         'dob' => 'date',
+//         'batchStartDate' => 'date',
+//         'admission_date' => 'datetime',
+//         'percentage' => 'float',
+//         'lastBoardPercentage' => 'float',
+//         'total_fee_before_discount' => 'float',
+//         'discount_percentage' => 'float',
+//         'discounted_fee' => 'float',
+//         'total_fees' => 'float',
+//         'gst_amount' => 'float',
+//         'total_fees_inclusive_tax' => 'float',
+//         'single_installment_amount' => 'float',
+//         'installment_1' => 'float',
+//         'installment_2' => 'float',
+//         'installment_3' => 'float',
+//         'paid_fees' => 'float',
+//         'remaining_fees' => 'float',
+//         'fees_calculated_at' => 'datetime',
+//         'totalFees' => 'float',
+//         'paidAmount' => 'float',
+//         'remainingAmount' => 'float',
+//         'paymentHistory' => 'array',
+//     ];
+    
+//     // Add this to help with debugging
+//     protected static function boot()
+//     {
+//         parent::boot();
+        
+//         static::updating(function ($model) {
+//             \Log::info('Pending model updating event fired for: ' . $model->name);
+//         });
+        
+//         static::updated(function ($model) {
+//             \Log::info('Pending model updated event fired for: ' . $model->name);
+//         });
+//     }
+// }
