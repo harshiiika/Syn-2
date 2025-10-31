@@ -116,7 +116,7 @@ class StudentController extends Controller
                 return view('student.onboard.view', compact('student'));
             }
             
-            return view('master.student.show', ['student' => $student]);
+            return view('student.onboard.onboard', ['student' => $student]);
             
         } catch (\Exception $e) {
             Log::error("View failed for student ID {$id}: " . $e->getMessage());

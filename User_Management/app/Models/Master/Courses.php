@@ -6,9 +6,9 @@ use MongoDB\Laravel\Eloquent\Model as Eloquent;
 
 class Courses extends Eloquent
 {
-    protected $connection = 'mongodb';      // ensure your mongodb connection name
-    protected $collection = 'courses';      // mongo collection
-
+    protected $connection = 'mongodb';     
+    protected $collection = 'courses';    
+    
     protected $fillable = [
         'course_name',
         'course_type',

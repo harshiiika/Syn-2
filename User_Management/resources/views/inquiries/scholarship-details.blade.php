@@ -3,114 +3,205 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Pay Fees - {{ $student->name }}</title>
+  <title>Scholarship Details</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{{asset('css/emp.css')}}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  
   <style>
-    .view-section {
+    .container-custom {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .form-section {
       background: #fff;
-      padding: 25px;
+      padding: 30px;
       margin-bottom: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .view-section h4 {
+    
+    .form-section h4 {
       color: #ff6b35;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
       border-bottom: 2px solid #ff6b35;
-      font-size: 1.2rem;
+      font-weight: 600;
     }
-    .form-row {
+    
+    .detail-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: 300px 1fr;
       gap: 20px;
-      margin-bottom: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
     }
-    .form-group {
-      display: flex;
-      flex-direction: column;
+    
+    .detail-row:last-child {
+      border-bottom: none;
     }
-    .form-group.full-width {
-      grid-column: 1 / -1;
-    }
-    .form-group label {
+    
+    .detail-label {
       font-weight: 600;
-      color: #555;
-      font-size: 0.9rem;
-      margin-bottom: 5px;
-    }
-    .form-control {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      background-color: #f8f9fa;
       color: #333;
-      font-size: 1rem;
     }
-    .form-control:focus {
-      background-color: #fff;
-      border-color: #ff6b35;
-      outline: none;
-      box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+    
+    .detail-value {
+      color: #666;
     }
-    .back-btn {
+    
+    .detail-value.highlight {
       color: #ff6b35;
-      text-decoration: none;
       font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      margin-bottom: 20px;
+      font-size: 1.1em;
     }
-    .back-btn:hover {
-      color: #e55a2b;
-    }
-    .btn-pay {
-      background-color: #ff6b35;
-      color: white;
-      padding: 12px 40px;
-      border: none;
-      border-radius: 5px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .btn-pay:hover {
-      background-color: #e55a2b;
-    }
+    
     .radio-group {
       display: flex;
-      gap: 20px;
-      align-items: center;
+      gap: 30px;
+      margin-top: 10px;
     }
-    .radio-option {
+    
+    .radio-group label {
       display: flex;
       align-items: center;
       gap: 8px;
+      cursor: pointer;
+      font-weight: normal;
     }
-    .radio-option input[type="radio"] {
+    
+    .radio-group input[type="radio"] {
       width: 18px;
       height: 18px;
       cursor: pointer;
     }
-    .radio-option label {
-      margin: 0;
-      cursor: pointer;
-      font-weight: 500;
+    
+    .sticky-footer {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      margin-top: 30px;
+      border-radius: 8px;
+      z-index: 100;
+      display: flex;
+      justify-content: flex-end;
     }
-    select.form-control {
+    
+    .btn-next {
+      background: #ff6513ff;
+      color: white;
+      padding: 12px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-next:hover {
+      background: #e55a2b;
+      transform: translateY(-2px);
+    }
+    
+    .btn-next:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #ff6b35;
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-weight: 600;
+      border: 1px solid #ff6b35;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+      background: #ff6b35;
+      color: white;
+    }
+    
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+    }
+    
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .page-title {
+      color: #ff6b35;
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .discount-input-section {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 6px;
+    }
+
+    .discount-input-section.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .form-control, .form-select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      width: 100%;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #ff6b35;
+      box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+      outline: none;
     }
   </style>
 </head>
+
 <body>
-  <!-- Header -->
+  <!-- Header Section -->
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="{{asset('images/logo.png.jpg')}}" class="img" alt="Logo">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -135,15 +226,15 @@
   </div>
 
   <div class="main-container">
-    <!-- Sidebar -->
+    <!-- Sidebar (same as edit page) -->
     <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-
-      <!-- Left side bar accordion -->
+      
       <div class="accordion accordion-flush" id="accordionFlushExample">
+        <!-- Same accordion structure as edit page -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -343,173 +434,127 @@
       </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main Content Area -->
     <div class="right" id="right">
       <div class="container-fluid py-4">
-        <a href="{{ route('student.pendingfees.pending') }}" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i> Back
-        </a>
+        <!-- Page Header -->
+        <div class="page-header"> 
+          <a href="{{ route('inquiries.edit', $inquiry->_id) }}" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> Back
+          </a>
+          <h3 class="page-title">Update Inquiry</h3>
+        </div>
 
         @if(session('success'))
-          <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <div class="alert alert-success">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>{{ session('success') }}</span>
           </div>
         @endif
 
-        @if(session('error'))
-          <div class="alert alert-danger alert-dismissible fade show">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        @endif
+        <form method="POST" action="{{ route('inquiries.scholarship.update', $inquiry->_id) }}">
+    @csrf
+    @method('PUT')
 
-        <form action="{{ route('student.pendingfees.processPayment', $student->_id) }}" method="POST" id="paymentForm">
-          @csrf
+          <!-- Scholarship Details Section -->
+          <div class="form-section">
+            <h4>Scholarship Details</h4>
+            
+            <div class="detail-row">
+              <div class="detail-label">Eligible For Scholarship</div>
+              <div class="detail-value">
+                @if($eligibleForScholarship)
+                  <span style="color: #28a745; font-weight: 600;">Yes</span>
+                @else
+                  <span style="color: #dc3545; font-weight: 600;">No</span>
+                @endif
+              </div>
+            </div>
 
-          <!-- Billing Information -->
-          <div class="view-section">
-            <h4>Billing Information</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Student Name</label>
-                <input type="text" class="form-control" value="{{ $student->name }}" readonly>
+            @if($eligibleForScholarship && $scholarship)
+              <div class="detail-row">
+                <div class="detail-label">Name of Scholarship</div>
+                <div class="detail-value">{{ $scholarship->scholarship_name ?? 'N/A' }}</div>
               </div>
-              <div class="form-group">
-                <label>Father Name</label>
-                <input type="text" class="form-control" value="{{ $student->father ?? '—' }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Course Type</label>
-                <input type="text" class="form-control" value="{{ $student->courseType ?? 'Pre-Medical' }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Course Name</label>
-                <input type="text" class="form-control" value="{{ $student->courseName ?? '—' }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Course Content</label>
-                <input type="text" class="form-control" value="{{ $student->courseContent ?? 'Class room course' }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Batch Name</label>
-                <input type="text" class="form-control" value="{{ $student->batchName ?? '—' }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Batch Start Date</label>
-                <input type="text" class="form-control" value="{{ $student->batchStartDate ? date('d-m-Y', strtotime($student->batchStartDate)) : '—' }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Delivery Mode</label>
-                <input type="text" class="form-control" value="{{ $student->deliveryMode ?? 'Offline' }}" readonly>
-              </div>
+            @endif
+
+            <div class="detail-row">
+              <div class="detail-label">Total Fee Before Discount</div>
+              <div class="detail-value highlight">₹{{ number_format($totalFeeBeforeDiscount, 2) }}</div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-label">Discount Percentage</div>
+              <div class="detail-value highlight" id="discountPercentageDisplay">{{ $discountPercentage }}%</div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-label">Discounted Fees</div>
+              <div class="detail-value highlight" id="discountedFeesDisplay">₹{{ number_format($scholarshipDiscountedFees, 2) }}</div>
             </div>
           </div>
 
-          <!-- Fee Details -->
-          <div class="view-section">
-            <h4>Fee Details</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Total Fees (Before GST)</label>
-                <input type="text" class="form-control" value="₹{{ number_format($totalFees, 0) }}" readonly id="totalFeesDisplay">
-                <input type="hidden" name="total_fees" value="{{ $totalFees }}">
+          <!-- Discretionary Discount Section -->
+          <div class="form-section">
+            <h4>Discretionary Discount</h4>
+            
+            <div class="form-group">
+              <label>Do You Want Add discretionary discount</label>
+              <div class="radio-group">
+                <label>
+                  <input type="radio" name="add_discretionary_discount" value="Yes" id="discountYes">
+                  Yes
+                </label>
+                <label>
+                  <input type="radio" name="add_discretionary_discount" value="No" id="discountNo" checked>
+                  No
+                </label>
               </div>
+            </div>
+
+            <div class="discount-input-section" id="discountInputSection">
               <div class="form-group">
-                <label>GST (18%)</label>
-                <input type="text" class="form-control" value="₹{{ number_format($gstAmount, 0) }}" readonly>
+                <label>Discount Type</label>
+                <select name="discretionary_discount_type" class="form-select" id="discountType">
+                  <option value="percentage">Percentage (%)</option>
+                  <option value="fixed">Fixed Amount (₹)</option>
+                </select>
               </div>
+
               <div class="form-group">
-                <label>Already Paid</label>
-                <input type="text" class="form-control" value="₹{{ number_format($totalPaid, 0) }}" readonly style="color: #28a745; font-weight: 600;">
+                <label>Discount Value</label>
+                <input type="number" name="discretionary_discount_value" class="form-control" 
+                       id="discountValue" min="0" step="0.01">
               </div>
+
               <div class="form-group">
-                <label>Remaining Balance</label>
-                <input type="text" class="form-control" value="₹{{ number_format($remainingBalance, 0) }}" readonly style="color: #dc3545; font-weight: 600;">
+                <label>Reason for Discretionary Discount</label>
+                <textarea name="discretionary_discount_reason" class="form-control" 
+                          rows="3" id="discountReason"></textarea>
               </div>
-              
-              <div class="form-group full-width">
-                <label>Do you want to pay fees</label>
-                <div class="radio-group">
-                  <div class="radio-option">
-                    <input type="radio" id="singlePayment" name="do_you_want_to_pay_fees" value="single_payment" checked onchange="updatePaymentAmount()">
-                    <label for="singlePayment">Single Payment</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" id="inInstallment" name="do_you_want_to_pay_fees" value="in_installment" onchange="updatePaymentAmount()">
-                    <label for="inInstallment">In installment</label>
-                  </div>
+
+              <div class="detail-row" style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                <div class="detail-label">Final Fees After All Discounts</div>
+                <div class="detail-value highlight" style="font-size: 1.3em;" id="finalFeesDisplay">
+                  ₹{{ number_format($discountedFees, 2) }}
                 </div>
               </div>
-
-              <div class="form-group">
-                <label>Other Charges Amount</label>
-                <input type="number" class="form-control" name="other_charges" id="otherCharges" value="0" min="0" step="1" oninput="calculateTotal()">
-              </div>
-
-              <div class="form-group">
-                <label>Total Amount</label>
-                <input type="text" class="form-control" id="totalAmountDisplay" value="₹{{ number_format($remainingBalance, 0) }}" readonly style="color: #ff6b35; font-weight: 600; font-size: 1.1rem;">
-              </div>
             </div>
+
+            <input type="hidden" name="total_fee_before_discount" value="{{ $totalFeeBeforeDiscount }}">
+            <input type="hidden" name="scholarship_discount_percentage" value="{{ $discountPercentage }}">
+            <input type="hidden" name="scholarship_discounted_fees" value="{{ $discountedFees }}">
+            <input type="hidden" name="final_fees" id="finalFeesInput" value="{{ $discountedFees }}">
           </div>
 
-          <!-- Payment Details -->
-          <div class="view-section">
-            <h4>Payment Details</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Payment Date <span class="text-danger">*</span></label>
-                <input type="date" class="form-control @error('payment_date') is-invalid @enderror" 
-                       name="payment_date" value="{{ old('payment_date', date('Y-m-d')) }}" required>
-                @error('payment_date')
-                  <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <div class="form-group">
-                <label>Payment Type <span class="text-danger">*</span></label>
-                <select class="form-control @error('payment_type') is-invalid @enderror" name="payment_type" required>
-                  <option value="">Select Payment Type</option>
-                  <option value="cash">Cash</option>
-                  <option value="online">Online</option>
-                  <option value="cheque">Cheque</option>
-                  <option value="card">Card</option>
-                </select>
-                @error('payment_type')
-                  <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <div class="form-group">
-                <label>Payment Amount <span class="text-danger">*</span></label>
-                <input type="number" class="form-control @error('payment_amount') is-invalid @enderror" 
-                       name="payment_amount" id="paymentAmount" 
-                       value="{{ old('payment_amount', $remainingBalance) }}" 
-                       min="1" step="1" required readonly>
-                @error('payment_amount')
-                  <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <div class="form-group">
-                <label>Transaction ID / Reference</label>
-                <input type="text" class="form-control" name="transaction_id" value="{{ old('transaction_id') }}">
-              </div>
-
-              <div class="form-group full-width">
-                <label>Remarks</label>
-                <textarea class="form-control" name="remarks" rows="2">{{ old('remarks') }}</textarea>
-              </div>
-
-              <div class="form-group full-width">
-                <button type="submit" class="btn-pay">
-                  <i class="fa-solid fa-check"></i> Pay
-                </button>
-              </div>
-            </div>
+          <!-- Footer with Next Button -->
+          <div class="sticky-footer">
+            <button type="submit" class="btn-next">
+              Next <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
         </form>
+
       </div>
     </div>
   </div>
@@ -518,65 +563,106 @@
   <script src="{{asset('js/emp.js')}}"></script>
   
   <script>
-    const totalFees = {{ $totalFees }};
-    const gstAmount = {{ $gstAmount }};
-    const totalFeesWithGST = {{ $totalFeesWithGST }};
-    const totalPaid = {{ $totalPaid }};
-    const remainingBalance = {{ $remainingBalance }};
-    const firstInstallment = {{ $firstInstallment }};
-
-    function updatePaymentAmount() {
-      const paymentType = document.querySelector('input[name="do_you_want_to_pay_fees"]:checked').value;
-      
-      let baseAmount;
-      if (paymentType === 'single_payment') {
-        baseAmount = remainingBalance;
-      } else {
-        baseAmount = Math.min(firstInstallment, remainingBalance);
-      }
-      
-      document.getElementById('paymentAmount').value = Math.round(baseAmount);
-      calculateTotal();
-    }
-
-    function calculateTotal() {
-      const paymentAmount = parseFloat(document.getElementById('paymentAmount').value) || 0;
-      const otherCharges = parseFloat(document.getElementById('otherCharges').value) || 0;
-      
-      const total = paymentAmount + otherCharges;
-      
-      document.getElementById('totalAmountDisplay').value = '₹' + total.toLocaleString('en-IN', {maximumFractionDigits: 0});
-    }
-
-    document.getElementById('paymentForm').addEventListener('submit', function(e) {
-      const paymentType = document.querySelector('select[name="payment_type"]').value;
-      const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
-      
-      if (!paymentType) {
-        e.preventDefault();
-        alert('Please select a payment type');
-        return false;
-      }
-      
-      if (paymentAmount <= 0) {
-        e.preventDefault();
-        alert('Payment amount must be greater than 0');
-        return false;
-      }
-      
-      if (paymentAmount > remainingBalance + 10000) {
-        e.preventDefault();
-        alert('Payment amount cannot exceed remaining balance significantly');
-        return false;
-      }
-      
-      return true;
-    });
-
-    // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
-      updatePaymentAmount();
+      const discountYes = document.getElementById('discountYes');
+      const discountNo = document.getElementById('discountNo');
+      const discountInputSection = document.getElementById('discountInputSection');
+      const discountType = document.getElementById('discountType');
+      const discountValue = document.getElementById('discountValue');
+      const discountReason = document.getElementById('discountReason');
+      const finalFeesDisplay = document.getElementById('finalFeesDisplay');
+      const finalFeesInput = document.getElementById('finalFeesInput');
+
+      const scholarshipDiscountedFees = {{ $discountedFees }};
+      const totalFeeBeforeDiscount = {{ $totalFeeBeforeDiscount }};
+
+      // Toggle discount input section
+      discountYes.addEventListener('change', function() {
+        if (this.checked) {
+          discountInputSection.classList.add('active');
+        }
+      });
+
+      discountNo.addEventListener('change', function() {
+        if (this.checked) {
+          discountInputSection.classList.remove('active');
+          resetDiscountCalculation();
+        }
+      });
+
+      // Calculate final fees on discount input change
+      function calculateFinalFees() {
+        if (!discountYes.checked) return;
+
+        const type = discountType.value;
+        const value = parseFloat(discountValue.value) || 0;
+
+        let finalFees = scholarshipDiscountedFees;
+
+        if (value > 0) {
+          if (type === 'percentage') {
+            const additionalDiscount = (scholarshipDiscountedFees * value) / 100;
+            finalFees = scholarshipDiscountedFees - additionalDiscount;
+          } else if (type === 'fixed') {
+            finalFees = scholarshipDiscountedFees - value;
+          }
+        }
+
+        // Ensure final fees is not negative
+        finalFees = Math.max(0, finalFees);
+
+        // Update display and hidden input
+        finalFeesDisplay.textContent = '₹' + finalFees.toLocaleString('en-IN', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        finalFeesInput.value = finalFees.toFixed(2);
+      }
+
+      function resetDiscountCalculation() {
+        discountValue.value = '';
+        discountReason.value = '';
+        finalFeesDisplay.textContent = '₹' + scholarshipDiscountedFees.toLocaleString('en-IN', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        finalFeesInput.value = scholarshipDiscountedFees.toFixed(2);
+      }
+
+      // Add event listeners
+      discountType.addEventListener('change', calculateFinalFees);
+      discountValue.addEventListener('input', calculateFinalFees);
+
+      // Form validation
+      document.getElementById('scholarshipForm').addEventListener('submit', function(e) {
+        if (discountYes.checked) {
+          const value = parseFloat(discountValue.value) || 0;
+          const reason = discountReason.value.trim();
+
+          if (value > 0 && !reason) {
+            e.preventDefault();
+            alert('Please provide a reason for the discretionary discount.');
+            discountReason.focus();
+            return false;
+          }
+
+          if (discountType.value === 'percentage' && value > 100) {
+            e.preventDefault();
+            alert('Discount percentage cannot exceed 100%.');
+            discountValue.focus();
+            return false;
+          }
+
+          if (discountType.value === 'fixed' && value > scholarshipDiscountedFees) {
+            e.preventDefault();
+            alert('Discount amount cannot exceed the discounted fees.');
+            discountValue.focus();
+            return false;
+          }
+        }
+      });
     });
   </script>
+
 </body>
 </html>
