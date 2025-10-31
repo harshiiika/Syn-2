@@ -972,7 +972,7 @@
       function renderFooter(json) {
         const from = json.data.length ? ((json.current_page - 1) * json.per_page + 1) : 0;
         const to = json.data.length ? ((json.current_page - 1) * json.per_page + json.data.length) : 0;
-        footerLeft && (footerLeft.textContent = `Showing ${from} to ${to} of ${json.total} Enteries`);
+        footerLeft && (footerLeft.textContent = `Showing ${from} to ${to} of ${json.total} Entries`);
 
         paginationContainer.innerHTML = '';
 
@@ -1132,18 +1132,18 @@
         }
 
         try {
-          const method = id ? 'PUT' : 'POST';
-          const url = id ? `${ENDPOINT_BASE}/${id}` : `${ENDPOINT_BASE}/`;
-          
-          const res = await fetch(url, {
-            method,
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': csrfToken,
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
+        const method = id ? 'PATCH' : 'POST';  // Changed PUT to PATCH
+const url = id ? `${ENDPOINT_BASE}/${id}` : `${ENDPOINT_BASE}/`;
+
+const res = await fetch(url, {
+  method,
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRF-TOKEN': csrfToken,
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify(payload)
+});
 
           const json = await res.json();
           if (!json.success) {

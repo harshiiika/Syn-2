@@ -316,6 +316,7 @@ function setupCreateModalReset() {
 
 // Make functions globally accessible
 window.removeSubjectTag = removeSubjectTag;
+
 // ----------------------------------------------------------------------------
 // SECTION 5: FILE UPLOAD PREVIEW
 // ----------------------------------------------------------------------------
@@ -423,7 +424,21 @@ function initializeSearch() {
     });
 }
 
-// Entries per page dropdown
+// ✅ NEW: Per-page dropdown handler (Fix 3)
+function initializePerPageDropdown() {
+    document.querySelectorAll('.dd .dropdown-menu .dropdown-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const perPage = e.currentTarget.textContent.trim();
+            const url = new URL(window.location);
+            url.searchParams.set('per_page', perPage);
+            url.searchParams.set('page', 1);
+            window.location.href = url.toString();
+        });
+    });
+}
+
+// Entries per page dropdown (OLD - keeping for display update)
 function initializeEntriesDropdown() {
     const entriesDropdown = document.querySelector('#number');
     if (!entriesDropdown) return;
@@ -510,6 +525,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     initializeFlashMessages();
     initializeSidebarToggle();
     initializeSearch();
+    initializePerPageDropdown(); // ✅ NEW: Added per-page dropdown handler
     initializeEntriesDropdown();
     initializeTableHover();
     initializeDeleteConfirmation();

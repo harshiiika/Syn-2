@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // optional but common in MySQL < 5.7 / utf8mb4
         Schema::defaultStringLength(191);
+        Paginator::useBootstrap(); // Add this line for Bootstrap pagination
     }
 }

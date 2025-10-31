@@ -424,7 +424,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
             }
           @endphp
           <tr>
-            <td>{{ $index + 1 }}</td>
+          <td>{{ ($courses->currentPage() - 1) * $courses->perPage() + $index + 1 }}</td>
             <td>{{ $course->course_name }}</td>
             <td>{{ ucfirst($course->course_type) }}</td>
             <td>{{ $course->class_name }}</td>
@@ -483,14 +483,35 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
         @endforeach
       </tbody>
     </table>
-    <!-- showing entries -->
-    <div class="d-flex justify-content-between align-items-center mt-3">
-      <div class="show">
-        Showing {{ $courses->count() }} entries
-      </div>
-      <div>
-        {{ $courses->links() }}
-      </div>
+
+ <!-- showing entries -->
+<div class="footer">
+  <div class="left-footer">
+    <p>Showing {{ $courses->firstItem() ?? 0 }} to {{ $courses->lastItem() ?? 0 }} of {{ $courses->total() }} Entries</p>
+  </div>
+  <div class="right-footer">
+    <nav aria-label="Page navigation example" id="bottom">
+      <ul class="pagination" id="pagination">
+        {{-- Previous Button --}}
+        <li class="page-item {{ $courses->onFirstPage() ? 'disabled' : '' }}">
+          <a class="page-link" href="{{ $courses->previousPageUrl() }}" id="pg1">Previous</a>
+        </li>
+
+        {{-- Page Numbers --}}
+        @for ($i = 1; $i <= $courses->lastPage(); $i++)
+          <li class="page-item {{ $i == $courses->currentPage() ? 'active' : '' }}">
+            <a class="page-link" href="{{ $courses->url($i) }}" id="{{ $i == $courses->currentPage() ? 'pg2' : 'pg3' }}">{{ $i }}</a>
+          </li>
+        @endfor
+
+        {{-- Next Button --}}
+        <li class="page-item {{ !$courses->hasMorePages() ? 'disabled' : '' }}">
+          <a class="page-link" href="{{ $courses->nextPageUrl() }}" id="pg1">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
 
       <!-- UPLOAD MODAL - NEW FEATURE -->
 <div class="modal fade" id="uploadCourseModal" tabindex="-1" aria-hidden="true">

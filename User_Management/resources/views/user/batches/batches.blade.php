@@ -163,8 +163,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
                     <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"

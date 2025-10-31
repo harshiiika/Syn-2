@@ -73,65 +73,76 @@ class OtherFeeController extends Controller
     /**
      * Store a new Other Fee
      */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'fee_type' => 'required|string|unique:other_fees,fee_type',
-            'amount' => 'required|numeric|min:0',
+   public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'fee_type' => 'required|string|unique:other_fees,fee_type',
+        'amount' => 'required|numeric|min:0',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    try {
+        OtherFee::create([
+            'fee_type' => $request->fee_type,
+            'amount' => $request->amount,
+            'status' => 'active',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        try {
-            OtherFee::create([
-                'fee_type' => $request->fee_type,
-                'amount' => $request->amount,
-                'status' => 'active',
-            ]);
-
-            return redirect()->route('master.other_fees.index')
-                ->with('success', 'Other fee created successfully');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Failed to create other fee: ' . $e->getMessage());
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Other fee created successfully!'
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed: ' . $e->getMessage()
+        ], 500);
     }
+}
+
 
     /**
      * Update an existing fee
      */
-    public function update(Request $request, $id)
-    {
-        try {
-            $fee = OtherFee::findOrFail($id);
+   public function update(Request $request, $id)
+{
+    $validator = Validator::make($request->all(), [
+        'fee_type' => 'required|string',
+        'amount' => 'required|numeric|min:0',
+    ]);
 
-            $validator = Validator::make($request->all(), [
-                'fee_type' => 'required|string',
-                'amount' => 'required|numeric|min:0',
-            ]);
-
-            if ($validator->fails()) {
-                return redirect()->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            $fee->update([
-                'fee_type' => $request->fee_type,
-                'amount' => $request->amount,
-            ]);
-
-            return redirect()->route('master.other_fees.index')
-                ->with('success', 'Fee updated successfully');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Error updating fee: ' . $e->getMessage());
-        }
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'errors' => $validator->errors()
+        ], 422);
     }
+
+    try {
+        $fee = OtherFee::findOrFail($id);
+        $fee->update([
+            'fee_type' => $request->fee_type,
+            'amount' => $request->amount,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fee updated successfully!'
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 
     /**
      * Toggle fee status (active/inactive)
