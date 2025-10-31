@@ -235,7 +235,7 @@ class PaymentController extends Controller
             
             $student->update($updateData);
             
-            Log::info('✓ Payment processed successfully:', [
+            Log::info('  Payment processed successfully:', [
                 'student_id' => $id,
                 'student_name' => $student->name,
                 'payment_amount' => $totalPayment,

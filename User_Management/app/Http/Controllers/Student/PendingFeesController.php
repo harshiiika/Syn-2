@@ -83,7 +83,7 @@ class PendingFeesController extends Controller
                 'installment_3' => $student->installment_3 ?? 0,
             ];
 
-            Log::info('✅ Fees data prepared for pending fees view', $feesData);
+            Log::info('  Fees data prepared for pending fees view', $feesData);
 
             return view('student.pendingfees.view', compact('student', 'feesData'));
         } catch (\Exception $e) {
@@ -260,7 +260,7 @@ class PendingFeesController extends Controller
 
                 $onboardedStudent = Onboard::create($onboardData);
 
-                Log::info('✓ Onboarded student created from pending fees', [
+                Log::info('  Onboarded student created from pending fees', [
                     'onboarded_id' => $onboardedStudent->_id,
                     'name' => $onboardedStudent->name ?? $onboardedStudent->student_name ?? null,
                 ]);
@@ -437,7 +437,7 @@ class PendingFeesController extends Controller
 
             // Fully paid -> transfer to SMstudents
             if ($newRemainingBalance <= 0) {
-                Log::info('✓ FEES FULLY PAID - Transferring to SMstudents', ['student_id' => $id]);
+                Log::info('  FEES FULLY PAID - Transferring to SMstudents', ['student_id' => $id]);
 
                 // Build SMstudents payload
                 $smStudentData = [
@@ -511,7 +511,7 @@ class PendingFeesController extends Controller
                 // Insert into s_mstudents
                 $smStudent = SMstudents::create($smStudentData);
 
-                Log::info('✓ Student transferred to SMstudents', [
+                Log::info('  Student transferred to SMstudents', [
                     'sm_student_id' => $smStudent->_id ?? null,
                     'name' => $smStudent->student_name ?? null,
                     'roll_no' => $smStudent->roll_no ?? null,
@@ -520,7 +520,7 @@ class PendingFeesController extends Controller
                 // Delete original student
                 $student->delete();
 
-                Log::info('✓ Student deleted from original collection after transfer', ['from' => $originalCollection]);
+                Log::info('  Student deleted from original collection after transfer', ['from' => $originalCollection]);
 
                 return redirect()->route('smstudents.index')
                     ->with('success', "Payment successful! Student '{$smStudent->student_name}' moved to Active Students with full fees paid.");
@@ -543,7 +543,7 @@ class PendingFeesController extends Controller
                 'updated_at' => now(),
             ]);
 
-            Log::info('✓ Payment recorded (partial)', [
+            Log::info('  Payment recorded (partial)', [
                 'student_id' => $id,
                 'amount' => $paymentAmount,
                 'new_paid' => $newPaidAmount,
@@ -641,7 +641,7 @@ class PendingFeesController extends Controller
 //                 'gst_amount' => $student->gst_amount ?? 'NOT SET',
 //             ]);
             
-//             // ✅ Prepare fees data array (same as StudentController and OnboardController)
+//             //   Prepare fees data array (same as StudentController and OnboardController)
 //             $feesData = [
 //                 'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
 //                 'scholarship_name' => $student->scholarship_name ?? 'N/A',
@@ -659,7 +659,7 @@ class PendingFeesController extends Controller
 //                 'installment_3' => $student->installment_3 ?? 0,
 //             ];
             
-//             Log::info('✅ Fees data prepared for pending fees view:', $feesData);
+//             Log::info('  Fees data prepared for pending fees view:', $feesData);
             
 //             // Return the view with student data AND feesData
 //             return view('student.pendingfees.view', compact('student', 'feesData'));
@@ -851,7 +851,7 @@ class PendingFeesController extends Controller
 //                     'name' => $student->name
 //                 ]);
 
-//                 // ✅ Get ALL student data including scholarship/fees
+//                 //   Get ALL student data including scholarship/fees
 //                 $onboardData = $student->toArray();
                 
 //                 // Remove MongoDB _id to create new document
@@ -864,7 +864,7 @@ class PendingFeesController extends Controller
 //                 // Merge with validated data
 //                 $onboardData = array_merge($onboardData, $validated);
 
-//                 // ✅ Log scholarship data before creating onboarded student
+//                 //   Log scholarship data before creating onboarded student
 //                 Log::info('=== SCHOLARSHIP DATA IN PENDING FEES STUDENT ===', [
 //                     'student_id' => $student->_id,
 //                     'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'NOT SET',
@@ -877,7 +877,7 @@ class PendingFeesController extends Controller
 //                 // Create entry in Onboard collection
 //                 $onboardedStudent = Onboard::create($onboardData);
 
-//                 Log::info('✓ Onboarded student created from pending fees:', [
+//                 Log::info('  Onboarded student created from pending fees:', [
 //                     'onboarded_id' => $onboardedStudent->_id,
 //                     'name' => $onboardedStudent->name,
 //                     'eligible_for_scholarship' => $onboardedStudent->eligible_for_scholarship ?? 'NOT SAVED',
@@ -1090,9 +1090,9 @@ class PendingFeesController extends Controller
 //             'remaining' => $newRemainingBalance
 //         ]);
         
-//         // ✅ CHECK IF FULLY PAID - TRANSFER TO SM STUDENTS
+//         //   CHECK IF FULLY PAID - TRANSFER TO SM STUDENTS
 //         if ($newRemainingBalance <= 0) {
-//             Log::info('✓ FEES FULLY PAID - Transferring to Students');
+//             Log::info('  FEES FULLY PAID - Transferring to Students');
             
 //             // Prepare data for SM Students collection
 //             $smStudentData = [
@@ -1208,7 +1208,7 @@ class PendingFeesController extends Controller
 //             'updated_at' => now()
 //         ]);
         
-//         Log::info('✓ Payment recorded (partial payment)');
+//         Log::info('  Payment recorded (partial payment)');
         
 //         $message = "Payment of ₹" . number_format($paymentAmount, 2) . " recorded successfully!";
 //         $message .= " Remaining: ₹" . number_format($newRemainingBalance, 2);

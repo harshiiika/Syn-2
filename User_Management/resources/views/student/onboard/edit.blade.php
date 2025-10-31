@@ -381,7 +381,7 @@
     <!-- Main Content Area -->
     <div class="right" id="right">
       <div class="container-fluid py-4">
-        <a href="{{ route('student.student.pending') }}" class="back-btn">
+        <a href="{{ route('student.onboard.onboard') }}" class="back-btn">
           <i class="fa-solid fa-arrow-left"></i> Back
         </a>
 
@@ -934,7 +934,7 @@ document.getElementById('editStudentForm').addEventListener('submit', function(e
         if (value === '' || value === null) {
             console.warn(`⚠️ EMPTY: ${key} = "${value}"`);
         } else {
-            console.log(`✓ ${key} = "${value}"`);
+            console.log(`  ${key} = "${value}"`);
         }
     }
     
@@ -966,7 +966,7 @@ document.getElementById('editStudentForm').addEventListener('submit', function(e
     if (missing.length > 0) {
         console.warn('Missing/Empty required fields:', missing);
     } else {
-        console.log('✓ All required fields are filled!');
+        console.log('  All required fields are filled!');
     }
     console.log('========================\n');
 });

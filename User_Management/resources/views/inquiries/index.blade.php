@@ -1357,7 +1357,7 @@ window.onboardSingle = async function(id) {
 
         alert(json.message);
         
-        // ✅ Just reload the table, no redirect
+        //   Just reload the table, no redirect
         loadData();
 
     } catch (error) {
@@ -1365,7 +1365,7 @@ window.onboardSingle = async function(id) {
         alert('Failed to onboard student: ' + error.message);
     }
 };
-        // ✅ Save button click handler
+        //   Save button click handler
         elements.saveBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             
@@ -1481,7 +1481,7 @@ document.querySelector('.btn-onboard').addEventListener('click', async function(
 
         alert(json.message);
         
-        // ✅ Just reload the table, no redirect
+        //   Just reload the table, no redirect
         loadData();
 
     } catch (error) {

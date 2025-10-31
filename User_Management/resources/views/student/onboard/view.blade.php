@@ -324,11 +324,11 @@
     <!-- Main Content Area -->
     <div class="right" id="right">
       <div class="container-fluid py-4">
-        <a href="{{ route('student.student.pending') }}" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i> Back to Pending Inquiries
+        <a href="{{ route('student.onboard.onboard') }}" class="back-btn">
+          <i class="fa-solid fa-arrow-left"></i> Back
         </a>
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h4 style="color: #ff6b35;">View Student Details - Pending Inquiry</h4>
+          <h5 style="color: #ff6b35;">View Student Details</h5>
         </div>
 
         <!-- Basic Details Section -->
@@ -560,7 +560,7 @@
           </div>
         </div>
 
-        <!-- ✅ NEW: Scholarship Details Section -->
+        <!--   NEW: Scholarship Details Section -->
         <div class="view-section">
           <h4>Scholarship Details</h4>
           <div class="form-row">
@@ -596,7 +596,7 @@
           </div>
         </div>
 
-        <!-- ✅ NEW: Fees and Available Batches Details Section -->
+        <!--   NEW: Fees and Available Batches Details Section -->
         <div class="view-section">
           <h4>Fees and Available Batches Details</h4>
           <div class="form-row">

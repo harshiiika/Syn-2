@@ -268,7 +268,7 @@ class StudentController extends Controller
                 ]);
 
                 if ($isComplete) {
-                    \Log::info('✓✓✓ FORM IS COMPLETE - MOVING TO ONBOARDED ✓✓✓', [
+                    \Log::info('    FORM IS COMPLETE - MOVING TO ONBOARDED    ', [
                         'student_id' => $student->_id,
                         'student_name' => $student->name
                     ]);
@@ -292,7 +292,7 @@ class StudentController extends Controller
                         // Create entry in onboarded_students collection
                         $onboarded = \App\Models\Student\Onboard::create($onboardedData);
                         
-                        \Log::info('✓ Onboarded student created:', [
+                        \Log::info('  Onboarded student created:', [
                             'onboarded_id' => $onboarded->_id,
                             'collection' => 'onboarded_students'
                         ]);
@@ -301,11 +301,11 @@ class StudentController extends Controller
                         $studentId = $student->_id;
                         $student->delete();
                         
-                        \Log::info('✓ Deleted from pending students:', [
+                        \Log::info('  Deleted from pending students:', [
                             'deleted_id' => $studentId
                         ]);
 
-                        \Log::info('✓✓✓ STUDENT MOVED TO ONBOARDED COLLECTION SUCCESSFULLY ✓✓✓');
+                        \Log::info('    STUDENT MOVED TO ONBOARDED COLLECTION SUCCESSFULLY    ');
 
                         return redirect()->route('student.student.pending')
                             ->with('success', 'Student form completed! Moved to Onboarding Students section.');

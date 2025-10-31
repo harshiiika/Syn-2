@@ -188,7 +188,7 @@ class Pending extends Model
 //         'status',
 //         'admission_date',
         
-//         // ✅ SCHOLARSHIP & FEES DETAILS
+//         //   SCHOLARSHIP & FEES DETAILS
 //         'eligible_for_scholarship',
 //         'scholarship_name',
 //         'total_fee_before_discount',
