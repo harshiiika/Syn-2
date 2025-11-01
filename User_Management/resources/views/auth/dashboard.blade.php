@@ -90,8 +90,7 @@
                 </li>
                 <li><a class="item" href="{{ route('fees.index') }}">
                     <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
+                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
                       id="side-icon"></i> Other Fees Master</a>
                 </li>
                 <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
@@ -254,7 +253,7 @@
   </div>
 
   <!-- Master -->
-  <div class="accordion-item">
+  <!-- <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
@@ -286,10 +285,10 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Session Management -->
-  <div class="accordion-item">
+  <!-- <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
@@ -310,10 +309,10 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Student Management -->
-  <div class="accordion-item">
+  <!-- <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
@@ -330,7 +329,7 @@
           <li><a class="item" href="{{ route('master.student.pending') }}">
             <i class="fa-solid fa-user-clock" id="side-icon"></i> Pending Students</a>
           </li>
-          <li><a class="item" href="{{ route('student.onboard') }}">
+          <li><a class="item" href="{{ route('student.onboard.onboard') }}">
             <i class="fa-solid fa-user-check" id="side-icon"></i> Onboarded Students</a>
           </li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}">
@@ -339,10 +338,10 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Fees Management -->
-  <div class="accordion-item">
+  <!-- <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
@@ -359,10 +358,10 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Attendance Management -->
-  <div class="accordion-item">
+  <!-- <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
@@ -382,10 +381,10 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Study Material -->
-  <div class="accordion-item">
+  <!-- <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
@@ -405,10 +404,10 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Test Series Management -->
-  <div class="accordion-item">
+  <!-- <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
@@ -425,10 +424,10 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Reports -->
-  <div class="accordion-item">
+  <!-- <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
@@ -457,7 +456,7 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
 
 </div>
     </div>
