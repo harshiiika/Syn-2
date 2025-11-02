@@ -160,7 +160,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
                       id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i
+                <li><a class="item" href="{{ route('master.batches.index') }}"><i
                       class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
                     Batches</a></li>
                 <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
@@ -215,13 +215,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
                       id="side-icon"></i> Inquiry Management </a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}">
+             <li><a class="item" href="{{ route('student.onboard.onboard') }}">
     <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
 </a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
                       id="side-icon"></i>Pending Fees
                     Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+              <li><a class="item active" href="{{ route('student.onboard.onboard') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>  
@@ -333,7 +333,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
             <div class="btns">
                <a href="{{ route('student.student.pending') }}"><button type="button" class="pendingbtn">Pending Inquiries</button></a>
-              <a class="item" href="{{ route('student.onboard.onboard') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
+             <a class="item" href="{{ route('student.student.pending') }}"><button type="button" class="onboardbtn">Onboarding Students</button></a>
+
             </div>
 
       </div>
@@ -483,7 +484,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
           // Dynamically append new user row to table without page reload
           // Append user to table
-          $('#users-table tbody').append(`
+          $('#users-table tbody').append(`4
                     <tr>
                         <td>${response.user.name}</td>
                         <td>${response.user.email}</td>

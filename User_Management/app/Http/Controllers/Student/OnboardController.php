@@ -13,6 +13,7 @@ class OnboardController extends Controller
     /**
      * Display all onboarded students (students with status = 'onboarded')
      */
+
     public function index()
     {
         try {
