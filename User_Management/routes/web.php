@@ -119,9 +119,10 @@ Route::prefix('fees-master')->name('fees.')->group(function () {
     Route::get('/', [FeesMasterController::class, 'index'])->name('index');
     Route::post('/', [FeesMasterController::class, 'store'])->name('store');
     Route::get('/{id}', [FeesMasterController::class, 'show'])->name('show');
-    Route::patch('/{id}', [FeesMasterController::class, 'update'])->name('update');
-    Route::patch('/{fee}/toggle', [FeesMasterController::class, 'toggle'])->name('toggle');
+    Route::put('/{id}', [FeesMasterController::class, 'update'])->name('update');
+    Route::patch('/{id}/toggle', [FeesMasterController::class, 'toggle'])->name('toggle');
 });
+
 
 /*
 |--------------------------------------------------------------------------

@@ -124,7 +124,7 @@
     font-size: 15px;
 }
 
-/* FIXED ACCORDION STYLES - ICONS ALWAYS VISIBLE */
+/* ==================== ACCORDION STYLES ==================== */
 .accordion-flush {
     justify-content: flex-start;
     align-items: center;
@@ -183,7 +183,6 @@
     gap: 5px !important;
 }
 
-/* Force icons to be visible in accordion */
 .accordion-button i,
 #accordion-button i,
 .accordion-button .fa-solid,
@@ -195,8 +194,6 @@
     min-width: 16px !important;
     margin-right: 8px !important;
 }
-
-/* END FIXED ACCORDION STYLES */
 
 .menu {
     display: flex;
@@ -232,7 +229,6 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    /* padding: 5px 10px; */
     width: 100%;
 }
 
@@ -253,13 +249,13 @@
 .whole {
     margin: 5px;
     padding: 20px;
-    gap: 25px;
     width: 97%;
     display: flex;
     align-items: center;
     flex-direction: column;
     background-color: #ffffff;
     border: 1px solid #d6d6d6;
+    border-radius: 5px;
 }
 
 .right h1 {
@@ -273,9 +269,55 @@
     cursor: pointer;
 }
 
+/* ==================== TABLE STYLES (CLEAN) ==================== */
 #table {
-    font-size: 12px;
-    flex-direction: column;
+    font-size: 13px;
+    width: 100%;
+    border-collapse: collapse;
+    border: none !important;
+}
+
+#table thead th {
+    background-color: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #e0e0e0 !important;
+    color: rgb(224, 83, 1) !important;
+    font-weight: 600 !important;
+    padding: 12px 10px !important;
+    font-size: 13px !important;
+    text-align: left !important;
+}
+
+#table tbody td {
+    padding: 12px 10px !important;
+    vertical-align: middle !important;
+    color: #333 !important;
+    border: none !important;
+    text-align: left !important;
+    background-color: white !important;
+}
+
+#table tbody tr {
+    background-color: white !important;
+    border: none !important;
+}
+
+#table tbody tr:hover {
+    background-color: #f8f9fa !important;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table td, .table th {
+    padding: 12px 10px;
+}
+
+#one {
+    color: rgb(224, 83, 1) !important;
+    background-color: transparent !important;
 }
 
 .top {
@@ -331,14 +373,37 @@
     cursor: pointer;
 }
 
+/* ==================== THREE DOTS BUTTON (NO GRAY) ==================== */
 .btn-secondary,
-#ellipsis {
-    margin: 5px 0px 10px 5px;
-    align-items: center;
-    outline: none;
-    border: 1px solid #000;
-    background-color: #ffffff;
-    border: none;
+#ellipsis,
+.dropdown button.btn-secondary,
+table .btn-secondary {
+    margin: 0 !important;
+    padding: 5px 8px !important;
+    align-items: center !important;
+    outline: none !important;
+    border: none !important;
+    background-color: transparent !important;
+    color: #666 !important;
+    cursor: pointer !important;
+    font-size: 18px !important;
+    box-shadow: none !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active,
+.dropdown button.btn-secondary:hover,
+.dropdown button.btn-secondary:focus,
+table .btn-secondary:hover {
+    background-color: transparent !important;
+    color: rgb(224, 83, 1) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.dropdown-toggle::after {
+    display: none !important;
 }
 
 #number {
@@ -358,8 +423,7 @@
     justify-content: space-between;
 }
 
-#toggle-btn,
-#ellipsis {
+#toggle-btn {
     background-color: transparent;
     justify-content: center;
     display: flex;
@@ -381,16 +445,39 @@
     margin-left: 15px;
 }
 
+/* ==================== DROPDOWN MENU ==================== */
+.dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: auto !important;
+    right: 0 !important;
+    margin-top: 5px !important;
+    z-index: 1050 !important;
+    min-width: 150px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 5px !important;
+    background-color: #fff !important;
+}
+
 .dropdown-item {
     height: auto;
-    width: auto;
-    margin: 5px 10px;
-    border-radius: 5px;
+    width: 100%;
+    margin: 0;
+    padding: 8px 16px;
+    border-radius: 0;
     justify-content: flex-start;
     align-items: center;
     display: flex;
     cursor: pointer;
-    padding: 8px 12px;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
 }
 
 .line {
@@ -413,10 +500,6 @@
     margin: 5px;
 }
 
-#one {
-    color: rgb(224, 83, 1);
-}
-
 .search-holder {
     border: 1px solid rgb(224, 83, 1);
     border-radius: 5px;
@@ -424,73 +507,154 @@
     padding: 5px;
 }
 
+/* ==================== PAGINATION (CLEAN & FIXED) ==================== */
 #bottom {
     display: flex;
     align-items: center;
-    width: 98%;
+    width: 100%;
     justify-content: flex-end;
+    margin-top: 15px;
 }
 
+.pagination {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background-color: transparent !important;
+    display: flex !important;
+    gap: 5px !important;
+}
+
+.page-item {
+    margin: 0 !important;
+    list-style: none !important;
+}
+
+.page-link {
+    border: 1px solid #dee2e6 !important;
+    color: #6c757d !important;
+    background-color: white !important;
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+}
+
+.page-link:hover {
+    background-color: #f8f9fa !important;
+    color: rgb(224, 83, 1) !important;
+    border-color: rgb(224, 83, 1) !important;
+}
+
+.page-item.active .page-link {
+    background-color: rgb(224, 83, 1) !important;
+    border-color: rgb(224, 83, 1) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    z-index: 1 !important;
+}
+
+.page-item.disabled .page-link {
+    background-color: #e9ecef !important;
+    border-color: #dee2e6 !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+/* Remove old pagination styles */
 #pagination {
-    border: 1px solid #d4d4d4;
+    border: none !important;
 }
 
-#pg1 {
-    height: 30px;
-    width: 70px;
+#pg1, #pg2, #pg3 {
+    display: none !important;
+}
+
+.footer {
+    flex-direction: row;
     display: flex;
-    justify-content: center;
-    color: #838383;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px 0;
+    background-color: white;
 }
 
-#pg2 {
-    height: 30px;
-    width: 50px;
-    display: flex;
-    color: #fff;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(224, 83, 1);
+.left-footer p {
+    font-size: 12px;
+    color: #666;
 }
 
-#pg3 {
-    height: 30px;
-    color: rgb(224, 83, 1);
-    width: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* ==================== MODAL STYLES ==================== */
+.modal-dialog {
+    max-width: 900px !important;
+    margin: 30px auto;
 }
 
-#form {
-    overflow-y: scroll;
-    height: 400px;
-    width: 700px;
+.modal-dialog-scrollable {
+    height: auto;
+    max-height: 90vh;
 }
 
-.modal-dialog-scrollable,
 .modal-content {
-    height: 90vh;
+    height: auto;
+    max-height: 90vh;
     display: flex;
     flex-direction: column;
+    overflow: visible;
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 2px solid rgb(224, 83, 1);
+    background-color: #fff5f0;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgb(224, 83, 1);
+}
+
+.modal-body {
+    padding: 20px !important;
+    overflow-y: auto !important;
+    flex: 1 1 auto;
+    max-height: calc(90vh - 140px);
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #dee2e6;
+    background-color: #fff;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.modal-footer button {
+    min-width: 100px;
 }
 
 #inputGroupFile01 {
     width: 500px;
     border: 1px dashed #d8d8d8;
-}
-
-.modal-body {
-    overflow-y: auto;
-    flex: 1 1 auto;
-}
-
-.modal-footer {
-    position: sticky;
-    bottom: 0;
-    background-color: #fff;
-    z-index: 10;
 }
 
 #content-one {
@@ -531,9 +695,8 @@
 }
 
 #content {
-    height: 550px;
-    width: 750px;
-    margin-top: 40px;
+    width: 100%;
+    margin: 0;
 }
 
 #select-item {
@@ -557,45 +720,32 @@
     overflow-y: scroll;
 }
 
-.footer {
-    flex-direction: row;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 95%;
-}
-
-.left-footer p {
-    font-size: 12px;
-}
-
 #scroll {
-    margin: 5px 0px 10px 5px;
-    align-items: center;
-    border: 1px solid #dddcdc;
-    background-color: transparent;
-    width: 45vw;
+    width: 100%;
+    height: auto;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background-color: white;
     color: #000;
-    text-align: left;
+    border-radius: 5px;
 }
 
 #placeholder {
-    width: 200px;
-    height: 40px;
-    margin: 5px 0px 10px 5px;
-    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 8px 12px;
     border: 1px solid #ddd;
-    background-color: transparent;
-    color: #000;
-    text-align: left;
+    background-color: #f8f9fa;
+    color: #666;
+    border-radius: 5px;
 }
 
 .fees {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
     width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
+    margin-bottom: 15px;
 }
 
 .written {
@@ -604,6 +754,7 @@
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+    margin-top: 20px;
 }
 
 .hori-text {
@@ -622,59 +773,195 @@
     flex-direction: column;
 }
 
-/* Additional Styling for Better UI */
+/* ==================== FORM STYLING IN MODALS ==================== */
+.modal-body .mb-3 {
+    margin-bottom: 15px !important;
+}
+
+.modal-body label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #333;
+}
+
+.modal-body .form-control,
+.modal-body select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.modal-body p {
+    color: rgb(224, 83, 1);
+    font-weight: 700;
+    font-size: 15px;
+    margin: 20px 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgb(224, 83, 1);
+}
+
+/* ==================== VIEW MODAL STYLES ==================== */
+.view-info-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.view-info-item {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.view-info-label {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.view-info-value {
+    font-size: 15px;
+    color: #333;
+    font-weight: 500;
+}
+
+.view-fee-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.view-fee-section h6 {
+    color: rgb(224, 83, 1);
+    margin-bottom: 15px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.view-fee-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.view-installment-table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+.view-installment-table th {
+    background-color: rgb(224, 83, 1);
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.view-installment-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    font-size: 13px;
+}
+
+.form-section-view {
+    font-weight: 700;
+    font-size: 15px;
+    color: rgb(224, 83, 1);
+    margin: 20px 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgb(224, 83, 1);
+}
+
+/* ==================== ADDITIONAL STYLING ==================== */
 .form-control:focus {
     border-color: rgb(224, 83, 1);
     box-shadow: 0 0 0 0.2rem rgba(224, 83, 1, 0.25);
 }
 
 .btn-primary {
-    background-color: rgb(224, 83, 1);
-    border-color: rgb(224, 83, 1);
+    background-color: rgb(224, 83, 1) !important;
+    border-color: rgb(224, 83, 1) !important;
 }
 
 .btn-primary:hover {
-    background-color: rgb(190, 51, 0);
-    border-color: rgb(190, 51, 0);
+    background-color: rgb(190, 51, 0) !important;
+    border-color: rgb(190, 51, 0) !important;
 }
 
+/* ==================== ALERT AUTO-DISMISS ==================== */
 .alert {
     border-radius: 5px;
     padding: 15px;
-    margin: 10px;
+    margin: 10px auto;
+    width: 95%;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.alert.fade-out {
+    animation: slideUp 0.3s ease-out forwards;
 }
 
 .table-hover tbody tr:hover {
-    background-color: #f5f5f5;
+    background-color: #f8f9fa;
 }
 
-/* Scrollbar Styling */
+/* ==================== SCROLLBAR STYLING ==================== */
 .left::-webkit-scrollbar,
-.right::-webkit-scrollbar,
-.modal-body::-webkit-scrollbar {
+.right::-webkit-scrollbar {
     width: 6px;
 }
 
 .left::-webkit-scrollbar-track,
-.right::-webkit-scrollbar-track,
-.modal-body::-webkit-scrollbar-track {
+.right::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
 .left::-webkit-scrollbar-thumb,
-.right::-webkit-scrollbar-thumb,
-.modal-body::-webkit-scrollbar-thumb {
+.right::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 3px;
 }
 
 .left::-webkit-scrollbar-thumb:hover,
-.right::-webkit-scrollbar-thumb:hover,
-.modal-body::-webkit-scrollbar-thumb:hover {
+.right::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
-/* Responsive Design */
+/* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
     .left {
         width: 100%;
@@ -695,177 +982,21 @@
     }
 
     .fees {
-        flex-direction: column;
-    }
-
-    #scroll {
-        width: 100%;
+        grid-template-columns: 1fr;
     }
 
     .header {
         flex-direction: column;
         height: auto;
     }
-}
-
-/* MODAL FIXES */
-.modal-dialog {
-    max-width: 850px !important;
-}
-
-#content {
-    height: auto !important;
-    max-height: 85vh;
-    width: 100% !important;
-    margin-top: 0 !important;
-}
-
-.modal-body {
-    padding: 20px !important;
-    max-height: 70vh;
-    overflow-y: auto;
-}
-
-.modal-body .mb-3 {
-    margin-bottom: 1rem !important;
-}
-
-.modal-body label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.modal-body .form-control,
-.modal-body select {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.modal-body p {
-    color: orangered;
-    font-weight: 700;
-    font-size: 16px;
-    margin: 20px 0 15px 0;
-    padding-bottom: 8px;
-    border-bottom: 2px solid orangered;
-}
-
-/* Fix the fees row layout */
-.fees {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 15px !important;
-    width: 100% !important;
-    margin-bottom: 20px !important;
-}
-
-.fees .mb-3 {
-    margin-bottom: 0 !important;
-}
-
-.fees .input-group {
-    width: 100% !important;
-}
-
-.fees input,
-.fees select {
-    width: 100% !important;
-}
-
-/* Fix written section */
-.written {
-    margin-top: 30px;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 5px;
-}
-
-.hori-text,
-.ver-text {
-    margin: 10px 0;
-}
-
-.hori-text p,
-.ver-text p {
-    margin: 5px 0;
-    padding: 0;
-    border: none;
-    color: #333;
-    font-weight: normal;
-    font-size: 14px;
-}
-
-/* Modal footer */
-.modal-footer {
-    padding: 15px 20px;
-    border-top: 1px solid #dee2e6;
-}
-
-.modal-footer button {
-    min-width: 100px;
-}
-
-/* Fix dropdown/select in modal */
-#scroll,
-#edit_course {
-    width: 100% !important;
-    height: auto !important;
-    padding: 8px 12px !important;
-    background-color: white !important;
-    color: #000 !important;
-    border: 1px solid #ddd !important;
-    border-radius: 5px !important;
-    text-align: left !important;
-    margin: 0 !important;
-}
-
-/* Fix placeholder inputs */
-#placeholder {
-    width: 100% !important;
-    height: auto !important;
-    margin: 0 !important;
-}
-
-#placeholder .form-control {
-    background-color: #f8f9fa !important;
-    cursor: not-allowed !important;
-}
-
-/* Ensure proper spacing */
-.modal-body > div:not(.fees):not(.written) {
-    margin-bottom: 15px;
-}
-
-/* Fix button styling in modal */
-.modal-footer .btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: white;
-}
-
-.modal-footer .btn-primary {
-    background-color: rgb(224, 83, 1);
-    border-color: rgb(224, 83, 1);
-    color: white;
-}
-
-.modal-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.modal-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: rgb(224, 83, 1);
-}
-
-/* Remove conflicting styles */
-.btn.btn-secondary.dropdown-toggle {
-    background-color: white !important;
+    
+    .modal-dialog {
+        max-width: 95%;
+        margin: 10px;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 }
