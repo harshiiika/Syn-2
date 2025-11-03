@@ -326,59 +326,61 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <!-- Table starts here -->
 
         <table class="table table-hover" id="table">
-          <thead>
-            <tr>
-              <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Batch Code</th>
-              <th scope="col" id="one">Start Date</th>
-              <th scope="col" id="one">Username</th>
-              <th scope="col" id="one">Shift</th>
-              <th scope="col" id="one">Status</th>
-              <th scope="col" id="one">Action</th>
-            </tr>
-          </thead>
-          <tbody>
+  <thead>
+    <tr>
+      <th scope="col" id="one">Serial No.</th>
+      <th scope="col" id="one">Batch Code</th>
+      <th scope="col" id="one">Start Date</th>
+      <th scope="col" id="one">Username</th>
+      <th scope="col" id="one">Shift</th>
+      <th scope="col" id="one">Status</th>
+      <th scope="col" id="one">Action</th>
+    </tr>
+  </thead>
+  <tbody>
 
 
 
             <!-- Table fillables are present here -->
 
             @foreach($batches as $index => $batch)
-              <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $batch->batch_id ?? '—' }}</td>
-                <td>{{ $batch->start_date }}</td>
-                <td>{{ $batch->username }}</td>
-                <td>{{ $batch->shift ?? '—' }}</td>
-                <td>
-                  <span class="badge {{ $batch->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-                    {{ $batch->status ?? 'Active' }}
-                  </span>
-                </td>
-                <td>
-                  <div class="dropdown">
-                    
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-                      data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="fas fa-ellipsis-v"></i>
-    </button>
-                    <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-                      <li>
-                        <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}">
-                          @csrf
-                          <button type="submit" class="dropdown-item">
-                            {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
-                          </button>
-                        </form>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            @endforeach
+      <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $batch->batch_id ?? '—' }}</td>
+        <td>{{ $batch->start_date }}</td>
+        <td>{{ $batch->username ?? '—' }}</td>
+        <td>{{ $batch->shift ?? '—' }}</td>
+        <td>
+          <span class="badge {{ $batch->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
+            {{ $batch->status ?? 'Active' }}
+          </span>
+        </td>
+        <td>
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary" type="button" 
+                    id="dropdownMenu{{ $loop->index }}" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false">
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" 
+                aria-labelledby="dropdownMenu{{ $loop->index }}">
+              <li>
+                <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" style="display: inline;">
+                  @csrf
+                  <button type="submit" class="dropdown-item">
+                    {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    @endforeach
+  </tbody>
+</table>
 
-          </tbody>
-        </table>
       </div>
       <div class="footer">
         <div class="left-footer">
@@ -457,8 +459,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-  // Ajax for dynamic user addition without page reload
-  $('form[action="{{ route('batches.assign') }}"]').on('submit', function (e) {
+ $(document).ready(function() {
+  // Ajax for dynamic batch assignment without page reload
+  $('#assignBatchForm').on('submit', function (e) {
     e.preventDefault();
 
     $.ajax({
@@ -467,53 +470,76 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       data: $(this).serialize(),
       success: function (response) {
         if (response.status === 'success') {
+          // Close modal
           $('#assignBatchModal').modal('hide');
-          $('form[action="{{ route('batches.assign') }}"]')[0].reset();
+          
+          // Reset form
+          $('#assignBatchForm')[0].reset();
 
-          // Append new batch to table
-          $('#table tbody').append(`
-                    <tr>
-                        <td>${$('#table tbody tr').length + 1}</td>
-                        <td>${response.batch.batch_id}</td>
-                        <td>${response.batch.start_date}</td>
-                        <td>${response.batch.username}</td>
-                        <td>${response.batch.shift}</td>
-                        <td>
-                            <span class="badge ${response.batch.status === 'Deactivated' ? 'bg-danger' : 'bg-success'}">
-                                ${response.batch.status}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenuButton"
-          data-bs-toggle="dropdown" aria-expanded="false">
-    <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-  </button>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <form method="POST" action="/batches/toggle-status/${response.batch.id}">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item">
-                                                ${response.batch.status === 'Active' ? 'Deactivate' : 'Activate'}
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                `);
+          // Get current row count for serial number
+          const newSerialNo = $('#table tbody tr').length + 1;
+
+          // Append new batch to table with proper structure
+          const newRow = `
+            <tr>
+              <td>${newSerialNo}</td>
+              <td>${response.batch.batch_id}</td>
+              <td>${response.batch.start_date}</td>
+              <td>${response.batch.username || '—'}</td>
+              <td>${response.batch.shift || '—'}</td>
+              <td>
+                <span class="badge ${response.batch.status === 'Deactivated' ? 'bg-danger' : 'bg-success'}">
+                  ${response.batch.status}
+                </span>
+              </td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary" type="button" 
+                          id="dropdownMenu${newSerialNo}" 
+                          data-bs-toggle="dropdown" 
+                          aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" 
+                      aria-labelledby="dropdownMenu${newSerialNo}">
+                    <li>
+                      <form method="POST" action="/batches/toggle-status/${response.batch.id}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                          ${response.batch.status === 'Active' ? 'Deactivate' : 'Reactivate'}
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          `;
+          
+          $('#table tbody').append(newRow);
+          
+          // Show success message (optional)
+          alert('Batch assigned successfully!');
         }
       },
       error: function (xhr) {
         if (xhr.status === 422) {
           const errors = xhr.responseJSON.errors;
-          console.log(errors);
-          // Optional: show validation errors on modal
+          console.log('Validation errors:', errors);
+          
+          // Show error message
+          let errorMsg = 'Validation errors:\n';
+          for (let field in errors) {
+            errorMsg += `- ${errors[field][0]}\n`;
+          }
+          alert(errorMsg);
+        } else {
+          alert('An error occurred. Please try again.');
         }
       }
     });
   });
+});
 
 </script>
 

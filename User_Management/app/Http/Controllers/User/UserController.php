@@ -29,23 +29,37 @@ class UserController extends Controller
     /**
      * Show employees
      */
-     public function addUser(Request $request)
+      public function addUser(Request $request)
     {
-        // Debugging: uncomment if needed
-        // dd($request->all());
-
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'mobileNumber' => 'required|string|max:15',
-            'alternateNumber' => 'nullable|string|max:15',
+            'mobileNumber' => [
+                'required',
+                'regex:/^[0-9]{10}$/',  // Exactly 10 digits
+            ],
+            'alternateNumber' => [
+                'nullable',
+                'regex:/^[0-9]{10}$/',  // Exactly 10 digits if provided
+            ],
             'branch' => 'required|string',
             'roles' => 'nullable|array',
             'roles.*' => 'string',
             'departments' => 'nullable|array',
             'departments.*' => 'string',
-            'password' => 'required|min:6',
+            'password' => [
+                'required',
+                'min:8',  // Minimum 8 characters
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',  // Must contain uppercase, lowercase, and number
+            ],
             'confirm_password' => 'required|same:password',
+        ], [
+            // Custom error messages
+            'mobileNumber.regex' => 'Mobile number must be exactly 10 digits.',
+            'alternateNumber.regex' => 'Alternate mobile number must be exactly 10 digits.',
+            'password.min' => 'Password must be at least 8 characters long.',
+            'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, and one number.',
+            'confirm_password.same' => 'Password confirmation does not match.',
         ]);
 
         $departments = [];
@@ -83,6 +97,8 @@ class UserController extends Controller
         return redirect()->route('emp')->with('success', 'Employee added successfully!');
     }
 
+
+    
     /**
      * Show employees
      */
@@ -151,6 +167,7 @@ class UserController extends Controller
         return view('user.emp.emp', compact('users'));
     }
 
+
     /**
      * Update an existing employee - Fixed version
      */
@@ -172,10 +189,19 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id . ',_id',
-            'mobileNumber' => 'required|string|max:15',
-            'alternateNumber' => 'nullable|string|max:15',
+            'mobileNumber' => [
+                'required',
+                'regex:/^[0-9]{10}$/',  // Exactly 10 digits
+            ],
+            'alternateNumber' => [
+                'nullable',
+                'regex:/^[0-9]{10}$/',  // Exactly 10 digits if provided
+            ],
             'branch' => 'required|string',
             'department' => 'required|string',
+        ], [
+            'mobileNumber.regex' => 'Mobile number must be exactly 10 digits.',
+            'alternateNumber.regex' => 'Alternate mobile number must be exactly 10 digits.',
         ]);
 
         // Auto-assign roles based on department
@@ -215,6 +241,7 @@ class UserController extends Controller
         return redirect()->route('emp')->with('success', 'User updated successfully!');
     }
 
+
     /**
      * Update user password
      */
@@ -224,12 +251,22 @@ class UserController extends Controller
     //2. check if user exists
     //3. check if current password matches
     //4. update password and redirect successfully
-    public function updatePassword(Request $request, $id)
+   public function updatePassword(Request $request, $id)
     {
         $request->validate([
             'current_password' => 'required',
-            'new_password' => 'required|min:6',
+            'new_password' => [
+                'required',
+                'min:8',  // Minimum 8 characters
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',  // Must contain uppercase, lowercase, and number
+                'different:current_password',  // New password must be different from current
+            ],
             'confirm_new_password' => 'required|same:new_password',
+        ], [
+            'new_password.min' => 'New password must be at least 8 characters long.',
+            'new_password.regex' => 'New password must contain at least one uppercase letter, one lowercase letter, and one number.',
+            'new_password.different' => 'New password must be different from current password.',
+            'confirm_new_password.same' => 'Password confirmation does not match.',
         ]);
 
         $user = User::find($id);
@@ -238,8 +275,9 @@ class UserController extends Controller
             return redirect()->route('emp')->with('error', 'User not found!');
         }
 
+        // Verify current password matches
         if (!Hash::check($request->input('current_password'), $user->password)) {
-            return back()->withErrors(['current_password' => 'Incorrect current password']);
+            return back()->withErrors(['current_password' => 'Current password is incorrect.'])->withInput();
         }
 
         $user->update([
@@ -248,6 +286,7 @@ class UserController extends Controller
 
         return redirect()->route('emp')->with('success', 'Password updated successfully!');
     }
+
 
     /**
      * Toggle user status
@@ -258,7 +297,7 @@ class UserController extends Controller
     //2. if user not found, redirect with error
     //3. determine new status based on current status
     //4. update user status and redirect successfully
-    public function toggleStatus($id)
+     public function toggleStatus($id)
     {
         $user = User::find($id);
 
@@ -276,9 +315,6 @@ class UserController extends Controller
     /**
      * Debug method to check user data structure
      */
-
-    //a debug function to check user data structure
-    //if id is provided, fetch that user, else fetch the first user
     public function debugUser($id = null)
     {
         if ($id) {
@@ -289,4 +325,21 @@ class UserController extends Controller
             dd($users->first());
         }
     }
+
+    /**
+     * Debug method to check user data structure
+     */
+
+    //a debug function to check user data structure
+    //if id is provided, fetch that user, else fetch the first user
+    // public function debugUser($id = null)
+    // {
+    //     if ($id) {
+    //         $user = User::find($id);
+    //         dd($user);
+    //     } else {
+    //         $users = User::take(1)->get();
+    //         dd($users->first());
+    //     }
+    // }
 }
