@@ -404,6 +404,15 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           Edit Details
         </a>
       </li>
+       <li>
+          <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" class="d-inline">
+          @csrf
+          <button type="submit" class="dropdown-item {{ ($batch->status ?? 'Active') === 'Active' ? 'text-danger' : 'text-success' }}">
+            {{ ($batch->status ?? 'Active') === 'Active' ? 'Deactivate' : 'Reactivate' }}
+          </button>
+        </form>
+
+      </li>
     </ul>
   </div>
 </td>

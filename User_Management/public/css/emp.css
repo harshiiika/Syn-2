@@ -321,7 +321,7 @@
 }
 .dropdown-item {
     height: 20px;
-    width: 30px;
+    width: 70px;
     margin: 15px;
     border-radius: 5px;
     justify-content: center;
@@ -404,11 +404,37 @@ height: 30px;
     width: 700px;
 }
 
-.modal-dialog-scrollable , .modal-content{
-    height: 90vh;
+.modal-dialog-scrollable {
+    max-height: calc(100vh - 3.5rem);
+}
+
+.modal-dialog-scrollable .modal-content {
+    max-height: 100%;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
+
+.modal-dialog-scrollable .modal-body {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    max-height: calc(100vh - 210px);
+}
+#liveToastBtn{
+    background-color: rgb(224, 83, 1);
+    color: #edfeff;
+    height: 40px;
+    width: 130px;
+    border-radius: 7px;
+    border: 0;
+    margin: 10px;
+}
+
+.modal-dialog-scrollable .modal-header,
+.modal-dialog-scrollable .modal-footer {
+    flex-shrink: 0;
+}
+
 
 #inputGroupFile01{
     width: 500px;

@@ -78,8 +78,7 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 */
 Route::get('/batches', [BatchesController::class, 'showBatches'])->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
-Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])->name('batches.toggleStatus');
-
+Route::post('/batches/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('batches.toggleStatus');
 /*
 |--------------------------------------------------------------------------
 | Courses Routes

@@ -141,7 +141,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
 
       <!-- Left side bar accordian -->
-       <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -153,8 +153,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i>
+                    Employee</a></li>
+                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
+                      id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -171,12 +173,18 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
+                      id="side-icon"></i> Courses</a></li>
+                <li><a class="item" href="{{ route('batches.index') }}"><i
+                      class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
+                      id="side-icon"></i> Scholarship</a></li>
+                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card"
+                      id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
+                      id="side-icon"></i> Other Fees Master</a></li>
+                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
+                      id="side-icon"></i> Branch Management</a></li>
               </ul>
             </div>
           </div>
@@ -193,9 +201,12 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
+                      id="side-icon"></i> Session</a></li>
+                <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
+                      id="side-icon"></i> Calendar</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -212,10 +223,14 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Student Onboard</a></li>
+                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Pending Fees Students</a></li>
+                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>
@@ -232,7 +247,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -303,9 +319,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a>
+                </li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file"
+                      id="side-icon"></i>Inquiry History</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
               </ul>
             </div>
@@ -394,61 +412,52 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </span>
               </td>
 
-             <td>
-  <div class="dropdown">
-    <button class="btn btn-sm btn-outline-secondary" type="button" 
-            id="dropdownMenu{{ $loop->index }}" 
-            data-bs-toggle="dropdown" 
-            aria-expanded="false">
-      <i class="fas fa-ellipsis-v"></i>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end" 
-        aria-labelledby="dropdownMenu{{ $loop->index }}">
-      <li>
-        <a class="dropdown-item" href="#" 
-           data-bs-toggle="modal"
-           data-bs-target="#viewModal{{ $user->_id }}">
-          <i class="fas fa-eye me-2"></i>View Details
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item" href="#" 
-           data-bs-toggle="modal"
-           data-bs-target="#editModal{{ $user->_id }}">
-          <i class="fas fa-edit me-2"></i>Edit Details
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item" href="#" 
-           data-bs-toggle="modal"
-           data-bs-target="#passwordModal{{ $user->_id }}">
-          <i class="fas fa-key me-2"></i>Password Update
-        </a>
-      </li>
-      <li>
-        <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}" style="display: inline;">
-          @csrf
-          <button type="submit" class="dropdown-item">
-            <i class="fas fa-toggle-{{ $user->status === 'Active' ? 'off' : 'on' }} me-2"></i>
-            {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
-          </button>
-        </form>
-      </li>
-    </ul>
-  </div>
-</td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary" type="button" id="dropdownMenu{{ $loop->index }}"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu{{ $loop->index }}">
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                        data-bs-target="#viewModal{{ $user->_id }}">
+                        View Details
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                        data-bs-target="#editModal{{ $user->_id }}">
+                        Edit Details
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                        data-bs-target="#passwordModal{{ $user->_id }}">
+                        Password Update
+                      </a>
+                    </li>
+                    <li>
+                      <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                          <!-- <i class="fas fa-toggle-{{ $user->status === 'Active' ? 'off' : 'on' }} me-2"></i> -->
+                          {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </td>
             </tr>
           @endforeach
 
         </table>
 
         <!-- Here options modals are present. -->
-
-        <!-- View Modal -->
-
-
+        <!-- View Modal - FIXED VERSION -->
         @foreach($users as $user)
-          <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}"
+          <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1"
             aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content">
@@ -488,7 +497,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </div>
         @endforeach
 
-        <!-- Edit Modal -->
+        <!-- Edit Modal - FIXED VERSION -->
         @foreach($users as $user)
           <div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1"
             aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
@@ -562,15 +571,15 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </div>
           </div>
         @endforeach
-        <!-- Password Update Modal -->
 
+        <!-- Password Update Modal - FIXED VERSION -->
         @foreach($users as $user)
-
           <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1"
             aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content">
-                <form method="POST" action="{{ route('users.password.update', $user->_id) }}">
+                <form method="POST" action="{{ route('users.password.update', $user->_id) }}"
+                  id="passwordForm{{ $user->_id }}">
                   @csrf
                   @method('PUT')
                   <div class="modal-header">
@@ -579,27 +588,44 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                   </div>
                   <div class="modal-body">
                     <div class="mb-3">
-                      <label class="form-label">Current Password</label>
-                      <input type="password" name="current_password" class="form-control" required>
+                      <label class="form-label">Current Password <span class="text-danger">*</span></label>
+                      <input type="password" name="current_password" class="form-control"
+                        placeholder="Enter current password" required>
+                      @error('current_password')
+                        <span class="text-danger">{{ $message }}</span>
+                      @enderror
                     </div>
                     <div class="mb-3">
-                      <label class="form-label">New Password</label>
-                      <input type="password" name="new_password" class="form-control" required>
+                      <label class="form-label">New Password <span class="text-danger">*</span></label>
+                      <input type="password" name="new_password" id="new_password{{ $user->_id }}" class="form-control"
+                        placeholder="Enter new password" minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                        required>
+                      <small class="form-text text-muted">Minimum 8 characters, must include uppercase, lowercase, and
+                        number</small>
+                      @error('new_password')
+                        <span class="text-danger">{{ $message }}</span>
+                      @enderror
                     </div>
                     <div class="mb-3">
-                      <label class="form-label">Confirm New Password</label>
-                      <input type="password" name="confirm_new_password" class="form-control" required>
+                      <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
+                      <input type="password" name="confirm_new_password" id="confirm_new_password{{ $user->_id }}"
+                        class="form-control" placeholder="Confirm new password" required>
+                      <span class="text-danger" id="password-match-error{{ $user->_id }}"></span>
+                      @error('confirm_new_password')
+                        <span class="text-danger">{{ $message }}</span>
+                      @enderror
                     </div>
                   </div>
                   <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" id="submit" class="btn btn-primary">Update Password</button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
-
         @endforeach
+
       </div>
       <div class="footer">
         <div class="left-footer">
@@ -623,107 +649,116 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </div>
   <!-- Modal Form with fillables for add employee starts here -->
 
-<div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content" id="content-one">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Employee</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form method="POST" action="{{ route('users.add') }}" id="addEmployeeForm">
-          @csrf
-          <div class="mb-3">
-            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" required>
-            <span class="text-danger" id="error-name"></span>
-          </div>
+  <!-- Add Employee Modal -->
+  <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content" id="content-one">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Employee</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{{ route('users.add') }}" id="addEmployeeForm">
+            @csrf
+            <div class="mb-3">
+              <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+              <input type="text" name="name" class="form-control" placeholder="Enter Your Name" required>
+              <span class="text-danger" id="error-name"></span>
+            </div>
 
-          <div class="mb-3">
-            <label for="mobileNumber" class="form-label">Mobile No. <span class="text-danger">*</span></label>
-            <input type="tel" name="mobileNumber" class="form-control" placeholder="Enter Your Mobile Number" required>
-            <span class="text-danger" id="error-mobileNumber"></span>
-          </div>
+            <div class="mb-3">
+              <label for="mobileNumber" class="form-label">Mobile No. <span class="text-danger">*</span></label>
+              <input type="tel" name="mobileNumber" class="form-control" placeholder="Enter 10 digit mobile number"
+                pattern="[0-9]{10}" maxlength="10" required>
+              <small class="form-text text-muted">Enter exactly 10 digits</small>
+              <span class="text-danger" id="error-mobileNumber"></span>
+            </div>
 
-          <div class="mb-3">
-            <label for="alternateNumber" class="form-label">Alternate Mobile No.</label>
-            <input type="tel" name="alternateNumber" class="form-control" placeholder="Enter Your Alternate Mobile Number">
-          </div>
+            <div class="mb-3">
+              <label for="alternateNumber" class="form-label">Alternate Mobile No.</label>
+              <input type="tel" name="alternateNumber" class="form-control"
+                placeholder="Enter 10 digit alternate number" pattern="[0-9]{10}" maxlength="10">
+              <small class="form-text text-muted">Enter exactly 10 digits (optional)</small>
+            </div>
 
-          <div class="mb-3">
-            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-            <input type="email" name="email" class="form-control" placeholder="Enter Your Email" required>
-            <span class="text-danger" id="error-email"></span>
-          </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" name="email" class="form-control" placeholder="Enter Your Email" required>
+              <span class="text-danger" id="error-email"></span>
+            </div>
 
-          <div class="mb-3">
-            <label for="branch" class="form-label">Select Branch <span class="text-danger">*</span></label>
-            <select class="form-select" name="branch" required>
-              <option selected disabled>Select Branch</option>
-              <option value="Bikaner">Bikaner</option>
-            </select>
-          </div>
+            <div class="mb-3">
+              <label for="branch" class="form-label">Select Branch <span class="text-danger">*</span></label>
+              <select class="form-select" name="branch" required>
+                <option selected disabled>Select Branch</option>
+                <option value="Bikaner">Bikaner</option>
+              </select>
+            </div>
 
-          <div class="mb-3">
-            <label for="departments" class="form-label">Select Department <span class="text-danger">*</span></label>
-            <select class="form-select" name="departments[]" required>
-              <option selected disabled>Select Department</option>
-              <option value="Front Office">Front Office</option>
-              <option value="Back Office">Back Office</option>
-              <option value="Office">Office</option>
-              <option value="Test Management">Test Management</option>
-              <option value="Admin">Admin</option>
-            </select>
-          </div>
+            <div class="mb-3">
+              <label for="departments" class="form-label">Select Department <span class="text-danger">*</span></label>
+              <select class="form-select" name="departments[]" required>
+                <option selected disabled>Select Department</option>
+                <option value="Front Office">Front Office</option>
+                <option value="Back Office">Back Office</option>
+                <option value="Office">Office</option>
+                <option value="Test Management">Test Management</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
 
-          <div class="mb-3">
-            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-            <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
-            <span class="text-danger" id="error-password"></span>
-          </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+              <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password"
+                minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$" required>
+              <small class="form-text text-muted">Minimum 8 characters, must include uppercase, lowercase, and
+                number</small>
+              <span class="text-danger" id="error-password"></span>
+            </div>
 
-          <div class="mb-3">
-            <label for="confirm_password" class="form-label">Confirm Password <span class="text-danger">*</span></label>
-            <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
-            <span class="text-danger" id="error-confirm_password"></span>
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
+            <div class="mb-3">
+              <label for="confirm_password" class="form-label">Confirm Password <span
+                  class="text-danger">*</span></label>
+              <input type="password" name="confirm_password" id="confirm_password" class="form-control"
+                placeholder="Confirm Password" required>
+              <span class="text-danger" id="error-confirm_password"></span>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" form="addEmployeeForm">Submit</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-    <!-- Upload Modal -->
-    <div class="modal fade" id="exampleModalTwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+  <!-- Upload Modal -->
+  <div class="modal fade" id="exampleModalTwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-dialog">
-          <div class="modal-content" id="modal-two">
-            <div class="modal-header">
-              <h2 class="modal-title fs-5" id="exampleModalLabel">Upload</h2>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+      <div class="modal-dialog">
+        <div class="modal-content" id="modal-two">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="exampleModalLabel">Upload</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
 
-            <div class="modal-body" id="sample-body">
-              <a href="/user management/emp/employees_synthesis.xlsx"><button class="sampleFile" id="xlsx">Download
-                  Sample File</button></a>
-              <form action="upload.php" method="post" enctype="multipart/form-data" id="form-control">
-                <input type="file" class="form-control" id="inputGroupFile01">
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submit">Close</button>
-              <button type="button" class="btn btn-primary" id="add">Save changes</button>
-            </div>
+          <div class="modal-body" id="sample-body">
+            <a href="/user management/emp/employees_synthesis.xlsx"><button class="sampleFile" id="xlsx">Download
+                Sample File</button></a>
+            <form action="upload.php" method="post" enctype="multipart/form-data" id="form-control">
+              <input type="file" class="form-control" id="inputGroupFile01">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submit">Close</button>
+            <button type="button" class="btn btn-primary" id="add">Save changes</button>
           </div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 
 </body>
@@ -738,34 +773,89 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
 <!-- AJAX Script -->
 <script>
-$('#addEmployeeForm').on('submit', function (e) {
+  $('#addEmployeeForm').on('submit', function (e) {
     e.preventDefault();
     $('.text-danger').text(''); // Clear errors
 
     $.ajax({
-        url: "{{ route('users.add') }}",
-        method: 'POST',
-        data: $(this).serialize(),
-        success: function (response) {
-            // Close modal
-            $('#exampleModalOne').modal('hide');
-            
-            // Reset form
-            $('#addEmployeeForm')[0].reset();
-            
-            // Reload page to show new employee
-            window.location.href = "{{ route('user.emp.emp') }}";
-        },
-        error: function (xhr) {
-            if (xhr.status === 422) {
-                const errors = xhr.responseJSON.errors;
-                for (let field in errors) {
-                    $('#error-' + field).text(errors[field][0]);
-                }
-            } else {
-                alert('An error occurred. Please try again.');
-            }
+      url: "{{ route('users.add') }}",
+      method: 'POST',
+      data: $(this).serialize(),
+      success: function (response) {
+        // Close modal
+        $('#exampleModalOne').modal('hide');
+
+        // Reset form
+        $('#addEmployeeForm')[0].reset();
+
+        // Reload page to show new employee
+        window.location.href = "{{ route('user.emp.emp') }}";
+      },
+      error: function (xhr) {
+        if (xhr.status === 422) {
+          const errors = xhr.responseJSON.errors;
+          for (let field in errors) {
+            $('#error-' + field).text(errors[field][0]);
+          }
+        } else {
+          alert('An error occurred. Please try again.');
         }
+      }
+    });
+  });
+
+  // Password confirmation matching for Add Employee
+document.getElementById('addEmployeeForm')?.addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    const errorSpan = document.getElementById('error-confirm_password');
+    
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        errorSpan.textContent = 'Passwords do not match!';
+        return false;
+    }
+    errorSpan.textContent = '';
+});
+
+// Real-time password validation feedback
+document.getElementById('password')?.addEventListener('input', function(e) {
+    const password = e.target.value;
+    const errorSpan = document.getElementById('error-password');
+    
+    if (password.length < 8) {
+        errorSpan.textContent = 'Password must be at least 8 characters';
+    } else if (!/[a-z]/.test(password)) {
+        errorSpan.textContent = 'Password must contain a lowercase letter';
+    } else if (!/[A-Z]/.test(password)) {
+        errorSpan.textContent = 'Password must contain an uppercase letter';
+    } else if (!/\d/.test(password)) {
+        errorSpan.textContent = 'Password must contain a number';
+    } else {
+        errorSpan.textContent = '';
+    }
+});
+
+// Password update modal validation
+@foreach($users as $user)
+document.getElementById('passwordForm{{ $user->_id }}')?.addEventListener('submit', function(e) {
+    const newPassword = document.getElementById('new_password{{ $user->_id }}').value;
+    const confirmPassword = document.getElementById('confirm_new_password{{ $user->_id }}').value;
+    const errorSpan = document.getElementById('password-match-error{{ $user->_id }}');
+    
+    if (newPassword !== confirmPassword) {
+        e.preventDefault();
+        errorSpan.textContent = 'New passwords do not match!';
+        return false;
+    }
+    errorSpan.textContent = '';
+});
+@endforeach
+
+// Mobile number validation - only allow digits
+document.querySelectorAll('input[type="tel"]').forEach(function(input) {
+    input.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
     });
 });
 </script>
