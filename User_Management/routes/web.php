@@ -227,38 +227,44 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
 // ========================================
 // 4. ACTIVE STUDENTS
 // ========================================
-Route::get('/students/active', [StudentController::class, 'activeStudents'])->name('students.active');
-
-Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
-Route::post('/students/{id}/update-fees', [StudentController::class, 'updateFees'])->name('students.updateFees');
-Route::post('/students/convert/{inquiryId}', [StudentController::class, 'convertFromInquiry'])->name('students.convertFromInquiry');
-
-Route::get('/inquiries/{id}', [InquiryController::class, 'view'])->name('inquiries.view');
-Route::get('/inquiries/{id}/edit', [InquiryController::class, 'edit'])->name('inquiries.edit');
-Route::put('/inquiries/{id}', [InquiryController::class, 'update'])->name('inquiries.update');
-
-Route::get('/inquiries/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])
-    ->name('inquiries.scholarship.show');
-
-Route::put('/inquiries/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])
-    ->name('inquiries.scholarship.update');
-
-Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
-Route::get('/inquiries/{id}/edit', [InquiryController::class, 'edit'])->name('inquiries.edit');
-Route::put('/inquiries/{id}', [InquiryController::class, 'update'])->name('inquiries.update');
-
-// Show fees and batches details 
-Route::get('/inquiries/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])
-    ->name('inquiries.fees-batches.show');
-
-// Update fees and batches (if you need to save batch selection later)
-Route::put('/inquiries/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])
-    ->name('inquiries.fees-batches.update');
-
-// Debug route - add this temporarily to test
-Route::get('/test-payment/{id}', function($id) {
-    return "Payment route working for ID: " . $id;
-})->name('test.payment');
+/*
+|--------------------------------------------------------------------------
+| Inquiry Management Routes (CONSOLIDATED)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('inquiries')->name('inquiries.')->group(function () {
+    // Main index page
+    Route::get('/', [InquiryController::class, 'index'])->name('index');
+    
+    // ⭐ CRITICAL: Data route MUST come before {id} routes
+    Route::get('/data', [InquiryController::class, 'data'])->name('data');
+    
+    // Bulk operations
+    Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('bulkOnboard');
+    Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
+    
+    // Create new inquiry
+    Route::post('/', [InquiryController::class, 'store'])->name('store');
+    
+    // Scholarship and fees routes (specific paths before {id})
+    Route::get('/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])->name('scholarship.show');
+    Route::put('/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])->name('scholarship.update');
+    Route::get('/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])->name('fees-batches.show');
+    Route::put('/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])->name('fees-batches.update');
+    
+    // Edit route
+    Route::get('/{id}/edit', [InquiryController::class, 'edit'])->name('edit');
+    
+    // View route
+    Route::get('/{id}/view', [InquiryController::class, 'view'])->name('view');
+    
+    // Update and delete
+    Route::put('/{id}', [InquiryController::class, 'update'])->name('update');
+    Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
+    
+    // Show single inquiry (comes last)
+    Route::get('/{id}', [InquiryController::class, 'show'])->name('show');
+});
 
 
 // Student Management (SM Students)

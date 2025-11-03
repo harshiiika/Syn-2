@@ -135,62 +135,128 @@ class InquiryController extends Controller
     /**
      * Store a new inquiry
      */
-    public function store(Request $request)
-    {
-        Log::info('Inquiry Store Request:', $request->all());
+public function store(Request $request)
+{
+    Log::info('Inquiry Store Request:', $request->all());
 
-        $validator = Validator::make($request->all(), [
-            'student_name'       => 'required|string|max:255',
-            'father_name'        => 'required|string|max:255',
-            'father_contact'     => 'required|string|max:20',
-            'father_whatsapp'    => 'nullable|string|max:20',
-            'student_contact'    => 'nullable|string|max:20',
-            'category'           => 'required|string|in:General,OBC,SC,ST',
-            'course_name'        => 'nullable|string|max:255',
-            'delivery_mode'      => 'nullable|string|in:Online,Offline,Hybrid',
-            'course_content'     => 'nullable|string|max:255',
-            'branch'             => 'required|string|max:255',
-            'state'              => 'nullable|string|max:255',
-            'city'               => 'nullable|string|max:255',
-            'address'            => 'nullable|string',
-            'ews'                => 'required|string|in:Yes,No',
-            'defense'            => 'required|string|in:Yes,No',
-            'specially_abled'    => 'required|string|in:Yes,No',
-            'status'             => 'nullable|string|in:Pending,Active,Closed,Converted',
-            'remarks'            => 'nullable|string',
-            'follow_up_date'     => 'nullable|date',
-        ]);
+    $validator = Validator::make($request->all(), [
+        'student_name'       => 'required|string|max:255',
+        'father_name'        => 'required|string|max:255',
+        'father_contact'     => 'required|string|max:20',
+        'father_whatsapp'    => 'nullable|string|max:20',
+        'student_contact'    => 'nullable|string|max:20',
+        'category'           => 'required|string|in:General,OBC,SC,ST',
+        'course_name'        => 'nullable|string|max:255',
+        'delivery_mode'      => 'nullable|string|in:Online,Offline,Hybrid',
+        'course_content'     => 'nullable|string|max:255',
+        'branch'             => 'required|string|max:255',
+        'state'              => 'nullable|string|max:255',
+        'city'               => 'nullable|string|max:255',
+        'address'            => 'nullable|string',
+        'ews'                => 'required|string|in:Yes,No',
+        'defense'            => 'required|string|in:Yes,No',
+        'specially_abled'    => 'required|string|in:Yes,No',
+        'status'             => 'nullable|string|in:Pending,Active,Closed,Converted',
+        'remarks'            => 'nullable|string',
+        'follow_up_date'     => 'nullable|date',
+    ]);
 
-        if ($validator->fails()) {
-            Log::error('Inquiry Validation Failed:', $validator->errors()->toArray());
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        try {
-            $data = $validator->validated();
-            $data['status'] = $data['status'] ?? 'Pending';
-            
-            Log::info('Creating inquiry with data:', $data);
-            $inquiry = Inquiry::create($data);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Inquiry created successfully',
-                'data' => $inquiry,
-            ], 201);
-        } catch (\Exception $e) {
-            Log::error('Inquiry Store Error: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create inquiry: ' . $e->getMessage(),
-            ], 500);
-        }
+    if ($validator->fails()) {
+        Log::error('Inquiry Validation Failed:', $validator->errors()->toArray());
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422);
     }
+
+    try {
+        $data = $validator->validated();
+        $data['status'] = $data['status'] ?? 'Pending';
+        
+        // ⭐ AUTO-CALCULATE FEES BASED ON COURSE
+        if (!empty($data['course_name'])) {
+            $feesData = $this->calculateDefaultFees($data['course_name']);
+            $data = array_merge($data, $feesData);
+        }
+        
+        Log::info('Creating inquiry with data:', $data);
+        $inquiry = Inquiry::create($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Inquiry created successfully',
+            'data' => $inquiry,
+        ], 201);
+    } catch (\Exception $e) {
+        Log::error('Inquiry Store Error: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to create inquiry: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+/**
+ * Calculate default fees for a course (without any discounts)
+ */
+private function calculateDefaultFees($courseName)
+{
+    // Course fees mapping
+    $courseFees = [
+        'Anthesis 11th NEET' => 88000,
+        'Momentum 12th NEET' => 88000,
+        'Dynamic Target NEET' => 88000,
+        'Impulse 11th IIT' => 88000,
+        'Intensity 12th IIT' => 88000,
+        'Thurst Target IIT' => 88000,
+        'Seedling 10th' => 60000,
+        'Plumule 9th' => 55000,
+        'Radicle 8th' => 50000
+    ];
+
+    $totalFeeBeforeDiscount = $courseFees[$courseName] ?? 88000;
+
+    // No scholarship eligibility check here - just base fees
+    $eligibleForScholarship = 'No';
+    $scholarshipName = 'N/A';
+    $discountPercentage = 0;
+    $discountedFee = $totalFeeBeforeDiscount;
+    $discretionaryDiscount = 'No';
+
+    // Calculate final fees with GST
+    $totalFees = $discountedFee;
+    $gstAmount = ($totalFees * 18) / 100;
+    $totalFeesInclusiveTax = $totalFees + $gstAmount;
+
+    // Calculate installments
+    $singleInstallmentAmount = $totalFeesInclusiveTax;
+    $installment1 = round($totalFeesInclusiveTax * 0.40, 2);
+    $installment2 = round($totalFeesInclusiveTax * 0.30, 2);
+    $installment3 = round($totalFeesInclusiveTax * 0.30, 2);
+
+    return [
+        'eligible_for_scholarship' => $eligibleForScholarship,
+        'scholarship_name' => $scholarshipName,
+        'total_fee_before_discount' => $totalFeeBeforeDiscount,
+        'discretionary_discount' => $discretionaryDiscount,
+        'discretionary_discount_type' => null,
+        'discretionary_discount_value' => null,
+        'discretionary_discount_reason' => null,
+        'discount_percentage' => $discountPercentage,
+        'discounted_fee' => $discountedFee,
+        'fees_breakup' => 'Class room course (with test series & study material)',
+        'total_fees' => $totalFees,
+        'gst_amount' => $gstAmount,
+        'total_fees_inclusive_tax' => $totalFeesInclusiveTax,
+        'single_installment_amount' => $singleInstallmentAmount,
+        'installment_1' => $installment1,
+        'installment_2' => $installment2,
+        'installment_3' => $installment3,
+        'fees_calculated_at' => now(),
+    ];
+}
 
     /**
      * Delete an inquiry
@@ -815,111 +881,158 @@ class InquiryController extends Controller
     /**
      * Update inquiry
      */
-    public function update(Request $request, $id)
-    {
-        \Log::info('UPDATE METHOD CALLED', [
-            'id' => $id,
-            'all_data' => $request->all()
-        ]);
+public function update(Request $request, $id)
+{
+    \Log::info('UPDATE METHOD CALLED', [
+        'id' => $id,
+        'all_data' => $request->all()
+    ]);
 
-        // Validate only the REQUIRED fields - make everything else optional
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'father' => 'required|string|max:255',
-            'mother' => 'nullable|string|max:255',
-            'dob' => 'nullable|date',
-            'mobileNumber' => 'required|string|max:15',
-            'fatherWhatsapp' => 'nullable|string|max:15',
-            'motherContact' => 'nullable|string|max:15',
-            'studentContact' => 'nullable|string|max:15',
-            'category' => 'required|in:GENERAL,OBC,SC,ST',
-            'gender' => 'required|in:Male,Female,Others',
-            'fatherOccupation' => 'nullable|string|max:255',
-            'fatherGrade' => 'nullable|string|max:255',
-            'motherOccupation' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'pinCode' => 'nullable|string|max:6',
-            'address' => 'nullable|string',
-            'belongToOtherCity' => 'nullable|in:Yes,No',
-            'economicWeakerSection' => 'nullable|in:Yes,No',
-            'armyPoliceBackground' => 'nullable|in:Yes,No',
-            'speciallyAbled' => 'nullable|in:Yes,No',
-            'courseType' => 'nullable|string|max:255',
-            'courseName' => 'nullable|string|max:255',
-            'deliveryMode' => 'nullable|in:Offline,Online,Hybrid',
-            'medium' => 'nullable|in:English,Hindi',
-            'board' => 'nullable|in:CBSE,RBSE,ICSE',
-            'courseContent' => 'nullable|string|max:255',
-            'isRepeater' => 'nullable|in:Yes,No',
-            'scholarshipTest' => 'nullable|in:Yes,No',
-            'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
-            'competitionExam' => 'nullable|in:Yes,No',
-        ]);
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'father' => 'required|string|max:255',
+        'mother' => 'nullable|string|max:255',
+        'dob' => 'nullable|date',
+        'mobileNumber' => 'required|string|max:15',
+        'fatherWhatsapp' => 'nullable|string|max:15',
+        'motherContact' => 'nullable|string|max:15',
+        'studentContact' => 'nullable|string|max:15',
+        'category' => 'required|in:GENERAL,OBC,SC,ST',
+        'gender' => 'required|in:Male,Female,Others',
+        'fatherOccupation' => 'nullable|string|max:255',
+        'fatherGrade' => 'nullable|string|max:255',
+        'motherOccupation' => 'nullable|string|max:255',
+        'state' => 'nullable|string|max:255',
+        'city' => 'nullable|string|max:255',
+        'pinCode' => 'nullable|string|max:6',
+        'address' => 'nullable|string',
+        'belongToOtherCity' => 'nullable|in:Yes,No',
+        'economicWeakerSection' => 'nullable|in:Yes,No',
+        'armyPoliceBackground' => 'nullable|in:Yes,No',
+        'speciallyAbled' => 'nullable|in:Yes,No',
+        'courseType' => 'nullable|string|max:255',
+        'courseName' => 'nullable|string|max:255',
+        'deliveryMode' => 'nullable|in:Offline,Online,Hybrid',
+        'medium' => 'nullable|in:English,Hindi',
+        'board' => 'nullable|in:CBSE,RBSE,ICSE',
+        'courseContent' => 'nullable|string|max:255',
+        'isRepeater' => 'nullable|in:Yes,No',
+        'scholarshipTest' => 'nullable|in:Yes,No',
+        'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
+        'competitionExam' => 'nullable|in:Yes,No',
+    ]);
 
-        \Log::info('VALIDATION PASSED');
+    \Log::info('VALIDATION PASSED');
 
-        try {
-            $inquiry = Inquiry::findOrFail($id);
-            
-            \Log::info('INQUIRY FOUND', ['inquiry_id' => $inquiry->_id]);
-            
-            // Map form fields to database fields
-            $updateData = [
-                'student_name' => $validatedData['name'],
-                'father_name' => $validatedData['father'],
-                'mother' => $validatedData['mother'] ?? null,
-                'dob' => $validatedData['dob'] ?? null,
-                'father_contact' => $validatedData['mobileNumber'],
-                'father_whatsapp' => $validatedData['fatherWhatsapp'] ?? null,
-                'motherContact' => $validatedData['motherContact'] ?? null,
-                'student_contact' => $validatedData['studentContact'] ?? null,
-                'category' => $validatedData['category'],
-                'gender' => $validatedData['gender'],
-                'fatherOccupation' => $validatedData['fatherOccupation'] ?? null,
-                'fatherGrade' => $validatedData['fatherGrade'] ?? null,
-                'motherOccupation' => $validatedData['motherOccupation'] ?? null,
-                'state' => $validatedData['state'] ?? null,
-                'city' => $validatedData['city'] ?? null,
-                'pinCode' => $validatedData['pinCode'] ?? null,
-                'address' => $validatedData['address'] ?? null,
-                'belongToOtherCity' => $validatedData['belongToOtherCity'] ?? 'No',
-                'economicWeakerSection' => $validatedData['economicWeakerSection'] ?? 'No',
-                'armyPoliceBackground' => $validatedData['armyPoliceBackground'] ?? 'No',
-                'speciallyAbled' => $validatedData['speciallyAbled'] ?? 'No',
-                'courseType' => $validatedData['courseType'] ?? null,
-                'course_name' => $validatedData['courseName'] ?? null,
-                'delivery_mode' => $validatedData['deliveryMode'] ?? null,
-                'medium' => $validatedData['medium'] ?? null,
-                'board' => $validatedData['board'] ?? null,
-                'course_content' => $validatedData['courseContent'] ?? null,
-                'isRepeater' => $validatedData['isRepeater'] ?? 'No',
-                'scholarshipTest' => $validatedData['scholarshipTest'] ?? 'No',
-                'lastBoardPercentage' => $validatedData['lastBoardPercentage'] ?? null,
-                'competitionExam' => $validatedData['competitionExam'] ?? 'No',
-            ];
+    try {
+        $inquiry = Inquiry::findOrFail($id);
+        
+        \Log::info('INQUIRY FOUND', ['inquiry_id' => $inquiry->_id]);
+        
+        // Check if course changed
+        $courseChanged = ($inquiry->course_name !== $validatedData['courseName']);
+        
+        // Map form fields to database fields
+        $updateData = [
+            'student_name' => $validatedData['name'],
+            'father_name' => $validatedData['father'],
+            'mother' => $validatedData['mother'] ?? null,
+            'dob' => $validatedData['dob'] ?? null,
+            'father_contact' => $validatedData['mobileNumber'],
+            'father_whatsapp' => $validatedData['fatherWhatsapp'] ?? null,
+            'motherContact' => $validatedData['motherContact'] ?? null,
+            'student_contact' => $validatedData['studentContact'] ?? null,
+            'category' => $validatedData['category'],
+            'gender' => $validatedData['gender'],
+            'fatherOccupation' => $validatedData['fatherOccupation'] ?? null,
+            'fatherGrade' => $validatedData['fatherGrade'] ?? null,
+            'motherOccupation' => $validatedData['motherOccupation'] ?? null,
+            'state' => $validatedData['state'] ?? null,
+            'city' => $validatedData['city'] ?? null,
+            'pinCode' => $validatedData['pinCode'] ?? null,
+            'address' => $validatedData['address'] ?? null,
+            'belongToOtherCity' => $validatedData['belongToOtherCity'] ?? 'No',
+            'economicWeakerSection' => $validatedData['economicWeakerSection'] ?? 'No',
+            'armyPoliceBackground' => $validatedData['armyPoliceBackground'] ?? 'No',
+            'speciallyAbled' => $validatedData['speciallyAbled'] ?? 'No',
+            'courseType' => $validatedData['courseType'] ?? null,
+            'course_name' => $validatedData['courseName'] ?? null,
+            'delivery_mode' => $validatedData['deliveryMode'] ?? null,
+            'medium' => $validatedData['medium'] ?? null,
+            'board' => $validatedData['board'] ?? null,
+            'course_content' => $validatedData['courseContent'] ?? null,
+            'isRepeater' => $validatedData['isRepeater'] ?? 'No',
+            'scholarshipTest' => $validatedData['scholarshipTest'] ?? 'No',
+            'lastBoardPercentage' => $validatedData['lastBoardPercentage'] ?? null,
+            'competitionExam' => $validatedData['competitionExam'] ?? 'No',
+        ];
 
-            $inquiry->update($updateData);
-
-            \Log::info('INQUIRY UPDATED SUCCESSFULLY', [
-                'updated_data' => $updateData
+        // ⭐ RECALCULATE FEES IF COURSE CHANGED
+        if ($courseChanged && !empty($validatedData['courseName'])) {
+            \Log::info('Course changed, recalculating fees', [
+                'old_course' => $inquiry->course_name,
+                'new_course' => $validatedData['courseName']
             ]);
             
-            // Redirect to scholarship page
-            return redirect()->route('inquiries.scholarship.show', $id)
-                ->with('success', 'Inquiry saved! Please review scholarship details.');
-
-        } catch (\Exception $e) {
-            \Log::error('ERROR IN UPDATE: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
-            
-            // On error, go back to edit page
-            return redirect()->route('inquiries.edit', $id)
-                ->with('error', 'Error updating inquiry: ' . $e->getMessage())
-                ->withInput();
+            $feesData = $this->calculateDefaultFees($validatedData['courseName']);
+            $updateData = array_merge($updateData, $feesData);
         }
-    }
 
+        $inquiry->update($updateData);
+
+        \Log::info('INQUIRY UPDATED SUCCESSFULLY', [
+            'updated_data' => $updateData
+        ]);
+        
+        // Redirect to scholarship page
+        return redirect()->route('inquiries.scholarship.show', $id)
+            ->with('success', 'Inquiry saved! Please review scholarship details.');
+
+    } catch (\Exception $e) {
+        \Log::error('ERROR IN UPDATE: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return redirect()->route('inquiries.edit', $id)
+            ->with('error', 'Error updating inquiry: ' . $e->getMessage())
+            ->withInput();
+    }
+}
+public function getData(Request $request)
+{
+    try {
+        $perPage = $request->get('per_page', 10);
+        $search = $request->get('search', '');
+        
+        $query = Inquiry::query();
+        
+        // Add search functionality
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('student_name', 'like', "%{$search}%")
+                  ->orWhere('father_name', 'like', "%{$search}%")
+                  ->orWhere('father_contact', 'like', "%{$search}%")
+                  ->orWhere('course_name', 'like', "%{$search}%");
+            });
+        }
+        
+        $inquiries = $query->paginate($perPage);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $inquiries->items(),
+            'current_page' => $inquiries->currentPage(),
+            'last_page' => $inquiries->lastPage(),
+            'per_page' => $inquiries->perPage(),
+            'total' => $inquiries->total()
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
     /**
      * Show fees and batches details page
      */
