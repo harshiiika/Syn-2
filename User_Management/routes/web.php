@@ -63,7 +63,7 @@ Route::prefix('session')->group(function () {
 | User Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/emp', [UserController::class, 'index'])->name('emp');
+Route::get('/emp', [UserController::class, 'index'])->name('user.emp.emp');
 Route::post('/users/add', [UserController::class, 'addUser'])->name('users.add');
 Route::put('/users/update/{id}', [UserController::class, 'updateUser'])->name('users.update');
 Route::put('/users/update-password/{id}', [UserController::class, 'updatePassword'])->name('users.password.update');
