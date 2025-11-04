@@ -49,8 +49,9 @@ class PendingController extends Controller
             
         } catch (\Exception $e) {
             Log::error("Edit failed for student ID {$id}: " . $e->getMessage());
-            return redirect()->route('student.pending.pending')
-                ->with('error', 'Student not found');
+           return redirect()->route('student.student.pending')
+                 ->with('error', 'Student not found');
+
         }
     }
 
@@ -167,11 +168,11 @@ class PendingController extends Controller
                 // Delete from Pending
                 $student->delete();
 
-                return redirect()->route('student.onboard.onboard')
-                    ->with('success', 'Student profile completed and moved to Onboard successfully!');
+                return redirect()->route('student.student.pending')
+                       ->with('info', 'Student details updated! Complete all fields to move to Onboard.');
             }
 
-            return redirect()->route('student.pending.pending')
+            return redirect()->route('student.student.pending')
                 ->with('info', 'Student details updated! Complete all fields to move to Onboard.');
 
         } catch (\Exception $e) {

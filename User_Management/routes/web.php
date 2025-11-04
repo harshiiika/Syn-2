@@ -186,11 +186,11 @@ Route::prefix('master')->name('master.')->group(function () {
 | Flow: Pending → Onboard → Pending Fees → SM Students
 |--------------------------------------------------------------------------
 */
-
 // ========================================
-// 1. PENDING STUDENTS (Incomplete Profiles)
+// 1. PENDING STUDENTS (Incomplete Profiles) 
+// Using student.student.pending to match your blade
 // ========================================
-Route::prefix('students')->name('student.student.')->group(function () {
+Route::prefix('student')->name('student.student.')->group(function () {
     Route::get('/pending', [App\Http\Controllers\Student\PendingController::class, 'index'])->name('pending');
     Route::get('/{id}/edit', [App\Http\Controllers\Student\PendingController::class, 'edit'])->name('edit');
     Route::put('/{id}', [App\Http\Controllers\Student\PendingController::class, 'update'])->name('update');

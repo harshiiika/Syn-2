@@ -200,7 +200,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
                 <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
@@ -417,6 +417,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </body>
 <!-- External JavaScript Libraries -->
 <!-- Bootstrap Bundle JS (includes Popper) -->
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 <script src="{{asset('js/emp.js')}}"></script>
@@ -463,7 +464,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           const errors = xhr.responseJSON.errors;
           // Display error messages for each field
           for (let field in errors) {
-            $(#error-${field}).text(errors[field][0]);
+           $(`#error-${field}`).text(errors[field][0]);
           }
         }
       }
