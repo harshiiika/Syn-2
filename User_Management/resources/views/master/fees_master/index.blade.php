@@ -10,12 +10,12 @@
   <link rel="stylesheet" href="{{ asset('css/FeesMaster.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-  </head>
+</head>
 
-  <body>
+<body>
   <div class="header">
     <div class="logo">
-         <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="{{asset('images/logo.png.jpg')}}" class="img">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -47,7 +47,7 @@
         <p>synthesisbikaner@gmail.com</p>
       </div>
       
-  <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -279,7 +279,7 @@
           </div>
         </div>
 
-      <table class="table table-hover" id="table">
+        <table class="table table-hover" id="table">
           <thead>
             <tr>
               <th scope="col">Serial No.</th>
@@ -293,8 +293,8 @@
           <tbody>
             @forelse($fees as $index => $fee)
             <tr>
-<td>{{ $index + 1 }}</td>              
-<td>{{ $fee->course }}</td>
+              <td>{{ ($fees->currentPage() - 1) * $fees->perPage() + $index + 1 }}</td>              
+              <td>{{ $fee->course }}</td>
               <td>{{ $fee->course_type ?? 'N/A' }}</td>
               <td>{{ $fee->class_name ?? 'N/A' }}</td>
               <td class="{{ $fee->status === 'Active' ? 'text-success' : 'text-danger' }}">{{ $fee->status }}</td>
@@ -335,37 +335,55 @@
             @endforelse
           </tbody>
         </table>
-
-        @if(session('status'))
-        <div class="alert alert-success mt-2">{{ session('status') }}</div>
-        @endif
-        @if ($errors->any())
-        <div class="alert alert-danger mt-2">
-          <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-          </ul>
-        </div>
-        @endif
-
-        <div class="mt-3">
-          {{ $fees->withQueryString()->links() }}
-        </div>
       </div>
-    </div>
-  </div>
-      
+
+      {{-- ✅ CORRECTED FOOTER WITH PAGINATION --}}
       <div class="footer">
         <div class="left-footer">
-<p>Showing {{ $fees->firstItem() }} to {{ $fees->lastItem() }} of {{ $fees->total() }} Entries</p>
+          <p>Showing {{ $fees->firstItem() ?? 0 }} to {{ $fees->lastItem() ?? 0 }} of {{ $fees->total() }} Entries</p>
         </div>
         <div class="right-footer">
-          <nav aria-label="Page navigation example" id="bottom">
-            <ul class="pagination" id="pagination">
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Previous</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg2">1</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
+          <nav aria-label="Page navigation" id="bottom">
+            <ul class="pagination">
+              {{-- Previous Button --}}
+              @if ($fees->onFirstPage())
+                <li class="page-item disabled">
+                  <span class="page-link">Previous</span>
+                </li>
+              @else
+                <li class="page-item">
+                  <a class="page-link" href="{{ $fees->previousPageUrl() }}">Previous</a>
+                </li>
+              @endif
+
+              {{-- Page Numbers --}}
+              @php
+                $start = max($fees->currentPage() - 2, 1);
+                $end = min($fees->currentPage() + 2, $fees->lastPage());
+              @endphp
+
+              @for ($i = $start; $i <= $end; $i++)
+                @if ($i == $fees->currentPage())
+                  <li class="page-item active">
+                    <span class="page-link">{{ $i }}</span>
+                  </li>
+                @else
+                  <li class="page-item">
+                    <a class="page-link" href="{{ $fees->url($i) }}">{{ $i }}</a>
+                  </li>
+                @endif
+              @endfor
+
+              {{-- Next Button --}}
+              @if ($fees->hasMorePages())
+                <li class="page-item">
+                  <a class="page-link" href="{{ $fees->nextPageUrl() }}">Next</a>
+                </li>
+              @else
+                <li class="page-item disabled">
+                  <span class="page-link">Next</span>
+                </li>
+              @endif
             </ul>
           </nav>
         </div>
@@ -825,7 +843,6 @@
               <div class="input-group">
                 <input type="text" class="form-control" id="view_test_series_gst" readonly>
               </div>
-        
             </div>
             <div class="mb-3">
               <label for="basic-url" class="form-label">Total</label>
@@ -857,7 +874,6 @@
     </div>
   </div>
 
-
   <script src="{{asset('js/emp.js')}}"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
@@ -865,6 +881,50 @@
   <script>
     // CSRF Token Setup
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Attach event listeners to Edit buttons
+    document.addEventListener('DOMContentLoaded', function() {
+      // Edit button handlers
+      document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const feeId = this.getAttribute('data-id');
+          editFee(feeId);
+        });
+      });
+
+      // View button handlers
+      document.querySelectorAll('.btn-view').forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const feeId = this.getAttribute('data-id');
+          viewFee(feeId);
+        });
+      });
+
+      // Auto-dismiss alerts after 3 seconds
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          alert.classList.add('fade-out');
+          setTimeout(function() {
+            alert.remove();
+          }, 300);
+        }, 3000);
+      });
+      
+      // Manual close for alerts
+      const closeButtons = document.querySelectorAll('.alert .btn-close');
+      closeButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const alert = this.closest('.alert');
+          alert.classList.add('fade-out');
+          setTimeout(function() {
+            alert.remove();
+          }, 300);
+        });
+      });
+    });
 
     // Edit Fee Function
     function editFee(id) {
@@ -877,12 +937,12 @@
       .then(response => response.json())
       .then(data => {
         document.getElementById('edit_course').value = data.course;
-        document.getElementById('edit_gst_percentage').value = data.gst_percentage;
-        document.getElementById('edit_classroom_course').value = data.classroom_course;
-        document.getElementById('edit_live_online_course').value = data.live_online_course;
-        document.getElementById('edit_recorded_online_course').value = data.recorded_online_course;
-        document.getElementById('edit_study_material_only').value = data.study_material_only;
-        document.getElementById('edit_test_series_only').value = data.test_series_only;
+        document.getElementById('edit_gst_percentage').value = data.gst_percent;
+        document.getElementById('edit_classroom_course').value = data.classroom_fee;
+        document.getElementById('edit_live_online_course').value = data.live_fee;
+        document.getElementById('edit_recorded_online_course').value = data.recorded_fee;
+        document.getElementById('edit_study_material_only').value = data.study_fee;
+        document.getElementById('edit_test_series_only').value = data.test_fee;
         
         document.getElementById('editForm').action = `/fees-master/${id}`;
         
@@ -905,28 +965,55 @@
       })
       .then(response => response.json())
       .then(data => {
+        const gstPercent = parseFloat(data.gst_percent);
+        
         document.getElementById('view_course').value = data.course;
-        document.getElementById('view_gst_percentage').value = data.gst_percentage;
+        document.getElementById('view_gst_percentage').value = gstPercent;
         
-        document.getElementById('view_classroom_course').value = data.classroom_course;
-        document.getElementById('view_classroom_gst').value = data.classroom_gst;
-        document.getElementById('view_classroom_total').value = data.classroom_total;
+        // Classroom calculations
+        const classroomFee = parseFloat(data.classroom_fee) || 0;
+        const classroomGst = (classroomFee * gstPercent / 100).toFixed(2);
+        const classroomTotal = (classroomFee + parseFloat(classroomGst)).toFixed(2);
         
-        document.getElementById('view_live_online_course').value = data.live_online_course;
-        document.getElementById('view_live_online_gst').value = data.live_online_gst;
-        document.getElementById('view_live_online_total').value = data.live_online_total;
+        document.getElementById('view_classroom_course').value = classroomFee;
+        document.getElementById('view_classroom_gst').value = classroomGst;
+        document.getElementById('view_classroom_total').value = classroomTotal;
         
-        document.getElementById('view_recorded_online_course').value = data.recorded_online_course;
-        document.getElementById('view_recorded_online_gst').value = data.recorded_online_gst;
-        document.getElementById('view_recorded_online_total').value = data.recorded_online_total;
+        // Live online calculations
+        const liveFee = parseFloat(data.live_fee) || 0;
+        const liveGst = (liveFee * gstPercent / 100).toFixed(2);
+        const liveTotal = (liveFee + parseFloat(liveGst)).toFixed(2);
         
-        document.getElementById('view_study_material_only').value = data.study_material_only;
-        document.getElementById('view_study_material_gst').value = data.study_material_gst;
-        document.getElementById('view_study_material_total').value = data.study_material_total;
+        document.getElementById('view_live_online_course').value = liveFee;
+        document.getElementById('view_live_online_gst').value = liveGst;
+        document.getElementById('view_live_online_total').value = liveTotal;
         
-        document.getElementById('view_test_series_only').value = data.test_series_only;
-        document.getElementById('view_test_series_gst').value = data.test_series_gst;
-        document.getElementById('view_test_series_total').value = data.test_series_total;
+        // Recorded online calculations
+        const recordedFee = parseFloat(data.recorded_fee) || 0;
+        const recordedGst = (recordedFee * gstPercent / 100).toFixed(2);
+        const recordedTotal = (recordedFee + parseFloat(recordedGst)).toFixed(2);
+        
+        document.getElementById('view_recorded_online_course').value = recordedFee;
+        document.getElementById('view_recorded_online_gst').value = recordedGst;
+        document.getElementById('view_recorded_online_total').value = recordedTotal;
+        
+        // Study material calculations
+        const studyFee = parseFloat(data.study_fee) || 0;
+        const studyGst = (studyFee * gstPercent / 100).toFixed(2);
+        const studyTotal = (studyFee + parseFloat(studyGst)).toFixed(2);
+        
+        document.getElementById('view_study_material_only').value = studyFee;
+        document.getElementById('view_study_material_gst').value = studyGst;
+        document.getElementById('view_study_material_total').value = studyTotal;
+        
+        // Test series calculations
+        const testFee = parseFloat(data.test_fee) || 0;
+        const testGst = (testFee * gstPercent / 100).toFixed(2);
+        const testTotal = (testFee + parseFloat(testGst)).toFixed(2);
+        
+        document.getElementById('view_test_series_only').value = testFee;
+        document.getElementById('view_test_series_gst').value = testGst;
+        document.getElementById('view_test_series_total').value = testTotal;
         
         var viewModal = new bootstrap.Modal(document.getElementById('exampleModalThree'));
         viewModal.show();
@@ -940,7 +1027,7 @@
     // Search Functionality
     document.getElementById('searchInput').addEventListener('keyup', function() {
       const searchValue = this.value.toLowerCase();
-      const tableRows = document.querySelectorAll('#feesTableBody tr');
+      const tableRows = document.querySelectorAll('#table tbody tr');
       
       tableRows.forEach(row => {
         const text = row.textContent.toLowerCase();
@@ -954,7 +1041,5 @@
       sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
     });
   </script>
-</body>
-</html>
 </body>
 </html>
