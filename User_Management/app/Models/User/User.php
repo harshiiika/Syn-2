@@ -10,26 +10,19 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    //referenced mongo db here and the specific collection used
     protected $connection = 'mongodb';
     protected $collection = 'users';
 
-    //name of these fillables must be same as in the db
     protected $fillable = [
         'name',
         'email',
         'mobileNumber',
         'alternateNumber',
-        'departments',  // Changed from 'department'
-        'roles',        // Changed from 'role'
+        'departments',
+        'roles',
         'branch',
         'password',
         'status',
-    ];
-
-    //the roles and dept are stored as array in db so here they are stored in $casts as array and object
-    protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
     protected $hidden = [
@@ -37,14 +30,12 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    //reference the many to many relation between role and dept
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
+    // ✅ REMOVE array casts for departments and roles
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        // ❌ REMOVED: 'departments' => 'array',
+        // ❌ REMOVED: 'roles' => 'array',
+    ];
 
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
+    public $timestamps = true;
 }

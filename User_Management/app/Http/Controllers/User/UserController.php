@@ -29,60 +29,101 @@ class UserController extends Controller
     /**
      * Show employees
      */
-     public function addUser(Request $request)
-    {
-        // Debugging: uncomment if needed
-        // dd($request->all());
+public function addUser(Request $request)
+{
+    // Log incoming request
+    \Log::info('=== ADD USER REQUEST STARTED ===');
+    \Log::info('Request data:', $request->all());
 
-        $request->validate([
+    try {
+        // Validate
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'mobileNumber' => 'required|string|max:15',
+            'mobileNumber' => 'nullable|string|max:15',
             'alternateNumber' => 'nullable|string|max:15',
-            'branch' => 'required|string',
-            'roles' => 'nullable|array',
-            'roles.*' => 'string',
-            'departments' => 'nullable|array',
-            'departments.*' => 'string',
-            'password' => 'required|min:6',
-            'confirm_password' => 'required|same:password',
+            'branch' => 'required|string|max:255',
+            'department' => 'required|string',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
-        $departments = [];
-        if ($request->has('departments')) {
-            foreach ($request->input('departments') as $deptName) {
-                $department = Department::where('name', 'like', $deptName)->first();
-                if ($department) {
-                    $departments[] = $department->_id;
-                }
-            }
-        }
+        \Log::info('Validation passed:', $validated);
 
-        $roles = [];
-        if ($request->has('roles')) {
-            foreach ($request->input('roles') as $roleName) {
-                $role = Role::where('name', 'like', $roleName)->first();
-                if ($role) {
-                    $roles[] = $role->_id;
-                }
-            }
-        }
+        // Map departments to default roles
+        $departmentRoleMapping = [
+            'Front Office' => 'Finance',
+            'Back Office' => 'Administration',
+            'Office' => 'Attendance',
+            'Test Management' => 'Floor Incharge',
+            'Admin' => 'Records'
+        ];
 
-        User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'mobileNumber' => $request->input('mobileNumber'),
-            'alternateNumber' => $request->input('alternateNumber'),
-            'branch' => $request->input('branch'),
-            'roles' => $roles,
-            'departments' => $departments,
-            'password' => Hash::make($request->input('password')),
+        $selectedDepartment = $request->department;
+        $assignedRole = $departmentRoleMapping[$selectedDepartment] ?? 'Administration';
+
+        \Log::info('Department:', ['selected' => $selectedDepartment, 'role' => $assignedRole]);
+
+        // Fetch or create department
+        $department = Department::firstOrCreate(['name' => $selectedDepartment]);
+        \Log::info('Department created/found:', ['id' => $department->_id, 'name' => $department->name]);
+
+        // Fetch or create role
+        $role = Role::firstOrCreate(['name' => $assignedRole]);
+        \Log::info('Role created/found:', ['id' => $role->_id, 'name' => $role->name]);
+
+        // Prepare user data
+        $userData = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'mobileNumber' => $request->mobileNumber,
+            'alternateNumber' => $request->alternateNumber,
+            'branch' => $request->branch,
+            'roles' => [$role->_id],
+            'departments' => [$department->_id],
+            'password' => Hash::make($request->password),
             'status' => 'Active',
+        ];
+
+        \Log::info('User data prepared:', $userData);
+
+        // Create user
+        $user = User::create($userData);
+        
+        \Log::info('User created successfully:', [
+            'id' => $user->_id,
+            'name' => $user->name,
+            'email' => $user->email
         ]);
 
-        return redirect()->route('emp')->with('success', 'Employee added successfully!');
-    }
+        // Verify user was saved
+        $savedUser = User::find($user->_id);
+        if ($savedUser) {
+            \Log::info('User verified in database:', ['id' => $savedUser->_id]);
+        } else {
+            \Log::error('User NOT found in database after creation!');
+        }
 
+        return redirect()->route('emp')
+            ->with('success', 'User added successfully!')
+            ->with('new_user_id', $user->_id);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        \Log::error('Validation failed:', $e->errors());
+        return back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        \Log::error('Error creating user:', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return back()->with('error', 'Failed to create user: ' . $e->getMessage())->withInput();
+    }
+}
+
+
+
+    
     /**
      * Show employees
      */
@@ -94,62 +135,61 @@ class UserController extends Controller
     //4. attach role and department names to each user for display
     //5. return the view with users
 
-    public function showUser()
-    {
-        $users = User::all();
+public function showUser()
+{
+    // Get all users without ordering (default order)
+    $users = User::all();
 
-        // Get all unique role and department IDs from all users
-        $roleIds = collect();
-        $departmentIds = collect();
+    // Process department and role names
+    $allRoleIds = collect();
+    $allDepartmentIds = collect();
 
-        foreach ($users as $user) {
-            if (isset($user->roles) && is_array($user->roles)) {
-                $roleIds = $roleIds->merge($user->roles);
-            }
-            if (isset($user->departments) && is_array($user->departments)) {
-                $departmentIds = $departmentIds->merge($user->departments);
-            }
+    foreach ($users as $user) {
+        $userDepts = data_get($user, 'departments', []);
+        $userRoles = data_get($user, 'roles', []);
+
+        if (is_array($userDepts)) {
+            $allDepartmentIds = $allDepartmentIds->merge($userDepts);
         }
-
-        // Get unique IDs and convert to strings for MongoDB
-        $roleIds = $roleIds->unique()->map(fn($id) => (string) $id)->filter();
-        $departmentIds = $departmentIds->unique()->map(fn($id) => (string) $id)->filter();
-
-        // Fetch roles and departments
-        $roles = collect();
-        $departments = collect();
-
-        if ($roleIds->isNotEmpty()) {
-            $roles = Role::whereIn('_id', $roleIds->toArray())->get()->keyBy(fn($role) => (string) $role->_id);
+        
+        if (is_array($userRoles)) {
+            $allRoleIds = $allRoleIds->merge($userRoles);
         }
-
-        if ($departmentIds->isNotEmpty()) {
-            $departments = Department::whereIn('_id', $departmentIds->toArray())->get()->keyBy(fn($dept) => (string) $dept->_id);
-        }
-
-        // Attach role and department names to each user
-        foreach ($users as $user) {
-            // Handle roles
-            $user->roleNames = collect();
-            if (isset($user->roles) && is_array($user->roles)) {
-                $user->roleNames = collect($user->roles)
-                    ->map(fn($id) => $roles->get((string) $id)?->name)
-                    ->filter()
-                    ->values();
-            }
-
-            // Handle departments
-            $user->departmentNames = collect();
-            if (isset($user->departments) && is_array($user->departments)) {
-                $user->departmentNames = collect($user->departments)
-                    ->map(fn($id) => $departments->get((string) $id)?->name)
-                    ->filter()
-                    ->values();
-            }
-        }
-
-        return view('user.emp.emp', compact('users'));
     }
+
+    $allRoleIds = $allRoleIds->map(fn($id) => (string) (is_object($id) ? $id : $id))->unique()->filter();
+    $allDepartmentIds = $allDepartmentIds->map(fn($id) => (string) (is_object($id) ? $id : $id))->unique()->filter();
+
+    $departments = Department::whereIn('_id', $allDepartmentIds->toArray())
+        ->get()
+        ->keyBy(fn($dept) => (string) $dept->_id);
+
+    $roles = Role::whereIn('_id', $allRoleIds->toArray())
+        ->get()
+        ->keyBy(fn($role) => (string) $role->_id);
+
+    foreach ($users as $user) {
+        $userDepts = data_get($user, 'departments', []);
+        $userRoles = data_get($user, 'roles', []);
+
+        $user->departmentNames = collect(is_array($userDepts) ? $userDepts : [])
+            ->map(fn($id) => $departments->get((string) (is_object($id) ? $id : $id))?->name)
+            ->filter()
+            ->values();
+
+        $user->roleNames = collect(is_array($userRoles) ? $userRoles : [])
+            ->map(fn($id) => $roles->get((string) (is_object($id) ? $id : $id))?->name)
+            ->filter()
+            ->values();
+    }
+
+    // ✅ CHANGE THIS LINE FROM:
+    // return view('emp', compact('users'));
+    // TO:
+    return view('user.emp.emp', compact('users'));
+}
+
+
 
     /**
      * Update an existing employee - Fixed version
@@ -172,10 +212,19 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id . ',_id',
-            'mobileNumber' => 'required|string|max:15',
-            'alternateNumber' => 'nullable|string|max:15',
+            'mobileNumber' => [
+                'required',
+                'regex:/^[0-9]{10}$/',  // Exactly 10 digits
+            ],
+            'alternateNumber' => [
+                'nullable',
+                'regex:/^[0-9]{10}$/',  // Exactly 10 digits if provided
+            ],
             'branch' => 'required|string',
             'department' => 'required|string',
+        ], [
+            'mobileNumber.regex' => 'Mobile number must be exactly 10 digits.',
+            'alternateNumber.regex' => 'Alternate mobile number must be exactly 10 digits.',
         ]);
 
         // Auto-assign roles based on department
@@ -215,6 +264,7 @@ class UserController extends Controller
         return redirect()->route('emp')->with('success', 'User updated successfully!');
     }
 
+
     /**
      * Update user password
      */
@@ -224,12 +274,22 @@ class UserController extends Controller
     //2. check if user exists
     //3. check if current password matches
     //4. update password and redirect successfully
-    public function updatePassword(Request $request, $id)
+   public function updatePassword(Request $request, $id)
     {
         $request->validate([
             'current_password' => 'required',
-            'new_password' => 'required|min:6',
+            'new_password' => [
+                'required',
+                'min:8',  // Minimum 8 characters
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',  // Must contain uppercase, lowercase, and number
+                'different:current_password',  // New password must be different from current
+            ],
             'confirm_new_password' => 'required|same:new_password',
+        ], [
+            'new_password.min' => 'New password must be at least 8 characters long.',
+            'new_password.regex' => 'New password must contain at least one uppercase letter, one lowercase letter, and one number.',
+            'new_password.different' => 'New password must be different from current password.',
+            'confirm_new_password.same' => 'Password confirmation does not match.',
         ]);
 
         $user = User::find($id);
@@ -238,8 +298,9 @@ class UserController extends Controller
             return redirect()->route('emp')->with('error', 'User not found!');
         }
 
+        // Verify current password matches
         if (!Hash::check($request->input('current_password'), $user->password)) {
-            return back()->withErrors(['current_password' => 'Incorrect current password']);
+            return back()->withErrors(['current_password' => 'Current password is incorrect.'])->withInput();
         }
 
         $user->update([
@@ -248,6 +309,7 @@ class UserController extends Controller
 
         return redirect()->route('emp')->with('success', 'Password updated successfully!');
     }
+
 
     /**
      * Toggle user status
@@ -258,7 +320,7 @@ class UserController extends Controller
     //2. if user not found, redirect with error
     //3. determine new status based on current status
     //4. update user status and redirect successfully
-    public function toggleStatus($id)
+     public function toggleStatus($id)
     {
         $user = User::find($id);
 
@@ -276,9 +338,6 @@ class UserController extends Controller
     /**
      * Debug method to check user data structure
      */
-
-    //a debug function to check user data structure
-    //if id is provided, fetch that user, else fetch the first user
     public function debugUser($id = null)
     {
         if ($id) {
@@ -289,4 +348,21 @@ class UserController extends Controller
             dd($users->first());
         }
     }
+
+    /**
+     * Debug method to check user data structure
+     */
+
+    //a debug function to check user data structure
+    //if id is provided, fetch that user, else fetch the first user
+    // public function debugUser($id = null)
+    // {
+    //     if ($id) {
+    //         $user = User::find($id);
+    //         dd($user);
+    //     } else {
+    //         $users = User::take(1)->get();
+    //         dd($users->first());
+    //     }
+    // }
 }

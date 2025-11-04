@@ -144,7 +144,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
+                <li>><a class="item" href="{{ route('emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
                 <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
@@ -403,6 +403,15 @@ LINE 629-665: AJAX Script for Dynamic User Addition
            data-bs-target="#editBatchModal{{ $batch->_id }}">
           Edit Details
         </a>
+      </li>
+       <li>
+          <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" class="d-inline">
+          @csrf
+          <button type="submit" class="dropdown-item {{ ($batch->status ?? 'Active') === 'Active' ? 'text-danger' : 'text-success' }}">
+            {{ ($batch->status ?? 'Active') === 'Active' ? 'Deactivate' : 'Reactivate' }}
+          </button>
+        </form>
+
       </li>
     </ul>
   </div>

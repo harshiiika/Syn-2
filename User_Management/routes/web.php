@@ -63,7 +63,6 @@ Route::prefix('session')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/emp', [UserController::class, 'index'])->name('emp');
-Route::get('/emp/list', [UserController::class, 'showUser'])->name('user.emp.emp');
 Route::post('/users/add', [UserController::class, 'addUser'])->name('users.add');
 Route::put('/users/update/{id}', [UserController::class, 'updateUser'])->name('users.update');
 Route::put('/users/update-password/{id}', [UserController::class, 'updatePassword'])->name('users.password.update');
@@ -77,8 +76,7 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 */
 Route::get('/batches', [BatchesController::class, 'showBatches'])->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
-Route::post('/batches/toggle-status/{id}', [BatchesController::class, 'toggleStatus'])->name('batches.toggleStatus');
-
+Route::post('/batches/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('batches.toggleStatus');
 /*
 |--------------------------------------------------------------------------
 | Courses Routes
