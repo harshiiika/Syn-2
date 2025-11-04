@@ -211,7 +211,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
@@ -373,8 +373,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <tbody>
             <!-- Modal fillables where roles are assigned according to dept automatically -->
             <!-- Dynamic table rows populated from database using Blade foreach loop -->
-
-
             <tr>
             </tr>
           </tbody>
@@ -703,7 +701,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" id="add">Submit</button>
           </div>
         </form>
       </div>

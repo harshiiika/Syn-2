@@ -22,7 +22,7 @@ class PendingController extends Controller
                 'count' => $students->count(),
             ]);
             
-            return view('student.pending.pending', [  // ← Your existing blade
+            return view('student.student.pending', [  // ← Your existing blade
                 'students' => $students,
                 'totalCount' => $students->count(),
             ]);

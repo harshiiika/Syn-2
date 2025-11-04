@@ -246,7 +246,7 @@
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
