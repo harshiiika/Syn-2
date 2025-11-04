@@ -103,7 +103,7 @@ public function addUser(Request $request)
             \Log::error('User NOT found in database after creation!');
         }
 
-        return redirect()->route('emp')
+        return redirect()->route('user.emp.emp')
             ->with('success', 'User added successfully!')
             ->with('new_user_id', $user->_id);
 
@@ -206,7 +206,7 @@ public function showUser()
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('emp')->with('error', 'User not found!');
+            return redirect()->route('user.emp.emp')->with('error', 'User not found!');
         }
 
         $request->validate([
@@ -261,7 +261,7 @@ public function showUser()
             'departments' => [$department->_id],
         ]);
 
-        return redirect()->route('emp')->with('success', 'User updated successfully!');
+        return redirect()->route('user.emp.emp')->with('success', 'User updated successfully!');
     }
 
 
@@ -295,7 +295,7 @@ public function showUser()
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('emp')->with('error', 'User not found!');
+            return redirect()->route('user.emp.emp')->with('error', 'User not found!');
         }
 
         // Verify current password matches
@@ -307,7 +307,7 @@ public function showUser()
             'password' => Hash::make($request->input('new_password')),
         ]);
 
-        return redirect()->route('emp')->with('success', 'Password updated successfully!');
+        return redirect()->route('user.emp.emp')->with('success', 'Password updated successfully!');
     }
 
 
@@ -325,14 +325,14 @@ public function showUser()
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('emp')->with('error', 'User not found!');
+            return redirect()->route('user.emp.emp')->with('error', 'User not found!');
         }
 
         $newStatus = ($user->status ?? 'Active') === 'Active' ? 'Deactivated' : 'Active';
 
         $user->update(['status' => $newStatus]);
 
-        return redirect()->route('emp')->with('success', 'User status changed to ' . $newStatus . '!');
+        return redirect()->route('user.emp.emp')->with('success', 'User status changed to ' . $newStatus . '!');
     }
 
     /**
