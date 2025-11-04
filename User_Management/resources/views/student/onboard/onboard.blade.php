@@ -201,7 +201,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div class="accordion-body">
       <ul class="menu" id="dropdown-body">
         <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-        <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i> Pending Students</a></li>
         <li><a class="item" href="{{ route('student.onboard.onboard') }}"><i class="fa-solid fa-user-check" id="side-icon"></i> Onboarded Students</a></li>
         <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i> Pending Fees Students</a></li>
         <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i> Active Students</a></li>
