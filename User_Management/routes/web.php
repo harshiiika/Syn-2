@@ -106,7 +106,7 @@ Route::prefix('master/batch')->name('batches.')->group(function () {
     Route::get('/download/sample', [BatchController::class, 'downloadSample'])->name('downloadSample');
     Route::post('/add', [BatchController::class, 'store'])->name('add');
     Route::put('/{id}/update', [BatchController::class, 'update'])->name('update');
-    Route::post('/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('toggleStatus');
+    Route::post('/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('batches.toggleStatus.master');
 });
 
 /*
@@ -182,12 +182,11 @@ Route::prefix('master')->name('master.')->group(function () {
 |--------------------------------------------------------------------------
 | STUDENT MANAGEMENT ROUTES
 |--------------------------------------------------------------------------
-| Flow: Pending → Onboard → Pending Fees → SM Students
-|--------------------------------------------------------------------------
 */
+
 // ========================================
 // 1. PENDING STUDENTS (Incomplete Profiles) 
-// Using student.student.pending to match your blade
+// Changed to /student/pending to match route list
 // ========================================
 Route::prefix('student')->name('student.student.')->group(function () {
     Route::get('/pending', [App\Http\Controllers\Student\PendingController::class, 'index'])->name('pending');
@@ -221,7 +220,7 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
 });
 
 // ========================================
-// 4. ACTIVE STUDENTS (SM Students) - Keep as is
+// 4. ACTIVE STUDENTS (SM Students)
 // ========================================
 Route::prefix('smstudents')
     ->name('smstudents.')

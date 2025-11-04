@@ -190,24 +190,25 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
 
         <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-            </button>
-          </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+  <h2 class="accordion-header">
+    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+      data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+      id="accordion-button">
+      <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+    </button>
+  </h2>
+  <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+    <div class="accordion-body">
+      <ul class="menu" id="dropdown-body">
+        <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+        <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i> Pending Students</a></li>
+        <li><a class="item" href="{{ route('student.onboard.onboard') }}"><i class="fa-solid fa-user-check" id="side-icon"></i> Onboarded Students</a></li>
+        <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i> Pending Fees Students</a></li>
+        <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i> Active Students</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
 
         <div class="accordion-item">
           <h2 class="accordion-header">
