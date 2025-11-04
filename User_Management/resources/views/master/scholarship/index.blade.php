@@ -384,11 +384,13 @@
 
   <script src="{{asset('js/emp.js')}}"></script>
 <script>
+// Complete Scholarship CRUD Script
 document.addEventListener('DOMContentLoaded', () => {
   const ENDPOINT_BASE = '/master/scholarship';
-  const DATA_URL = `${ENDPOINT_BASE}/data`;
+  const DATA_URL = ENDPOINT_BASE;
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+  // DOM Elements
   const tableBody = document.querySelector('#table tbody');
   const dataMsg = document.querySelector('.data');
   const scholarshipModalEl = document.getElementById('scholarshipModal');
@@ -401,11 +403,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const footerLeft = document.querySelector('.left-footer p');
   const paginationContainer = document.querySelector('#pagination');
 
+  // State management
   let state = {
     page: 1,
     per_page: parseInt(perPageBtn?.textContent.trim()) || 10,
     search: '',
   };
+
+  // ==================== UTILITY FUNCTIONS ====================
+  
+  function debounce(fn, wait) {
+    let t;
+    return (...args) => {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), wait);
+    };
+  }
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    return String(s)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  // ==================== EVENT LISTENERS ====================
 
   // Per page dropdown
   perPageItems.forEach(it => {
@@ -419,178 +444,469 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Search debounce
+  // Search with debounce
   searchInput?.addEventListener('input', debounce(() => {
     state.search = searchInput.value.trim();
     state.page = 1;
     loadData();
   }, 400));
 
-  function debounce(fn, wait) {
-    let t;
-    return (...args) => {
-      clearTimeout(t);
-      t = setTimeout(() => fn.apply(this, args), wait);
-    };
-  }
+  // Reset form when "Create Scholarship" button clicked
+  document.querySelectorAll('#add').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('scholarshipForm').reset();
+      document.getElementById('scholarship_id').value = '';
+      document.getElementById('scholarshipModalLabel').textContent = 'Create Scholarship';
+    });
+  });
 
-  // Load data
+  // Reset form when modal is closed
+  scholarshipModalEl.addEventListener('hidden.bs.modal', () => {
+    document.getElementById('scholarshipForm').reset();
+    document.getElementById('scholarship_id').value = '';
+    document.getElementById('scholarshipModalLabel').textContent = 'Create Scholarship';
+  });
+
+  // Cancel button
+  document.getElementById('cancelBtn')?.addEventListener('click', () => {
+    document.getElementById('scholarshipForm').reset();
+    document.getElementById('scholarship_id').value = '';
+    document.getElementById('scholarshipModalLabel').textContent = 'Create Scholarship';
+  });
+
+  // ==================== DATA LOADING ====================
+
   async function loadData() {
     try {
       const url = `${DATA_URL}?per_page=${state.per_page}&search=${encodeURIComponent(state.search)}&page=${state.page}`;
       const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
       if (!res.ok) throw new Error('Failed to load');
       const json = await res.json();
+      
+      console.log('API Response:', json); // ✅ DEBUG: Log the response
+      
       if (!json.success) throw new Error(json.message || 'No data');
+      
       renderTable(json.data || []);
       renderFooter(json);
     } catch (err) {
-      console.error(err);
+      console.error('Load Error:', err); // ✅ DEBUG: Log errors
       tableBody.innerHTML = '';
       dataMsg.style.display = 'block';
-      dataMsg.textContent = 'Failed to load data';
+      dataMsg.textContent = 'Failed to load data: ' + err.message;
     }
   }
 
+  // ==================== RENDERING FUNCTIONS ====================
+
   function renderTable(items) {
     tableBody.innerHTML = '';
-    if (!items.length) {
+    
+    console.log('Items to render:', items); // ✅ DEBUG
+    
+    if (!items || !items.length) {
       dataMsg.style.display = 'block';
       dataMsg.textContent = 'No data available in the table';
       return;
     }
+    
     dataMsg.style.display = 'none';
+    
     items.forEach((it, idx) => {
       const id = it._id || it.id || '';
       const serialNo = (state.page - 1) * state.per_page + idx + 1;
+      
+      // ✅ Ensure all fields have fallback values
+      const scholarshipName = it.scholarship_name || 'N/A';
+      const shortName = it.short_name || 'N/A';
+      const type = it.scholarship_type || 'N/A';
+      const category = it.category || 'N/A';
+      const applicableFor = it.applicable_for || 'N/A';
+      const status = it.status || 'active';
+      
+      console.log('Rendering row:', { 
+        id, 
+        scholarshipName, 
+        shortName, 
+        type, 
+        category, 
+        applicableFor, 
+        status 
+      }); // ✅ DEBUG
+      
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${serialNo}</td>
-        <td>${escapeHtml(it.scholarship_name || '')}</td>
-        <td>${escapeHtml(it.short_name || '')}</td>
-        <td>${escapeHtml(it.scholarship_type || '')}</td>
-        <td>${escapeHtml(it.category || '')}</td>
-        <td>${escapeHtml(it.applicable_for || '')}</td>
-        <td>${it.status === 'active'
+        <td>${escapeHtml(scholarshipName)}</td>
+        <td>${escapeHtml(shortName)}</td>
+        <td>${escapeHtml(type)}</td>
+        <td>${escapeHtml(category)}</td>
+        <td>${escapeHtml(applicableFor)}</td>
+        <td>
+          ${status === 'active'
             ? '<span class="status-badge status-active">Active</span>'
             : '<span class="status-badge status-inactive">Inactive</span>'}
         </td>
         <td>
           <div class="dropdown">
-            <button class="action-dots-btn" type="button" data-bs-toggle="dropdown">
+            <button class="action-dots-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item view-btn" href="#" data-id="${id}">View</a></li>
               <li><a class="dropdown-item edit-btn" href="#" data-id="${id}">Edit</a></li>
-              <li><a class="dropdown-item toggle-btn" href="#" data-id="${id}" data-status="${it.status}">
-                ${it.status === 'active' ? 'Deactivate' : 'Activate'}
+              <li><a class="dropdown-item toggle-btn" href="#" data-id="${id}" data-status="${status}">
+                ${status === 'active' ? 'Deactivate' : 'Activate'}
               </a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger delete-btn" href="#" data-id="${id}">Delete</a></li>
             </ul>
           </div>
-        </td>`;
+        </td>
+      `;
+      
       tableBody.appendChild(tr);
     });
 
+    // Attach event listeners to action buttons
     tableBody.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', onView));
+    tableBody.querySelectorAll('.edit-btn').forEach(b => b.addEventListener('click', onEdit));
     tableBody.querySelectorAll('.toggle-btn').forEach(b => b.addEventListener('click', onToggleStatus));
+    tableBody.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', onDelete));
   }
 
   function renderFooter(json) {
     const from = json.data.length ? ((json.current_page - 1) * json.per_page + 1) : 0;
     const to = json.data.length ? ((json.current_page - 1) * json.per_page + json.data.length) : 0;
     footerLeft && (footerLeft.textContent = `Showing ${from} to ${to} of ${json.total} Entries`);
-  }
 
-  function escapeHtml(s) {
-    if (!s) return '';
-    return String(s)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-  }
+    paginationContainer.innerHTML = '';
 
-  async function onView(e) {
-    e.preventDefault();
-    const id = e.currentTarget.dataset.id;
-    try {
-      const res = await fetch(`${ENDPOINT_BASE}/${id}`, { headers: { 'Accept': 'application/json' } });
-      const json = await res.json();
-      if (!json.success) throw new Error(json.message || 'Could not load');
+    // Previous button
+    const prevLi = document.createElement('li');
+    prevLi.className = 'page-item' + (json.current_page <= 1 ? ' disabled' : '');
+    prevLi.innerHTML = `<a class="page-link" href="#">Previous</a>`;
+    paginationContainer.appendChild(prevLi);
+    if (json.current_page > 1) {
+      prevLi.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.page = json.current_page - 1;
+        loadData();
+      });
+    }
 
-      const it = json.data;
-      const viewBody = document.getElementById('viewModalBody');
-      viewBody.innerHTML = `
-        <div class="detail-row"><div class="detail-label">Scholarship Name:</div><div class="detail-value">${escapeHtml(it.scholarship_name || 'N/A')}</div></div>
-        <div class="detail-row"><div class="detail-label">Short Name:</div><div class="detail-value">${escapeHtml(it.short_name || 'N/A')}</div></div>
-        <div class="detail-row"><div class="detail-label">Type:</div><div class="detail-value">${escapeHtml(it.scholarship_type || 'N/A')}</div></div>
-        <div class="detail-row"><div class="detail-label">Category:</div><div class="detail-value">${escapeHtml(it.category || 'N/A')}</div></div>
-        <div class="detail-row"><div class="detail-label">Applicable For:</div><div class="detail-value">${escapeHtml(it.applicable_for || 'N/A')}</div></div>`;
-      bsViewModal.show();
-    } catch (err) {
-      console.error(err);
-      alert('Failed to load scholarship details');
+    // Page numbers
+    const last = json.last_page || 1;
+    const current = json.current_page || 1;
+    const start = Math.max(1, current - 2);
+    const end = Math.min(last, current + 2);
+
+    for (let p = start; p <= end; p++) {
+      const li = document.createElement('li');
+      li.className = 'page-item';
+      const isActive = p === current;
+      li.innerHTML = `<a class="page-link ${isActive ? 'active' : ''}" href="#" style="${isActive ? 'background-color: rgb(224, 83, 1); color: white;' : ''}">${p}</a>`;
+      li.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.page = p;
+        loadData();
+      });
+      paginationContainer.appendChild(li);
+    }
+
+    // Next button
+    const nextLi = document.createElement('li');
+    nextLi.className = 'page-item' + (json.current_page >= last ? ' disabled' : '');
+    nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
+    paginationContainer.appendChild(nextLi);
+    if (json.current_page < last) {
+      nextLi.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.page = json.current_page + 1;
+        loadData();
+      });
     }
   }
 
+  // ==================== CRUD OPERATIONS ====================
+
+  // VIEW - Show scholarship details
+  async function onView(e) {
+    e.preventDefault();
+    const id = e.currentTarget.dataset.id;
+    
+    console.log('Viewing scholarship ID:', id); // ✅ DEBUG
+    
+    try {
+      const res = await fetch(`${ENDPOINT_BASE}/${id}`, { 
+        headers: { 'Accept': 'application/json' } 
+      });
+      
+      if (!res.ok) throw new Error('Failed to fetch scholarship');
+      
+      const json = await res.json();
+      
+      console.log('View response:', json); // ✅ DEBUG
+      
+      if (!json.success) throw new Error(json.message || 'Could not load');
+
+      const it = json.data;
+      
+      // ✅ Extract values with fallbacks
+      const scholarshipName = it.scholarship_name || 'N/A';
+      const shortName = it.short_name || 'N/A';
+      const type = it.scholarship_type || 'N/A';
+      const category = it.category || 'N/A';
+      const applicableFor = it.applicable_for || 'N/A';
+      const description = it.description || 'N/A';
+      const status = it.status === 'active' ? 'Active' : 'Inactive';
+      const createdAt = it.created_at ? new Date(it.created_at).toLocaleString() : 'N/A';
+      const updatedAt = it.updated_at ? new Date(it.updated_at).toLocaleString() : 'N/A';
+      
+      const viewBody = document.getElementById('viewModalBody');
+      viewBody.innerHTML = `
+        <div class="detail-row">
+          <div class="detail-label"><strong>Scholarship Name:</strong></div>
+          <div class="detail-value">${escapeHtml(scholarshipName)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><strong>Short Name:</strong></div>
+          <div class="detail-value">${escapeHtml(shortName)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><strong>Type:</strong></div>
+          <div class="detail-value">${escapeHtml(type)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><strong>Category:</strong></div>
+          <div class="detail-value">${escapeHtml(category)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><strong>Applicable For:</strong></div>
+          <div class="detail-value">${escapeHtml(applicableFor)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><strong>Description:</strong></div>
+          <div class="detail-value">${escapeHtml(description)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><strong>Status:</strong></div>
+          <div class="detail-value">${status}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><strong>Created At:</strong></div>
+          <div class="detail-value">${createdAt}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><strong>Updated At:</strong></div>
+          <div class="detail-value">${updatedAt}</div>
+        </div>
+      `;
+      
+      bsViewModal.show();
+    } catch (err) {
+      console.error('View error:', err);
+      alert('Failed to load scholarship details: ' + err.message);
+    }
+  }
+
+  // EDIT - Load scholarship data into form
+  async function onEdit(e) {
+    e.preventDefault();
+    const id = e.currentTarget.dataset.id;
+    
+    console.log('Editing scholarship ID:', id); // ✅ DEBUG
+    
+    try {
+      const res = await fetch(`${ENDPOINT_BASE}/${id}`, { 
+        headers: { 'Accept': 'application/json' } 
+      });
+      
+      if (!res.ok) throw new Error('Failed to fetch scholarship');
+      
+      const json = await res.json();
+      
+      console.log('Edit response:', json); // ✅ DEBUG
+      
+      if (!json.success) throw new Error(json.message || 'Could not load');
+
+      const it = json.data;
+      
+      // Populate form fields with fallback values
+      document.getElementById('scholarship_id').value = it._id || it.id || '';
+      document.getElementById('scholarship_type').value = it.scholarship_type || '';
+      document.getElementById('scholarship_name').value = it.scholarship_name || '';
+      document.getElementById('short_name').value = it.short_name || '';
+      document.getElementById('description').value = it.description || '';
+      document.getElementById('category').value = it.category || '';
+      document.getElementById('applicable_for').value = it.applicable_for || '';
+
+      // Change modal title to indicate edit mode
+      document.getElementById('scholarshipModalLabel').textContent = 'Edit Scholarship';
+      
+      // Show modal
+      bsScholarshipModal.show();
+    } catch (err) {
+      console.error('Edit error:', err);
+      alert('Failed to load scholarship for editing: ' + err.message);
+    }
+  }
+
+  // DELETE - Remove scholarship
+  async function onDelete(e) {
+    e.preventDefault();
+    
+    if (!confirm('Are you sure you want to delete this scholarship? This action cannot be undone.')) {
+      return;
+    }
+    
+    const id = e.currentTarget.dataset.id;
+    
+    console.log('Deleting scholarship ID:', id); // ✅ DEBUG
+    
+    try {
+      const res = await fetch(`${ENDPOINT_BASE}/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        },
+      });
+      
+      if (!res.ok) throw new Error('Delete request failed');
+      
+      const json = await res.json();
+      
+      if (!json.success) throw new Error(json.message || 'Delete failed');
+      
+      alert('Scholarship deleted successfully');
+      await loadData();
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Delete failed: ' + err.message);
+    }
+  }
+
+  // TOGGLE STATUS - Activate/Deactivate scholarship
   async function onToggleStatus(e) {
     e.preventDefault();
     const id = e.currentTarget.dataset.id;
     const currentStatus = e.currentTarget.dataset.status;
     const action = currentStatus === 'active' ? 'deactivate' : 'activate';
+    
+    console.log('Toggling status for ID:', id, 'Current status:', currentStatus); // ✅ DEBUG
+    
     if (!confirm(`Are you sure you want to ${action} this scholarship?`)) return;
+    
     try {
       const res = await fetch(`${ENDPOINT_BASE}/${id}/toggle-status`, {
         method: 'PATCH',
-        headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+        headers: { 
+          'X-CSRF-TOKEN': csrfToken, 
+          'Accept': 'application/json' 
+        },
       });
+      
+      if (!res.ok) throw new Error('Toggle request failed');
+      
       const json = await res.json();
+      
       if (!json.success) throw new Error(json.message || 'Toggle failed');
+      
       alert(`Scholarship ${action}d successfully`);
-      loadData();
+      await loadData();
     } catch (err) {
-      console.error(err);
-      alert('Toggle status failed');
+      console.error('Toggle error:', err);
+      alert('Toggle status failed: ' + err.message);
     }
   }
 
-  //   Make loadData global so jQuery can call it
+  // ==================== GLOBAL FUNCTIONS ====================
+
+  // Make loadData global so jQuery can call it
   window.loadData = loadData;
 
   // Initial load
   loadData();
 });
 
-//   jQuery form submit
+// ==================== JQUERY FORM SUBMIT ====================
+
 $(document).ready(function () {
   $('#scholarshipForm').on('submit', function (e) {
     e.preventDefault();
+    
+    const scholarshipId = $('#scholarship_id').val();
+    const isEdit = scholarshipId ? true : false;
+    const url = isEdit ? `/master/scholarship/${scholarshipId}` : '/master/scholarship';
+    
+    console.log('Form submit:', { isEdit, scholarshipId, url }); // ✅ DEBUG
+    
+    // Serialize form data
+    let formData = $(this).serialize();
+    
+    // Add _method for Laravel PUT routing
+    if (isEdit) {
+      formData += '&_method=PUT';
+    }
+    
+    // Show loading state
+    const submitBtn = $('#saveScholarshipBtn');
+    const originalText = submitBtn.text();
+    submitBtn.prop('disabled', true).text('Saving...');
+    
     $.ajax({
-      url: '/master/scholarship',
-      type: 'POST',
-      data: $(this).serialize(),
-      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+      url: url,
+      type: 'POST', // Always POST for Laravel
+      data: formData,
+      headers: { 
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+      },
       success: function (response) {
+        console.log('Save response:', response); // ✅ DEBUG
+        
         if (response.success) {
-          alert(response.message || 'Scholarship saved successfully!');
+          const message = response.message || (isEdit ? 'Scholarship updated successfully!' : 'Scholarship created successfully!');
+          alert(message);
+          
+          // Close modal
           $('#scholarshipModal').modal('hide');
-          window.loadData(); // refresh table
+          
+          // Refresh table
+          window.loadData();
+          
+          // Reset form
           $('#scholarshipForm')[0].reset();
+          $('#scholarship_id').val('');
+          $('#scholarshipModalLabel').text('Create Scholarship');
         } else {
           alert('Error: ' + (response.message || 'Failed to save'));
         }
       },
       error: function (xhr) {
-        console.error(xhr.responseText);
-        alert('Failed to save scholarship.');
+        console.error('Save error:', xhr.responseText); // ✅ DEBUG
+        
+        let errorMsg = 'Failed to save scholarship.';
+        
+        if (xhr.responseJSON) {
+          if (xhr.responseJSON.message) {
+            errorMsg = xhr.responseJSON.message;
+          }
+          if (xhr.responseJSON.errors) {
+            const errors = Object.values(xhr.responseJSON.errors).flat();
+            errorMsg += '\n' + errors.join('\n');
+          }
+        }
+        
+        alert(errorMsg);
+      },
+      complete: function () {
+        // Restore button state
+        submitBtn.prop('disabled', false).text(originalText);
       }
     });
   });
 });
 </script>
-
-
 
   </html>
