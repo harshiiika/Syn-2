@@ -7,15 +7,19 @@ use App\Models\User\User;
 
 class Department extends Model
 {
-    //same reference to mongo db and the specific collection used
     protected $connection = 'mongodb';
     protected $collection = 'departments';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'default_role_id'];  // ✅ Add default_role_id
 
-    //reference the one to many relation between user and dept
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+    
+    // ✅ Add relationship to default role
+    public function defaultRole()
+    {
+        return $this->belongsTo(Role::class, 'default_role_id');
     }
 }
