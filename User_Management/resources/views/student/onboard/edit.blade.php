@@ -373,7 +373,7 @@
       <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form id="editStudentForm" method="POST" action="{{ route('student.student.update', $student->_id) }}">
+    <form id="editStudentForm" method="POST" action="{{ route('student.student.update', $student->id ?? $student->_id) }}">
       @csrf
       @method('PUT')
 
@@ -797,6 +797,7 @@
       </div>
     </form>
   </div>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
@@ -815,7 +816,7 @@
 
     // Pre-fill on page load
     const selectedType = "{{ old('course_type', $student->course_type ?? $student->courseType ?? '') }}";
-    const selectedCourse = "{{ old('course', $student->course ?? $student->courseName ?? '') }}";
+    const selectedCourse = "{{ old('courseName', $student->courseName ?? '') }}";
 
     console.log('Selected Type:', selectedType);
     console.log('Selected Course:', selectedCourse);
@@ -846,58 +847,7 @@
     }
   });
 
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const courseTypeSelect = document.getElementById("course_type");
-    const courseSelect = document.getElementById("course");
-
-    const courseOptions = {
-      "Pre-Medical": ["Anthesis 11th NEET", "Momentum 12th NEET", "Dynamic Target NEET"],
-      "Pre-Engineering": ["Impulse 11th IIT", "Intensity 12th IIT", "Thurst Target IIT"],
-      "Pre-Foundation": ["Seedling 10th", "Plumule 9th", "Radicle 8th"]
-    };
-
-    // Pre-fill on page load
-    const selectedType = "{{ old('course_type', $student->course_type ?? $student->courseType ?? '') }}";
-    const selectedCourse = "{{ old('courseName', $student->courseName ?? '') }}";
-
-    console.log('Pre-filling course fields:', {
-      selectedType: selectedType,
-      selectedCourse: selectedCourse
-    });
-
-    if (selectedType) {
-      updateCourses(selectedType);
-      setTimeout(() => {
-        if (selectedCourse) {
-          courseSelect.value = selectedCourse;
-          console.log('Course name set to:', selectedCourse);
-        }
-      }, 100);
-    }
-
-    courseTypeSelect.addEventListener("change", function () {
-      updateCourses(this.value);
-    });
-
-    function updateCourses(type) {
-      courseSelect.innerHTML = '<option value="">Select Course</option>';
-      if (!type || !courseOptions[type]) return;
-
-      courseOptions[type].forEach(course => {
-        const option = document.createElement("option");
-        option.value = course;
-        option.textContent = course;
-        courseSelect.appendChild(option);
-      });
-      
-      console.log('Updated courses for type:', type);
-    }
-});
-
-
 document.getElementById('editStudentForm').addEventListener('submit', function(e) {
-    // Don't prevent default, just log what's being sent
     const formData = new FormData(this);
     
     console.log('=== FORM SUBMISSION DEBUG ===');
@@ -911,7 +861,6 @@ document.getElementById('editStudentForm').addEventListener('submit', function(e
         }
     }
     
-    // Check required fields
     const requiredFields = [
         'name', 'father', 'mother', 'dob', 'mobileNumber', 
         'category', 'gender', 'state', 'city', 'pinCode', 'address',
@@ -939,7 +888,7 @@ document.getElementById('editStudentForm').addEventListener('submit', function(e
     if (missing.length > 0) {
         console.warn('Missing/Empty required fields:', missing);
     } else {
-        console.log('  All required fields are filled!');
+        console.log('✅ All required fields are filled!');
     }
     console.log('========================\n');
 });
