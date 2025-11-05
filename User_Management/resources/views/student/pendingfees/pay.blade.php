@@ -441,6 +441,114 @@
             </div>
           </div>
 
+@if($scholarshipData['eligible'] === 'Yes' || $scholarshipData['has_discretionary'])
+<!-- Discount & Scholarship Details -->
+<div class="view-section">
+    <h4 class="text-success">  Applied Discounts</h4>
+    
+    <div class="row g-3 mb-3">
+        @if($scholarshipData['eligible'] === 'Yes')
+        <!-- Scholarship Discount -->
+        <div class="col-md-12">
+            <div class="alert alert-success">
+                <h6 class="mb-2">
+                    <i class="fas fa-graduation-cap"></i> Scholarship Applied
+                </h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Scholarship Name:</strong><br>
+                        {{ $scholarshipData['scholarship_name'] }}
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <strong>Discount:</strong><br>
+                        <span class="text-success fw-bold">{{ $scholarshipData['discount_percentage'] }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        @if($scholarshipData['has_discretionary'])
+        <!-- Discretionary Discount -->
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <h6 class="mb-2">
+                    <i class="fas fa-hand-holding-usd"></i> Additional Discretionary Discount
+                </h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Type:</strong><br>
+                        {{ $scholarshipData['discretionary_type'] === 'percentage' ? 'Percentage' : 'Fixed Amount' }}
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <strong>Value:</strong><br>
+                        <span class="text-info fw-bold">
+                            @if($scholarshipData['discretionary_type'] === 'percentage')
+                                {{ $scholarshipData['discretionary_value'] }}%
+                            @else
+                                ₹{{ number_format($scholarshipData['discretionary_value'], 2) }}
+                            @endif
+                        </span>
+                    </div>
+                </div>
+                @if($scholarshipData['discretionary_reason'])
+                <div class="mt-2 pt-2 border-top">
+                    <strong>Reason:</strong> {{ $scholarshipData['discretionary_reason'] }}
+                </div>
+                @endif
+            </div>
+        </div>
+        @endif
+
+        <!-- Fee Breakdown -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">📋 Fee Breakdown</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td>Original Fee:</td>
+                            <td class="text-end">₹{{ number_format($scholarshipData['total_before_discount'], 2) }}</td>
+                        </tr>
+                        @if($scholarshipData['discount_percentage'] > 0)
+                        <tr class="text-success">
+                            <td>Scholarship Discount ({{ $scholarshipData['discount_percentage'] }}%):</td>
+                            <td class="text-end">
+                                - ₹{{ number_format($scholarshipData['total_before_discount'] * $scholarshipData['discount_percentage'] / 100, 2) }}
+                            </td>
+                        </tr>
+                        @endif
+                        @if($scholarshipData['has_discretionary'])
+                        <tr class="text-info">
+                            <td>Discretionary Discount:</td>
+                            <td class="text-end">
+                                @if($scholarshipData['discretionary_type'] === 'percentage')
+                                    - ₹{{ number_format(($scholarshipData['total_before_discount'] * (1 - $scholarshipData['discount_percentage']/100)) * $scholarshipData['discretionary_value'] / 100, 2) }}
+                                @else
+                                    - ₹{{ number_format($scholarshipData['discretionary_value'], 2) }}
+                                @endif
+                            </td>
+                        </tr>
+                        @endif
+                        <tr class="border-top fw-bold">
+                            <td>Final Fee (Before GST):</td>
+                            <td class="text-end">₹{{ number_format($totalFees, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td>GST (18%):</td>
+                            <td class="text-end">₹{{ number_format($gstAmount, 2) }}</td>
+                        </tr>
+                        <tr class="border-top fw-bold text-danger">
+                            <td>Total Payable:</td>
+                            <td class="text-end fs-5">₹{{ number_format($totalFeesWithGST, 2) }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
           <!-- Payment Options -->
           <div class="view-section">
             <h4>Payment Options</h4>

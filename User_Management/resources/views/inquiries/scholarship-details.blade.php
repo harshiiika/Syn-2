@@ -423,109 +423,118 @@
             <span>{{ session('success') }}</span>
           </div>
         @endif
-
-        <form method="POST" action="{{ route('inquiries.scholarship.update', $inquiry->_id) }}">
+<form method="POST" action="{{ route('inquiries.scholarship.update', $inquiry->_id) }}" id="scholarshipForm">
     @csrf
     @method('PUT')
 
-          <!-- Scholarship Details Section -->
-          <div class="form-section">
-            <h4>Scholarship Details</h4>
-            
-            <div class="detail-row">
-              <div class="detail-label">Eligible For Scholarship</div>
-              <div class="detail-value">
+    <!-- Scholarship Details Section -->
+    <div class="form-section">
+        <h4>Scholarship Details</h4>
+        
+        <div class="detail-row">
+            <div class="detail-label">Eligible For Scholarship</div>
+            <div class="detail-value">
                 @if($eligibleForScholarship)
-                  <span style="color: #28a745; font-weight: 600;">Yes</span>
+                    <span style="color: #28a745; font-weight: 600;">Yes</span>
                 @else
-                  <span style="color: #dc3545; font-weight: 600;">No</span>
+                    <span style="color: #dc3545; font-weight: 600;">No</span>
                 @endif
-              </div>
             </div>
+        </div>
 
-            @if($eligibleForScholarship && $scholarship)
-              <div class="detail-row">
+        @if($eligibleForScholarship && $scholarship)
+            <div class="detail-row">
                 <div class="detail-label">Name of Scholarship</div>
                 <div class="detail-value">{{ $scholarship->scholarship_name ?? 'N/A' }}</div>
-              </div>
-            @endif
-
-            <div class="detail-row">
-              <div class="detail-label">Total Fee Before Discount</div>
-              <div class="detail-value highlight">₹{{ number_format($totalFeeBeforeDiscount, 2) }}</div>
             </div>
+        @endif
 
-            <div class="detail-row">
-              <div class="detail-label">Discount Percentage</div>
-              <div class="detail-value highlight" id="discountPercentageDisplay">{{ $discountPercentage }}%</div>
+        <div class="detail-row">
+            <div class="detail-label">Total Fee Before Discount</div>
+            <div class="detail-value highlight">₹{{ number_format($totalFeeBeforeDiscount, 2) }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Discount Percentage</div>
+            <div class="detail-value highlight" id="discountPercentageDisplay">{{ $discountPercentage }}%</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Discounted Fees</div>
+            <div class="detail-value highlight" id="discountedFeesDisplay">₹{{ number_format($scholarshipDiscountedFees, 2) }}</div>
+        </div>
+    </div>
+
+    <!-- Discretionary Discount Section -->
+    <div class="form-section">
+        <h4>Discretionary Discount</h4>
+        
+        <div class="form-group">
+            <label>Do You Want Add discretionary discount</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="add_discretionary_discount" value="Yes" id="discountYes">
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="add_discretionary_discount" value="No" id="discountNo" checked>
+                    No
+                </label>
             </div>
+        </div>
 
-            <div class="detail-row">
-              <div class="detail-label">Discounted Fees</div>
-              <div class="detail-value highlight" id="discountedFeesDisplay">₹{{ number_format($scholarshipDiscountedFees, 2) }}</div>
-            </div>
-          </div>
-
-          <!-- Discretionary Discount Section -->
-          <div class="form-section">
-            <h4>Discretionary Discount</h4>
-            
+        <!--   CRITICAL: Ensure these fields have correct names matching validation -->
+        <div class="discount-input-section" id="discountInputSection">
             <div class="form-group">
-              <label>Do You Want Add discretionary discount</label>
-              <div class="radio-group">
-                <label>
-                  <input type="radio" name="add_discretionary_discount" value="Yes" id="discountYes">
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" name="add_discretionary_discount" value="No" id="discountNo" checked>
-                  No
-                </label>
-              </div>
-            </div>
-
-            <div class="discount-input-section" id="discountInputSection">
-              <div class="form-group">
                 <label>Discount Type</label>
                 <select name="discretionary_discount_type" class="form-select" id="discountType">
-                  <option value="percentage">Percentage (%)</option>
-                  <option value="fixed">Fixed Amount (₹)</option>
+                    <option value="percentage">Percentage (%)</option>
+                    <option value="fixed">Fixed Amount (₹)</option>
                 </select>
-              </div>
-
-              <div class="form-group">
-                <label>Discount Value</label>
-                <input type="number" name="discretionary_discount_value" class="form-control" 
-                       id="discountValue" min="0" step="0.01">
-              </div>
-
-              <div class="form-group">
-                <label>Reason for Discretionary Discount</label>
-                <textarea name="discretionary_discount_reason" class="form-control" 
-                          rows="3" id="discountReason"></textarea>
-              </div>
-
-              <div class="detail-row" style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 15px;">
-                <div class="detail-label">Final Fees After All Discounts</div>
-                <div class="detail-value highlight" style="font-size: 1.3em;" id="finalFeesDisplay">
-                  ₹{{ number_format($discountedFees, 2) }}
-                </div>
-              </div>
             </div>
 
-            <input type="hidden" name="total_fee_before_discount" value="{{ $totalFeeBeforeDiscount }}">
-            <input type="hidden" name="scholarship_discount_percentage" value="{{ $discountPercentage }}">
-            <input type="hidden" name="scholarship_discounted_fees" value="{{ $discountedFees }}">
-            <input type="hidden" name="final_fees" id="finalFeesInput" value="{{ $discountedFees }}">
-          </div>
+            <div class="form-group">
+                <label>Discount Value</label>
+                <input type="number" 
+                       name="discretionary_discount_value" 
+                       class="form-control" 
+                       id="discountValue" 
+                       min="0" 
+                       step="0.01"
+                       placeholder="Enter discount value">
+            </div>
 
-          <!-- Footer with Next Button -->
-          <div class="sticky-footer">
-            <button type="submit" class="btn-next">
-              Next <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-        </form>
+            <div class="form-group">
+                <label>Reason for Discretionary Discount</label>
+                <textarea name="discretionary_discount_reason" 
+                          class="form-control" 
+                          rows="3" 
+                          id="discountReason"
+                          placeholder="Please provide a reason for this discount"></textarea>
+            </div>
+
+            <div class="detail-row" style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                <div class="detail-label">Final Fees After All Discounts</div>
+                <div class="detail-value highlight" style="font-size: 1.3em;" id="finalFeesDisplay">
+                    ₹{{ number_format($discountedFees, 2) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden fields with correct names -->
+        <input type="hidden" name="total_fee_before_discount" value="{{ $totalFeeBeforeDiscount }}">
+        <input type="hidden" name="scholarship_discount_percentage" value="{{ $discountPercentage }}">
+        <input type="hidden" name="scholarship_discounted_fees" value="{{ $discountedFees }}">
+        <input type="hidden" name="final_fees" id="finalFeesInput" value="{{ $discountedFees }}">
+    </div>
+
+    <!-- Footer -->
+    <div class="sticky-footer">
+        <button type="submit" class="btn-next">
+             Save & Continue <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+</form>
 
       </div>
     </div>
@@ -535,105 +544,124 @@
   <script src="{{asset('js/emp.js')}}"></script>
   
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const discountYes = document.getElementById('discountYes');
-      const discountNo = document.getElementById('discountNo');
-      const discountInputSection = document.getElementById('discountInputSection');
-      const discountType = document.getElementById('discountType');
-      const discountValue = document.getElementById('discountValue');
-      const discountReason = document.getElementById('discountReason');
-      const finalFeesDisplay = document.getElementById('finalFeesDisplay');
-      const finalFeesInput = document.getElementById('finalFeesInput');
+document.addEventListener('DOMContentLoaded', function() {
+  const discountYes = document.getElementById('discountYes');
+  const discountNo = document.getElementById('discountNo');
+  const discountInputSection = document.getElementById('discountInputSection');
+  const discountType = document.getElementById('discountType');
+  const discountValue = document.getElementById('discountValue');
+  const discountReason = document.getElementById('discountReason');
+  const finalFeesDisplay = document.getElementById('finalFeesDisplay');
+  const finalFeesInput = document.getElementById('finalFeesInput');
+  const scholarshipForm = document.querySelector('form');
 
-      const scholarshipDiscountedFees = {{ $discountedFees }};
-      const totalFeeBeforeDiscount = {{ $totalFeeBeforeDiscount }};
+  const scholarshipDiscountedFees = {{ $discountedFees }};
 
-      // Toggle discount input section
-      discountYes.addEventListener('change', function() {
-        if (this.checked) {
-          discountInputSection.classList.add('active');
-        }
-      });
+  // Toggle discount section
+  discountYes.addEventListener('change', function() {
+    if (this.checked) {
+      discountInputSection.classList.add('active');
+      //   REQUIRED: Make fields required when "Yes" is selected
+      discountType.setAttribute('required', 'required');
+      discountValue.setAttribute('required', 'required');
+      discountReason.setAttribute('required', 'required');
+    }
+  });
 
-      discountNo.addEventListener('change', function() {
-        if (this.checked) {
-          discountInputSection.classList.remove('active');
-          resetDiscountCalculation();
-        }
-      });
+  discountNo.addEventListener('change', function() {
+    if (this.checked) {
+      discountInputSection.classList.remove('active');
+      // Remove required attributes
+      discountType.removeAttribute('required');
+      discountValue.removeAttribute('required');
+      discountReason.removeAttribute('required');
+      resetDiscountCalculation();
+    }
+  });
 
-      // Calculate final fees on discount input change
-      function calculateFinalFees() {
-        if (!discountYes.checked) return;
+  // Calculate final fees
+  function calculateFinalFees() {
+    if (!discountYes.checked) return;
 
-        const type = discountType.value;
-        const value = parseFloat(discountValue.value) || 0;
+    const type = discountType.value;
+    const value = parseFloat(discountValue.value) || 0;
 
-        let finalFees = scholarshipDiscountedFees;
+    let finalFees = scholarshipDiscountedFees;
 
-        if (value > 0) {
-          if (type === 'percentage') {
-            const additionalDiscount = (scholarshipDiscountedFees * value) / 100;
-            finalFees = scholarshipDiscountedFees - additionalDiscount;
-          } else if (type === 'fixed') {
-            finalFees = scholarshipDiscountedFees - value;
-          }
-        }
-
-        // Ensure final fees is not negative
-        finalFees = Math.max(0, finalFees);
-
-        // Update display and hidden input
-        finalFeesDisplay.textContent = '₹' + finalFees.toLocaleString('en-IN', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-        finalFeesInput.value = finalFees.toFixed(2);
+    if (value > 0) {
+      if (type === 'percentage') {
+        const additionalDiscount = (scholarshipDiscountedFees * value) / 100;
+        finalFees = scholarshipDiscountedFees - additionalDiscount;
+      } else if (type === 'fixed') {
+        finalFees = scholarshipDiscountedFees - value;
       }
+    }
 
-      function resetDiscountCalculation() {
-        discountValue.value = '';
-        discountReason.value = '';
-        finalFeesDisplay.textContent = '₹' + scholarshipDiscountedFees.toLocaleString('en-IN', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-        finalFeesInput.value = scholarshipDiscountedFees.toFixed(2);
-      }
+    finalFees = Math.max(0, finalFees);
 
-      // Add event listeners
-      discountType.addEventListener('change', calculateFinalFees);
-      discountValue.addEventListener('input', calculateFinalFees);
-
-      // Form validation
-      document.getElementById('scholarshipForm').addEventListener('submit', function(e) {
-        if (discountYes.checked) {
-          const value = parseFloat(discountValue.value) || 0;
-          const reason = discountReason.value.trim();
-
-          if (value > 0 && !reason) {
-            e.preventDefault();
-            alert('Please provide a reason for the discretionary discount.');
-            discountReason.focus();
-            return false;
-          }
-
-          if (discountType.value === 'percentage' && value > 100) {
-            e.preventDefault();
-            alert('Discount percentage cannot exceed 100%.');
-            discountValue.focus();
-            return false;
-          }
-
-          if (discountType.value === 'fixed' && value > scholarshipDiscountedFees) {
-            e.preventDefault();
-            alert('Discount amount cannot exceed the discounted fees.');
-            discountValue.focus();
-            return false;
-          }
-        }
-      });
+    finalFeesDisplay.textContent = '₹' + finalFees.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
+    finalFeesInput.value = finalFees.toFixed(2);
+
+    console.log(' Final fees calculated:', finalFees);
+  }
+
+  function resetDiscountCalculation() {
+    discountValue.value = '';
+    discountReason.value = '';
+    finalFeesDisplay.textContent = '₹' + scholarshipDiscountedFees.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    finalFeesInput.value = scholarshipDiscountedFees.toFixed(2);
+  }
+
+  discountType.addEventListener('change', calculateFinalFees);
+  discountValue.addEventListener('input', calculateFinalFees);
+
+  //   Form validation before submit
+  scholarshipForm.addEventListener('submit', function(e) {
+    console.log('Form submitting...');
+    
+    if (discountYes.checked) {
+      const value = parseFloat(discountValue.value) || 0;
+      const reason = discountReason.value.trim();
+
+      // Validation checks
+      if (value > 0 && !reason) {
+        e.preventDefault();
+        alert(' Please provide a reason for the discretionary discount.');
+        discountReason.focus();
+        return false;
+      }
+
+      if (discountType.value === 'percentage' && value > 100) {
+        e.preventDefault();
+        alert('  Discount percentage cannot exceed 100%.');
+        discountValue.focus();
+        return false;
+      }
+
+      if (discountType.value === 'fixed' && value > scholarshipDiscountedFees) {
+        e.preventDefault();
+        alert('  Discount amount cannot exceed the discounted fees.');
+        discountValue.focus();
+        return false;
+      }
+
+      console.log('  Discretionary discount validated:', {
+        type: discountType.value,
+        value: value,
+        reason: reason
+      });
+    }
+
+    console.log('  Form validation passed - submitting...');
+    return true;
+  });
+});
   </script>
 
 </body>

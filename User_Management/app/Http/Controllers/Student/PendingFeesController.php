@@ -149,76 +149,98 @@ class PendingFeesController extends Controller
     }
 
     /**
-     * Show payment form
-     */
-    public function pay($id)
-    {
-        try {
-            $student = Student::findOrFail($id);
+ * Show payment form with ALL fee details including discounts
+ */
+public function pay($id)
+{
+    try {
+        $student = Student::findOrFail($id);
 
-            //   Calculate all fee components
-            $totalFees = floatval($student->total_fees ?? 0);
-            $gstAmount = floatval($student->gst_amount ?? 0);
-            
-            // Calculate GST if not stored
-            if ($gstAmount == 0 && $totalFees > 0) {
-                $gstAmount = $totalFees * 0.18;
-            }
+        \Log::info('  PAYMENT FORM - Loading student data:', [
+            'student_id' => $id,
+            'name' => $student->name,
+            'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'NOT SET',
+            'scholarship_name' => $student->scholarship_name ?? 'NOT SET',
+            'discretionary_discount' => $student->discretionary_discount ?? 'NOT SET',
+            'discretionary_discount_value' => $student->discretionary_discount_value ?? 'NOT SET',
+        ]);
 
-            //   Use stored total_fees_inclusive_tax if available, otherwise calculate
-            $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
-            if ($totalFeesWithGST == 0) {
-                $totalFeesWithGST = $totalFees + $gstAmount;
-            }
-
-            // Calculate total paid from payment history
-            $totalPaid = 0;
-            if (isset($student->paymentHistory) && is_array($student->paymentHistory)) {
-                foreach ($student->paymentHistory as $payment) {
-                    $totalPaid += floatval($payment['amount'] ?? 0);
-                }
-            }
-
-            // Fallback to paid_fees field
-            if ($totalPaid == 0) {
-                $totalPaid = floatval($student->paid_fees ?? 0);
-            }
-
-            $remainingBalance = max(0, $totalFeesWithGST - $totalPaid);
-            $firstInstallment = $totalFeesWithGST * 0.40;
-
-            Log::info('💰 Payment Form Loaded:', [
-                'student_id' => $id,
-                'student_name' => $student->name,
-                'total_fees' => $totalFees,
-                'gst_amount' => $gstAmount,
-                'total_fees_with_gst' => $totalFeesWithGST,
-                'total_paid' => $totalPaid,
-                'remaining_balance' => $remainingBalance,
-                'payment_count' => is_array($student->paymentHistory) ? count($student->paymentHistory) : 0,
-                'payment_history' => $student->paymentHistory ?? 'NO HISTORY',
-            ]);
-
-            //   Return ALL variables the blade might need
-            return view('student.pendingfees.pay', compact(
-                'student',
-                'totalFees',
-                'gstAmount',
-                'totalFeesWithGST',
-                'totalPaid',
-                'remainingBalance',
-                'firstInstallment'
-            ));
-        } catch (\Exception $e) {
-            Log::error(' Payment form error:', [
-                'id' => $id, 
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return redirect()->route('student.pendingfees.pending')
-                ->with('error', 'Unable to load payment form: ' . $e->getMessage());
+        //   Calculate all fee components
+        $totalFees = floatval($student->total_fees ?? 0);
+        $gstAmount = floatval($student->gst_amount ?? 0);
+        
+        // Calculate GST if not stored
+        if ($gstAmount == 0 && $totalFees > 0) {
+            $gstAmount = $totalFees * 0.18;
         }
+
+        // Use stored total_fees_inclusive_tax if available
+        $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
+        if ($totalFeesWithGST == 0) {
+            $totalFeesWithGST = $totalFees + $gstAmount;
+        }
+
+        // Calculate total paid from payment history
+        $totalPaid = 0;
+        if (isset($student->paymentHistory) && is_array($student->paymentHistory)) {
+            foreach ($student->paymentHistory as $payment) {
+                $totalPaid += floatval($payment['amount'] ?? 0);
+            }
+        }
+
+        // Fallback to paid_fees field
+        if ($totalPaid == 0) {
+            $totalPaid = floatval($student->paid_fees ?? 0);
+        }
+
+        $remainingBalance = max(0, $totalFeesWithGST - $totalPaid);
+        $firstInstallment = $totalFeesWithGST * 0.40;
+
+        //   Prepare scholarship/discount data
+        $scholarshipData = [
+            'eligible' => $student->eligible_for_scholarship ?? 'No',
+            'scholarship_name' => $student->scholarship_name ?? 'N/A',
+            'total_before_discount' => floatval($student->total_fee_before_discount ?? $totalFees),
+            'discount_percentage' => floatval($student->discount_percentage ?? 0),
+            'has_discretionary' => ($student->discretionary_discount ?? 'No') === 'Yes',
+            'discretionary_type' => $student->discretionary_discount_type ?? null,
+            'discretionary_value' => floatval($student->discretionary_discount_value ?? 0),
+            'discretionary_reason' => $student->discretionary_discount_reason ?? null,
+        ];
+
+        Log::info('  Payment Form Loaded:', [
+            'student_id' => $id,
+            'student_name' => $student->name,
+            'total_fees' => $totalFees,
+            'gst_amount' => $gstAmount,
+            'total_fees_with_gst' => $totalFeesWithGST,
+            'total_paid' => $totalPaid,
+            'remaining_balance' => $remainingBalance,
+            'scholarship_data' => $scholarshipData,
+            'payment_count' => is_array($student->paymentHistory) ? count($student->paymentHistory) : 0,
+        ]);
+
+        //   Return ALL variables including scholarship data
+        return view('student.pendingfees.pay', compact(
+            'student',
+            'totalFees',
+            'gstAmount',
+            'totalFeesWithGST',
+            'totalPaid',
+            'remainingBalance',
+            'firstInstallment',
+            'scholarshipData'  //   NEW: Pass scholarship data to view
+        ));
+    } catch (\Exception $e) {
+        Log::error('❌ Payment form error:', [
+            'id' => $id, 
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return redirect()->route('student.pendingfees.pending')
+            ->with('error', 'Unable to load payment form: ' . $e->getMessage());
     }
+}
 
     /**
      * Process payment and transfer to SMstudents if fully paid

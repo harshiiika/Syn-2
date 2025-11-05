@@ -855,7 +855,7 @@ document.getElementById('editStudentForm').addEventListener('submit', function(e
     
     for (let [key, value] of formData.entries()) {
         if (value === '' || value === null) {
-            console.warn(`⚠️ EMPTY: ${key} = "${value}"`);
+            console.warn(`  EMPTY: ${key} = "${value}"`);
         } else {
             console.log(`  ${key} = "${value}"`);
         }

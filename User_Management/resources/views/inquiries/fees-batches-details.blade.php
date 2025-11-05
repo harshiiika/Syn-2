@@ -377,7 +377,7 @@
             <div class="detail-value">{{ $feesData['discretionary_discount'] }}</div>
           </div>
 
-          <div class="detail-row">
+          <!-- <div class="detail-row">
             <div class="detail-label">Discount Percentage</div>
             <div class="detail-value">{{ $feesData['discount_percentage'] }}</div>
           </div>
@@ -385,7 +385,7 @@
           <div class="detail-row">
             <div class="detail-label">Discounted Fee</div>
             <div class="detail-value">{{ number_format($feesData['discounted_fee']) }}</div>
-          </div>
+          </div> -->
 
           <div class="detail-row">
             <div class="detail-label">Fees Breakup</div>
