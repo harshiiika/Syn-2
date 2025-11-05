@@ -189,10 +189,41 @@ Route::prefix('master')->name('master.')->group(function () {
 // 1. PENDING STUDENTS (Incomplete Profiles) 
 // Changed to /student/pending to match route list
 // ========================================
-Route::prefix('student')->name('student.student.')->group(function () {
-    Route::get('/pending', [App\Http\Controllers\Student\PendingController::class, 'index'])->name('pending');
-    Route::get('/{id}/edit', [App\Http\Controllers\Student\PendingController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [App\Http\Controllers\Student\PendingController::class, 'update'])->name('update');
+Route::prefix('student')->name('student.')->group(function () {
+
+    /** ✅ PENDING INQUIRY STUDENTS (Incomplete forms) */
+    Route::get('/pending', [StudentController::class, 'index'])
+        ->name('student.pending');  // student.student.pending
+
+    /** ✅ VIEW / EDIT A PENDING STUDENT */
+    Route::get('/{id}/edit', [StudentController::class, 'edit'])
+        ->name('student.edit');
+    Route::put('/{id}', [StudentController::class, 'update'])
+        ->name('student.update');
+
+    /** ✅ ONBOARDED STUDENTS (Complete form, not active yet) */
+    Route::get('/onboarded', [StudentController::class, 'onboardedStudents'])
+        ->name('onboard.onboard');  // student.onboard.onboard
+
+    /** ✅ VIEW SINGLE STUDENT DETAILS */
+    Route::get('/view/{id}', [StudentController::class, 'show'])
+        ->name('student.view');  // student.student.view
+
+    /** ✅ PENDING FEES STUDENTS */
+    Route::get('/fees/pending', [StudentController::class, 'pendingFees'])
+        ->name('fees.pending'); // student.fees.pending
+
+    /** ✅ STUDENTS */
+    Route::get('/active', [StudentController::class, 'activeStudents'])
+        ->name('active'); // student.active
+
+    /** ✅ CONVERT INQUIRY → STUDENT */
+    Route::post('/convert/{id}', [StudentController::class, 'convertFromInquiry'])
+        ->name('convert');
+
+    /** ✅ UPDATE FEES */
+    Route::post('/fees/update/{id}', [StudentController::class, 'updateFees'])
+        ->name('fees.update');
 });
 
 // ========================================
@@ -212,13 +243,16 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
 // 3. PENDING FEES STUDENTS
 // ========================================
 Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(function () {
-    Route::get('/', [PendingFeesController::class, 'index'])->name('pending');
-    Route::get('/{id}', [PendingFeesController::class, 'view'])->name('view');
-    
+    Route::get('/', [PendingFeesController::class, 'index'])->name('pending'); 
+    Route::get('/{id}/view', [PendingFeesController::class, 'view'])->name('view');
+    Route::get('/{id}/edit', [PendingFeesController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [PendingFeesController::class, 'update'])->name('update');
+
     // Payment routes
     Route::get('/{id}/pay', [PendingFeesController::class, 'pay'])->name('pay');
     Route::post('/{id}/pay', [PendingFeesController::class, 'processPayment'])->name('processPayment');
 });
+
 
 // ========================================
 // 4. ACTIVE STUDENTS (SM Students)
@@ -235,6 +269,8 @@ Route::prefix('smstudents')
         Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
         Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
         Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
+    Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents']);
+
     });
 
 // ========================================
@@ -246,13 +282,18 @@ Route::prefix('inquiries')->name('inquiries.')->group(function () {
     Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('bulkOnboard');
     Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
     Route::post('/', [InquiryController::class, 'store'])->name('store');
+    
+    // ⭐ SPECIFIC ROUTES MUST COME BEFORE GENERIC {id} ROUTES
     Route::get('/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])->name('scholarship.show');
     Route::put('/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])->name('scholarship.update');
     Route::get('/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])->name('fees-batches.show');
     Route::put('/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])->name('fees-batches.update');
     Route::get('/{id}/edit', [InquiryController::class, 'edit'])->name('edit');
-    Route::get('/{id}/view', [InquiryController::class, 'view'])->name('view');
+    
+    // ⭐ ADD THIS: View route for displaying inquiry details
+    Route::get('/{id}', [InquiryController::class, 'view'])->name('view');
+    
+    // Generic routes for update and delete
     Route::put('/{id}', [InquiryController::class, 'update'])->name('update');
     Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
-    Route::get('/{id}', [InquiryController::class, 'show'])->name('show');
 });

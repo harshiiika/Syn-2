@@ -129,7 +129,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
 
       <!-- Left side bar accordian -->
-      <div class="accordion accordion-flush" id="accordionFlushExample">
+    <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -379,7 +379,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </a>
 <li>
     <a class="dropdown-item" href="{{ route('student.pendingfees.pay', $pending->_id) }}">
-      Pay Fees
+        Pay Fees
     </a>
 </li>
       <li>
