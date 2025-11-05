@@ -9,7 +9,7 @@ use App\Models\Master\Courses;
 class Onboard extends Model
 {
     protected $connection = 'mongodb';
-protected $collection = 'onboarded_students';    
+protected $collection = 'students';    
     public $timestamps = true;
     
     protected $guarded = [];
