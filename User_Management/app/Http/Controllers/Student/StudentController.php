@@ -233,7 +233,7 @@ public function update(Request $request, $id)
             'status' => $student->status
         ]);
         
-        // ✅ Check if ALL required fields are filled (only for pending_fees students)
+        //   Check if ALL required fields are filled (only for pending_fees students)
         if ($student->status === 'pending_fees') {
             $requiredFields = [
                 'name', 'father', 'mother', 'dob', 'mobileNumber', 
@@ -268,19 +268,19 @@ public function update(Request $request, $id)
             ]);
 
             if ($isComplete) {
-                \Log::info('✅ FORM IS COMPLETE - CHANGING STATUS TO ONBOARDED', [
+                \Log::info('  FORM IS COMPLETE - CHANGING STATUS TO ONBOARDED', [
                     'student_id' => $student->_id,
                     'student_name' => $student->name
                 ]);
 
                 try {
-                    // ✅ SIMPLE FIX: Just update the status in the same collection
+                    //   SIMPLE FIX: Just update the status in the same collection
                     $student->update([
                         'status' => 'onboarded',
                         'onboardedAt' => now()
                     ]);
                     
-                    \Log::info('✅ Student status changed to onboarded:', [
+                    \Log::info('  Student status changed to onboarded:', [
                         'student_id' => $student->_id,
                         'new_status' => $student->status
                     ]);
@@ -289,7 +289,7 @@ public function update(Request $request, $id)
                         ->with('success', 'Student form completed! Moved to Onboarding Students section.');
                         
                 } catch (\Exception $e) {
-                    \Log::error('❌ ERROR UPDATING STUDENT STATUS:', [
+                    \Log::error(' ERROR UPDATING STUDENT STATUS:', [
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);

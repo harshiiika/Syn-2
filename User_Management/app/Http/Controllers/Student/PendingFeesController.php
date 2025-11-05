@@ -8,6 +8,7 @@ use App\Models\Student\Student;
 use App\Models\Student\SMstudents;
 use App\Models\Student\Pending;
 use Illuminate\Support\Facades\Log;
+use App\Services\RollNumberService;
 
 class PendingFeesController extends Controller
 {
@@ -155,7 +156,7 @@ class PendingFeesController extends Controller
         try {
             $student = Student::findOrFail($id);
 
-            // ✅ Calculate all fee components
+            //   Calculate all fee components
             $totalFees = floatval($student->total_fees ?? 0);
             $gstAmount = floatval($student->gst_amount ?? 0);
             
@@ -164,7 +165,7 @@ class PendingFeesController extends Controller
                 $gstAmount = $totalFees * 0.18;
             }
 
-            // ✅ Use stored total_fees_inclusive_tax if available, otherwise calculate
+            //   Use stored total_fees_inclusive_tax if available, otherwise calculate
             $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
             if ($totalFeesWithGST == 0) {
                 $totalFeesWithGST = $totalFees + $gstAmount;
@@ -198,7 +199,7 @@ class PendingFeesController extends Controller
                 'payment_history' => $student->paymentHistory ?? 'NO HISTORY',
             ]);
 
-            // ✅ Return ALL variables the blade might need
+            //   Return ALL variables the blade might need
             return view('student.pendingfees.pay', compact(
                 'student',
                 'totalFees',
@@ -209,7 +210,7 @@ class PendingFeesController extends Controller
                 'firstInstallment'
             ));
         } catch (\Exception $e) {
-            Log::error('❌ Payment form error:', [
+            Log::error(' Payment form error:', [
                 'id' => $id, 
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
@@ -225,7 +226,7 @@ class PendingFeesController extends Controller
 public function processPayment(Request $request, $id)
 {
     try {
-        Log::info('=== 💳 PAYMENT PROCESSING STARTED ===', ['id' => $id]);
+        Log::info('=== PAYMENT PROCESSING STARTED ===', ['id' => $id]);
 
         $validated = $request->validate([
             'payment_date' => 'required|date',
@@ -245,7 +246,7 @@ public function processPayment(Request $request, $id)
         $paymentMode = $validated['payment_mode'];
         $installmentNumber = $validated['installment_number'] ?? null;
 
-        // ✅ Create payment record WITH payment mode info
+        //   Create payment record WITH payment mode info
         $paymentRecord = [
             'date' => $validated['payment_date'],
             'amount' => $paymentAmount,
@@ -268,7 +269,7 @@ public function processPayment(Request $request, $id)
         // Add new payment
         $paymentHistory[] = $paymentRecord;
         
-        Log::info('💳 Payment Record Created:', [
+        Log::info('Payment Record Created:', [
             'payment_mode' => $paymentMode,
             'installment' => $installmentNumber,
             'amount' => $paymentAmount,
@@ -303,7 +304,7 @@ public function processPayment(Request $request, $id)
             $newRemainingBalance = max(0, $newRemainingBalance);
         }
 
-        Log::info('📊 Payment Calculation:', [
+        Log::info('  Payment Calculation:', [
             'total_fees_with_gst' => $totalFeesWithGST,
             'new_paid_amount' => $newPaidAmount,
             'new_remaining_balance' => $newRemainingBalance,
@@ -312,7 +313,7 @@ public function processPayment(Request $request, $id)
 
         // CHECK IF FULLY PAID
         if ($newRemainingBalance <= 0) {
-            Log::info('✅ FEES FULLY PAID - Transferring to SMstudents');
+            Log::info('  FEES FULLY PAID - Transferring to SMstudents');
 
             $totalFees = floatval($student->total_fees ?? ($totalFeesWithGST / 1.18));
             $gstAmount = floatval($student->gst_amount ?? ($totalFeesWithGST - $totalFees));
@@ -376,7 +377,7 @@ public function processPayment(Request $request, $id)
 
             $smStudent = SMstudents::create($smStudentData);
 
-            Log::info('✅ Student transferred to SMstudents', [
+            Log::info('  Student transferred to SMstudents', [
                 'sm_student_id' => $smStudent->_id,
                 'name' => $smStudent->student_name,
             ]);
@@ -385,7 +386,7 @@ public function processPayment(Request $request, $id)
             $student->delete();
 
             return redirect()->route('smstudents.index')
-                ->with('success', "✅ Payment successful! Student '{$smStudent->student_name}' moved to Active Students. Total Paid: ₹" . number_format($newPaidAmount, 2));
+                ->with('success', "  Payment successful! Student '{$smStudent->student_name}' moved to Active Students. Total Paid: ₹" . number_format($newPaidAmount, 2));
         }
 
         // PARTIAL PAYMENT - Update student record
@@ -402,14 +403,14 @@ public function processPayment(Request $request, $id)
         
         $student->refresh();
 
-        Log::info('✅ Partial payment recorded', [
+        Log::info('  Partial payment recorded', [
             'paid_this_time' => $paymentAmount,
             'total_paid' => $newPaidAmount,
             'remaining' => $newRemainingBalance,
             'payment_mode' => $paymentMode,
         ]);
 
-        $message = "✅ Payment of ₹" . number_format($paymentAmount, 2) . " recorded";
+        $message = "  Payment of ₹" . number_format($paymentAmount, 2) . " recorded";
         if ($installmentNumber) {
             $message .= " (Installment #{$installmentNumber})";
         }
@@ -419,7 +420,7 @@ public function processPayment(Request $request, $id)
             ->with('success', $message);
 
     } catch (\Exception $e) {
-        Log::error('❌ Payment processing failed', [
+        Log::error(' Payment processing failed', [
             'id' => $id,
             'error' => $e->getMessage(),
         ]);

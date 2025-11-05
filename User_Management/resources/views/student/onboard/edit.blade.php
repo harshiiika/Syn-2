@@ -888,7 +888,7 @@ document.getElementById('editStudentForm').addEventListener('submit', function(e
     if (missing.length > 0) {
         console.warn('Missing/Empty required fields:', missing);
     } else {
-        console.log('✅ All required fields are filled!');
+        console.log('  All required fields are filled!');
     }
     console.log('========================\n');
 });

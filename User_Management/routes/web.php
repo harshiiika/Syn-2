@@ -191,37 +191,37 @@ Route::prefix('master')->name('master.')->group(function () {
 // ========================================
 Route::prefix('student')->name('student.')->group(function () {
 
-    /** ✅ PENDING INQUIRY STUDENTS (Incomplete forms) */
+    /**   PENDING INQUIRY STUDENTS (Incomplete forms) */
     Route::get('/pending', [StudentController::class, 'index'])
         ->name('student.pending');  // student.student.pending
 
-    /** ✅ VIEW / EDIT A PENDING STUDENT */
+    /**   VIEW / EDIT A PENDING STUDENT */
     Route::get('/{id}/edit', [StudentController::class, 'edit'])
         ->name('student.edit');
     Route::put('/{id}', [StudentController::class, 'update'])
         ->name('student.update');
 
-    /** ✅ ONBOARDED STUDENTS (Complete form, not active yet) */
+    /**   ONBOARDED STUDENTS (Complete form, not active yet) */
     Route::get('/onboarded', [StudentController::class, 'onboardedStudents'])
         ->name('onboard.onboard');  // student.onboard.onboard
 
-    /** ✅ VIEW SINGLE STUDENT DETAILS */
+    /**   VIEW SINGLE STUDENT DETAILS */
     Route::get('/view/{id}', [StudentController::class, 'show'])
         ->name('student.view');  // student.student.view
 
-    /** ✅ PENDING FEES STUDENTS */
+    /**   PENDING FEES STUDENTS */
     Route::get('/fees/pending', [StudentController::class, 'pendingFees'])
         ->name('fees.pending'); // student.fees.pending
 
-    /** ✅ STUDENTS */
+    /**   STUDENTS */
     Route::get('/active', [StudentController::class, 'activeStudents'])
         ->name('active'); // student.active
 
-    /** ✅ CONVERT INQUIRY → STUDENT */
+    /**   CONVERT INQUIRY → STUDENT */
     Route::post('/convert/{id}', [StudentController::class, 'convertFromInquiry'])
         ->name('convert');
 
-    /** ✅ UPDATE FEES */
+    /**   UPDATE FEES */
     Route::post('/fees/update/{id}', [StudentController::class, 'updateFees'])
         ->name('fees.update');
 });
@@ -317,7 +317,7 @@ Route::get('/admin/fix-student-fees', function() {
         if ($students->isEmpty()) {
             return response()->json([
                 'success' => true,
-                'message' => '✅ All students already have fees data!',
+                'message' => '  All students already have fees data!',
                 'updated' => 0
             ], 200, [], JSON_PRETTY_PRINT);
         }
@@ -395,7 +395,7 @@ Route::get('/admin/fix-student-fees', function() {
         
         return response()->json([
             'success' => true,
-            'message' => "✅ Successfully updated {$updated} student(s)!",
+            'message' => "  Successfully updated {$updated} student(s)!",
             'updated_count' => $updated,
             'students' => $results
         ], 200, [], JSON_PRETTY_PRINT);
