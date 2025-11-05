@@ -300,7 +300,8 @@
                 <td>{{ $student->course_name ?? ($student->course->name ?? 'N/A') }}</td>
                 <td>{{ $student->course_content ?? 'N/A' }}</td>
                 <td>{{ $student->delivery ?? $student->delivery_mode ?? 'N/A' }}</td>
-                <td>{{ $student->shift ?? 'N/A' }}</td>
+               {{-- Display shift with fallback --}}
+                <td>{{ $student->shift->name ?? $student->shift ?? 'N/A' }}</td>
                 <td>
                   <div class="dropdown">
                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
@@ -331,6 +332,14 @@
                             Batch Update
                           </button>
                         </li>
+
+                        <li>
+                          <button class="dropdown-item" type="button" data-bs-toggle="modal"
+                            data-bs-target="#shiftModal{{ $studentId }}">
+                            Shift Update
+                          </button>
+                        </li>
+
                         <li>
                           <button class="dropdown-item" type="button"
                             data-bs-toggle="modal"
@@ -433,6 +442,41 @@
       </div>
     </div>
 
+
+<!-- Shift Update Modal -->
+<div class="modal fade" id="shiftModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('smstudents.updateShift', $studentId) }}" class="modal-content">
+      @csrf
+      <div class="modal-header">
+        <h5 class="modal-title">Update Shift</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Select New Shift</label>
+          <select name="shift_id" class="form-select" required>
+            <option value="">-- Select Shift --</option>
+            @foreach($shifts as $shift)
+              <option value="{{ $shift->_id }}" 
+                {{ ($student->shift_id == $shift->_id) ? 'selected' : '' }}>
+                {{ $shift->name }} 
+                @if($shift->start_time && $shift->end_time)
+                  ({{ $shift->start_time }} - {{ $shift->end_time }})
+                @endif
+              </option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update Shift</button>
+      </div>
+    </form>
+  </div>
+</div>
+
     <!-- History Modal -->
     <div class="modal fade" id="historyModal{{ $studentId }}" tabindex="-1" aria-labelledby="historyModalLabel{{ $studentId }}" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -495,39 +539,51 @@
                 <div class="border rounded p-2 bg-light">{{ $student->shift ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Status</label>
-                <div class="border rounded p-2 bg-light">
-                  <span class="badge {{ ($student->status ?? 'active') == 'active' ? 'bg-success' : 'bg-danger' }}">
-                    {{ ucfirst($student->status ?? 'active') }}
-                  </span>
-                </div>
-              </div>
+            <div class="col-md-6">
+  <label class="fw-semibold text-secondary">Status</label>
+  <div class="border rounded p-2 bg-light">
+    <span class="badge {{ ($student->status ?? 'active') == 'active' ? 'bg-success' : 'bg-danger' }}">
+      {{ ucfirst($student->status ?? 'active') }}
+    </span>
+  </div>
+</div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Created At</label>
-                <div class="border rounded p-2 bg-light">
-                  @if(isset($student->created_at))
-                    {{ $student->created_at->format('d M Y, h:i A') }}
-                  @else
-                    N/A
-                  @endif
-                </div>
-              </div>
+<div class="col-md-6">
+  <label class="fw-semibold text-secondary">Created At</label>
+  <div class="border rounded p-2 bg-light">
+    @if(isset($student->created_at))
+      {{ $student->created_at->format('d M Y, h:i A') }}
+    @else
+      N/A
+    @endif
+  </div>
+</div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Last Updated</label>
-                <div class="border rounded p-2 bg-light">
-                  @if(isset($student->updated_at))
-                    {{ $student->updated_at->format('d M Y, h:i A') }}
-                  @else
-                    N/A
-                  @endif
-                </div>
-              </div>
+<div class="col-md-6">
+  <label class="fw-semibold text-secondary">Last Updated</label>
+  <div class="border rounded p-2 bg-light">
+    @if(isset($student->updated_at))
+      {{ $student->updated_at->format('d M Y, h:i A') }}
+    @else
+      N/A
+    @endif
+  </div>
+</div>
+
+<div class="col-md-6">
+  <label class="fw-semibold text-secondary">Shift</label>
+  <div class="border rounded p-2 bg-light">
+    @if($student->shift_id && $student->shift)
+      {{ $student->shift->name }}
+    @elseif($student->shift)
+      {{ $student->shift }}
+    @else
+      N/A
+    @endif
+  </div>
+</div>
 
             </div>
-          </div>
 
           <!-- Modal Footer -->
           <div class="modal-footer bg-light">

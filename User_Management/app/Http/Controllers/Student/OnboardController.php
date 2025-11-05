@@ -11,6 +11,7 @@ use App\Models\Student\SMstudents;
 use MongoDB\BSON\ObjectId;
 use Illuminate\Support\Facades\DB;
 use App\Services\RollNumberService;
+use App\Models\Student\Shift; 
 
 class OnboardController extends Controller
 {
@@ -303,6 +304,7 @@ class OnboardController extends Controller
     /**
      * Transfer an onboarded student to Active Students (SMstudents)
      * ✅ WITH ROLL NUMBER SERVICE INTEGRATION
+     * ✅ WITH DYNAMIC SHIFT INTEGRATION
      */
     public function transfer($id)
     {
@@ -350,6 +352,37 @@ class OnboardController extends Controller
                 'student_name' => $onboardStudent->name ?? 'N/A'
             ]);
 
+            // ✅ ADDED: Handle Shift dynamically
+            $shiftId = null;
+            $shiftName = $onboardStudent->shift ?? null;
+
+            if ($shiftName) {
+                try {
+                    // Find or create shift dynamically
+                    $shift = Shift::firstOrCreate(
+                        ['name' => $shiftName],
+                        [
+                            'is_active' => true,
+                            'start_time' => null, // Will be set manually later in Masters
+                            'end_time' => null
+                        ]
+                    );
+                    $shiftId = $shift->_id;
+                    
+                    Log::info('✅ Shift processed:', [
+                        'shift_name' => $shiftName,
+                        'shift_id' => (string)$shiftId,
+                        'action' => 'found_or_created'
+                    ]);
+                } catch (\Exception $shiftError) {
+                    Log::warning('⚠️ Shift creation failed, continuing without shift_id:', [
+                        'shift_name' => $shiftName,
+                        'error' => $shiftError->getMessage()
+                    ]);
+                    // Continue transfer even if shift fails
+                }
+            }
+
             // Prepare data for SMstudents
             $studentData = [
                 // Roll Number - DYNAMICALLY GENERATED
@@ -395,7 +428,10 @@ class OnboardController extends Controller
                 'delivery' => $onboardStudent->deliveryMode ?? $onboardStudent->delivery ?? null,
                 'delivery_mode' => $onboardStudent->deliveryMode ?? $onboardStudent->delivery_mode ?? null,
                 'course_content' => $onboardStudent->courseContent ?? $onboardStudent->course_content ?? null,
-                'shift' => $onboardStudent->shift ?? null,
+                
+                // ✅ ADDED: Shift with both ID and name for backward compatibility
+                'shift_id' => $shiftId, // MongoDB ObjectId reference
+                'shift' => $shiftName, // String name for reference
                 
                 // Scholarship & Fees
                 'eligible_for_scholarship' => $onboardStudent->eligible_for_scholarship ?? 'No',
@@ -418,7 +454,9 @@ class OnboardController extends Controller
 
             Log::info('📦 Creating student in SMstudents...', [
                 'name' => $studentData['student_name'],
-                'roll_no' => $studentData['roll_no']
+                'roll_no' => $studentData['roll_no'],
+                'shift_id' => $shiftId ? (string)$shiftId : 'null',
+                'shift_name' => $shiftName ?? 'null'
             ]);
 
             // Create in SMstudents
@@ -431,7 +469,9 @@ class OnboardController extends Controller
             Log::info('✅ Created in SMstudents:', [
                 'new_id' => (string)$activeStudent->_id,
                 'name' => $activeStudent->student_name,
-                'roll_no' => $activeStudent->roll_no
+                'roll_no' => $activeStudent->roll_no,
+                'shift_id' => $activeStudent->shift_id ? (string)$activeStudent->shift_id : 'null',
+                'shift' => $activeStudent->shift ?? 'null'
             ]);
 
             // Update status in students collection instead of deleting

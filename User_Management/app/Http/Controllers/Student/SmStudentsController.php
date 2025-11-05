@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Student\SMstudents;
 use App\Models\Master\Batch;
 use App\Models\Master\Courses;
+use App\Models\Student\Shift; 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -17,20 +18,28 @@ class SmStudentsController extends Controller
     /**
      * Display a listing of students
      */
-    public function index()
-    {
-        try {
-            $students = SMstudents::with(['batch', 'course'])->get();
-            $batches = Batch::all();
-            $courses = Courses::all();
-            
-            return view('student.smstudents.smstudents', compact('students', 'batches', 'courses'));
-            
-        } catch (\Exception $e) {
-            Log::error('Error in smstudents index: ' . $e->getMessage());
-            return back()->with('error', 'Failed to load students: ' . $e->getMessage());
-        }
+public function index()
+{
+    try {
+        // Load students without shift relationship to avoid errors
+        $students = SMstudents::with(['batch', 'course'])->get();
+        $batches = Batch::all();
+        $courses = Courses::all();
+        $shifts = Shift::where('is_active', true)->get();
+
+        Log::info('Students page loaded successfully', [
+            'students_count' => $students->count()
+        ]);
+
+        // ✅ FIXED: Correct view path
+        return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error in smstudents index: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        return back()->with('error', 'Failed to load students: ' . $e->getMessage());
     }
+}
 
     /**
      * Display the specified student with full details
@@ -38,7 +47,7 @@ class SmStudentsController extends Controller
     public function show($id)
     {
         try {
-            $student = SMstudents::with(['batch', 'course'])->findOrFail($id);
+            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id); // ✅ ADDED: 'shift' relationship
             
             if (request()->wantsJson()) {
                 return response()->json($student);
@@ -58,11 +67,12 @@ class SmStudentsController extends Controller
     public function edit($id)
     {
         try {
-            $student = SMstudents::with(['batch', 'course'])->findOrFail($id);
+            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id); // ✅ ADDED: 'shift' relationship
             $batches = Batch::all();
             $courses = Courses::all();
+            $shifts = Shift::where('is_active', true)->get(); // ✅ ADDED: Get shifts for edit form
             
-            return view('student.smstudents.edit', compact('student', 'batches', 'courses'));
+            return view('student.smstudents.edit', compact('student', 'batches', 'courses', 'shifts')); // ✅ ADDED: 'shifts'
         } catch (\Exception $e) {
             Log::error('Error loading edit form: ' . $e->getMessage());
             return back()->with('error', 'Failed to load student data');
@@ -114,7 +124,7 @@ class SmStudentsController extends Controller
             'course_id' => 'nullable',
             'course_content' => 'nullable|string',
             'delivery_mode' => 'nullable|in:Offline,Online,Hybrid',
-            'shift' => 'nullable|in:Morning,Evening',
+            'shift_id' => 'nullable|exists:shifts,_id', // ✅ CHANGED: From 'shift' to 'shift_id'
             'status' => 'nullable|in:active,inactive',
             
             // File uploads
@@ -131,6 +141,15 @@ class SmStudentsController extends Controller
         }
 
         try {
+            // ✅ ADDED: Handle shift update
+            $shiftId = null;
+            $shiftName = null;
+            if ($request->filled('shift_id')) {
+                $shiftId = $request->shift_id;
+                $shift = Shift::find($shiftId);
+                $shiftName = $shift ? $shift->name : null;
+            }
+
             // Prepare update data (all fields)
             $updateData = [
                 // Basic info
@@ -169,7 +188,8 @@ class SmStudentsController extends Controller
                 'course_id' => $request->course_id,
                 'course_content' => $request->course_content,
                 'delivery_mode' => $request->delivery_mode,
-                'shift' => $request->shift,
+                'shift_id' => $shiftId, // ✅ ADDED: Store shift_id
+                'shift' => $shiftName, // ✅ ADDED: Store shift name for backward compatibility
                 'status' => $request->status ?? 'active',
             ];
 
@@ -266,6 +286,44 @@ class SmStudentsController extends Controller
     }
 
     /**
+     * Update student shift (✅ FIXED METHOD)
+     */
+    public function updateShift(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'shift_id' => 'required|exists:shifts,_id'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->with('error', 'Shift validation failed');
+        }
+        
+        try {
+            $student = SMstudents::findOrFail($id);
+            
+            // Get shift name for backward compatibility
+            $shift = Shift::find($request->shift_id);
+            
+            $student->update([
+                'shift_id' => $request->shift_id,
+                'shift' => $shift ? $shift->name : null,
+            ]);
+            
+            Log::info('Shift updated for student:', [
+                'student_id' => (string)$student->_id,
+                'student_name' => $student->student_name,
+                'new_shift_id' => (string)$request->shift_id,
+                'new_shift_name' => $shift ? $shift->name : null
+            ]);
+            
+            return redirect()->back()->with('success', 'Shift updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error updating shift: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update shift: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Deactivate student
      */
     public function deactivate($id)
@@ -287,7 +345,7 @@ class SmStudentsController extends Controller
     public function export(Request $request)
     {
         try {
-            $students = SMstudents::with(['batch', 'course'])->get();
+            $students = SMstudents::with(['batch', 'course', 'shift'])->get(); // ✅ ADDED: 'shift' relationship
             
             $filename = 'students_' . date('Y-m-d_His') . '.csv';
             
@@ -324,7 +382,7 @@ class SmStudentsController extends Controller
                         $student->course->name ?? 'N/A',
                         $student->course_content,
                         $student->delivery_mode,
-                        $student->shift,
+                        $student->shift->name ?? $student->shift ?? 'N/A', // ✅ FIXED: Use relationship first
                         ucfirst($student->status)
                     ]);
                 }
@@ -346,7 +404,7 @@ class SmStudentsController extends Controller
     public function history($id)
     {
         try {
-            $student = SMstudents::with(['batch', 'course'])->findOrFail($id);
+            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id); // ✅ ADDED: 'shift' relationship
             
             return view('student.smstudents.history', compact('student'));
         } catch (\Exception $e) {
@@ -355,4 +413,3 @@ class SmStudentsController extends Controller
         }
     }
 }
-

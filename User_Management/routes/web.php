@@ -253,26 +253,36 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
     Route::post('/{id}/pay', [PendingFeesController::class, 'processPayment'])->name('processPayment');
 });
 
-
 // ========================================
 // 4. ACTIVE STUDENTS (SM Students)
 // ========================================
 Route::prefix('smstudents')
     ->name('smstudents.')
     ->group(function () {
+        // ✅ List and export FIRST (before ID routes)
         Route::get('/', [SmStudentsController::class, 'index'])->name('index');
         Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
-        Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
+        
+        // ✅ Specific action routes BEFORE generic {id} routes
         Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
+        Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
+        
+        // ✅ POST/PUT routes
         Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
+        Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');
         Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
         Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
         Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
-        Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
-    Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents']);
-
+        
+        // ✅ Generic show route LAST
+        Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
     });
 
+// ✅ Onboard transfer route OUTSIDE smstudents group
+Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])
+    ->name('onboard.transfer');
+
+    
 // ========================================
 // 5. INQUIRY MANAGEMENT - Keep as is
 // ========================================

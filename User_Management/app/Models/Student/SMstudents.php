@@ -31,7 +31,7 @@ class SMstudents extends Model
         
         // Course Details
         'batch_id', 'batch_name', 'course_id', 'course_name',
-        'course_content', 'delivery', 'delivery_mode', 'shift',
+        'course_content', 'delivery', 'delivery_mode', 'shift','shift_id',
         
         // Fee Details (ALL scholarship and payment data)
         'eligible_for_scholarship', 'scholarship_name', 'total_fee_before_discount',
@@ -97,7 +97,12 @@ class SMstudents extends Model
     }
 
     // Relationships
-    public function batch()
+
+     public function shift()
+    {
+        return $this->belongsTo(Shift::class, 'shift_id');
+    }
+        public function batch()
     {
         return $this->belongsTo(Batch::class, 'batch_id', '_id');
     }
