@@ -741,142 +741,147 @@ private function calculateDefaultFees($courseName)
     }
 
     /**
-     * Update scholarship and fees information
-     */
-    public function updateScholarshipDetails(Request $request, $id)
-    {
-        try {
-            \Log::info('=== SCHOLARSHIP UPDATE START ===', ['inquiry_id' => $id]);
-            
-            $inquiry = Inquiry::findOrFail($id);
-            
-            // Validate the request
-            $validated = $request->validate([
-                'total_fee_before_discount' => 'required|numeric',
-                'scholarship_discount_percentage' => 'required|numeric|min:0|max:100',
-                'scholarship_discounted_fees' => 'required|numeric',
-                'final_fees' => 'required|numeric',
-                'add_discretionary_discount' => 'required|in:Yes,No',
-                'discretionary_discount_type' => 'nullable|in:percentage,fixed',
-                'discretionary_discount_value' => 'nullable|numeric|min:0',
-                'discretionary_discount_reason' => 'nullable|string',
-            ]);
+ * Update scholarship and fees information
+ */
+public function updateScholarshipDetails(Request $request, $id)
+{
+    try {
+        \Log::info('=== SCHOLARSHIP UPDATE START ===', [
+            'inquiry_id' => $id,
+            'request_data' => $request->all()
+        ]);
+        
+        $inquiry = Inquiry::findOrFail($id);
+        
+        // Validate the request
+        $validated = $request->validate([
+            'total_fee_before_discount' => 'required|numeric',
+            'scholarship_discount_percentage' => 'required|numeric|min:0|max:100',
+            'scholarship_discounted_fees' => 'required|numeric',
+            'final_fees' => 'required|numeric',
+            'add_discretionary_discount' => 'required|in:Yes,No',
+            'discretionary_discount_type' => 'nullable|in:percentage,fixed',
+            'discretionary_discount_value' => 'nullable|numeric|min:0',
+            'discretionary_discount_reason' => 'nullable|string',
+        ]);
 
-            // Determine scholarship eligibility and name
-            $eligibleForScholarship = 'No';
-            $scholarshipName = 'N/A';
+        // Determine scholarship eligibility and name
+        $eligibleForScholarship = 'No';
+        $scholarshipName = 'N/A';
+        
+        if (($inquiry->scholarshipTest === 'Yes') || 
+            ($inquiry->lastBoardPercentage && $inquiry->lastBoardPercentage >= 75) ||
+            ($inquiry->competitionExam === 'Yes')) {
             
-            // Check if student is eligible for scholarship
-            if (($inquiry->scholarshipTest === 'Yes') || 
-                ($inquiry->lastBoardPercentage && $inquiry->lastBoardPercentage >= 75) ||
-                ($inquiry->competitionExam === 'Yes')) {
-                
-                $eligibleForScholarship = 'Yes';
-                
-                // Find the scholarship that was applied
-                $scholarship = null;
-                
-                // Priority 1: Scholarship Test
-                if ($inquiry->scholarshipTest === 'Yes') {
-                    $scholarship = Scholarship::where('scholarship_type', 'Test Based')
-                        ->where('is_active', true)
-                        ->orderBy('discount_percentage', 'desc')
-                        ->first();
-                }
-                
-                // Priority 2: Board Percentage
-                if (!$scholarship && $inquiry->lastBoardPercentage >= 75) {
-                    $percentage = $inquiry->lastBoardPercentage;
-                    $scholarship = Scholarship::where('scholarship_type', 'Board Examination Scholarship')
-                        ->where('is_active', true)
-                        ->where('min_percentage', '<=', $percentage)
-                        ->where('max_percentage', '>=', $percentage)
-                        ->orderBy('discount_percentage', 'desc')
-                        ->first();
-                }
-                
-                // Priority 3: Competition Exam
-                if (!$scholarship && $inquiry->competitionExam === 'Yes') {
-                    $scholarship = Scholarship::where('scholarship_type', 'Competition Exam Scholarship')
-                        ->where('is_active', true)
-                        ->orderBy('discount_percentage', 'desc')
-                        ->first();
-                }
-                
-                // Set scholarship name if found
-                if ($scholarship) {
-                    $scholarshipName = $scholarship->scholarship_name;
-                }
-            }
-
-            // Update inquiry with scholarship eligibility and name
-            $inquiry->eligible_for_scholarship = $eligibleForScholarship;
-            $inquiry->scholarship_name = $scholarshipName;
-            $inquiry->total_fee_before_discount = $validated['total_fee_before_discount'];
-            $inquiry->discount_percentage = $validated['scholarship_discount_percentage'];
-            $inquiry->discounted_fee = $validated['scholarship_discounted_fees'];
+            $eligibleForScholarship = 'Yes';
             
-            // Save discretionary discount details if applicable
-            if ($validated['add_discretionary_discount'] === 'Yes') {
-                $inquiry->discretionary_discount = 'Yes';
-                $inquiry->discretionary_discount_type = $request->discretionary_discount_type;
-                $inquiry->discretionary_discount_value = $request->discretionary_discount_value;
-                $inquiry->discretionary_discount_reason = $request->discretionary_discount_reason;
-            } else {
-                $inquiry->discretionary_discount = 'No';
-                $inquiry->discretionary_discount_type = null;
-                $inquiry->discretionary_discount_value = null;
-                $inquiry->discretionary_discount_reason = null;
+            $scholarship = null;
+            
+            // Priority 1: Scholarship Test
+            if ($inquiry->scholarshipTest === 'Yes') {
+                $scholarship = Scholarship::where('scholarship_type', 'Test Based')
+                    ->where('is_active', true)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
             }
             
-            // Calculate and store fees breakdown
-            $finalFees = $validated['final_fees'];
+            // Priority 2: Board Percentage
+            if (!$scholarship && $inquiry->lastBoardPercentage >= 75) {
+                $percentage = $inquiry->lastBoardPercentage;
+                $scholarship = Scholarship::where('scholarship_type', 'Board Examination Scholarship')
+                    ->where('is_active', true)
+                    ->where('min_percentage', '<=', $percentage)
+                    ->where('max_percentage', '>=', $percentage)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
+            }
             
-            // GST calculation (18%)
-            $gstAmount = ($finalFees * 18) / 100;
-            $totalFeesInclusiveTax = $finalFees + $gstAmount;
+            // Priority 3: Competition Exam
+            if (!$scholarship && $inquiry->competitionExam === 'Yes') {
+                $scholarship = Scholarship::where('scholarship_type', 'Competition Exam Scholarship')
+                    ->where('is_active', true)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->first();
+            }
             
-            // Installment calculations
-            $singleInstallment = $totalFeesInclusiveTax;
-            $installment1 = round($totalFeesInclusiveTax * 0.40, 2); // 40%
-            $installment2 = round($totalFeesInclusiveTax * 0.30, 2); // 30%
-            $installment3 = round($totalFeesInclusiveTax * 0.30, 2); // 30%
-            
-            // Store fees breakdown
-            $inquiry->fees_breakup = 'Class room course (with test series & study material)';
-            $inquiry->total_fees = $finalFees;
-            $inquiry->gst_amount = $gstAmount;
-            $inquiry->total_fees_inclusive_tax = $totalFeesInclusiveTax;
-            $inquiry->single_installment_amount = $singleInstallment;
-            $inquiry->installment_1 = $installment1;
-            $inquiry->installment_2 = $installment2;
-            $inquiry->installment_3 = $installment3;
-            $inquiry->fees_calculated_at = now();
-            
-            $inquiry->save();
-            
-            \Log::info('Scholarship data saved successfully', [
-                'inquiry_id' => $id,
-                'eligible_for_scholarship' => $eligibleForScholarship,
-                'scholarship_name' => $scholarshipName,
-                'final_fees' => $finalFees,
-                'total_with_tax' => $totalFeesInclusiveTax
-            ]);
-            
-            // Redirect to fees and batches details page
-            return redirect()->route('inquiries.fees-batches.show', $id)
-                ->with('success', 'Scholarship details saved successfully!');
-                
-        } catch (\Exception $e) {
-            \Log::error('=== SCHOLARSHIP UPDATE ERROR ===');
-            \Log::error('Error: ' . $e->getMessage());
-            \Log::error('Trace: ' . $e->getTraceAsString());
-            
-            return redirect()->back()
-                ->with('error', 'Error saving scholarship details: ' . $e->getMessage())
-                ->withInput();
+            if ($scholarship) {
+                $scholarshipName = $scholarship->scholarship_name;
+            }
         }
+
+        // Prepare update data
+        $updateData = [
+            'eligible_for_scholarship' => $eligibleForScholarship,
+            'scholarship_name' => $scholarshipName,
+            'total_fee_before_discount' => floatval($validated['total_fee_before_discount']),
+            'discount_percentage' => floatval($validated['scholarship_discount_percentage']),
+            'discounted_fee' => floatval($validated['scholarship_discounted_fees']),
+        ];
+
+        // Handle discretionary discount
+        if ($validated['add_discretionary_discount'] === 'Yes') {
+            $updateData['discretionary_discount'] = 'Yes';
+            $updateData['discretionary_discount_type'] = $request->discretionary_discount_type;
+            $updateData['discretionary_discount_value'] = floatval($request->discretionary_discount_value ?? 0);
+            $updateData['discretionary_discount_reason'] = $request->discretionary_discount_reason;
+        } else {
+            $updateData['discretionary_discount'] = 'No';
+            $updateData['discretionary_discount_type'] = null;
+            $updateData['discretionary_discount_value'] = null;
+            $updateData['discretionary_discount_reason'] = null;
+        }
+        
+        // Calculate fees breakdown
+        $finalFees = floatval($validated['final_fees']);
+        $gstAmount = ($finalFees * 18) / 100;
+        $totalFeesInclusiveTax = $finalFees + $gstAmount;
+        
+        // Installments
+        $installment1 = round($totalFeesInclusiveTax * 0.40, 2);
+        $installment2 = round($totalFeesInclusiveTax * 0.30, 2);
+        $installment3 = round($totalFeesInclusiveTax * 0.30, 2);
+        
+        // Add fees data
+        $updateData['fees_breakup'] = 'Class room course (with test series & study material)';
+        $updateData['total_fees'] = $finalFees;
+        $updateData['gst_amount'] = $gstAmount;
+        $updateData['total_fees_inclusive_tax'] = $totalFeesInclusiveTax;
+        $updateData['single_installment_amount'] = $totalFeesInclusiveTax;
+        $updateData['installment_1'] = $installment1;
+        $updateData['installment_2'] = $installment2;
+        $updateData['installment_3'] = $installment3;
+        $updateData['fees_calculated_at'] = now();
+        
+        //   CRITICAL: Update the inquiry
+        $inquiry->update($updateData);
+        
+        //   Verify the save
+        $inquiry->refresh();
+        
+        \Log::info('  Scholarship data saved successfully', [
+            'inquiry_id' => $id,
+            'eligible_for_scholarship' => $inquiry->eligible_for_scholarship,
+            'scholarship_name' => $inquiry->scholarship_name,
+            'discretionary_discount' => $inquiry->discretionary_discount,
+            'discretionary_discount_value' => $inquiry->discretionary_discount_value,
+            'final_fees' => $finalFees,
+            'total_with_tax' => $totalFeesInclusiveTax
+        ]);
+        
+        return redirect()->route('inquiries.fees-batches.show', $id)
+            ->with('success', '  Scholarship details saved successfully!');
+            
+    } catch (\Exception $e) {
+        \Log::error('=== SCHOLARSHIP UPDATE ERROR ===', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return redirect()->back()
+            ->with('error', '❌ Error saving scholarship details: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
     /**
      * Update inquiry

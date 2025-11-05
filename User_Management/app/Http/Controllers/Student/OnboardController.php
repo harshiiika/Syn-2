@@ -63,7 +63,7 @@ class OnboardController extends Controller
                 ->first();
             
             if (!$studentArray) {
-                Log::error('❌ Onboarded student NOT FOUND', ['id' => $id]);
+                Log::error(' Onboarded student NOT FOUND', ['id' => $id]);
                 return redirect()->route('student.onboard.onboard')
                     ->with('error', 'Student not found');
             }
@@ -80,7 +80,7 @@ class OnboardController extends Controller
                 'total_fees_inclusive_tax' => $student->total_fees_inclusive_tax ?? 'MISSING',
             ]);
             
-            // ✅ Access properties correctly (stdClass object, not array)
+            //   Access properties correctly (stdClass object, not array)
             $feesData = [
                 // Scholarship info
                 'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
@@ -129,12 +129,12 @@ class OnboardController extends Controller
             ];
             
             // 🔍 Log what we're sending to the view
-            Log::info('✅ Fees data being sent to view:', $feesData);
+            Log::info('  Fees data being sent to view:', $feesData);
             
             return view('student.onboard.view', compact('student', 'feesData'));
             
         } catch (\Exception $e) {
-            Log::error("❌ View failed for student ID {$id}: " . $e->getMessage());
+            Log::error(" View failed for student ID {$id}: " . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
             
             return redirect()->route('student.onboard.onboard')
@@ -155,7 +155,7 @@ class OnboardController extends Controller
                 ->first();
             
             if (!$studentArray) {
-                Log::error('❌ Onboarded student NOT FOUND for edit', ['id' => $id]);
+                Log::error(' Onboarded student NOT FOUND for edit', ['id' => $id]);
                 return redirect()->route('student.onboard.onboard')
                     ->with('error', 'Student not found');
             }
@@ -321,7 +321,7 @@ class OnboardController extends Controller
                 ->first();
             
             if (!$onboardStudentArray) {
-                Log::error('❌ Onboard student NOT FOUND', ['id' => $id]);
+                Log::error(' Onboard student NOT FOUND', ['id' => $id]);
                 return redirect()->route('student.onboard.onboard')
                     ->with('error', 'Student not found in onboard list');
             }
@@ -332,14 +332,14 @@ class OnboardController extends Controller
             // MongoDB returns 'id' not '_id' when using DB::table
             $studentId = $onboardStudent->id ?? $onboardStudent->_id ?? $id;
             
-            Log::info('✅ Onboard student FOUND:', [
+            Log::info('  Onboard student FOUND:', [
                 'id' => $studentId,
                 'name' => $onboardStudent->name ?? 'N/A',
                 'course_name' => $onboardStudent->courseName ?? $onboardStudent->course ?? 'N/A',
                 'batch_name' => $onboardStudent->batchName ?? $onboardStudent->batch_name ?? 'N/A',
             ]);
 
-            // ✅ Generate Roll Number using RollNumberService
+            //   Generate Roll Number using RollNumberService
             $rollNumber = $onboardStudent->roll_no ?? RollNumberService::generateUniqueRollNumber(
                 $onboardStudent->course_id ?? null,
                 $onboardStudent->courseName ?? $onboardStudent->course ?? null,
@@ -466,7 +466,7 @@ class OnboardController extends Controller
                 throw new \Exception('Failed to create student in SMstudents');
             }
 
-            Log::info('✅ Created in SMstudents:', [
+            Log::info('  Created in SMstudents:', [
                 'new_id' => (string)$activeStudent->_id,
                 'name' => $activeStudent->student_name,
                 'roll_no' => $activeStudent->roll_no,
@@ -486,7 +486,7 @@ class OnboardController extends Controller
                 ->with('success', "Student '{$activeStudent->student_name}' successfully transferred with Roll No: {$activeStudent->roll_no}");
 
         } catch (\Exception $e) {
-            Log::error('❌ TRANSFER FAILED', [
+            Log::error(' TRANSFER FAILED', [
                 'error' => $e->getMessage(),
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
