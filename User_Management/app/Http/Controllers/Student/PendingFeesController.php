@@ -8,6 +8,7 @@ use App\Models\Student\Student;
 use App\Models\Student\SMstudents;
 use App\Models\Student\Pending;
 use Illuminate\Support\Facades\Log;
+use App\Services\RollNumberService;
 
 class PendingFeesController extends Controller
 {
@@ -320,13 +321,18 @@ class PendingFeesController extends Controller
                 $gstAmount = floatval($student->gst_amount ?? ($totalFeesWithGST - $totalFees));
 
                 // Create SMstudent record
-                $smStudentData = [
+               $smStudentData = [
                     // Basic Info
-                    'roll_no' => $student->roll_no ?? 'SM' . now()->format('ymd') . rand(100, 999),
+                        'roll_no' => $student->roll_no ?? RollNumberService::generateUniqueRollNumber(
+                            $student->course_id,
+                            $student->courseName,
+                            $student->batch_id,
+                            $student->batchName
+                        ),
                     'student_name' => $student->name,
                     'email' => $student->email ?? $student->studentContact ?? ($student->name . '@temp.com'),
                     'phone' => $student->mobileNumber ?? null,
-                    
+                                    
                     // Family Details
                     'father_name' => $student->father ?? null,
                     'mother_name' => $student->mother ?? null,

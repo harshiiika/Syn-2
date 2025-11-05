@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Student\SMstudents;
 use MongoDB\BSON\ObjectId;
 use Illuminate\Support\Facades\DB;
+use App\Services\RollNumberService;
 
 class OnboardController extends Controller
 {
@@ -268,8 +269,13 @@ public function transfer($id)
         ]);
 
         // Prepare data for SMstudents
-        $studentData = [
-            'roll_no' => $onboardStudent->roll_no ?? null,
+           $studentData = [
+            'roll_no' => $onboardStudent->roll_no ?? RollNumberService::generateUniqueRollNumber(
+                    $onboardStudent->course_id ?? null,
+                    $onboardStudent->courseName ?? $onboardStudent->course ?? null,
+                    $onboardStudent->batch_id ?? null,
+                    $onboardStudent->batchName ?? null
+                ),
             'student_name' => $onboardStudent->name ?? $onboardStudent->student_name ?? null,
             'email' => $onboardStudent->email ?? null,
             'phone' => $onboardStudent->mobileNumber ?? $onboardStudent->phone ?? null,
