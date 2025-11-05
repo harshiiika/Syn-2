@@ -21,25 +21,18 @@ class SmStudentsController extends Controller
 public function index()
 {
     try {
-        // Load students without shift relationship to avoid errors
         $students = SMstudents::with(['batch', 'course'])->get();
-        $batches = Batch::all();
+        $batches = Batch::orderBy('name')->get(); // ✅ Fetch batches sorted by name
         $courses = Courses::all();
         $shifts = Shift::where('is_active', true)->get();
 
-        Log::info('Students page loaded successfully', [
-            'students_count' => $students->count()
-        ]);
-
-        // ✅ FIXED: Correct view path
         return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
-        
     } catch (\Exception $e) {
-        Log::error('Error in smstudents index: ' . $e->getMessage());
-        Log::error('Stack trace: ' . $e->getTraceAsString());
-        return back()->with('error', 'Failed to load students: ' . $e->getMessage());
+        Log::error('Error loading students: ' . $e->getMessage());
+        return back()->with('error', 'Failed to load students');
     }
 }
+
 
     /**
      * Display the specified student with full details
@@ -260,30 +253,25 @@ public function index()
     }
 
     /**
-     * Update student batch
-     */
+     * Update student batch */
+
     public function updateBatch(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
+{
+    try {
+        $request->validate([
             'batch_id' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->with('error', 'Batch validation failed');
-        }
+        $student = SMstudents::findOrFail($id);
+        $student->batch_id = $request->batch_id;
+        $student->save();
 
-        try {
-            $student = SMstudents::findOrFail($id);
-            $student->update([
-                'batch_id' => $request->batch_id
-            ]);
-
-            return redirect()->route('smstudents.index')->with('success', 'Batch updated successfully');
-        } catch (\Exception $e) {
-            Log::error('Error updating batch: ' . $e->getMessage());
-            return back()->with('error', 'Failed to update batch: ' . $e->getMessage());
-        }
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        \Log::error('Batch update failed: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
     }
+}
 
     /**
      * Update student shift (✅ FIXED METHOD)
