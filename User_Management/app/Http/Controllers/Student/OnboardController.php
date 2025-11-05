@@ -49,98 +49,97 @@ class OnboardController extends Controller
         }
     }
 
- 
-/**
- * View onboarded student details with scholarship and fees information
- */
-public function show($id)
-{
-    try {
-        // Query from 'students' collection
-        $studentArray = DB::connection('mongodb')
-            ->table('students')
-            ->where('_id', $id)
-            ->first();
-        
-        if (!$studentArray) {
-            Log::error('❌ Onboarded student NOT FOUND', ['id' => $id]);
+    /**
+     * View onboarded student details with scholarship and fees information
+     */
+    public function show($id)
+    {
+        try {
+            // Query from 'students' collection
+            $studentArray = DB::connection('mongodb')
+                ->table('students')
+                ->where('_id', $id)
+                ->first();
+            
+            if (!$studentArray) {
+                Log::error('❌ Onboarded student NOT FOUND', ['id' => $id]);
+                return redirect()->route('student.onboard.onboard')
+                    ->with('error', 'Student not found');
+            }
+            
+            // Convert array to object
+            $student = (object) $studentArray;
+            
+            // 🔍 DEBUG: Log what we got from database
+            Log::info('=== STUDENT DATA FROM DATABASE ===', [
+                'student_id' => $id,
+                'student_name' => $student->name ?? 'N/A',
+                'total_fees' => $student->total_fees ?? 'MISSING',
+                'gst_amount' => $student->gst_amount ?? 'MISSING',
+                'total_fees_inclusive_tax' => $student->total_fees_inclusive_tax ?? 'MISSING',
+            ]);
+            
+            // ✅ Access properties correctly (stdClass object, not array)
+            $feesData = [
+                // Scholarship info
+                'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
+                'scholarship_name' => $student->scholarship_name ?? 'N/A',
+                
+                // Base fees - IMPORTANT: Check both possibilities
+                'total_fee_before_discount' => isset($student->total_fee_before_discount) 
+                    ? (float)$student->total_fee_before_discount 
+                    : (isset($student->total_fees) ? (float)$student->total_fees : 0),
+                
+                // Discretionary discount
+                'discretionary_discount' => $student->discretionary_discount ?? 'No',
+                'discount_percentage' => isset($student->discount_percentage) 
+                    ? (float)$student->discount_percentage 
+                    : 0,
+                'discounted_fee' => isset($student->discounted_fee) 
+                    ? (float)$student->discounted_fee 
+                    : (isset($student->total_fees) ? (float)$student->total_fees : 0),
+                
+                // Fees breakdown
+                'fees_breakup' => $student->fees_breakup 
+                    ?? 'Class room course (with test series & study material)',
+                'total_fees' => isset($student->total_fees) 
+                    ? (float)$student->total_fees 
+                    : 0,
+                'gst_amount' => isset($student->gst_amount) 
+                    ? (float)$student->gst_amount 
+                    : 0,
+                'total_fees_inclusive_tax' => isset($student->total_fees_inclusive_tax) 
+                    ? (float)$student->total_fees_inclusive_tax 
+                    : 0,
+                
+                // Installments
+                'single_installment_amount' => isset($student->single_installment_amount) 
+                    ? (float)$student->single_installment_amount 
+                    : 0,
+                'installment_1' => isset($student->installment_1) 
+                    ? (float)$student->installment_1 
+                    : 0,
+                'installment_2' => isset($student->installment_2) 
+                    ? (float)$student->installment_2 
+                    : 0,
+                'installment_3' => isset($student->installment_3) 
+                    ? (float)$student->installment_3 
+                    : 0,
+            ];
+            
+            // 🔍 Log what we're sending to the view
+            Log::info('✅ Fees data being sent to view:', $feesData);
+            
+            return view('student.onboard.view', compact('student', 'feesData'));
+            
+        } catch (\Exception $e) {
+            Log::error("❌ View failed for student ID {$id}: " . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
             return redirect()->route('student.onboard.onboard')
                 ->with('error', 'Student not found');
         }
-        
-        // Convert array to object
-        $student = (object) $studentArray;
-        
-        // 🔍 DEBUG: Log what we got from database
-        Log::info('=== STUDENT DATA FROM DATABASE ===', [
-            'student_id' => $id,
-            'student_name' => $student->name ?? 'N/A',
-            'total_fees' => $student->total_fees ?? 'MISSING',
-            'gst_amount' => $student->gst_amount ?? 'MISSING',
-            'total_fees_inclusive_tax' => $student->total_fees_inclusive_tax ?? 'MISSING',
-        ]);
-        
-        // ✅ Access properties correctly (stdClass object, not array)
-        $feesData = [
-            // Scholarship info
-            'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
-            'scholarship_name' => $student->scholarship_name ?? 'N/A',
-            
-            // Base fees - IMPORTANT: Check both possibilities
-            'total_fee_before_discount' => isset($student->total_fee_before_discount) 
-                ? (float)$student->total_fee_before_discount 
-                : (isset($student->total_fees) ? (float)$student->total_fees : 0),
-            
-            // Discretionary discount
-            'discretionary_discount' => $student->discretionary_discount ?? 'No',
-            'discount_percentage' => isset($student->discount_percentage) 
-                ? (float)$student->discount_percentage 
-                : 0,
-            'discounted_fee' => isset($student->discounted_fee) 
-                ? (float)$student->discounted_fee 
-                : (isset($student->total_fees) ? (float)$student->total_fees : 0),
-            
-            // Fees breakdown
-            'fees_breakup' => $student->fees_breakup 
-                ?? 'Class room course (with test series & study material)',
-            'total_fees' => isset($student->total_fees) 
-                ? (float)$student->total_fees 
-                : 0,
-            'gst_amount' => isset($student->gst_amount) 
-                ? (float)$student->gst_amount 
-                : 0,
-            'total_fees_inclusive_tax' => isset($student->total_fees_inclusive_tax) 
-                ? (float)$student->total_fees_inclusive_tax 
-                : 0,
-            
-            // Installments
-            'single_installment_amount' => isset($student->single_installment_amount) 
-                ? (float)$student->single_installment_amount 
-                : 0,
-            'installment_1' => isset($student->installment_1) 
-                ? (float)$student->installment_1 
-                : 0,
-            'installment_2' => isset($student->installment_2) 
-                ? (float)$student->installment_2 
-                : 0,
-            'installment_3' => isset($student->installment_3) 
-                ? (float)$student->installment_3 
-                : 0,
-        ];
-        
-        // 🔍 Log what we're sending to the view
-        Log::info('✅ Fees data being sent to view:', $feesData);
-        
-        return view('student.onboard.view', compact('student', 'feesData'));
-        
-    } catch (\Exception $e) {
-        Log::error("❌ View failed for student ID {$id}: " . $e->getMessage());
-        Log::error('Stack trace: ' . $e->getTraceAsString());
-        
-        return redirect()->route('student.onboard.onboard')
-            ->with('error', 'Student not found');
     }
-}
 
     /**
      * Edit onboarded student
@@ -303,7 +302,7 @@ public function show($id)
 
     /**
      * Transfer an onboarded student to Active Students (SMstudents)
-     * ✅ KEEPING YOUR ORIGINAL WORKING TRANSFER LOGIC - NO CHANGES
+     * ✅ WITH ROLL NUMBER SERVICE INTEGRATION
      */
     public function transfer($id)
     {
@@ -334,15 +333,34 @@ public function show($id)
             Log::info('✅ Onboard student FOUND:', [
                 'id' => $studentId,
                 'name' => $onboardStudent->name ?? 'N/A',
-                'all_keys' => array_keys((array)$onboardStudent)
+                'course_name' => $onboardStudent->courseName ?? $onboardStudent->course ?? 'N/A',
+                'batch_name' => $onboardStudent->batchName ?? $onboardStudent->batch_name ?? 'N/A',
+            ]);
+
+            // ✅ Generate Roll Number using RollNumberService
+            $rollNumber = $onboardStudent->roll_no ?? RollNumberService::generateUniqueRollNumber(
+                $onboardStudent->course_id ?? null,
+                $onboardStudent->courseName ?? $onboardStudent->course ?? null,
+                $onboardStudent->batch_id ?? null,
+                $onboardStudent->batchName ?? null
+            );
+
+            Log::info('🎯 Roll Number for transfer:', [
+                'generated_roll_no' => $rollNumber,
+                'student_name' => $onboardStudent->name ?? 'N/A'
             ]);
 
             // Prepare data for SMstudents
             $studentData = [
-                'roll_no' => $onboardStudent->roll_no ?? null,
+                // Roll Number - DYNAMICALLY GENERATED
+                'roll_no' => $rollNumber,
+                
+                // Basic Info
                 'student_name' => $onboardStudent->name ?? $onboardStudent->student_name ?? null,
                 'email' => $onboardStudent->email ?? null,
                 'phone' => $onboardStudent->mobileNumber ?? $onboardStudent->phone ?? null,
+                
+                // Family Details
                 'father_name' => $onboardStudent->father ?? $onboardStudent->father_name ?? null,
                 'mother_name' => $onboardStudent->mother ?? $onboardStudent->mother_name ?? null,
                 'dob' => $onboardStudent->dob ?? null,
@@ -353,17 +371,23 @@ public function show($id)
                 'father_occupation' => $onboardStudent->fatherOccupation ?? $onboardStudent->father_occupation ?? null,
                 'father_caste' => $onboardStudent->category ?? $onboardStudent->father_caste ?? null,
                 'mother_occupation' => $onboardStudent->motherOccupation ?? $onboardStudent->mother_occupation ?? null,
+                
+                // Address
                 'state' => $onboardStudent->state ?? null,
                 'city' => $onboardStudent->city ?? null,
                 'pincode' => $onboardStudent->pinCode ?? $onboardStudent->pincode ?? null,
                 'address' => $onboardStudent->address ?? null,
                 'belongs_other_city' => $onboardStudent->belongToOtherCity ?? $onboardStudent->belongs_other_city ?? 'No',
+                
+                // Academic Details
                 'previous_class' => $onboardStudent->previousClass ?? $onboardStudent->previous_class ?? null,
                 'academic_medium' => $onboardStudent->previousMedium ?? $onboardStudent->medium ?? $onboardStudent->academic_medium ?? null,
                 'school_name' => $onboardStudent->schoolName ?? $onboardStudent->school_name ?? null,
                 'academic_board' => $onboardStudent->previousBoard ?? $onboardStudent->board ?? $onboardStudent->academic_board ?? null,
                 'passing_year' => $onboardStudent->passingYear ?? $onboardStudent->passing_year ?? null,
                 'percentage' => $onboardStudent->percentage ?? null,
+                
+                // Course & Batch
                 'batch_id' => $onboardStudent->batch_id ?? null,
                 'batch_name' => $onboardStudent->batchName ?? $onboardStudent->batch_name ?? null,
                 'course_id' => $onboardStudent->course_id ?? null,
@@ -372,6 +396,8 @@ public function show($id)
                 'delivery_mode' => $onboardStudent->deliveryMode ?? $onboardStudent->delivery_mode ?? null,
                 'course_content' => $onboardStudent->courseContent ?? $onboardStudent->course_content ?? null,
                 'shift' => $onboardStudent->shift ?? null,
+                
+                // Scholarship & Fees
                 'eligible_for_scholarship' => $onboardStudent->eligible_for_scholarship ?? 'No',
                 'scholarship_name' => $onboardStudent->scholarship_name ?? null,
                 'total_fee_before_discount' => $onboardStudent->total_fee_before_discount ?? 0,
@@ -383,13 +409,16 @@ public function show($id)
                 'total_fees_inclusive_tax' => $onboardStudent->total_fees_inclusive_tax ?? 0,
                 'paid_fees' => $onboardStudent->paid_fees ?? 0,
                 'remaining_fees' => $onboardStudent->total_fees ?? 0,
+                
+                // Status & Metadata
                 'status' => 'active',
                 'transferred_from' => 'onboard',
                 'transferred_at' => now(),
             ];
 
             Log::info('📦 Creating student in SMstudents...', [
-                'name' => $studentData['student_name']
+                'name' => $studentData['student_name'],
+                'roll_no' => $studentData['roll_no']
             ]);
 
             // Create in SMstudents
@@ -401,7 +430,8 @@ public function show($id)
 
             Log::info('✅ Created in SMstudents:', [
                 'new_id' => (string)$activeStudent->_id,
-                'name' => $activeStudent->student_name
+                'name' => $activeStudent->student_name,
+                'roll_no' => $activeStudent->roll_no
             ]);
 
             // Update status in students collection instead of deleting
@@ -413,122 +443,18 @@ public function show($id)
             Log::info('🗑️ Updated status to transferred');
 
             return redirect()->route('smstudents.index')
-                ->with('success', 'Student successfully transferred!');
+                ->with('success', "Student '{$activeStudent->student_name}' successfully transferred with Roll No: {$activeStudent->roll_no}");
 
         } catch (\Exception $e) {
             Log::error('❌ TRANSFER FAILED', [
                 'error' => $e->getMessage(),
                 'line' => $e->getLine(),
-                'file' => $e->getFile()
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString()
             ]);
             
             return redirect()->route('student.onboard.onboard')
                 ->with('error', 'Transfer failed: ' . $e->getMessage());
         }
-        
-        // Convert array to object - DB::table returns arrays
-        $onboardStudent = (object) $onboardStudentArray;
-        
-        // MongoDB returns 'id' not '_id' when using DB::table
-        $studentId = $onboardStudent->id ?? $onboardStudent->_id ?? $id;
-        
-        Log::info('✅ Onboard student FOUND:', [
-            'id' => $studentId,
-            'name' => $onboardStudent->name ?? 'N/A',
-            'all_keys' => array_keys((array)$onboardStudent)
-        ]);
-
-        // Prepare data for SMstudents
-           $studentData = [
-            'roll_no' => $onboardStudent->roll_no ?? RollNumberService::generateUniqueRollNumber(
-                    $onboardStudent->course_id ?? null,
-                    $onboardStudent->courseName ?? $onboardStudent->course ?? null,
-                    $onboardStudent->batch_id ?? null,
-                    $onboardStudent->batchName ?? null
-                ),
-            'student_name' => $onboardStudent->name ?? $onboardStudent->student_name ?? null,
-            'email' => $onboardStudent->email ?? null,
-            'phone' => $onboardStudent->mobileNumber ?? $onboardStudent->phone ?? null,
-            'father_name' => $onboardStudent->father ?? $onboardStudent->father_name ?? null,
-            'mother_name' => $onboardStudent->mother ?? $onboardStudent->mother_name ?? null,
-            'dob' => $onboardStudent->dob ?? null,
-            'father_contact' => $onboardStudent->mobileNumber ?? $onboardStudent->father_contact ?? null,
-            'father_whatsapp' => $onboardStudent->fatherWhatsapp ?? $onboardStudent->father_whatsapp ?? null,
-            'mother_contact' => $onboardStudent->motherContact ?? $onboardStudent->mother_contact ?? null,
-            'gender' => $onboardStudent->gender ?? null,
-            'father_occupation' => $onboardStudent->fatherOccupation ?? $onboardStudent->father_occupation ?? null,
-            'father_caste' => $onboardStudent->category ?? $onboardStudent->father_caste ?? null,
-            'mother_occupation' => $onboardStudent->motherOccupation ?? $onboardStudent->mother_occupation ?? null,
-            'state' => $onboardStudent->state ?? null,
-            'city' => $onboardStudent->city ?? null,
-            'pincode' => $onboardStudent->pinCode ?? $onboardStudent->pincode ?? null,
-            'address' => $onboardStudent->address ?? null,
-            'belongs_other_city' => $onboardStudent->belongToOtherCity ?? $onboardStudent->belongs_other_city ?? 'No',
-            'previous_class' => $onboardStudent->previousClass ?? $onboardStudent->previous_class ?? null,
-            'academic_medium' => $onboardStudent->previousMedium ?? $onboardStudent->medium ?? $onboardStudent->academic_medium ?? null,
-            'school_name' => $onboardStudent->schoolName ?? $onboardStudent->school_name ?? null,
-            'academic_board' => $onboardStudent->previousBoard ?? $onboardStudent->board ?? $onboardStudent->academic_board ?? null,
-            'passing_year' => $onboardStudent->passingYear ?? $onboardStudent->passing_year ?? null,
-            'percentage' => $onboardStudent->percentage ?? null,
-            'batch_id' => $onboardStudent->batch_id ?? null,
-            'batch_name' => $onboardStudent->batchName ?? $onboardStudent->batch_name ?? null,
-            'course_id' => $onboardStudent->course_id ?? null,
-            'course_name' => $onboardStudent->courseName ?? $onboardStudent->course_name ?? null,
-            'delivery' => $onboardStudent->deliveryMode ?? $onboardStudent->delivery ?? null,
-            'delivery_mode' => $onboardStudent->deliveryMode ?? $onboardStudent->delivery_mode ?? null,
-            'course_content' => $onboardStudent->courseContent ?? $onboardStudent->course_content ?? null,
-            'shift' => $onboardStudent->shift ?? null,
-            'eligible_for_scholarship' => $onboardStudent->eligible_for_scholarship ?? 'No',
-            'scholarship_name' => $onboardStudent->scholarship_name ?? null,
-            'total_fee_before_discount' => $onboardStudent->total_fee_before_discount ?? 0,
-            'discretionary_discount' => $onboardStudent->discretionary_discount ?? 'No',
-            'discount_percentage' => $onboardStudent->discount_percentage ?? 0,
-            'discounted_fee' => $onboardStudent->discounted_fee ?? 0,
-            'total_fees' => $onboardStudent->total_fees ?? 0,
-            'gst_amount' => $onboardStudent->gst_amount ?? 0,
-            'total_fees_inclusive_tax' => $onboardStudent->total_fees_inclusive_tax ?? 0,
-            'paid_fees' => $onboardStudent->paid_fees ?? 0,
-            'remaining_fees' => $onboardStudent->total_fees ?? 0,
-            'status' => 'active',
-            'transferred_from' => 'onboard',
-            'transferred_at' => now(),
-        ];
-
-        Log::info('📦 Creating student in SMstudents...', [
-            'name' => $studentData['student_name']
-        ]);
-
-        // Create in SMstudents
-        $activeStudent = SMstudents::create($studentData);
-
-        if (!$activeStudent) {
-            throw new \Exception('Failed to create student in SMstudents');
-        }
-
-        Log::info('✅ Created in SMstudents:', [
-            'new_id' => (string)$activeStudent->_id,
-            'name' => $activeStudent->student_name
-        ]);
-
-        // Update status in students collection instead of deleting
-        DB::connection('mongodb')
-            ->table('students')
-            ->where('_id', $id)
-            ->update(['status' => 'transferred', 'transferred_at' => now()]);
-
-        Log::info('🗑️ Updated status to transferred');
-
-        return redirect()->route('smstudents.index')
-            ->with('success', 'Student successfully transferred!');
-
-    } catch (\Exception $e) {
-        Log::error('❌ TRANSFER FAILED', [
-            'error' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile()
-        ]);
-        
-        return redirect()->route('student.onboard.onboard')
-            ->with('error', 'Transfer failed: ' . $e->getMessage());
     }
 }
