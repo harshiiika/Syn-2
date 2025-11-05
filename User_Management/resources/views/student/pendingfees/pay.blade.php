@@ -85,11 +85,27 @@
       display: flex;
       gap: 20px;
       align-items: center;
+      flex-wrap: wrap;
     }
     .radio-option {
       display: flex;
       align-items: center;
       gap: 8px;
+      padding: 10px 15px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .radio-option:hover {
+      border-color: #ff6b35;
+      background-color: #fff5f2;
+    }
+    .radio-option input[type="radio"]:checked + label {
+      font-weight: bold;
+    }
+    .radio-option input[type="radio"]:checked {
+      accent-color: #ff6b35;
     }
     .radio-option input[type="radio"] {
       width: 18px;
@@ -104,10 +120,39 @@
     select.form-control {
       cursor: pointer;
     }
+    .installment-info {
+      background: #e8f4fd;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid #0dcaf0;
+      margin-top: 10px;
+    }
+    .installment-info h6 {
+      color: #0a58ca;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .installment-breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .installment-item {
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #b6d4fe;
+    }
+    .installment-item strong {
+      color: #0a58ca;
+      display: block;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
-  <!-- Header -->
+  <!-- Header (same as before) -->
   <div class="header">
     <div class="logo">
       <img src="{{asset('images/logo.png.jpg')}}" class="img">
@@ -135,15 +180,13 @@
   </div>
 
   <div class="main-container">
-    <!-- Sidebar -->
     <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-
-      <!-- Left side bar accordion -->
-       <div class="accordion accordion-flush" id="accordionFlushExample">
+      
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -155,8 +198,8 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+                <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
+                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -214,7 +257,7 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
                 <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
@@ -354,7 +397,7 @@
               </div>
               <div class="form-group">
                 <label>Course Type</label>
-                <input type="text" class="form-control" value="{{ $student->courseType ?? 'Pre-Medical' }}" readonly>
+                <input type="text" class="form-control" value="{{ $student->courseType ?? $student->course_type ?? 'Pre-Medical' }}" readonly>
               </div>
               <div class="form-group">
                 <label>Course Name</label>
@@ -368,43 +411,87 @@
                 <label>Batch Name</label>
                 <input type="text" class="form-control" value="{{ $student->batchName ?? '—' }}" readonly>
               </div>
-              <div class="form-group">
-                <label>Batch Start Date</label>
-                <input type="text" class="form-control" value="{{ $student->batchStartDate ? date('d-m-Y', strtotime($student->batchStartDate)) : '—' }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Delivery Mode</label>
-                <input type="text" class="form-control" value="{{ $student->deliveryMode ?? 'Offline' }}" readonly>
-              </div>
             </div>
           </div>
 
           <!-- Fee Details -->
-     <h5 class="text-danger mb-3">Fee Details</h5>
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label">Total Fees (Before GST)</label>
-                        <input type="text" class="form-control" value="₹{{ number_format($totalFees, 2) }}" readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">GST (18%)</label>
-                        <input type="text" class="form-control" value="₹{{ number_format($gstAmount, 2) }}" readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Already Paid</label>
-                        <input type="text" class="form-control text-success fw-bold" value="₹{{ number_format($totalPaid, 2) }}" readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Remaining Balance</label>
-                        <input type="text" class="form-control text-danger fw-bold" id="remainingBalance" value="₹{{ number_format($remainingBalance, 2) }}" readonly>
-                    </div>
-                </div>
-
-
-          <!-- Payment Details -->
           <div class="view-section">
-            <h4>Payment Details</h4>
-            <div class="form-row">
+            <h4 class="text-danger">Fee Details</h4>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label">Total Fees (Before GST)</label>
+                <input type="text" class="form-control" value="₹{{ number_format($totalFees, 2) }}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">GST (18%)</label>
+                <input type="text" class="form-control" value="₹{{ number_format($gstAmount, 2) }}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Total Fees (Including GST)</label>
+                <input type="text" class="form-control fw-bold" value="₹{{ number_format($totalFeesWithGST, 2) }}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Already Paid</label>
+                <input type="text" class="form-control text-success fw-bold" value="₹{{ number_format($totalPaid, 2) }}" readonly>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label">Remaining Balance</label>
+                <input type="text" class="form-control text-danger fw-bold fs-5" id="remainingBalance" value="₹{{ number_format($remainingBalance, 2) }}" readonly>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Options -->
+          <div class="view-section">
+            <h4>Payment Options</h4>
+            
+            <div class="form-group full-width mb-4">
+              <label class="fw-bold mb-3">How would you like to pay? <span class="text-danger">*</span></label>
+              <div class="radio-group">
+                <div class="radio-option">
+                  <input type="radio" name="payment_mode" id="singlePayment" value="single" checked>
+                  <label for="singlePayment">Pay Full Amount (₹{{ number_format($remainingBalance, 2) }})</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" name="payment_mode" id="installmentPayment" value="installment">
+                  <label for="installmentPayment">Pay in Installments</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" name="payment_mode" id="customPayment" value="custom">
+                  <label for="customPayment">Custom Amount</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Installment Information (Hidden by default) -->
+            <div id="installmentInfo" class="installment-info" style="display: none;">
+              <h6><i class="fas fa-info-circle"></i> Installment Breakdown</h6>
+              <p class="mb-2">You can pay in 3 installments:</p>
+              <div class="installment-breakdown">
+                <div class="installment-item">
+                  <strong>1st Installment (40%)</strong>
+                  <span>₹{{ number_format($totalFeesWithGST * 0.40, 2) }}</span>
+                </div>
+                <div class="installment-item">
+                  <strong>2nd Installment (30%)</strong>
+                  <span>₹{{ number_format($totalFeesWithGST * 0.30, 2) }}</span>
+                </div>
+                <div class="installment-item">
+                  <strong>3rd Installment (30%)</strong>
+                  <span>₹{{ number_format($totalFeesWithGST * 0.30, 2) }}</span>
+                </div>
+              </div>
+              <div class="mt-3">
+                <label class="form-label fw-bold">Select Installment to Pay Now:</label>
+                <select class="form-control" name="installment_number" id="installmentNumber">
+                  <option value="1">1st Installment - ₹{{ number_format($totalFeesWithGST * 0.40, 2) }}</option>
+                  <option value="2">2nd Installment - ₹{{ number_format($totalFeesWithGST * 0.30, 2) }}</option>
+                  <option value="3">3rd Installment - ₹{{ number_format($totalFeesWithGST * 0.30, 2) }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row mt-4">
               <div class="form-group">
                 <label>Payment Date <span class="text-danger">*</span></label>
                 <input type="date" class="form-control @error('payment_date') is-invalid @enderror" 
@@ -428,7 +515,7 @@
                 @enderror
               </div>
 
-                         <div class="form-group">
+              <div class="form-group">
                 <label>Payment Amount <span class="text-danger">*</span></label>
                 <input type="number" class="form-control @error('payment_amount') is-invalid @enderror" 
                        name="payment_amount" id="paymentAmount" 
@@ -465,7 +552,7 @@
 
               <div class="form-group full-width">
                 <button type="submit" class="btn-pay">
-                  <i class="fa-solid fa-check"></i> Pay
+                  <i class="fa-solid fa-check"></i> Pay Now
                 </button>
               </div>
             </div>
@@ -484,19 +571,49 @@
     const totalFeesWithGST = {{ $totalFeesWithGST }};
     const totalPaid = {{ $totalPaid }};
     const remainingBalance = {{ $remainingBalance }};
-    const firstInstallment = {{ $firstInstallment }};
+    
+    // Installment amounts
+    const installment1 = Math.round(totalFeesWithGST * 0.40);
+    const installment2 = Math.round(totalFeesWithGST * 0.30);
+    const installment3 = Math.round(totalFeesWithGST * 0.30);
 
     function updatePaymentAmount() {
-      const paymentType = document.querySelector('input[name="do_you_want_to_pay_fees"]:checked').value;
+      const paymentMode = document.querySelector('input[name="payment_mode"]:checked').value;
+      const installmentInfo = document.getElementById('installmentInfo');
+      const paymentAmountField = document.getElementById('paymentAmount');
       
-      let baseAmount;
-      if (paymentType === 'single_payment') {
-        baseAmount = remainingBalance;
+      if (paymentMode === 'single') {
+        // Pay full remaining amount
+        installmentInfo.style.display = 'none';
+        paymentAmountField.value = Math.round(remainingBalance);
+        paymentAmountField.readOnly = true;
+      } else if (paymentMode === 'installment') {
+        // Show installment options
+        installmentInfo.style.display = 'block';
+        updateInstallmentAmount();
+        paymentAmountField.readOnly = true;
       } else {
-        baseAmount = Math.min(firstInstallment, remainingBalance);
+        // Custom amount - user can enter any amount
+        installmentInfo.style.display = 'none';
+        paymentAmountField.value = Math.round(remainingBalance);
+        paymentAmountField.readOnly = false;
       }
       
-      document.getElementById('paymentAmount').value = Math.round(baseAmount);
+      calculateTotal();
+    }
+
+    function updateInstallmentAmount() {
+      const installmentNumber = document.getElementById('installmentNumber').value;
+      const paymentAmountField = document.getElementById('paymentAmount');
+      
+      if (installmentNumber == '1') {
+        paymentAmountField.value = installment1;
+      } else if (installmentNumber == '2') {
+        paymentAmountField.value = installment2;
+      } else {
+        paymentAmountField.value = installment3;
+      }
+      
       calculateTotal();
     }
 
@@ -509,6 +626,16 @@
       document.getElementById('totalAmountDisplay').value = '₹' + total.toLocaleString('en-IN', {maximumFractionDigits: 0});
     }
 
+    // Event listeners
+    document.querySelectorAll('input[name="payment_mode"]').forEach(radio => {
+      radio.addEventListener('change', updatePaymentAmount);
+    });
+
+    document.getElementById('installmentNumber').addEventListener('change', updateInstallmentAmount);
+    document.getElementById('paymentAmount').addEventListener('input', calculateTotal);
+    document.getElementById('otherCharges').addEventListener('input', calculateTotal);
+
+    // Form validation
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       const paymentType = document.querySelector('select[name="payment_type"]').value;
       const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
