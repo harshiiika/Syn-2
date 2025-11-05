@@ -106,6 +106,8 @@ class Student extends Model
         'paid_fees',
         'remaining_fees',
         'fee_status',
+
+         'paymentHistory',
     ];
 
     protected $casts = [
@@ -140,7 +142,7 @@ class Student extends Model
     }
 
     /**
-     * Get all active students
+     * Get all students
      */
     public static function getActiveStudents()
     {

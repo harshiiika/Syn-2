@@ -9,8 +9,7 @@ use App\Models\Master\Courses;
 class Onboard extends Model
 {
     protected $connection = 'mongodb';
-    protected $collection = 'onboard';
-    
+protected $collection = 'onboarded_students';    
     public $timestamps = true;
     
     protected $guarded = [];
@@ -43,7 +42,12 @@ class Onboard extends Model
         'secondary_marksheet', 'senior_secondary_marksheet',
         'onboardedAt', 'transferred_from', 'transferred_at', 'created_by', 'updated_by'
     ];
-    
+     /**
+     * Treat MongoDB _id as string instead of ObjectId
+     */
+    // protected $keyType = 'string';
+    // public $incrementing = false;
+
     protected $casts = [
         'dob' => 'date',
         'batchStartDate' => 'date',
