@@ -334,10 +334,11 @@
                         </li>
 
                         <li>
-                          <button class="dropdown-item" type="button" data-bs-toggle="modal"
+                          <!-- <button class="dropdown-item" type="button" data-bs-toggle="modal"
                             data-bs-target="#shiftModal{{ $studentId }}">
                             Shift Update
-                          </button>
+                          </button> -->
+                          <button class="dropdown-item open-shift-modal" data-student-id="{{ $studentId }}">Shift Update</button>
                         </li>
 
                         <li>
@@ -443,10 +444,10 @@
     </div>
 
 
-<!-- Shift Update Modal -->
-<div class="modal fade" id="shiftModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
+<!-- Global Shift Modal -->
+<div class="modal fade" id="shiftModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <form method="POST" action="{{ route('smstudents.updateShift', $studentId) }}" class="modal-content">
+    <form method="POST" id="shiftForm" class="modal-content">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title">Update Shift</h5>
@@ -455,12 +456,11 @@
       <div class="modal-body">
         <div class="mb-3">
           <label class="form-label">Select New Shift</label>
-          <select name="shift_id" class="form-select" required>
+          <select name="shift_id" id="shiftSelect" class="form-select" required>
             <option value="">-- Select Shift --</option>
             @foreach($shifts as $shift)
-              <option value="{{ $shift->_id }}" 
-                {{ ($student->shift_id == $shift->_id) ? 'selected' : '' }}>
-                {{ $shift->name }} 
+              <option value="{{ $shift->_id }}">
+                {{ $shift->name }}
                 @if($shift->start_time && $shift->end_time)
                   ({{ $shift->start_time }} - {{ $shift->end_time }})
                 @endif
@@ -475,8 +475,7 @@
       </div>
     </form>
   </div>
-</div>
-
+</div>w
     <!-- History Modal -->
     <div class="modal fade" id="historyModal{{ $studentId }}" tabindex="-1" aria-labelledby="historyModalLabel{{ $studentId }}" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -599,6 +598,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
     // Sidebar toggle
     const toggleBtn = document.getElementById('toggleBtn');
@@ -795,6 +795,19 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
+
+    //shift
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.open-shift-modal').forEach(button => {
+      button.addEventListener('click', function () {
+        const studentId = this.dataset.studentId;
+        const form = document.getElementById('shiftForm');
+        form.action = `/smstudents/${studentId}/update-shift`; // or use route() if available
+        $('#shiftModal').modal('show');
+      });
+    });
+  });
+
   </script>
 </body>
 </html>
