@@ -234,7 +234,7 @@ class StudentController extends Controller
             ]);
             
             // Check if ALL required fields are filled (only for pending_fees students)
-            if ($student->status === 'pending_fees') {
+            if ($student->status === 'pending') {
                 $requiredFields = [
                     'name', 'father', 'mother', 'dob', 'mobileNumber', 
                     'category', 'gender', 

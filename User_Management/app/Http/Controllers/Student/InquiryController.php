@@ -555,10 +555,10 @@ private function calculateDefaultFees($courseName)
 
             // Redirect based on status
             if ($remainingFees > 0) {
-                return redirect()->route('student.pendingfees.pending')
+                return redirect()->route('student.student.pending')
                     ->with('success', 'Student onboarded! Pending fees: ₹' . number_format($remainingFees, 2));
             } else {
-                return redirect()->route('student.onboard')
+                return redirect()->route('student.student.pending')
                     ->with('success', 'Student onboarded successfully with full payment!');
             }
 

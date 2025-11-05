@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Pay Fees - {{ $student->name }}</title>
+  <title>Pay Fees</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{{asset('css/emp.css')}}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -155,7 +155,7 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
+                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
                 <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
@@ -211,7 +211,7 @@
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
@@ -380,52 +380,26 @@
           </div>
 
           <!-- Fee Details -->
-          <div class="view-section">
-            <h4>Fee Details</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Total Fees (Before GST)</label>
-                <input type="text" class="form-control" value="₹{{ number_format($totalFees, 0) }}" readonly id="totalFeesDisplay">
-                <input type="hidden" name="total_fees" value="{{ $totalFees }}">
-              </div>
-              <div class="form-group">
-                <label>GST (18%)</label>
-                <input type="text" class="form-control" value="₹{{ number_format($gstAmount, 0) }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Already Paid</label>
-                <input type="text" class="form-control" value="₹{{ number_format($totalPaid, 0) }}" readonly style="color: #28a745; font-weight: 600;">
-              </div>
-              <div class="form-group">
-                <label>Remaining Balance</label>
-                <input type="text" class="form-control" value="₹{{ number_format($remainingBalance, 0) }}" readonly style="color: #dc3545; font-weight: 600;">
-              </div>
-              
-              <div class="form-group full-width">
-                <label>Do you want to pay fees</label>
-                <div class="radio-group">
-                  <div class="radio-option">
-                    <input type="radio" id="singlePayment" name="do_you_want_to_pay_fees" value="single_payment" checked onchange="updatePaymentAmount()">
-                    <label for="singlePayment">Single Payment</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" id="inInstallment" name="do_you_want_to_pay_fees" value="in_installment" onchange="updatePaymentAmount()">
-                    <label for="inInstallment">In installment</label>
-                  </div>
+     <h5 class="text-danger mb-3">Fee Details</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Total Fees (Before GST)</label>
+                        <input type="text" class="form-control" value="₹{{ number_format($totalFees, 2) }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">GST (18%)</label>
+                        <input type="text" class="form-control" value="₹{{ number_format($gstAmount, 2) }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Already Paid</label>
+                        <input type="text" class="form-control text-success fw-bold" value="₹{{ number_format($totalPaid, 2) }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Remaining Balance</label>
+                        <input type="text" class="form-control text-danger fw-bold" id="remainingBalance" value="₹{{ number_format($remainingBalance, 2) }}" readonly>
+                    </div>
                 </div>
-              </div>
 
-              <div class="form-group">
-                <label>Other Charges Amount</label>
-                <input type="number" class="form-control" name="other_charges" id="otherCharges" value="0" min="0" step="1" oninput="calculateTotal()">
-              </div>
-
-              <div class="form-group">
-                <label>Total Amount</label>
-                <input type="text" class="form-control" id="totalAmountDisplay" value="₹{{ number_format($remainingBalance, 0) }}" readonly style="color: #ff6b35; font-weight: 600; font-size: 1.1rem;">
-              </div>
-            </div>
-          </div>
 
           <!-- Payment Details -->
           <div class="view-section">
@@ -454,15 +428,29 @@
                 @enderror
               </div>
 
-              <div class="form-group">
+                         <div class="form-group">
                 <label>Payment Amount <span class="text-danger">*</span></label>
                 <input type="number" class="form-control @error('payment_amount') is-invalid @enderror" 
                        name="payment_amount" id="paymentAmount" 
                        value="{{ old('payment_amount', $remainingBalance) }}" 
-                       min="1" step="1" required readonly>
+                       min="1" step="1" required>
+                <small class="text-muted">Remaining: ₹{{ number_format($remainingBalance, 2) }}</small>
                 @error('payment_amount')
                   <div class="text-danger small mt-1">{{ $message }}</div>
                 @enderror
+              </div>
+
+              <div class="form-group">
+                <label>Other Charges</label>
+                <input type="number" class="form-control" name="other_charges" id="otherCharges" 
+                       value="{{ old('other_charges', 0) }}" min="0" step="1">
+                <small class="text-muted">Additional fees (if any)</small>
+              </div>
+
+              <div class="form-group">
+                <label class="fw-bold">Total Amount to Pay</label>
+                <input type="text" class="form-control form-control-lg text-danger fw-bold" 
+                       id="totalAmountDisplay" readonly>
               </div>
 
               <div class="form-group">

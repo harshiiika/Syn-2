@@ -5,48 +5,54 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Student\Onboard;
+use App\Models\Student\PendingFee;
 use Illuminate\Support\Facades\Log;
-use App\Models\Student\Pending;
+use App\Models\Student\SMstudents;
+use MongoDB\BSON\ObjectId;
+use Illuminate\Support\Facades\DB;
 
 class OnboardController extends Controller
 {
     /**
-     * Display all onboarded students (students with status = 'onboarded')
+     * Display all onboarded students
      */
-
-    public function index()
-    {
-        try {
-            Log::info('=== ONBOARDED STUDENTS PAGE LOADED ===');
-            
-            // Get students from onboarded_students collection
-            $students = Onboard::orderBy('created_at', 'desc')->get();
-            
-            Log::info('Fetching onboarded students:', [
-                'count' => $students->count(),
-                'student_ids' => $students->pluck('_id')->toArray(),
-                'student_names' => $students->pluck('name')->toArray()
-            ]);
-            
-            return view('student.onboard.onboard', [
-                'students' => $students,
-                'totalCount' => $students->count()
-            ]);
-            
-        } catch (\Exception $e) {
-            Log::error('Error loading onboarded students: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
-            return redirect()->back()
-                ->with('error', 'Failed to load students: ' . $e->getMessage());
-        }
+public function index()
+{
+    try {
+        Log::info('=== ONBOARDING PAGE LOADED ===');
+        
+        // Query students with 'onboarded' status from students collection
+        $students = DB::connection('mongodb')
+            ->table('students')  // Use ->table() NOT ->collection()
+            ->where('status', 'onboarded')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        Log::info('Fetching onboarded students:', [
+            'count' => count($students),
+            'student_ids' => collect($students)->pluck('_id')->map(fn($id) => (string)$id)->toArray(),
+            'student_names' => collect($students)->pluck('name')->toArray()
+        ]);
+        
+        return view('student.onboard.onboard', [
+            'students' => $students,
+            'totalCount' => count($students)
+        ]);
+        
+    } catch (\Exception $e) {
+        Log::error('Error loading onboarded students: ' . $e->getMessage(), [
+            'trace' => $e->getTraceAsString()
+        ]);
+        return redirect()->back()
+            ->with('error', 'Failed to load students: ' . $e->getMessage());
     }
+}
 
-    /**
-     * View onboarded student details with scholarship and fees information
-     */
-    public function show($id)
-    {
+/**
+ * View onboarded student details with scholarship and fees information
+ */
+public function show($id)
+{
         try {
             $student = Onboard::findOrFail($id);
             
@@ -61,7 +67,6 @@ class OnboardController extends Controller
                 'gst_amount' => $student->gst_amount ?? 'NOT SET',
             ]);
             
-            // ✅ Prepare fees data array (same structure as InquiryController and StudentController)
             $feesData = [
                 'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
                 'scholarship_name' => $student->scholarship_name ?? 'N/A',
@@ -105,7 +110,6 @@ class OnboardController extends Controller
                 'student_name' => $student->name
             ]);
             
-            // Use the same edit view as pending students
             return view('student.onboard.edit', compact('student'));
             
         } catch (\Exception $e) {
@@ -229,70 +233,128 @@ class OnboardController extends Controller
     }
 
 /**
- * Transfer an onboarded student to Pending Fees Students.
+ * Transfer an onboarded student to Active Students (SMstudents)
  */
-public function transfer(Request $request, $id)
+public function transfer($id)
 {
     try {
-        Log::info('=== STUDENT TRANSFER INITIATED ===', [
+        Log::info("=== TRANSFER ATTEMPT === ", [
             'onboard_id' => $id,
-            'request' => $request->all()
+            'id_type' => gettype($id)
         ]);
 
-        $onboardStudent = Onboard::findOrFail($id);
-
-        // Optional validation
-        $validated = $request->validate([
-            'transfer_reason' => 'nullable|string|max:255',
-            'batchName' => 'nullable|string|max:255',
-            'transfer_date' => 'nullable|date',
+        // Find student in 'students' collection
+        $onboardStudentArray = DB::connection('mongodb')
+            ->table('students')
+            ->where('_id', $id)
+            ->first();
+        
+        if (!$onboardStudentArray) {
+            Log::error('❌ Onboard student NOT FOUND', ['id' => $id]);
+            return redirect()->route('student.onboard.onboard')
+                ->with('error', 'Student not found in onboard list');
+        }
+        
+        // Convert array to object - DB::table returns arrays
+        $onboardStudent = (object) $onboardStudentArray;
+        
+        // MongoDB returns 'id' not '_id' when using DB::table
+        $studentId = $onboardStudent->id ?? $onboardStudent->_id ?? $id;
+        
+        Log::info('✅ Onboard student FOUND:', [
+            'id' => $studentId,
+            'name' => $onboardStudent->name ?? 'N/A',
+            'all_keys' => array_keys((array)$onboardStudent)
         ]);
 
-        // Prepare data for Pending model
-        $pendingData = $onboardStudent->toArray();
-        unset($pendingData['_id']); // Remove for new document
+        // Prepare data for SMstudents
+        $studentData = [
+            'roll_no' => $onboardStudent->roll_no ?? null,
+            'student_name' => $onboardStudent->name ?? $onboardStudent->student_name ?? null,
+            'email' => $onboardStudent->email ?? null,
+            'phone' => $onboardStudent->mobileNumber ?? $onboardStudent->phone ?? null,
+            'father_name' => $onboardStudent->father ?? $onboardStudent->father_name ?? null,
+            'mother_name' => $onboardStudent->mother ?? $onboardStudent->mother_name ?? null,
+            'dob' => $onboardStudent->dob ?? null,
+            'father_contact' => $onboardStudent->mobileNumber ?? $onboardStudent->father_contact ?? null,
+            'father_whatsapp' => $onboardStudent->fatherWhatsapp ?? $onboardStudent->father_whatsapp ?? null,
+            'mother_contact' => $onboardStudent->motherContact ?? $onboardStudent->mother_contact ?? null,
+            'gender' => $onboardStudent->gender ?? null,
+            'father_occupation' => $onboardStudent->fatherOccupation ?? $onboardStudent->father_occupation ?? null,
+            'father_caste' => $onboardStudent->category ?? $onboardStudent->father_caste ?? null,
+            'mother_occupation' => $onboardStudent->motherOccupation ?? $onboardStudent->mother_occupation ?? null,
+            'state' => $onboardStudent->state ?? null,
+            'city' => $onboardStudent->city ?? null,
+            'pincode' => $onboardStudent->pinCode ?? $onboardStudent->pincode ?? null,
+            'address' => $onboardStudent->address ?? null,
+            'belongs_other_city' => $onboardStudent->belongToOtherCity ?? $onboardStudent->belongs_other_city ?? 'No',
+            'previous_class' => $onboardStudent->previousClass ?? $onboardStudent->previous_class ?? null,
+            'academic_medium' => $onboardStudent->previousMedium ?? $onboardStudent->medium ?? $onboardStudent->academic_medium ?? null,
+            'school_name' => $onboardStudent->schoolName ?? $onboardStudent->school_name ?? null,
+            'academic_board' => $onboardStudent->previousBoard ?? $onboardStudent->board ?? $onboardStudent->academic_board ?? null,
+            'passing_year' => $onboardStudent->passingYear ?? $onboardStudent->passing_year ?? null,
+            'percentage' => $onboardStudent->percentage ?? null,
+            'batch_id' => $onboardStudent->batch_id ?? null,
+            'batch_name' => $onboardStudent->batchName ?? $onboardStudent->batch_name ?? null,
+            'course_id' => $onboardStudent->course_id ?? null,
+            'course_name' => $onboardStudent->courseName ?? $onboardStudent->course_name ?? null,
+            'delivery' => $onboardStudent->deliveryMode ?? $onboardStudent->delivery ?? null,
+            'delivery_mode' => $onboardStudent->deliveryMode ?? $onboardStudent->delivery_mode ?? null,
+            'course_content' => $onboardStudent->courseContent ?? $onboardStudent->course_content ?? null,
+            'shift' => $onboardStudent->shift ?? null,
+            'eligible_for_scholarship' => $onboardStudent->eligible_for_scholarship ?? 'No',
+            'scholarship_name' => $onboardStudent->scholarship_name ?? null,
+            'total_fee_before_discount' => $onboardStudent->total_fee_before_discount ?? 0,
+            'discretionary_discount' => $onboardStudent->discretionary_discount ?? 'No',
+            'discount_percentage' => $onboardStudent->discount_percentage ?? 0,
+            'discounted_fee' => $onboardStudent->discounted_fee ?? 0,
+            'total_fees' => $onboardStudent->total_fees ?? 0,
+            'gst_amount' => $onboardStudent->gst_amount ?? 0,
+            'total_fees_inclusive_tax' => $onboardStudent->total_fees_inclusive_tax ?? 0,
+            'paid_fees' => $onboardStudent->paid_fees ?? 0,
+            'remaining_fees' => $onboardStudent->total_fees ?? 0,
+            'status' => 'active',
+            'transferred_from' => 'onboard',
+            'transferred_at' => now(),
+        ];
 
-        // Set status and audit fields
-        $pendingData['status'] = 'pending_fees';
-        $pendingData['transferred_from'] = 'onboard';
-        $pendingData['transfer_reason'] = $validated['transfer_reason'] ?? null;
-        $pendingData['batchName'] = $validated['batchName'] ?? $onboardStudent->batchName;
-        $pendingData['transfer_date'] = $validated['transfer_date'] ?? now();
-        $pendingData['transferred_at'] = now();
-        $pendingData['updated_at'] = now();
+        Log::info('📦 Creating student in SMstudents...', [
+            'name' => $studentData['student_name']
+        ]);
 
-        // Ensure remaining_fees is set
-        if (empty($pendingData['remaining_fees']) && !empty($pendingData['total_fees'])) {
-            $pendingData['remaining_fees'] = $pendingData['total_fees'];
+        // Create in SMstudents
+        $activeStudent = SMstudents::create($studentData);
+
+        if (!$activeStudent) {
+            throw new \Exception('Failed to create student in SMstudents');
         }
 
-        // Create in Pending model
-        $pendingStudent = Pending::create($pendingData);
-
-        Log::info('✅ Student transferred to Pending Fees', [
-            'new_pending_id' => $pendingStudent->_id,
-            'old_onboard_id' => $onboardStudent->_id,
-            'name' => $pendingStudent->name,
+        Log::info('✅ Created in SMstudents:', [
+            'new_id' => (string)$activeStudent->_id,
+            'name' => $activeStudent->student_name
         ]);
 
-        // Delete from Onboard
-        $onboardStudent->delete();
+        // Update status in students collection instead of deleting
+        DB::connection('mongodb')
+            ->table('students')
+            ->where('_id', $id)
+            ->update(['status' => 'transferred', 'transferred_at' => now()]);
 
-        return redirect()->route('student.onboard.onboard')
-            ->with('success', 'Student transferred to Pending Fees successfully!');
+        Log::info('🗑️ Updated status to transferred');
 
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        Log::error('❌ Onboard student not found for transfer', ['id' => $id]);
-        return redirect()->back()->with('error', 'Student not found.');
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        Log::error('❌ Validation failed during transfer', ['errors' => $e->errors()]);
-        return redirect()->back()->withErrors($e->errors())->withInput();
+        return redirect()->route('smstudents.index')
+            ->with('success', 'Student successfully transferred!');
+
     } catch (\Exception $e) {
-        Log::error('❌ Transfer failed: ' . $e->getMessage(), [
-            'trace' => $e->getTraceAsString()
+        Log::error('❌ TRANSFER FAILED', [
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile()
         ]);
-        return redirect()->back()
-            ->with('error', 'Transfer failed: ' . $e->getMessage())
-            ->withInput();
+        
+        return redirect()->route('student.onboard.onboard')
+            ->with('error', 'Transfer failed: ' . $e->getMessage());
     }
-}}
+}
+
+}
