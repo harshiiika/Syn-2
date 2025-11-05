@@ -70,62 +70,58 @@ class FeesMaster extends Model
     ];
 
     // Course configurations
-    public static $courseConfigs = [
-        'Anthesis 11th NEET' => [
-            'course_type' => 'Pre-Medical',
-            'class_name' => '11th (XI)',
-            'gst_percent' => 18
-        ],
-        'Momentum 12th NEET' => [
-            'course_type' => 'Pre-Medical',
-            'class_name' => '12th (XII)',
-            'gst_percent' => 18
-        ],
-        'Dynamic Target NEET' => [
-            'course_type' => 'Pre-Medical',
-            'class_name' => 'Target (XII +)',
-            'gst_percent' => 18
-        ],
-        'Impulse 11th IIT' => [
-            'course_type' => 'Pre-Engineering',
-            'class_name' => '11th (XI)',
-            'gst_percent' => 18
-        ],
-        'Intensity 12th IIT' => [
-            'course_type' => 'Pre-Engineering',
-            'class_name' => '12th (XII)',
-            'gst_percent' => 18
-        ],
-        'Thrust Target IIT' => [
-            'course_type' => 'Pre-Engineering',
-            'class_name' => 'Target (XII +)',
-            'gst_percent' => 18
-        ],
-        'Seedling 10th' => [
-            'course_type' => 'Pre-Foundation',
-            'class_name' => '10th (X)',
-            'gst_percent' => 18
-        ],
-        'Plumule 9th' => [
-            'course_type' => 'Pre-Foundation',
-            'class_name' => '9th (IX)',
-            'gst_percent' => 18
-        ],
-        'Radicle 8th' => [
-            'course_type' => 'Pre-Foundation',
-            'class_name' => '8th (VIII)',
-            'gst_percent' => 18
-        ],
-        'Nucleus 7th' => [
-            'course_type' => 'Pre-Foundation',
-            'class_name' => '7th (VII)',
-            'gst_percent' => 18
-        ],
-        'Atom 6th' => [
-            'course_type' => 'Pre-Foundation',
-            'class_name' => '6th (VI)',
-            'gst_percent' => 18
-        ]
+  public static $courseConfigs = [
+    // Use FULL names to match CREATE dropdown
+    'Impulse 11th IIT' => [
+        'course_type' => 'Pre-Engineering',
+        'class_name' => '11th (XI)',
+        'gst_percent' => 18
+    ],
+    'Momentum 12th NEET' => [
+        'course_type' => 'Pre-Medical',
+        'class_name' => '12th (XII)',
+        'gst_percent' => 18
+    ],
+    'Intensity 12th IIT' => [
+        'course_type' => 'Pre-Engineering',
+        'class_name' => '12th (XII)',
+        'gst_percent' => 18
+    ],
+    'Thrust Target IIT' => [
+        'course_type' => 'Pre-Engineering',
+        'class_name' => 'Target (XII +)',
+        'gst_percent' => 18
+    ],
+    'Seedling 10th' => [
+        'course_type' => 'Pre-Foundation',
+        'class_name' => '10th (X)',
+        'gst_percent' => 18
+    ],
+    'Anthesis 11th NEET' => [
+        'course_type' => 'Pre-Medical',
+        'class_name' => '11th (XI)',
+        'gst_percent' => 18
+    ],
+    'Dynamic Target NEET' => [
+        'course_type' => 'Pre-Medical',
+        'class_name' => 'Target (XII +)',
+        'gst_percent' => 18
+    ],
+    'Radicle 8th' => [
+        'course_type' => 'Pre-Foundation',
+        'class_name' => '8th (VIII)',
+        'gst_percent' => 18
+    ],
+    'Plumule 9th' => [
+        'course_type' => 'Pre-Foundation',
+        'class_name' => '9th (IX)',
+        'gst_percent' => 18
+    ],
+    'Nucleus 7th' => [
+        'course_type' => 'Pre-Foundation',
+        'class_name' => '7th (VII)',
+        'gst_percent' => 18
+    ]
     ];
 
     protected static function booted()
