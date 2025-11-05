@@ -119,11 +119,7 @@ public function addUser(Request $request)
         ]);
         return back()->with('error', 'Failed to create user: ' . $e->getMessage())->withInput();
     }
-}
-
-
-
-    
+}  
     /**
      * Show employees
      */
@@ -188,8 +184,6 @@ public function showUser()
     // TO:
     return view('user.emp.emp', compact('users'));
 }
-
-
 
     /**
      * Update an existing employee - Fixed version
@@ -263,8 +257,7 @@ public function showUser()
 
         return redirect()->route('user.emp.emp')->with('success', 'User updated successfully!');
     }
-
-
+    
     /**
      * Update user password
      */

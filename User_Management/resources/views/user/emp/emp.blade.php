@@ -449,7 +449,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </table>
 
         <!-- Here options modals are present. -->
-        <!-- View Modal - FIXED VERSION -->
+        <!-- View Modal -->
         @foreach($users as $user)
           <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1"
             aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
@@ -491,7 +491,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </div>
         @endforeach
 
-        <!-- Edit Modal - FIXED VERSION -->
+        <!-- Edit Modal -->
         @foreach($users as $user)
           <div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1"
             aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
@@ -581,21 +581,23 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label">Current Password <span class="text-danger">*</span></label>
-              <input type="password" name="current_password" class="form-control"
-                placeholder="Enter current password" required>
-            </div>
+           <div class="mb-3">
+  <label class="form-label">Current Password <span class="text-danger">*</span></label>
+  <input type="password" name="current_password" class="form-control @error('current_password') is-invalid @enderror"
+    placeholder="Enter current password" required>
+  @error('current_password')
+    <div class="invalid-feedback">{{ $message }}</div>
+  @enderror
+</div>
             <div class="mb-3">
               <label class="form-label">New Password <span class="text-danger">*</span></label>
-              <input type="password" name="new_password" id="new_password{{ $user->_id }}" class="form-control"
+              <input type="password" name="new_password" id="new_password{{ $user->_id }}" class="form-control @error('new_password') is-invalid @enderror"
                 placeholder="Enter new password" minlength="8" required>
               <small class="form-text text-muted">Minimum 8 characters, must include uppercase, lowercase, and number</small>
             </div>
             <div class="mb-3">
               <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
-              <!-- ✅ FIXED: Unique ID for each modal -->
-              <input type="password" name="password_confirmation" id="confirm_password{{ $user->_id }}" class="form-control">
+              <input type="password" name="confirm_new_password" id="confirm_password{{ $user->_id }}" class="form-control" required>
               <span class="text-danger" id="password-match-error{{ $user->_id }}"></span>
             </div>
           </div>
@@ -788,9 +790,9 @@ document.getElementById('password')?.addEventListener('input', function(e) {
 @foreach($users as $user)
 document.getElementById('passwordForm{{ $user->_id }}')?.addEventListener('submit', function(e) {
     const newPassword = document.getElementById('new_password{{ $user->_id }}').value;
-    const confirmPassword = document.getElementById('confirm_password').value;
+    const confirmPassword = document.getElementById('confirm_password{{ $user->_id }}').value;
     const errorSpan = document.getElementById('password-match-error{{ $user->_id }}');
-    
+
     if (newPassword !== confirmPassword) {
         e.preventDefault();
         errorSpan.textContent = 'New passwords do not match!';

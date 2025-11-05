@@ -66,7 +66,7 @@ Route::prefix('session')->group(function () {
 Route::get('/emp', [UserController::class, 'index'])->name('user.emp.emp');
 Route::post('/users/add', [UserController::class, 'addUser'])->name('users.add');
 Route::put('/users/update/{id}', [UserController::class, 'updateUser'])->name('users.update');
-Route::put('/users/update-password/{id}', [UserController::class, 'updatePassword'])->name('users.password.update');
+Route::put('/users/{id}/update-password', [UserController::class, 'updatePassword'])->name('users.password.update');
 Route::post('/users/toggle-status/{id}', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
 Route::post('/users/store', [UserController::class, 'addUser'])->name('users.store');
 
@@ -77,7 +77,7 @@ Route::post('/users/store', [UserController::class, 'addUser'])->name('users.sto
 */
 Route::get('/batches', [BatchesController::class, 'showBatches'])->name('user.batches.batches');
 Route::post('/batches/add', [BatchesController::class, 'addBatch'])->name('batches.assign');
-Route::post('/batches/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('batches.toggleStatus');
+Route::post('/batches/{id}/toggle-status', [BatchesController::class, 'toggleStatus'])->name('batches.toggleStatus');
 /*
 |--------------------------------------------------------------------------
 | Courses Routes
@@ -259,26 +259,26 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
 Route::prefix('smstudents')
     ->name('smstudents.')
     ->group(function () {
-        // ✅ List and export FIRST (before ID routes)
+        //   List and export FIRST (before ID routes)
         Route::get('/', [SmStudentsController::class, 'index'])->name('index');
         Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
         
-        // ✅ Specific action routes BEFORE generic {id} routes
+        //   Specific action routes BEFORE generic {id} routes
         Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
         Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
         
-        // ✅ POST/PUT routes
+        //   POST/PUT routes
         Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
         Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');
         Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
         Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
         Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
         
-        // ✅ Generic show route LAST
+        //   Generic show route LAST
         Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
     });
 
-// ✅ Onboard transfer route OUTSIDE smstudents group
+//  Onboard transfer route OUTSIDE smstudents group
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])
     ->name('onboard.transfer');
 
