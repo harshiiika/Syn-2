@@ -39,45 +39,50 @@ class FeesMasterController extends Controller
     /**
      * Store a newly created fee in storage
      */
-    public function store(Request $request)
-    {
-        try {
-            $validated = $request->validate([
-                'course' => 'required|string|max:255',
-                'gst_percentage' => 'required|numeric|min:0|max:100',
-                'classroom_course' => 'nullable|numeric|min:0',
-                'live_online_course' => 'nullable|numeric|min:0',
-                'recorded_online_course' => 'nullable|numeric|min:0',
-                'study_material_only' => 'nullable|numeric|min:0',
-                'test_series_only' => 'nullable|numeric|min:0',
-            ]);
+   public function store(Request $request)
+{
+    try {
+        $validated = $request->validate([
+            'course' => 'required|string|max:255',
+            'gst_percentage' => 'required|numeric|min:0|max:100',
+            'classroom_course' => 'nullable|numeric|min:0',
+            'live_online_course' => 'nullable|numeric|min:0',
+            'recorded_online_course' => 'nullable|numeric|min:0',
+            'study_material_only' => 'nullable|numeric|min:0',
+            'test_series_only' => 'nullable|numeric|min:0',
+        ]);
 
-            $data = [
-                'course' => $validated['course'],
-                'gst_percent' => $validated['gst_percentage'],
-                'classroom_fee' => $validated['classroom_course'] ?? 0,
-                'live_fee' => $validated['live_online_course'] ?? 0,
-                'recorded_fee' => $validated['recorded_online_course'] ?? 0,
-                'study_fee' => $validated['study_material_only'] ?? 0,
-                'test_fee' => $validated['test_series_only'] ?? 0,
-                'status' => 'Active',
-            ];
+        // ✅ AUTO-DETECT course_type and class_name from Model's $courseConfigs
+        $config = FeesMaster::getCourseConfig($validated['course']);
+        
+        $data = [
+            'course' => $validated['course'],
+            'course_type' => $config['course_type'] ?? null,  // ✅ FIX #1
+            'class_name' => $config['class_name'] ?? null,    // ✅ FIX #2
+            'gst_percent' => $validated['gst_percentage'],
+            'classroom_fee' => $validated['classroom_course'] ?? 0,
+            'live_fee' => $validated['live_online_course'] ?? 0,
+            'recorded_fee' => $validated['recorded_online_course'] ?? 0,
+            'study_fee' => $validated['study_material_only'] ?? 0,
+            'test_fee' => $validated['test_series_only'] ?? 0,
+            'status' => 'Active',
+        ];
 
-            FeesMaster::create($data);
+        FeesMaster::create($data);
 
-            return redirect()->route('fees.index')->with('success', 'Fees created successfully!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()
-                ->withErrors($e->errors())
-                ->withInput()
-                ->with('error', 'Validation failed. Please check the form.');
-        } catch (\Exception $e) {
-            Log::error('Fees Store Error: ' . $e->getMessage());
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Failed to create fees: ' . $e->getMessage());
-        }
+        return redirect()->route('fees.index')->with('success', 'Fees created successfully!');
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return redirect()->back()
+            ->withErrors($e->errors())
+            ->withInput()
+            ->with('error', 'Validation failed. Please check the form.');
+    } catch (\Exception $e) {
+        Log::error('Fees Store Error: ' . $e->getMessage());
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Failed to create fees: ' . $e->getMessage());
     }
+}
 
     /**
      * Display the specified fee (JSON for AJAX)
@@ -177,44 +182,48 @@ public function show($id)
     /**
      * Update the specified fee in storage
      */
-    public function update(Request $request, $id)
-    {
-        try {
-            $fee = FeesMaster::findOrFail($id);
-            
-            $validated = $request->validate([
-                'course' => 'required|string|max:255',
-                'gst_percentage' => 'required|numeric|min:0|max:100',
-                'classroom_course' => 'nullable|numeric|min:0',
-                'live_online_course' => 'nullable|numeric|min:0',
-                'recorded_online_course' => 'nullable|numeric|min:0',
-                'study_material_only' => 'nullable|numeric|min:0',
-                'test_series_only' => 'nullable|numeric|min:0',
-            ]);
+   public function update(Request $request, $id)
+{
+    try {
+        $fee = FeesMaster::findOrFail($id);
+        
+        $validated = $request->validate([
+            'course' => 'required|string|max:255',
+            'gst_percentage' => 'required|numeric|min:0|max:100',
+            'classroom_course' => 'nullable|numeric|min:0',
+            'live_online_course' => 'nullable|numeric|min:0',
+            'recorded_online_course' => 'nullable|numeric|min:0',
+            'study_material_only' => 'nullable|numeric|min:0',
+            'test_series_only' => 'nullable|numeric|min:0',
+        ]);
 
-            $data = [
-                'course' => $validated['course'],
-                'gst_percent' => $validated['gst_percentage'],
-                'classroom_fee' => $validated['classroom_course'] ?? 0,
-                'live_fee' => $validated['live_online_course'] ?? 0,
-                'recorded_fee' => $validated['recorded_online_course'] ?? 0,
-                'study_fee' => $validated['study_material_only'] ?? 0,
-                'test_fee' => $validated['test_series_only'] ?? 0,
-            ];
+        // ✅ AUTO-DETECT course_type and class_name
+        $config = FeesMaster::getCourseConfig($validated['course']);
+        
+        $data = [
+            'course' => $validated['course'],
+            'course_type' => $config['course_type'] ?? null,  // ✅ FIX #1
+            'class_name' => $config['class_name'] ?? null,    // ✅ FIX #2
+            'gst_percent' => $validated['gst_percentage'],
+            'classroom_fee' => $validated['classroom_course'] ?? 0,
+            'live_fee' => $validated['live_online_course'] ?? 0,
+            'recorded_fee' => $validated['recorded_online_course'] ?? 0,
+            'study_fee' => $validated['study_material_only'] ?? 0,
+            'test_fee' => $validated['test_series_only'] ?? 0,
+        ];
 
-            $fee->update($data);
+        $fee->update($data);
 
-            return redirect()->route('fees.index')->with('success', 'Fees updated successfully!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()
-                ->withErrors($e->errors())
-                ->with('error', 'Validation failed. Please check the form.');
-        } catch (\Exception $e) {
-            Log::error('Fees Update Error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to update fees: ' . $e->getMessage());
-        }
+        return redirect()->route('fees.index')->with('success', 'Fees updated successfully!');
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return redirect()->back()
+            ->withErrors($e->errors())
+            ->with('error', 'Validation failed. Please check the form.');
+    } catch (\Exception $e) {
+        Log::error('Fees Update Error: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Failed to update fees: ' . $e->getMessage());
     }
-
+}
     /**
      * Toggle the status of a fee (Active/Inactive)
      */
