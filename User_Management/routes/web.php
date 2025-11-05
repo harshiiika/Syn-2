@@ -297,3 +297,114 @@ Route::prefix('inquiries')->name('inquiries.')->group(function () {
     Route::put('/{id}', [InquiryController::class, 'update'])->name('update');
     Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
 });
+
+// ========================================
+// ADMIN: Fix Missing Fees for Onboarded Students
+// ========================================
+Route::get('/admin/fix-student-fees', function() {
+    try {
+        // Find all onboarded students with missing fees
+        $students = DB::connection('mongodb')
+            ->table('students')
+            ->where('status', 'onboarded')
+            ->where(function($query) {
+                $query->where('total_fees', 0)
+                      ->orWhereNull('total_fees')
+                      ->orWhereNull('total_fees_inclusive_tax');
+            })
+            ->get();
+        
+        if ($students->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'message' => '✅ All students already have fees data!',
+                'updated' => 0
+            ], 200, [], JSON_PRETTY_PRINT);
+        }
+        
+        $updated = 0;
+        $results = [];
+        
+        // Course fees mapping
+        $courseFees = [
+            'Anthesis 11th NEET' => 88000,
+            'Momentum 12th NEET' => 88000,
+            'Dynamic Target NEET' => 88000,
+            'Impulse 11th IIT' => 88000,
+            'Intensity 12th IIT' => 88000,
+            'Thurst Target IIT' => 88000,
+            'Seedling 10th' => 60000,
+            'Plumule 9th' => 55000,
+            'Radicle 8th' => 50000
+        ];
+        
+        foreach ($students as $student) {
+            // Get course name
+            $courseName = $student->courseName ?? $student->course ?? 'Anthesis 11th NEET';
+            $baseFee = $courseFees[$courseName] ?? 88000;
+            
+            // Calculate fees with GST
+            $gstAmount = round(($baseFee * 18) / 100, 2);
+            $totalWithTax = $baseFee + $gstAmount;
+            
+            // Calculate installments
+            $installment1 = round($totalWithTax * 0.40, 2);
+            $installment2 = round($totalWithTax * 0.30, 2);
+            $installment3 = round($totalWithTax * 0.30, 2);
+            
+            // Prepare update data
+            $updateData = [
+                'eligible_for_scholarship' => 'No',
+                'scholarship_name' => 'N/A',
+                'total_fee_before_discount' => (float) $baseFee,
+                'discount_percentage' => 0.0,
+                'discounted_fee' => (float) $baseFee,
+                'discretionary_discount' => 'No',
+                'discretionary_discount_type' => null,
+                'discretionary_discount_value' => null,
+                'discretionary_discount_reason' => null,
+                'fees_breakup' => 'Class room course (with test series & study material)',
+                'total_fees' => (float) $baseFee,
+                'gst_amount' => (float) $gstAmount,
+                'total_fees_inclusive_tax' => (float) $totalWithTax,
+                'single_installment_amount' => (float) $totalWithTax,
+                'installment_1' => (float) $installment1,
+                'installment_2' => (float) $installment2,
+                'installment_3' => (float) $installment3,
+                'remaining_fees' => (float) $totalWithTax,
+                'fees_calculated_at' => now(),
+            ];
+            
+            // Update student
+            DB::connection('mongodb')
+                ->table('students')
+                ->where('_id', $student->_id ?? $student->id)
+                ->update($updateData);
+            
+            $updated++;
+            
+            $results[] = [
+                'id' => (string)($student->_id ?? $student->id),
+                'name' => $student->name ?? 'Unknown',
+                'course' => $courseName,
+                'base_fee' => '₹' . number_format($baseFee),
+                'gst' => '₹' . number_format($gstAmount),
+                'total_with_tax' => '₹' . number_format($totalWithTax),
+            ];
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => "✅ Successfully updated {$updated} student(s)!",
+            'updated_count' => $updated,
+            'students' => $results
+        ], 200, [], JSON_PRETTY_PRINT);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500, [], JSON_PRETTY_PRINT);
+    }
+})->name('admin.fix.fees');

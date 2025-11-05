@@ -372,7 +372,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
       </button>
       <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-        <li>
+  <li>
            <a href="{{ route('student.onboard.edit', $student->_id) }}">
 <button class="dropdown-item">
             Edit Details
@@ -381,7 +381,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   <a href="{{ route('student.onboard.show', $student->_id) }}">
     <button class="dropdown-item">View Details</button>
   </a>
-<li>
+</li>
   <form action="{{ route('student.onboard.transfer', $student->_id) }}" method="POST" style="display: inline;">
     @csrf
     <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to transfer this student to Students?')">Transfer to Active Students</button>
