@@ -315,7 +315,9 @@
     border: none;
     cursor: pointer; 
 }
-
+#footer{
+    background-color: #fff;
+}
 #serial{
     margin-left: 15px;
 }

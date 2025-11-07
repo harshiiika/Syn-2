@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\InquiryController;
 use App\Http\Controllers\Session\SessionController;
 use App\Http\Controllers\User\UserController;
@@ -43,7 +44,7 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('auth.dashboard');
 })->name('dashboard');
-
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
 /*
 |--------------------------------------------------------------------------
 | Session Management Routes
