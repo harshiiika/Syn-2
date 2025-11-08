@@ -68,8 +68,9 @@ class Inquiry extends Model
     'single_installment_amount',
     'installment_1',
     'installment_2',
-    'installment_3',
+    'installment_3', 
     'fees_calculated_at',
+     'history' 
 ];
 
      protected $casts = [
@@ -83,7 +84,8 @@ class Inquiry extends Model
         'final_fees' => 'float',
         'eligible_for_scholarship' => 'boolean',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
+          'history' => 'array' 
     ];
 
     /**

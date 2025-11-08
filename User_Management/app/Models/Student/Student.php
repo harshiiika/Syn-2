@@ -106,7 +106,7 @@ class Student extends Model
         'paid_fees',
         'remaining_fees',
         'fee_status',
-
+          'history',
          'paymentHistory',
     ];
 
@@ -128,6 +128,7 @@ class Student extends Model
         'installment_3' => 'float',
         'paid_fees' => 'float',
         'remaining_fees' => 'float',
+          'history' => 'array',
         'fees_calculated_at' => 'datetime',
     ];
 

@@ -13,6 +13,27 @@
             padding: 0;
             box-sizing: border-box;
         }
+        .timeline {
+    position: relative;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgb(224, 83, 1);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px rgb(224, 83, 1);
+}
 
         body {
             font-family: Arial, sans-serif;
@@ -1024,7 +1045,30 @@
             </div>
         </div>
     </div>
-<script src="{{asset('js/emp.js')}}"></script>
+
+<!-- History Modal -->
+<div class="modal fade" id="historyModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Inquiry History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="historyModalBody">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="{{asset('js/emp.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -1122,7 +1166,7 @@ function renderTable(data) {
                             <li><a class="dropdown-item" href="/inquiries/${id}">View</a></li>
                             <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
                             <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="deleteInquiry('${id}'); return false;">Delete</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="History('${id}'); return false;">History</a></li>
                         </ul>
                     </div>
                 </td>
@@ -1283,25 +1327,25 @@ function escapeHtml(text) {
             }
         };
 
-        window.deleteInquiry = async function(id) {
-            if (!confirm('Are you sure you want to delete this inquiry?')) return;
+        // window.deleteInquiry = async function(id) {
+        //     if (!confirm('Are you sure you want to delete this inquiry?')) return;
             
-            try {
-                console.log('Deleting inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
-                });
-                const json = await response.json();
-                if (!json.success) throw new Error(json.message);
+        //     try {
+        //         console.log('Deleting inquiry:', id);
+        //         const response = await fetch(`${ENDPOINT}/${id}`, {
+        //             method: 'DELETE',
+        //             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+        //         });
+        //         const json = await response.json();
+        //         if (!json.success) throw new Error(json.message);
                 
-                alert('Inquiry deleted successfully');
-                loadData();
-            } catch (error) {
-                console.error('Delete error:', error);
-                alert('Failed to delete inquiry: ' + error.message);
-            }
-        };
+        //         alert('Inquiry deleted successfully');
+        //         loadData();
+        //     } catch (error) {
+        //         console.error('Delete error:', error);
+        //         alert('Failed to delete inquiry: ' + error.message);
+        //     }
+        // };
 
 window.onboardSingle = async function(id) {
     if (!confirm('Are you sure you want to onboard this student?')) {
@@ -1338,6 +1382,106 @@ window.onboardSingle = async function(id) {
         alert('Failed to onboard student: ' + error.message);
     }
 };
+// Add history modal to modals object
+modals.history = new bootstrap.Modal(document.getElementById('historyModal'));
+
+// History function
+window.History = async function(id) {
+    try {
+        console.log('Loading history for inquiry:', id);
+        
+        // Show loading spinner
+        document.getElementById('historyModalBody').innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `;
+        
+        // Show modal
+        modals.history.show();
+        
+        // Fetch history data
+        const response = await fetch(`${ENDPOINT}/${id}/history`, { 
+            headers: { 'Accept': 'application/json' } 
+        });
+        
+        if (!response.ok) throw new Error('Failed to load history');
+        
+        const json = await response.json();
+        console.log('History response:', json);
+        
+        if (!json.success) throw new Error(json.message || 'Failed to load history');
+        
+        const history = json.data || [];
+        
+        if (history.length === 0) {
+            document.getElementById('historyModalBody').innerHTML = `
+                <div class="text-center text-muted py-4">
+                    <i class="fa-solid fa-history fa-3x mb-3"></i>
+                    <p>No history available for this inquiry</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Render history timeline
+        let historyHtml = '<div class="timeline">';
+        
+        history.forEach((item, index) => {
+            const date = new Date(item.timestamp || item.created_at);
+            const formattedDate = date.toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            
+            historyHtml += `
+                <div class="timeline-item" style="padding: 15px; margin-bottom: 15px; border-left: 3px solid rgb(224, 83, 1); background-color: #f8f9fa;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                        <div>
+                            <strong style="color: rgb(224, 83, 1);">${escapeHtml(item.action || 'Student Enquiry Updated')}</strong>
+                            <br>
+                            <small style="color: #666;">by ${escapeHtml(item.user || 'Admin')}</small>
+                        </div>
+                        <small style="color: #666; white-space: nowrap;">${formattedDate}</small>
+                    </div>
+                    <div style="color: #555;">
+                        ${escapeHtml(item.description || 'Admin updated the enquiry for student.')}
+                    </div>
+                    ${item.changes ? `
+                        <div style="margin-top: 10px; padding: 8px; background-color: white; border-radius: 4px; font-size: 0.9em;">
+                            <strong>Changes:</strong>
+                            <ul style="margin: 5px 0 0 20px; padding: 0;">
+                                ${Object.entries(item.changes).map(([key, value]) => `
+                                    <li>${key}: ${escapeHtml(String(value))}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        });
+        
+        historyHtml += '</div>';
+        
+        document.getElementById('historyModalBody').innerHTML = historyHtml;
+        
+    } catch (error) {
+        console.error('History error:', error);
+        document.getElementById('historyModalBody').innerHTML = `
+            <div class="text-center text-danger py-4">
+                <i class="fa-solid fa-exclamation-triangle fa-3x mb-3"></i>
+                <p>Failed to load history: ${error.message}</p>
+            </div>
+        `;
+    }
+};
+
         //   Save button click handler
         elements.saveBtn.addEventListener('click', async (e) => {
             e.preventDefault();

@@ -13,7 +13,7 @@ class Pending extends Model
     protected $guarded = [];
     
     protected $fillable = [
-        'name', 'father', 'mother', 'dob', 
+        'name', 'father', 'mother', 'dob', 'history',
         'mobileNumber', 'fatherWhatsapp', 'motherContact', 'studentContact',
         'category', 'gender', 'fatherOccupation', 'fatherGrade', 'motherOccupation',
         'state', 'city', 'pinCode', 'address', 
@@ -38,6 +38,7 @@ class Pending extends Model
     ];
     
     protected $casts = [
+         'history' => 'array',
         'dob' => 'date',
         'batchStartDate' => 'date',
         'admission_date' => 'datetime',

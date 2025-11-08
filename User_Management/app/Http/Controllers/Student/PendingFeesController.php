@@ -79,7 +79,43 @@ class PendingFeesController extends Controller
                 ->with('error', 'Student not found');
         }
     }
-
+/**
+ * Get student history
+ */
+public function getHistory($id)
+{
+    try {
+        $student = Student::find($id);
+        
+        if (!$student) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Student not found'
+            ], 404);
+        }
+        
+        // Get history array, newest first
+        $history = $student->history ?? [];
+        $history = array_reverse($history);
+        
+        \Log::info('History retrieved for student', [
+            'student_id' => $id,
+            'history_count' => count($history)
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $history
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('Get history error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to fetch history: ' . $e->getMessage()
+        ], 500);
+    }
+}
     /**
      * Show edit form
      */
@@ -105,48 +141,75 @@ class PendingFeesController extends Controller
     /**
      * Update student information
      */
-    public function update(Request $request, string $id)
-    {
-        try {
-            Log::info('Update request received', ['id' => $id]);
+   public function update(Request $request, string $id)
+{
+    try {
+        Log::info('Update request received', ['id' => $id]);
 
-            $student = Student::findOrFail($id);
-            
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'father' => 'nullable|string|max:255',
-                'mother' => 'nullable|string|max:255',
-                'dob' => 'nullable|date',
-                'mobileNumber' => 'nullable|string|max:15',
-                'fatherWhatsapp' => 'nullable|string|max:15',
-                'motherContact' => 'nullable|string|max:15',
-                'studentContact' => 'nullable|string|max:15',
-                'category' => 'nullable|in:OBC,SC,GENERAL,ST',
-                'gender' => 'nullable|in:Male,Female,Others',
-                'courseName' => 'nullable|string',
-                'deliveryMode' => 'nullable|string',
-                'courseContent' => 'nullable|string',
-                'batchName' => 'nullable|string',
-            ]);
+        $student = Student::findOrFail($id);
+        
+        // Store old values for history
+        $oldData = $student->toArray();
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'father' => 'nullable|string|max:255',
+            'mother' => 'nullable|string|max:255',
+            'dob' => 'nullable|date',
+            'mobileNumber' => 'nullable|string|max:15',
+            'fatherWhatsapp' => 'nullable|string|max:15',
+            'motherContact' => 'nullable|string|max:15',
+            'studentContact' => 'nullable|string|max:15',
+            'category' => 'nullable|in:OBC,SC,GENERAL,ST',
+            'gender' => 'nullable|in:Male,Female,Others',
+            'courseName' => 'nullable|string',
+            'deliveryMode' => 'nullable|string',
+            'courseContent' => 'nullable|string',
+            'batchName' => 'nullable|string',
+        ]);
 
-            $student->update($validated);
-
-            return redirect()
-                ->route('student.pendingfees.pending')
-                ->with('success', 'Student details updated successfully!');
-
-        } catch (\Exception $e) {
-            Log::error('Update failed:', [
-                'id' => $id,
-                'error' => $e->getMessage(),
-            ]);
-            
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to update student: ' . $e->getMessage())
-                ->withInput();
+        // Track changes
+        $changes = [];
+        foreach ($validated as $key => $value) {
+            $oldValue = $oldData[$key] ?? null;
+            if ($oldValue != $value && $value !== null) {
+                $changes[$key] = [
+                    'from' => $oldValue,
+                    'to' => $value
+                ];
+            }
         }
+
+        // Add history entry
+        $history = $student->history ?? [];
+        $history[] = [
+            'action' => 'Student Details Updated',
+            'user' => auth()->check() ? auth()->user()->name : 'Admin',
+            'description' => 'Student details updated for ' . $student->name,
+            'timestamp' => now()->toIso8601String(),
+            'changes' => $changes
+        ];
+        
+        $validated['history'] = $history;
+
+        $student->update($validated);
+
+        return redirect()
+            ->route('student.pendingfees.pending')
+            ->with('success', 'Student details updated successfully!');
+
+    } catch (\Exception $e) {
+        Log::error('Update failed:', [
+            'id' => $id,
+            'error' => $e->getMessage(),
+        ]);
+        
+        return redirect()
+            ->back()
+            ->with('error', 'Failed to update student: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
     /**
  * Show payment form with ALL fee details including discounts
