@@ -30,11 +30,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // ✅ REMOVE array casts for departments and roles
+    // REMOVE array casts for departments and roles
     protected $casts = [
         'email_verified_at' => 'datetime',
-        // ❌ REMOVED: 'departments' => 'array',
-        // ❌ REMOVED: 'roles' => 'array',
+        // REMOVED: 'departments' => 'array',
+        // REMOVED: 'roles' => 'array',
     ];
 
     public $timestamps = true;

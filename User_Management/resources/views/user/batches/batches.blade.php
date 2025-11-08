@@ -97,7 +97,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="{{ route('profile.index') }}"> <i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
@@ -388,12 +388,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
         <div class="right-footer">
 
-          <!-- Pagination Not functional yet-->
+          <!-- Pagination-->
           <nav aria-label="Page navigation example" id="bottom">
             <ul class="pagination" id="pagination">
               <li class="page-item"><a class="page-link" href id="pg1">Previous</a></li>
               <li class="page-item"><a class="page-link" href="#" id="pg2">1</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
+              <li class="page-item"><a class="page-link" href="#" id="pg3">2</a></li>
+              <li class="page-item"><a class="page-link" href="#" id="pg4">Next</a></li>
             </ul>
           </nav>
         </div>
