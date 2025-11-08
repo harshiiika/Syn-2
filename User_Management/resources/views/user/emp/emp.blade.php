@@ -125,7 +125,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
+        <li><a class="dropdown-item" href="{{ route('profile.index') }}"> <i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
@@ -340,9 +340,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <h6>Show Enteries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                10
-              </button>
+            aria-expanded="false">
+            {{ request('per_page', 10) }}
+          </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item">10</a></li>
                 <li><a class="dropdown-item">25</a></li>
@@ -352,8 +352,15 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </div>
           </div>
           <div class="search">
+                  <form method="GET" action="{{ route('user.emp.emp') }}" id="searchForm">
+        <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
             <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
+           <input type="search" 
+               name="search" 
+               placeholder="Search by name, email, or mobile" 
+               class="search-holder" 
+               value="{{ request('search') }}"
+               id="searchInput">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
@@ -566,7 +573,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </div>
         @endforeach
 
-<!-- Password Update Modal -->
+<!-- Password Update Modal-->
 @foreach($users as $user)
   <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1"
     aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
@@ -577,33 +584,57 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           @csrf
           @method('PUT')
           <div class="modal-header">
-            <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password</h5>
+            <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password for {{ $user->name }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-           <div class="mb-3">
-  <label class="form-label">Current Password <span class="text-danger">*</span></label>
-  <input type="password" name="current_password" class="form-control @error('current_password') is-invalid @enderror"
-    placeholder="Enter current password" required>
-  @error('current_password')
-    <div class="invalid-feedback">{{ $message }}</div>
-  @enderror
-</div>
+            
+            <!-- Display validation errors -->
+            <div id="errorContainer{{ $user->_id }}" style="display: none;" class="alert alert-danger">
+              <ul id="errorList{{ $user->_id }}" class="mb-0"></ul>
+            </div>
+
+            <!-- Current Password -->
+            <div class="mb-3">
+              <label class="form-label">Current Password <span class="text-danger">*</span></label>
+              <input type="password" 
+                     name="current_password" 
+                     id="current_password{{ $user->_id }}"
+                     class="form-control"
+                     placeholder="Enter current password" 
+                     required>
+              <span class="text-danger" id="error-current_password{{ $user->_id }}"></span>
+            </div>
+
+            <!-- New Password -->
             <div class="mb-3">
               <label class="form-label">New Password <span class="text-danger">*</span></label>
-              <input type="password" name="new_password" id="new_password{{ $user->_id }}" class="form-control @error('new_password') is-invalid @enderror"
-                placeholder="Enter new password" minlength="8" required>
+              <input type="password" 
+                     name="new_password" 
+                     id="new_password{{ $user->_id }}" 
+                     class="form-control"
+                     placeholder="Enter new password" 
+                     minlength="8" 
+                     required>
               <small class="form-text text-muted">Minimum 8 characters, must include uppercase, lowercase, and number</small>
+              <span class="text-danger" id="error-new_password{{ $user->_id }}"></span>
             </div>
+
+            <!-- Confirm New Password -->
             <div class="mb-3">
               <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
-              <input type="password" name="confirm_new_password" id="confirm_password{{ $user->_id }}" class="form-control" required>
+              <input type="password" 
+                     name="confirm_new_password" 
+                     id="confirm_password{{ $user->_id }}" 
+                     class="form-control"
+                     placeholder="Re-enter new password"
+                     required>
               <span class="text-danger" id="password-match-error{{ $user->_id }}"></span>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" id="submit" class="btn btn-primary">Update Password</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn{{ $user->_id }}">Update Password</button>
           </div>
         </form>
       </div>
@@ -611,13 +642,85 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </div>
 @endforeach
 
+
       </div>
 <div class="footer">
   <div class="left-footer">
-    <p>Showing all {{ $users->count() }} entries</p>
+    <p>Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} entries
+      @if(request('search'))
+        <span class="text-muted">(filtered from {{ \App\Models\User\User::count() }} total entries)</span>
+      @endif
+    </p>
+  </div>
+  <div class="right-footer">
+    <nav aria-label="Page navigation example" id="bottom">
+      <ul class="pagination" id="pagination">
+        {{-- Previous Page Link --}}
+        @if ($users->onFirstPage())
+          <li class="page-item disabled">
+            <span class="page-link" id="pg1">Previous</span>
+          </li>
+        @else
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $users->previousPageUrl() }}" 
+               id="pg1">Previous</a>
+          </li>
+        @endif
+
+        {{-- Pagination Elements --}}
+        @php
+          $start = max($users->currentPage() - 2, 1);
+          $end = min($start + 4, $users->lastPage());
+          $start = max($end - 4, 1);
+        @endphp
+
+        @if($start > 1)
+          <li class="page-item">
+            <a class="page-link" href="{{ $users->url(1) }}">1</a>
+          </li>
+          @if($start > 2)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+        @endif
+
+        @for ($i = $start; $i <= $end; $i++)
+          <li class="page-item {{ $users->currentPage() == $i ? 'active' : '' }}">
+            <a class="page-link" 
+               href="{{ $users->url($i) }}"
+               id="pg{{ $i }}">{{ $i }}</a>
+          </li>
+        @endfor
+
+        @if($end < $users->lastPage())
+          @if($end < $users->lastPage() - 1)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+          <li class="page-item">
+            <a class="page-link" href="{{ $users->url($users->lastPage()) }}">{{ $users->lastPage() }}</a>
+          </li>
+        @endif
+
+        {{-- Next Page Link --}}
+        @if ($users->hasMorePages())
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $users->nextPageUrl() }}" 
+               id="pg4">Next</a>
+          </li>
+        @else
+          <li class="page-item disabled">
+            <span class="page-link" id="pg4">Next</span>
+          </li>
+        @endif
+      </ul>
+    </nav>
   </div>
 </div>
-    </div>
   </div>
   </div>
   <!-- Modal Form with fillables for add employee starts here -->
@@ -701,7 +804,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               placeholder="Confirm Password" required>
           </div>
 
-          <div class="modal-footer">
+          <div class="modal-footer" id="footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-primary" id="add">Submit</button>
           </div>
@@ -753,62 +856,150 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <!-- Your custom JS (must come after jQuery + Bootstrap) -->
 <script src="{{ asset('js/emp.js') }}"></script>
 
+<!-- Enhanced JavaScript for Password Update -->
 <script>
-// Password confirmation validation for Add Employee
-document.getElementById('addEmployeeForm')?.addEventListener('submit', function(e) {
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('password_confirmation').value;
-    const errorSpan = document.getElementById('error-confirm_password');
-    
-    if (password !== confirmPassword) {
+document.addEventListener('DOMContentLoaded', function() {
+  @foreach($users as $user)
+  (function() {
+    const userId = '{{ $user->_id }}';
+    const form = document.getElementById('passwordForm' + userId);
+    const currentPassword = document.getElementById('current_password' + userId);
+    const newPassword = document.getElementById('new_password' + userId);
+    const confirmPassword = document.getElementById('confirm_password' + userId);
+    const submitBtn = document.getElementById('submitBtn' + userId);
+    const matchError = document.getElementById('password-match-error' + userId);
+    const newPasswordError = document.getElementById('error-new_password' + userId);
+    const errorContainer = document.getElementById('errorContainer' + userId);
+    const errorList = document.getElementById('errorList' + userId);
+
+    // Real-time password strength validation
+    if (newPassword) {
+      newPassword.addEventListener('input', function() {
+        const password = this.value;
+        let errors = [];
+
+        if (password.length > 0 && password.length < 8) {
+          errors.push('Password must be at least 8 characters');
+        }
+        if (password.length > 0 && !/[a-z]/.test(password)) {
+          errors.push('Must contain a lowercase letter');
+        }
+        if (password.length > 0 && !/[A-Z]/.test(password)) {
+          errors.push('Must contain an uppercase letter');
+        }
+        if (password.length > 0 && !/\d/.test(password)) {
+          errors.push('Must contain a number');
+        }
+
+        newPasswordError.textContent = errors.join(', ');
+        
+        // Also check if passwords match when typing in new password
+        if (confirmPassword.value && password !== confirmPassword.value) {
+          matchError.textContent = 'Passwords do not match';
+        } else {
+          matchError.textContent = '';
+        }
+      });
+    }
+
+    // Real-time password match validation
+    if (confirmPassword) {
+      confirmPassword.addEventListener('input', function() {
+        if (newPassword.value !== this.value) {
+          matchError.textContent = 'Passwords do not match';
+        } else {
+          matchError.textContent = '';
+        }
+      });
+    }
+
+    // Form submission validation
+    if (form) {
+      form.addEventListener('submit', function(e) {
         e.preventDefault();
-        errorSpan.textContent = 'Passwords do not match!';
-        return false;
+        
+        // Clear previous errors
+        matchError.textContent = '';
+        newPasswordError.textContent = '';
+        errorContainer.style.display = 'none';
+        errorList.innerHTML = '';
+        
+        let isValid = true;
+        let errors = [];
+
+        // Validate current password
+        if (!currentPassword.value) {
+          errors.push('Current password is required');
+          isValid = false;
+        }
+
+        // Validate new password
+        if (!newPassword.value) {
+          errors.push('New password is required');
+          isValid = false;
+        } else {
+          if (newPassword.value.length < 8) {
+            errors.push('New password must be at least 8 characters');
+            isValid = false;
+          }
+          if (!/[a-z]/.test(newPassword.value)) {
+            errors.push('New password must contain a lowercase letter');
+            isValid = false;
+          }
+          if (!/[A-Z]/.test(newPassword.value)) {
+            errors.push('New password must contain an uppercase letter');
+            isValid = false;
+          }
+          if (!/\d/.test(newPassword.value)) {
+            errors.push('New password must contain a number');
+            isValid = false;
+          }
+          if (currentPassword.value === newPassword.value) {
+            errors.push('New password must be different from current password');
+            isValid = false;
+          }
+        }
+
+        // Validate password confirmation
+        if (!confirmPassword.value) {
+          errors.push('Password confirmation is required');
+          isValid = false;
+        } else if (newPassword.value !== confirmPassword.value) {
+          matchError.textContent = 'Passwords do not match';
+          errors.push('Passwords do not match');
+          isValid = false;
+        }
+
+        if (!isValid) {
+          // Show errors
+          errorList.innerHTML = errors.map(err => '<li>' + err + '</li>').join('');
+          errorContainer.style.display = 'block';
+          return false;
+        }
+
+        // If validation passes, submit the form
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Updating...';
+        form.submit();
+      });
     }
-    errorSpan.textContent = '';
-});
 
-// Real-time password validation feedback
-document.getElementById('password')?.addEventListener('input', function(e) {
-    const password = e.target.value;
-    const errorSpan = document.getElementById('error-password');
-    
-    if (password.length < 8) {
-        errorSpan.textContent = 'Password must be at least 8 characters';
-    } else if (!/[a-z]/.test(password)) {
-        errorSpan.textContent = 'Password must contain a lowercase letter';
-    } else if (!/[A-Z]/.test(password)) {
-        errorSpan.textContent = 'Password must contain an uppercase letter';
-    } else if (!/\d/.test(password)) {
-        errorSpan.textContent = 'Password must contain a number';
-    } else {
-        errorSpan.textContent = '';
+    // Reset form when modal is closed
+    const modal = document.getElementById('passwordModal' + userId);
+    if (modal) {
+      modal.addEventListener('hidden.bs.modal', function () {
+        form.reset();
+        matchError.textContent = '';
+        newPasswordError.textContent = '';
+        errorContainer.style.display = 'none';
+        errorList.innerHTML = '';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Update Password';
+      });
     }
+  })();
+  @endforeach
 });
-
-// Password update modal validation
-@foreach($users as $user)
-document.getElementById('passwordForm{{ $user->_id }}')?.addEventListener('submit', function(e) {
-    const newPassword = document.getElementById('new_password{{ $user->_id }}').value;
-    const confirmPassword = document.getElementById('confirm_password{{ $user->_id }}').value;
-    const errorSpan = document.getElementById('password-match-error{{ $user->_id }}');
-
-    if (newPassword !== confirmPassword) {
-        e.preventDefault();
-        errorSpan.textContent = 'New passwords do not match!';
-        return false;
-    }
-    errorSpan.textContent = '';
-});
-@endforeach
-
-// Mobile number validation - only allow digits
-document.querySelectorAll('input[type="tel"]').forEach(function(input) {
-    input.addEventListener('input', function(e) {
-        this.value = this.value.replace(/[^0-9]/g, '');
-    });
-});
-  });
 </script>
 
 </html>
