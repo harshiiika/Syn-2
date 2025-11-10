@@ -59,7 +59,13 @@ class PendingFee extends Model
         
         // Transfer Audit
         'transferred_from', 'transfer_reason', 'transfer_date', 'transferred_at',
-        'created_by', 'updated_by'
+        'created_by', 'updated_by',
+        
+        // History Tracking - ADDED
+        'history',
+        'alternateMobileNumber',
+        'roll_no',
+        'transferred_by'
     ];
     
     protected $casts = [
@@ -87,5 +93,6 @@ class PendingFee extends Model
         'fees_calculated_at' => 'datetime',
         'transferred_at' => 'datetime',
         'transfer_date' => 'datetime',
+        'history' => 'array', // ADDED - Cast history as array for MongoDB
     ];
 }

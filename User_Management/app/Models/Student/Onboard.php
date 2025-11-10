@@ -37,7 +37,9 @@ class Onboard extends Model
         'fees_calculated_at',
         'passport_photo', 'marksheet', 'caste_certificate', 'scholarship_proof',
         'secondary_marksheet', 'senior_secondary_marksheet',
-        'onboardedAt', 'transferred_from', 'transferred_at', 'created_by', 'updated_by'
+        'onboardedAt', 'transferred_from', 'transferred_at', 'created_by', 'updated_by',
+        'history', // ✅ ADDED - This allows history field to be saved
+        'alternateMobileNumber' // ✅ ADDED - This was in your tracked fields but missing here
     ];
 
     protected $casts = [
@@ -59,6 +61,7 @@ class Onboard extends Model
         'fees_calculated_at' => 'datetime',
         'onboardedAt' => 'datetime',
         'transferred_at' => 'datetime',
+        'history' => 'array', // ✅ ADDED - Cast history as array for MongoDB
     ];
     
     public function batch()
