@@ -3,6 +3,9 @@
 namespace App\Models\Student;
 
 use MongoDB\Laravel\Eloquent\Model;
+use App\Models\Master\Batch;
+use App\Models\Master\Courses;
+
 
 class SMstudents extends Model
 {
@@ -128,4 +131,22 @@ class SMstudents extends Model
         'paid_fees' => 'float',
         'remaining_fees' => 'float',
     ];
+
+    public function batch()
+    {
+        return $this->belongsTo(Batch::class, 'batch_id', '_id');
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Courses::class, 'course_id', '_id');
+    }
+
+    /**
+     * (Optional) Relationship: Student belongs to a Shift
+     */
+    public function shift()
+    {
+        return $this->belongsTo( Shift::class, 'shift_id', '_id');
+    }
 }
