@@ -832,18 +832,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <label class="form-label fw-bold">Export Current Data</label>
           <p class="text-muted small">Download all current employee data as Excel file.</p>
           <a href="{{ route('users.export') }}?search={{ request('search') }}&per_page={{ request('per_page', 10) }}" 
-             class="btn btn-info w-100" 
-Route::prefix('master/batch')->name('batches.')->group(function () {
-    Route::get('/', [BatchController::class, 'index'])->name('index');
-    Route::post('/add', [BatchController::class, 'store'])->name('add');
-    Route::put('/{id}/update', [BatchController::class, 'update'])->name('update');
-    Route::post('/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('toggleStatus');
-    
-    // NEW: Export/Import Routes
-    Route::get('/export', [BatchController::class, 'exportToExcel'])->name('export');
-    Route::get('/download-sample', [BatchController::class, 'downloadSample'])->name('downloadSample');
-    Route::post('/import', [BatchController::class, 'import'])->name('import');
-});            <i class="fa-solid fa-download"></i> Download Current Employees
+             class="btn btn-info w-100" ></a>
+     <i class="fa-solid fa-download"></i> Download Current Employees
           </a>
         </div>
 

@@ -11,14 +11,15 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .page-header {
-      background-color: #ffffff;
-      padding: 20px 30px;
+      background-color: rgba(0, 0, 0, 0);
+      /* padding: 20px 30px; */
       margin: 20px;
-      border-radius: 8px;
+      /* border-radius: 8px; */
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+      width: 80%;
     }
     .page-title {
       color: #e05301;
@@ -43,6 +44,7 @@
       margin: 0 20px 20px 20px;
       border-radius: 8px;
       padding: 20px;
+      width: 80%;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .tab-navigation {
@@ -308,7 +310,7 @@
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-       <div class="accordion accordion-flush" id="accordionFlushExample">
+          <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -320,8 +322,8 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+           <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+           <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -376,7 +378,7 @@
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
