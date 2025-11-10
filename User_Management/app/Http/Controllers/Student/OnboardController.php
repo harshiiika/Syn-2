@@ -37,31 +37,52 @@ class OnboardController extends Controller
     /**
      * Display the specified onboarded student with COMPLETE details
      */
-    public function show($id)
-    {
-        try {
-            $student = Onboard::with(['batch', 'course'])->findOrFail($id);
-            
-            // Get batches and courses for dropdowns
-            $batches = Batch::where('status', 'Active')->get();
-            $courses = Courses::all();
-            
-            // Check scholarship eligibility
-            $scholarshipEligible = $this->checkScholarshipEligibility($student);
-            
-            Log::info('Onboard Student View Data', [
-                'student_id' => $id,
-                'student_name' => $student->name ?? $student->student_name,
-                'scholarship' => $scholarshipEligible
-            ]);
-            
-            return view('student.onboard.view', compact('student', 'batches', 'courses', 'scholarshipEligible'));
-        } catch (\Exception $e) {
-            Log::error('Error showing onboarded student: ' . $e->getMessage());
-            return back()->with('error', 'Student not found: ' . $e->getMessage());
+   /**
+ * Display the specified onboarded student with COMPLETE details
+ */
+/**
+ * Display the specified onboarded student with COMPLETE details
+ */
+public function show($id)
+{
+    try {
+        Log::info('=== SHOW METHOD CALLED ===', ['id' => $id]);
+        
+        // Find student - NO relationships
+        $student = Onboard::find($id);
+        
+        if (!$student) {
+            return redirect()->route('student.onboard.onboard')
+                ->with('error', 'Student not found');
         }
+        
+        Log::info('Student found', ['name' => $student->name]);
+        
+        // Don't load Batch or Courses - just pass empty arrays
+        $batches = collect([]); // Empty collection
+        $courses = collect([]); // Empty collection
+        
+        // Simple scholarship check without complex queries
+        $scholarshipEligible = [
+            'eligible' => ($student->eligible_for_scholarship ?? 'No') === 'Yes',
+            'reason' => $student->scholarship_name ?? 'Not Eligible',
+            'discountPercent' => floatval($student->discount_percentage ?? 0)
+        ];
+        
+        Log::info('About to render view');
+        
+        return view('student.onboard.view', compact('student', 'batches', 'courses', 'scholarshipEligible'));
+        
+    } catch (\Exception $e) {
+        Log::error('SHOW ERROR', [
+            'message' => $e->getMessage(),
+            'line' => $e->getLine()
+        ]);
+        
+        return redirect()->route('student.onboard.onboard')
+            ->with('error', 'Error: ' . $e->getMessage());
     }
-
+}
     /**
      * Show the form for editing onboarded student
      */
