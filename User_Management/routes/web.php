@@ -291,6 +291,8 @@ Route::prefix('smstudents')
         
         //   Generic show route LAST
         Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
+        Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
+
     });
 
 //  Onboard transfer route OUTSIDE smstudents group
@@ -299,7 +301,7 @@ Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStude
 
     
 // ========================================
-// 5. INQUIRY MANAGEMENT - Keep as is
+// 5. INQUIRY MANAGEMENT
 // ========================================
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
     Route::get('/', [InquiryController::class, 'index'])->name('index');

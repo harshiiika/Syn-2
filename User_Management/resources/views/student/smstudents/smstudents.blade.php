@@ -16,7 +16,7 @@
       padding-right: 10px;
     }
     .activity-item {
-      border-left: 3px solid #0d6efd;
+      border-left: 3px solid #fd550dff;
       padding-left: 20px;
       padding-bottom: 20px;
       position: relative;
@@ -34,7 +34,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-color: #0d6efd;
+      background-color: #fd550dff;
       border: 2px solid white;
     }
     .activity-header {
@@ -59,9 +59,15 @@
       margin: 0;
     }
     .activity-user {
-      color: #0d6efd;
+      color: #fd550dff;
       font-weight: 500;
     }
+
+    #history{
+      background-color: #fd550dff;
+    }
+
+    
   </style>
 </head>
 
@@ -466,33 +472,100 @@
     </div>
 
     <!-- Batch Update Modal -->
-    <div class="modal fade" id="batchModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog">
-        <form method="POST" action="{{ route('smstudents.updateBatch', $studentId) }}" class="modal-content">
-          @csrf
-          <div class="modal-header">
-            <h5 class="modal-title">Update Batch</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label">Select New Batch</label>
-              <select name="batch_id" class="form-select" required>
-                @foreach($batches as $batch)
-                  <option value="{{ $batch->_id ?? $batch->id }}" {{ ($student->batch_id == ($batch->_id ?? $batch->id)) ? 'selected' : '' }}>
-                    {{ $batch->name }}
-                  </option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Update Batch</button>
-          </div>
-        </form>
+    @php
+  $studentId = $student->_id ?? $student->id ?? null;
+  if (is_object($studentId)) {
+    $studentId = (string) $studentId;
+  }
+@endphp
+
+<div class="modal fade" id="batchModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{{ route('smstudents.updateBatch', $studentId) }}" class="modal-content">
+      @csrf
+      
+      <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
+        <h5 class="modal-title text-white">
+          <i class="fas fa-user-group me-2"></i>Update Batch
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-    </div>
+      
+      <div class="modal-body">
+        <!-- Current Batch Info -->
+        <div class="alert alert-info mb-3">
+          <strong>Current Batch:</strong> 
+          {{ $student->batch->batch_id ?? $student->batch_name ?? 'N/A' }}
+          <br>
+          <small class="text-muted">Course: {{ $student->course->name ?? $student->course_name ?? 'N/A' }}</small>
+        </div>
+        
+        <!-- New Batch Selection -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">
+            Select New Batch <span class="text-danger">*</span>
+          </label>
+          <select name="batch_id" class="form-select" required>
+            <option value="">-- Select Batch --</option>
+            @foreach($batches as $batch)
+              @php
+                $batchId = $batch->_id ?? $batch->id;
+                if (is_object($batchId)) {
+                  $batchId = (string) $batchId;
+                }
+                $currentBatchId = $student->batch_id ?? null;
+                if (is_object($currentBatchId)) {
+                  $currentBatchId = (string) $currentBatchId;
+                }
+                $isSelected = ($currentBatchId == $batchId);
+              @endphp
+              <option value="{{ $batchId }}" {{ $isSelected ? 'selected' : '' }}>
+                {{ $batch->batch_id ?? 'Batch' }}
+                @if($batch->course)
+                  - {{ $batch->course }}
+                @endif
+                @if($batch->class)
+                  ({{ $batch->class }})
+                @endif
+                @if($batch->shift)
+                  - {{ $batch->shift }}
+                @endif
+                @if($batch->mode)
+                  [{{ $batch->mode }}]
+                @endif
+              </option>
+            @endforeach
+          </select>
+          <small class="text-muted d-block mt-1">
+            <i class="fas fa-info-circle me-1"></i>
+            This will update batch, course, and delivery mode
+          </small>
+        </div>
+
+        <!-- Warning Message -->
+        <div class="alert alert-warning mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <strong>Note:</strong> Changing the batch will automatically update:
+          <ul class="mb-0 mt-1 small">
+            <li>Course information</li>
+            <li>Delivery mode</li>
+            <li>Batch-related details</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-2"></i>Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save me-2"></i>Update Batch
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 
 <!-- Global Shift Modal -->
@@ -534,7 +607,7 @@
         <div class="modal-content border-0 shadow-lg rounded-3">
           
           <!-- Modal Header -->
-          <div class="modal-header bg-primary text-white">
+          <div class="modal-header bg-primary text-white" id="history">
             <h5 class="modal-title fw-semibold" id="historyModalLabel{{ $studentId }}">
               Student History - {{ $student->student_name ?? $student->name ?? 'N/A' }}
             </h5>
