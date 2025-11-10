@@ -364,7 +364,7 @@
       <div class="form-container">
         <form method="POST" action="{{ route('smstudents.update', $student->_id ?? $student->id) }}" enctype="multipart/form-data">
           @csrf
-          
+          @method('PUT') 
           <!-- Basic Details Section -->
           <div class="form-section">
             <h5 class="section-title">Basic Details</h5>
@@ -640,39 +640,48 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Sidebar toggle functionality
-    const toggleBtn = document.getElementById('toggleBtn');
-    const sidebar = document.getElementById('sidebar');
-    const right = document.getElementById('right');
-    const text = document.getElementById('text');
+ <script>
+  // Sidebar toggle functionality
+  const toggleBtn = document.getElementById('toggleBtn');
+  const sidebar = document.getElementById('sidebar');
+  const right = document.getElementById('right');
+  const text = document.getElementById('text');
 
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      right.classList.toggle('expanded');
-      text.classList.toggle('hidden');
+  toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    right.classList.toggle('expanded');
+    text.classList.toggle('hidden');
+  });
+
+  // File upload preview — show file name when selected
+  document.querySelectorAll('input[type="file"]').forEach(input => {
+    input.addEventListener('change', function (e) {
+      const uploadArea = e.target.closest('.upload-area');
+      if (!uploadArea) return;
+      const fileName = e.target.files[0]?.name;
+      const previewText = uploadArea.querySelector('p');
+      if (fileName) {
+        previewText.innerHTML = `<strong>${fileName}</strong>`;
+        uploadArea.style.borderColor = "#28a745";
+        uploadArea.style.backgroundColor = "#f6fff8";
+      } else {
+        previewText.innerHTML = "Click to upload";
+        uploadArea.style.borderColor = "#dee2e6";
+        uploadArea.style.backgroundColor = "#f8f9fa";
+      }
     });
+  });
 
-    // File upload preview
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-      input.addEventListener('change', function(e) {
-        const fileName = e.target.files[0]?.name;
-        if (fileName) {
-          const uploadArea = e.target.closest('.upload-area');
-          const p = uploadArea.querySelector('p');
-          p.textContent = fileName;
-          p.style.color = '#28a745';
-        }
-      });
-    });
-
-    // Auto-hide flash messages after 5 seconds
+  // Auto-hide flash messages after a few seconds
+  const flashMessages = document.querySelectorAll('.alert');
+  if (flashMessages.length > 0) {
     setTimeout(() => {
-      document.querySelectorAll('.alert').forEach(alert => {
-        alert.classList.remove('show');
-        setTimeout(() => alert.remove(), 150);
+      flashMessages.forEach(alert => {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
       });
-    }, 5000);
-  </script>
+    }, 4000);
+  }
+</script>
 </body>
 </html>

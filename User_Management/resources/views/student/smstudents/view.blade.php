@@ -873,29 +873,140 @@
         </div>
 
         <!-- TAB 3: Fees Management -->
-       <!-- TAB 3: Fees Management - UPDATED WITH DYNAMIC DATA -->
+<!-- TAB 3: Fees Management -->
 <div class="tab-content-section" id="fees-management">
   <!-- Scholarship Info -->
+  @php
+    // Use scholarshipData if available, otherwise fall back to scholarshipEligible
+    $eligible = isset($scholarshipData) ? $scholarshipData['eligible'] === 'Yes' : ($scholarshipEligible['eligible'] ?? false);
+    $hasDiscretionary = isset($scholarshipData) ? $scholarshipData['has_discretionary'] : false;
+  @endphp
+
+  @if($eligible || $hasDiscretionary)
   <div class="scholarship-box">
+    <h5 style="color: #28a745; margin-bottom: 15px;">
+      <i class="fas fa-check-circle"></i> Applied Discounts
+    </h5>
     <div class="row">
-      <div class="col-md-6">
-        <strong>Is Eligible For Scholarship:</strong> 
-        <span style="color: {{ $scholarshipEligible['eligible'] ? '#28a745' : '#dc3545' }}; font-weight: 600;">
-          {{ $scholarshipEligible['eligible'] ? 'Yes' : 'No' }}
-        </span>
-      </div>
-      @if($scholarshipEligible['eligible'])
-      <div class="col-md-6">
-        <strong>Scholarship Reason:</strong> 
-        <span style="color: #e05301;">{{ $scholarshipEligible['reason'] }}</span>
-      </div>
-      <div class="col-md-6 mt-2">
-        <strong>Discount Percentage:</strong> 
-        <span style="color: #e05301; font-weight: 600;">{{ $scholarshipEligible['discountPercent'] }}%</span>
+      @if($eligible)
+      <!-- Scholarship Discount -->
+      <div class="col-md-12 mb-3">
+        <div class="alert alert-success">
+          <h6 class="mb-2">
+            <i class="fas fa-graduation-cap"></i> Scholarship Applied
+          </h6>
+          <div class="row">
+            <div class="col-md-6">
+              <strong>Scholarship Name:</strong><br>
+              {{ $scholarshipData['scholarship_name'] ?? $scholarshipEligible['reason'] ?? 'N/A' }}
+            </div>
+            <div class="col-md-6 text-end">
+              <strong>Discount:</strong><br>
+              <span class="text-success fw-bold">
+                {{ $scholarshipData['discount_percentage'] ?? $scholarshipEligible['discountPercent'] ?? 0 }}%
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
       @endif
+
+      @if($hasDiscretionary)
+      <!-- Discretionary Discount -->
+      <div class="col-md-12 mb-3">
+        <div class="alert alert-info">
+          <h6 class="mb-2">
+            <i class="fas fa-hand-holding-usd"></i> Additional Discretionary Discount
+          </h6>
+          <div class="row">
+            <div class="col-md-6">
+              <strong>Type:</strong><br>
+              {{ $scholarshipData['discretionary_type'] === 'percentage' ? 'Percentage' : 'Fixed Amount' }}
+            </div>
+            <div class="col-md-6 text-end">
+              <strong>Value:</strong><br>
+              <span class="text-info fw-bold">
+                @if($scholarshipData['discretionary_type'] === 'percentage')
+                  {{ $scholarshipData['discretionary_value'] }}%
+                @else
+                  ₹{{ number_format($scholarshipData['discretionary_value'], 2) }}
+                @endif
+              </span>
+            </div>
+          </div>
+          @if(!empty($scholarshipData['discretionary_reason']))
+          <div class="mt-2 pt-2 border-top">
+            <strong>Reason:</strong> {{ $scholarshipData['discretionary_reason'] }}
+          </div>
+          @endif
+        </div>
+      </div>
+      @endif
+
+      <!-- Fee Breakdown -->
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title mb-3">📋 Fee Breakdown</h6>
+            <table class="table table-sm">
+              <tr>
+                <td>Original Fee:</td>
+                <td class="text-end">
+                  ₹{{ number_format($scholarshipData['total_before_discount'] ?? $feeSummary['grand']['total'], 2) }}
+                </td>
+              </tr>
+              @if(($scholarshipData['discount_percentage'] ?? 0) > 0)
+              <tr class="text-success">
+                <td>Scholarship Discount ({{ $scholarshipData['discount_percentage'] }}%):</td>
+                <td class="text-end">
+                  - ₹{{ number_format(($scholarshipData['total_before_discount'] ?? $feeSummary['grand']['total']) * ($scholarshipData['discount_percentage'] ?? 0) / 100, 2) }}
+                </td>
+              </tr>
+              @endif
+              @if($hasDiscretionary)
+              <tr class="text-info">
+                <td>Discretionary Discount:</td>
+                <td class="text-end">
+                  @php
+                    $afterScholarship = ($scholarshipData['total_before_discount'] ?? $feeSummary['grand']['total']) * (1 - ($scholarshipData['discount_percentage'] ?? 0)/100);
+                  @endphp
+                  @if($scholarshipData['discretionary_type'] === 'percentage')
+                    - ₹{{ number_format($afterScholarship * ($scholarshipData['discretionary_value'] ?? 0) / 100, 2) }}
+                  @else
+                    - ₹{{ number_format($scholarshipData['discretionary_value'] ?? 0, 2) }}
+                  @endif
+                </td>
+              </tr>
+              @endif
+              <tr class="border-top fw-bold">
+                <td>Final Fee (Before GST):</td>
+                <td class="text-end">₹{{ number_format($feeSummary['grand']['total'], 2) }}</td>
+              </tr>
+              <tr>
+                <td>GST (18%):</td>
+                <td class="text-end">₹{{ number_format($feeSummary['grand']['total'] * 0.18, 2) }}</td>
+              </tr>
+              <tr class="border-top fw-bold text-danger">
+                <td>Total Payable:</td>
+                <td class="text-end fs-5">₹{{ number_format($feeSummary['grand']['total'] * 1.18, 2) }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  @else
+  <!-- No Scholarship -->
+  <div class="scholarship-box">
+    <div class="row">
+      <div class="col-md-12">
+        <strong>Is Eligible For Scholarship:</strong> 
+        <span style="color: #dc3545; font-weight: 600;">No</span>
+      </div>
+    </div>
+  </div>
+  @endif
 
   <!-- Fee Summary Cards -->
   <div class="row mb-4">
@@ -1187,102 +1298,6 @@
     </div>
   </div>
 </div>
-
-
-        <!-- TAB 4: Test Series -->
-        <div class="tab-content-section" id="test-series">
-          <!-- Test Type Buttons -->
-          <div class="test-type-btns mb-4">
-            <button class="test-type-btn active">General</button>
-            <button class="test-type-btn">SPR</button>
-          </div>
-
-          <!-- Type Buttons -->
-          <div class="test-type-btns mb-4">
-            <button class="test-type-btn active">Type 1</button>
-            <button class="test-type-btn">Type 2</button>
-          </div>
-
-          <!-- Stats Grid -->
-          <div class="test-stats-grid">
-            <!-- Overall Rank Chart -->
-            <div class="stats-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">OverAll Rank</h6>
-              <div class="chart-container">
-                <canvas id="overallRankChart"></canvas>
-              </div>
-            </div>
-
-            <!-- Overall Percentage Chart -->
-            <div class="stats-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">OverAll Percentage</h6>
-              <div class="chart-container">
-                <canvas id="overallPercentageChart"></canvas>
-              </div>
-            </div>
-
-            <!-- Attendance Status -->
-            <div class="stats-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">Attendance Status</h6>
-              <div style="width: 150px; height: 150px; margin: 0 auto;">
-                <canvas id="testAttendanceChart"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <!-- Test Series Table -->
-          <div class="detail-section">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <label>Show</label>
-                <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
-                  <option>5</option>
-                  <option>10</option>
-                  <option>25</option>
-                </select>
-                <span>entries</span>
-              </div>
-              <div>
-                <label>Search:</label>
-                <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
-              </div>
-            </div>
-
-            <table class="table table-bordered">
-              <thead>
-                <tr style="background-color: #f8f9fa;">
-                  <th>Sr.No.</th>
-                  <th>Test Name</th>
-                  <th>Test Date</th>
-                  <th>Total Marks</th>
-                  <th>Obtained Marks</th>
-                  <th>Topper Marks</th>
-                  <th>Avg. Class Marks</th>
-                  <th>Batch Rank</th>
-                  <th>Over all Rank</th>
-                  <th>Percentage</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="10" class="text-center">No data available in table</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div class="d-flex justify-content-between align-items-center">
-              <span>Showing 0 to 0 of 0 entries</span>
-              <nav>
-                <ul class="pagination pagination-sm mb-0">
-                  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
