@@ -36,22 +36,22 @@ class SmStudentsController extends Controller
     }
 
     /**
-     * ✅ FIXED: Display the specified student with full details
+     * Display the specified student with full details
      */
     public function show($id)
     {
         try {
             $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id);
-
+ 
             // ✅ Process fees data and ensure proper formatting
             $this->processFeesData($student);
-
+ 
             // ✅ Calculate comprehensive fee summary
             $feeSummary = $this->calculateFeeSummary($student);
-
+ 
             // ✅ Check scholarship eligibility
             $scholarshipEligible = $this->checkScholarshipEligibility($student);
-
+ 
             // ✅ Add debug logging
             Log::info('Student View Data', [
                 'student_id' => $id,
@@ -61,7 +61,7 @@ class SmStudentsController extends Controller
                 'fee_summary' => $feeSummary,
                 'scholarship' => $scholarshipEligible
             ]);
-
+ 
             if (request()->wantsJson()) {
                 return response()->json([
                     'student' => $student,
@@ -69,7 +69,7 @@ class SmStudentsController extends Controller
                     'scholarshipEligible' => $scholarshipEligible
                 ]);
             }
-
+ 
             return view('student.smstudents.view', compact('student', 'feeSummary', 'scholarshipEligible'));
         } catch (\Exception $e) {
             Log::error('Error showing student: ' . $e->getMessage());
@@ -141,65 +141,155 @@ class SmStudentsController extends Controller
     }
 
     /**
-     * Update student password
-     */
-    public function updatePassword(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'password' => 'required|min:6|confirmed'
+ * Update student password with old password verification
+ */
+public function updatePassword(Request $request, $id)
+{
+    // Validation rules
+    $validator = Validator::make($request->all(), [
+        'old_password' => 'required|string',
+        'password' => 'required|string|min:6|confirmed',
+        'password_confirmation' => 'required|string|min:6'
+    ], [
+        'old_password.required' => 'Current password is required',
+        'password.required' => 'New password is required',
+        'password.min' => 'New password must be at least 6 characters',
+        'password.confirmed' => 'New password and confirmation do not match',
+        'password_confirmation.required' => 'Please confirm your new password'
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->with('error', 'Password validation failed');
+    }
+
+    try {
+        // Find the student
+        $student = SMstudents::findOrFail($id);
+        
+        // Verify old password
+        if (!Hash::check($request->old_password, $student->password)) {
+            return redirect()->back()
+                ->with('error', 'Current password is incorrect. Please try again.')
+                ->withInput();
+        }
+        
+        // Check if new password is same as old password
+        if (Hash::check($request->password, $student->password)) {
+            return redirect()->back()
+                ->with('error', 'New password cannot be the same as current password')
+                ->withInput();
+        }
+        
+        // Update the password
+        $student->update([
+            'password' => Hash::make($request->password)
         ]);
+        
+        // Log the password change
+        Log::info('Password updated for student:', [
+            'student_id' => (string)$student->_id,
+            'student_name' => $student->student_name,
+            'roll_no' => $student->roll_no,
+            'updated_by' => auth()->user()->email ?? 'Admin',
+            'timestamp' => now()->toDateTimeString()
+        ]);
+        
+        // Optional: Create activity log
+        $this->createActivityLog($student, 'Password Updated', 
+            'Password was changed by ' . (auth()->user()->email ?? 'Admin')
+        );
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->with('error', 'Password validation failed');
-        }
-
-        try {
-            $student = SMstudents::findOrFail($id);
-            $student->update([
-                'password' => Hash::make($request->password)
-            ]);
-
-            return redirect()->route('smstudents.index')->with('success', 'Password updated successfully');
-        } catch (\Exception $e) {
-            Log::error('Error updating password: ' . $e->getMessage());
-            return back()->with('error', 'Failed to update password: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Update student batch
-     */
-    public function updateBatch(Request $request, $id)
-    {
-        try {
-            $request->validate(['batch_id' => 'required']);
-
-            $student = SMstudents::findOrFail($id);
-            $batch = Batch::find($request->batch_id);
+        return redirect()->route('smstudents.index')
+            ->with('success', 'Password updated successfully for ' . ($student->student_name ?? 'student'));
             
-            if (!$batch) {
-                return response()->json([
-                    'success' => false, 
-                    'message' => 'Batch not found'
-                ], 404);
-            }
-
-            $student->batch_id = $request->batch_id;
-            $student->batch_name = $batch->name;
-            $student->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Batch updated successfully'
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Batch update failed: ' . $e->getMessage());
-            return response()->json([
-                'success' => false, 
-                'message' => $e->getMessage()
-            ], 500);
-        }
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        Log::error('Student not found for password update:', [
+            'student_id' => $id,
+            'error' => $e->getMessage()
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Student not found');
+            
+    } catch (\Exception $e) {
+        Log::error('Error updating password:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'student_id' => $id
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Failed to update password. Please try again.');
     }
+}
+    // /**
+    //  * Update student batch
+    //  */
+    // public function updateBatch(Request $request, $id)
+    // {
+    //     try {
+    //         $request->validate(['batch_id' => 'required']);
+
+    //         $student = SMstudents::findOrFail($id);
+    //         $batch = Batch::find($request->batch_id);
+            
+    //         if (!$batch) {
+    //             return response()->json([
+    //                 'success' => false, 
+    //                 'message' => 'Batch not found'
+    //             ], 404);
+    //         }
+
+    //         $student->batch_id = $request->batch_id;
+    //         $student->batch_name = $batch->name;
+    //         $student->save();
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Batch updated successfully'
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         Log::error('Batch update failed: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false, 
+    //             'message' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+
+/**
+ * Helper method to create activity log
+ */
+private function createActivityLog($student, $title, $description)
+{
+    try {
+        $activities = $student->activities ?? [];
+        
+        $newActivity = [
+            'title' => $title,
+            'description' => $description,
+            'performed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
+            'created_at' => now(),
+            'timestamp' => now()->toDateTimeString()
+        ];
+        
+        array_unshift($activities, $newActivity);
+        
+        // Keep only last 50 activities
+        $activities = array_slice($activities, 0, 50);
+        
+        $student->update(['activities' => $activities]);
+        
+    } catch (\Exception $e) {
+        Log::warning('Failed to create activity log:', [
+            'error' => $e->getMessage(),
+            'student_id' => $student->_id
+        ]);
+    }
+}
 
     /**
      * Update student shift
@@ -310,6 +400,85 @@ class SmStudentsController extends Controller
         }
     }
 
+ /**
+ * Update student batch with comprehensive data synchronization
+ */
+public function updateBatch(Request $request, $id)
+{
+    // Validate input
+    $validator = Validator::make($request->all(), [
+        'batch_id' => 'required|exists:batches,_id'
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->with('error', 'Please select a valid batch');
+    }
+
+    try {
+        // Find student
+        $student = SMstudents::findOrFail($id);
+        
+        // Store old values for logging
+        $oldBatchId = $student->batch_id;
+        $oldBatchName = $student->batch_name ?? 'N/A';
+        
+        // Find new batch
+        $newBatch = Batch::findOrFail($request->batch_id);
+        
+        // Find course by name from batch
+        $course = null;
+        if ($newBatch->course) {
+            $course = Courses::where('name', $newBatch->course)->first();
+        }
+        
+        // Prepare comprehensive update data
+        $updateData = [
+            'batch_id' => $request->batch_id,
+            'batch_name' => $newBatch->batch_id, // Use batch_id as batch_name
+            'course_name' => $newBatch->course,
+            'delivery_mode' => $newBatch->mode,
+        ];
+        
+        // Add course_id if course exists
+        if ($course) {
+            $updateData['course_id'] = $course->_id ?? $course->id;
+        }
+        
+        // Update shift if batch has a specific shift
+        if (!empty($newBatch->shift)) {
+            $updateData['shift'] = $newBatch->shift;
+        }
+        
+        // Update the student record
+        $student->update($updateData);
+        
+        // Log the successful update
+        Log::info('Batch updated successfully for student:', [
+            'student_id' => (string)$student->_id,
+            'student_name' => $student->student_name,
+            'old_batch' => $oldBatchName,
+            'new_batch' => $newBatch->batch_id,
+            'new_course' => $newBatch->course,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+        
+        return redirect()->route('smstudents.index')
+            ->with('success', 'Batch updated successfully! Student assigned to ' . $newBatch->batch_id);
+            
+    } catch (\Exception $e) {
+        Log::error('Error updating batch:', [
+            'error' => $e->getMessage(),
+            'student_id' => $id,
+            'batch_id' => $request->batch_id
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Failed to update batch: ' . $e->getMessage());
+    }
+}
+    
     /* =======================================================
        ✅ ENHANCED PRIVATE HELPER METHODS
     ======================================================= */

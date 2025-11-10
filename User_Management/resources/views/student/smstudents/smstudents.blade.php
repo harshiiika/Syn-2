@@ -16,7 +16,7 @@
       padding-right: 10px;
     }
     .activity-item {
-      border-left: 3px solid #0d6efd;
+      border-left: 3px solid #fd550dff;
       padding-left: 20px;
       padding-bottom: 20px;
       position: relative;
@@ -34,7 +34,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-color: #0d6efd;
+      background-color: #fd550dff;
       border: 2px solid white;
     }
     .activity-header {
@@ -59,9 +59,15 @@
       margin: 0;
     }
     .activity-user {
-      color: #0d6efd;
+      color: #fd550dff;
       font-weight: 500;
     }
+
+    #history{
+      background-color: #fd550dff;
+    }
+
+    
   </style>
 </head>
 
@@ -466,39 +472,101 @@
       </div>
     </div>
 
-<!-- Global Batch Update Modal -->
-<!-- <div class="modal fade" id="batchModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" id="batchForm" class="modal-content">
+    <!-- Batch Update Modal -->
+    @php
+  $studentId = $student->_id ?? $student->id ?? null;
+  if (is_object($studentId)) {
+    $studentId = (string) $studentId;
+  }
+@endphp
+
+<div class="modal fade" id="batchModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{{ route('smstudents.updateBatch', $studentId) }}" class="modal-content">
       @csrf
-      <input type="hidden" id="batchStudentId" name="student_id">
-
-      <div class="modal-header">
-        <h5 class="modal-title">Update Batch</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      
+      <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
+        <h5 class="modal-title text-white">
+          <i class="fas fa-user-group me-2"></i>Update Batch
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-
+      
       <div class="modal-body">
+        <!-- Current Batch Info -->
+        <div class="alert alert-info mb-3">
+          <strong>Current Batch:</strong> 
+          {{ $student->batch->batch_id ?? $student->batch_name ?? 'N/A' }}
+          <br>
+          <small class="text-muted">Course: {{ $student->course->name ?? $student->course_name ?? 'N/A' }}</small>
+        </div>
+        
+        <!-- New Batch Selection -->
         <div class="mb-3">
-          <label class="form-label">Select New Batch</label>
-          <select name="batch_id" id="batchSelect" class="form-select" required>
-  <option value="">-- Select Batch --</option>
-  <option value="L1">L1</option>
-  <option value="L2">L2</option>
-  <option value="L3">L3</option>
-  <option value="L4">L4</option>
-  <option value="L5">L5</option>
-</select>
+          <label class="form-label fw-semibold">
+            Select New Batch <span class="text-danger">*</span>
+          </label>
+          <select name="batch_id" class="form-select" required>
+            <option value="">-- Select Batch --</option>
+            @foreach($batches as $batch)
+              @php
+                $batchId = $batch->_id ?? $batch->id;
+                if (is_object($batchId)) {
+                  $batchId = (string) $batchId;
+                }
+                $currentBatchId = $student->batch_id ?? null;
+                if (is_object($currentBatchId)) {
+                  $currentBatchId = (string) $currentBatchId;
+                }
+                $isSelected = ($currentBatchId == $batchId);
+              @endphp
+              <option value="{{ $batchId }}" {{ $isSelected ? 'selected' : '' }}>
+                {{ $batch->batch_id ?? 'Batch' }}
+                @if($batch->course)
+                  - {{ $batch->course }}
+                @endif
+                @if($batch->class)
+                  ({{ $batch->class }})
+                @endif
+                @if($batch->shift)
+                  - {{ $batch->shift }}
+                @endif
+                @if($batch->mode)
+                  [{{ $batch->mode }}]
+                @endif
+              </option>
+            @endforeach
+          </select>
+          <small class="text-muted d-block mt-1">
+            <i class="fas fa-info-circle me-1"></i>
+            This will update batch, course, and delivery mode
+          </small>
+        </div>
+
+        <!-- Warning Message -->
+        <div class="alert alert-warning mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <strong>Note:</strong> Changing the batch will automatically update:
+          <ul class="mb-0 mt-1 small">
+            <li>Course information</li>
+            <li>Delivery mode</li>
+            <li>Batch-related details</li>
+          </ul>
         </div>
       </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Update Batch</button>
+      
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-2"></i>Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save me-2"></i>Update Batch
+        </button>
       </div>
     </form>
   </div>
-</div> -->
+</div>
+
 
 
 <!-- Global Shift Modal -->
@@ -540,7 +608,7 @@
         <div class="modal-content border-0 shadow-lg rounded-3">
           
           <!-- Modal Header -->
-          <div class="modal-header bg-primary text-white">
+          <div class="modal-header bg-primary text-white" id="history">
             <h5 class="modal-title fw-semibold" id="historyModalLabel{{ $studentId }}">
               Student History - {{ $student->student_name ?? $student->name ?? 'N/A' }}
             </h5>
@@ -893,6 +961,60 @@
       }
     };
 
+    // Shift modal setup
+    document.querySelectorAll('.open-shift-modal').forEach(button => {
+      button.addEventListener('click', function () {
+        const studentId = this.dataset.studentId;
+        const form = document.getElementById('shiftForm');
+        form.action = `/smstudents/${studentId}/update-shift`;
+        $('#shiftModal').modal('show');
+      });
+    });
+
+    // Batch modal setup
+    document.querySelectorAll('.open-batch-modal').forEach(button => {
+      button.addEventListener('click', function () {
+        const studentId = this.dataset.studentId;
+        document.getElementById('batchStudentId').value = studentId;
+        $('#batchModal').modal('show');
+      });
+    });
+
+    // AJAX batch update
+     document.getElementById('batchForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const studentId = document.getElementById('batchStudentId').value;
+  const batchId = document.getElementById('batchSelect').value;
+  const token = document.querySelector('#batchForm input[name="_token"]').value;
+
+  fetch(`/smstudents/${studentId}/update-batch`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': token
+    },
+    body: JSON.stringify({ batch_id: batchId })
+  })
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Server returned non-JSON response');
+    }
+    const data = await response.json();
+    if (data.success) {
+      alert('✅ Batch updated successfully!');
+      $('#batchModal').modal('hide');
+    } else {
+      alert('❌ Failed to update batch: ' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('❌ Something went wrong: ' + error.message);
+  });
+});
     //shift modal
     document.addEventListener('DOMContentLoaded', function () {
       document.querySelectorAll('.open-shift-modal').forEach(button => {

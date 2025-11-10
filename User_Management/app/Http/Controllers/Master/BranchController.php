@@ -9,11 +9,30 @@ use Illuminate\Http\Request;
 class BranchController extends Controller
 {
     /**
-     * Display all branches
+     * Display all branches with search and pagination
      */
-    public function index()
+    public function index(Request $request)
     {
-        $branches = Branch::all();
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+
+        $query = Branch::query();
+
+        // Apply search filter if search term exists
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('city', 'like', '%' . $search . '%')
+                  ->orWhere('status', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Paginate results
+        $branches = $query->paginate($perPage)->appends([
+            'search' => $search,
+            'per_page' => $perPage
+        ]);
+
         return view('master.branch.branch', compact('branches'));
     }
 
@@ -34,6 +53,89 @@ class BranchController extends Controller
         ]);
 
         return redirect()->route('branches.index')->with('success', 'Branch added successfully!');
+    }
+
+    /**
+     * Download sample Excel file for branch import
+     */
+    public function downloadSample()
+    {
+        // Option 1: If you have a sample file in public/samples directory
+        $filePath = public_path('samples/branches_sample.xlsx');
+        
+        if (file_exists($filePath)) {
+            return response()->download($filePath, 'branches_sample.xlsx');
+        }
+        
+        // Option 2: Generate a simple CSV sample on the fly
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="branches_sample.csv"',
+        ];
+
+        $columns = ['Branch Name', 'City', 'Status'];
+        $sampleData = [
+            ['Synthesis Main Branch', 'Bikaner', 'Active'],
+            ['Synthesis Jaipur Branch', 'Jaipur', 'Active'],
+            ['Synthesis Jodhpur Branch', 'Jodhpur', 'Active'],
+        ];
+
+        $callback = function() use ($columns, $sampleData) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($sampleData as $row) {
+                fputcsv($file, $row);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Import branches from Excel/CSV file
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'import_file' => 'required|file|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        try {
+            $file = $request->file('import_file');
+            $extension = $file->getClientOriginalExtension();
+            
+            // Read file content
+            if ($extension === 'csv') {
+                $data = array_map('str_getcsv', file($file->getRealPath()));
+            } else {
+                // For Excel files, you would need Laravel Excel package
+                // composer require maatwebsite/excel
+                return redirect()->back()->with('error', 'Excel import requires Laravel Excel package. Please use CSV format.');
+            }
+            
+            // Skip header row
+            $header = array_shift($data);
+            
+            $imported = 0;
+            foreach ($data as $row) {
+                if (count($row) >= 2) { // At least name and city required
+                    Branch::create([
+                        'name' => $row[0] ?? '',
+                        'city' => $row[1] ?? '',
+                        'status' => $row[2] ?? 'Active',
+                    ]);
+                    $imported++;
+                }
+            }
+            
+            return redirect()->route('branches.index')
+                ->with('success', "Successfully imported {$imported} branches!");
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error importing file: ' . $e->getMessage());
+        }
     }
 
     /**

@@ -305,10 +305,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <h6>Show Enteries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                10
-              </button>
-              <!-- dd for no of pg entries to be displaed on 1 page (not functional yet) -->
+        aria-expanded="false">
+        {{ request('per_page', 10) }}
+      </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item">10</a></li>
                 <li><a class="dropdown-item">25</a></li>
@@ -317,11 +316,18 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               </ul>
             </div>
           </div>
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
+<div class="search">
+  <form method="GET" action="{{ route('user.batches.batches') }}" id="searchForm">
+    <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+    <input type="search" 
+           name="search" 
+           placeholder="Search" 
+           class="search-holder" 
+           value="{{ request('search') }}"
+           id="searchInput">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </form>
+</div>
         </div>
         <!-- Table starts here -->
 
@@ -343,62 +349,125 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
             <!-- Table fillables are present here -->
 
-            @foreach($batches as $index => $batch)
-      <tr>
-        <td>{{ $index + 1 }}</td>
-        <td>{{ $batch->batch_id ?? '—' }}</td>
-        <td>{{ $batch->start_date }}</td>
-        <td>{{ $batch->username ?? '—' }}</td>
-        <td>{{ $batch->shift ?? '—' }}</td>
-        <td>
-          <span class="badge {{ $batch->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-            {{ $batch->status ?? 'Active' }}
-          </span>
-        </td>
-        <td>
-          <div class="dropdown">
-            <button class="btn btn-sm btn-outline-secondary" type="button" 
-                    id="dropdownMenu{{ $loop->index }}" 
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false">
-              <i class="fas fa-ellipsis-v"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" 
-                aria-labelledby="dropdownMenu{{ $loop->index }}">
-              <li>
-                <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" style="display: inline;">
-                  @csrf
-                  <button type="submit" class="dropdown-item">
-                    {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
-                  </button>
-                </form>
-              </li>
-            </ul>
-          </div>
-        </td>
-      </tr>
-    @endforeach
+            @forelse($batches as $index => $batch)
+    <tr>
+      <td>{{ $batches->firstItem() + $index }}</td>
+      <td>{{ $batch->batch_id ?? '—' }}</td>
+      <td>{{ $batch->start_date }}</td>
+      <td>{{ $batch->username ?? '—' }}</td>
+      <td>{{ $batch->shift ?? '—' }}</td>
+      <td>
+        <span class="badge {{ $batch->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
+          {{ $batch->status ?? 'Active' }}
+        </span>
+      </td>
+      <td>
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary" type="button" 
+                  id="dropdownMenu{{ $loop->index }}" 
+                  data-bs-toggle="dropdown" 
+                  aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" 
+              aria-labelledby="dropdownMenu{{ $loop->index }}">
+            <li>
+              <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" style="display: inline;">
+                @csrf
+                <button type="submit" class="dropdown-item">
+                  {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+  @empty
+    <tr>
+      <td colspan="7" class="text-center">No batch assignments found.</td>
+    </tr>
+  @endforelse
   </tbody>
 </table>
 
       </div>
-      <div class="footer">
-        <div class="left-footer">
-          <p>Showing 1 to 1 of 1 Enteries</p>
-        </div>
-        <div class="right-footer">
+<div class="footer">
+  <div class="left-footer">
+    <p>Showing {{ $batches->firstItem() ?? 0 }} to {{ $batches->lastItem() ?? 0 }} of {{ $batches->total() }} entries
+      @if(request('search'))
+        <span class="text-muted">(filtered from {{ \App\Models\User\BatchAssignment::count() }} total entries)</span>
+      @endif
+    </p>
+  </div>
+  <div class="right-footer">
+    <nav aria-label="Page navigation example" id="bottom">
+      <ul class="pagination" id="pagination">
+        {{-- Previous Page Link --}}
+        @if ($batches->onFirstPage())
+          <li class="page-item disabled">
+            <span class="page-link" id="pg1">Previous</span>
+          </li>
+        @else
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $batches->previousPageUrl() }}" 
+               id="pg1">Previous</a>
+          </li>
+        @endif
 
-          <!-- Pagination-->
-          <nav aria-label="Page navigation example" id="bottom">
-            <ul class="pagination" id="pagination">
-              <li class="page-item"><a class="page-link" href id="pg1">Previous</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg2">1</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg3">2</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg4">Next</a></li>
-            </ul>
-          </nav>
-        </div>
-      </div>
+        {{-- Pagination Elements --}}
+        @php
+          $start = max($batches->currentPage() - 2, 1);
+          $end = min($start + 4, $batches->lastPage());
+          $start = max($end - 4, 1);
+        @endphp
+
+        @if($start > 1)
+          <li class="page-item">
+            <a class="page-link" href="{{ $batches->url(1) }}">1</a>
+          </li>
+          @if($start > 2)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+        @endif
+
+        @for ($i = $start; $i <= $end; $i++)
+          <li class="page-item {{ $batches->currentPage() == $i ? 'active' : '' }}">
+            <a class="page-link" 
+               href="{{ $batches->url($i) }}">{{ $i }}</a>
+          </li>
+        @endfor
+
+        @if($end < $batches->lastPage())
+          @if($end < $batches->lastPage() - 1)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+          <li class="page-item">
+            <a class="page-link" href="{{ $batches->url($batches->lastPage()) }}">{{ $batches->lastPage() }}</a>
+          </li>
+        @endif
+
+        {{-- Next Page Link --}}
+        @if ($batches->hasMorePages())
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $batches->nextPageUrl() }}" 
+               id="pg4">Next</a>
+          </li>
+        @else
+          <li class="page-item disabled">
+            <span class="page-link" id="pg4">Next</span>
+          </li>
+        @endif
+      </ul>
+    </nav>
+  </div>
+</div>
     </div>
   </div>
   </div>
