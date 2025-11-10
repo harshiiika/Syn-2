@@ -537,21 +537,6 @@
               </option>
             @endforeach
           </select>
-          <small class="text-muted d-block mt-1">
-            <i class="fas fa-info-circle me-1"></i>
-            This will update batch, course, and delivery mode
-          </small>
-        </div>
-
-        <!-- Warning Message -->
-        <div class="alert alert-warning mb-0">
-          <i class="fas fa-exclamation-triangle me-2"></i>
-          <strong>Note:</strong> Changing the batch will automatically update:
-          <ul class="mb-0 mt-1 small">
-            <li>Course information</li>
-            <li>Delivery mode</li>
-            <li>Batch-related details</li>
-          </ul>
         </div>
       </div>
       
@@ -973,49 +958,52 @@
 
     // Batch modal setup
     document.querySelectorAll('.open-batch-modal').forEach(button => {
-      button.addEventListener('click', function () {
-        const studentId = this.dataset.studentId;
-        document.getElementById('batchStudentId').value = studentId;
-        $('#batchModal').modal('show');
-      });
-    });
-
-    // AJAX batch update
-     document.getElementById('batchForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const studentId = document.getElementById('batchStudentId').value;
-  const batchId = document.getElementById('batchSelect').value;
-  const token = document.querySelector('#batchForm input[name="_token"]').value;
-
-  fetch(`/smstudents/${studentId}/update-batch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-CSRF-TOKEN': token
-    },
-    body: JSON.stringify({ batch_id: batchId })
-  })
-  .then(async response => {
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Server returned non-JSON response');
-    }
-    const data = await response.json();
-    if (data.success) {
-      alert('✅ Batch updated successfully!');
-      $('#batchModal').modal('hide');
-    } else {
-      alert('❌ Failed to update batch: ' + data.message);
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('❌ Something went wrong: ' + error.message);
+  button.addEventListener('click', function () {
+    const studentId = this.dataset.studentId;
+    const modalId = `#batchModal${studentId}`;
+    $(modalId).modal('show');
   });
 });
-    //shift modal
+
+
+    // AJAX batch update
+//      document.getElementById('batchForm').addEventListener('submit', function (e) {
+//   e.preventDefault();
+
+//   const studentId = document.getElementById('batchStudentId').value;
+//   const batchId = document.getElementById('batchSelect').value;
+//   const token = document.querySelector('#batchForm input[name="_token"]').value;
+
+//   fetch(`/smstudents/${studentId}/update-batch`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Accept': 'application/json',
+//       'X-CSRF-TOKEN': token
+//     },
+//     body: JSON.stringify({ batch_id: batchId })
+//   })
+//   .then(async response => {
+//     const contentType = response.headers.get('content-type');
+//     if (!contentType || !contentType.includes('application/json')) {
+//       throw new Error('Server returned non-JSON response');
+//     }
+//     const data = await response.json();
+//     if (data.success) {
+//       alert('✅ Batch updated successfully!');
+//       $('#batchModal').modal('hide');
+//     } else {
+//       alert('❌ Failed to update batch: ' + data.message);
+//     }
+//   })
+//   .catch(error => {
+//     console.error('Error:', error);
+//     alert('❌ Something went wrong: ' + error.message);
+//   });
+// });
+//   
+
+//shift modal
     document.addEventListener('DOMContentLoaded', function () {
       document.querySelectorAll('.open-shift-modal').forEach(button => {
         button.addEventListener('click', function () {

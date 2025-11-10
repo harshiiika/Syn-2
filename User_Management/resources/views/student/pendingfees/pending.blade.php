@@ -8,11 +8,623 @@
   <title>Pending Fees Students</title>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="{{asset('css/onboard.css')}}">
   <!-- Bootstrap 5.3.6 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+
+   <style>
+
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.pfp {
+    justify-content: center;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.pfp select {
+    height: 30px;
+    width: 110px;
+    border: 0.5px solid orangered;
+    border-radius: 5px;
+}
+.icons{
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+#side-icon{
+    color: #838383;
+    font-size: 16px;
+}
+.session {
+    align-items: center;
+    flex-direction: row;
+    display: flex;
+    margin: 10px;
+}
+
+.session h5 {
+    color: black;
+    margin: 7px;
+    font-size: 15px;
+}
+
+.fa-bell,
+.fa-user {
+    margin: 5px;
+    color: rgb(190, 51, 0);
+    font-size: 18px;
+}
+
+.text {
+    justify-content: center;
+    align-items: center;
+}
+#dropdown-body{
+    padding: 0 !important;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 0 !important;
+}
+
+.logo {
+    height: 60px;
+    width: 300px;
+    border: 0.1px solid #d8d8d8;
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.img {
+    height: 50px;
+    width: 150px;
+    margin: 4px;
+}
+
+.main-container {
+    max-width: 100%;
+    flex-direction: row;
+    display: flex;
+}
+
+.left {
+    height: 100vh;
+    width: 20%;
+    overflow-y: scroll;
+}
+#toggle-btn {
+    background-color: transparent;
+    justify-content: center;
+    display: flex;
+    border: none;
+    cursor: pointer; 
+}
+
+.left h6 {
+    display: flex;
+    margin: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.left p {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.fa-solid,
+.fa-regular {
+    margin: 0px 10px 0px 5px;
+    font-size: 15px;
+}
+
+ .accordion-flush {
+    justify-content: flex-start;
+    align-items: center;
+    height: 10px;
+} 
+.accordion-body{
+    padding: 10px !important;
+}
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+
+}
+
+.fa-bars {
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: large;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.fa-bars:hover {
+    background-color: rgb(212, 208, 207);
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+#accordion-button {
+    font-size: 17px;
+    border: none;
+    height: 38px;
+    padding: 10px !important;
+}
+
+.item {
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+}
+
+.menu li {
+    list-style: none;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 17px;
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.right {
+    height: 90vh;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: scroll;
+    background-color: #e7e7e7;
+}
+.whole{
+    margin: 5px;
+    padding: 20px;
+    gap: 25px; 
+    width: 97%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: 1px solid #d6d6d6;
+}
+.right h2 , .right p{
+    color: rgb(224, 83, 1);
+    margin: 10px;
+}
+
+.toggleBtn {
+    border: none;
+}
+
+#table{
+    font-size: 12px;
+    flex-direction: column;  
+}
+
+.top {
+    justify-content: space-between;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.top h4 {
+    font-size: 20px;
+    color: rgb(224, 83, 1);
+    margin: 10px;
+}
+
+.buttons {
+    flex-direction: row;
+    margin: 10px; 
+    display: flex;
+}
+
+#add {
+    background-color: rgb(224, 83, 1);
+    color: #edfeff;
+    height: 40px;
+    width: 130px;
+    border-radius: 7px;
+    border: 0;
+    margin: 10px;
+}
+#submit{
+     border:1px solid rgb(249, 193, 161);
+    background-color: #ff6200;
+    color: #fff;
+    height: 40px;
+    width: 100px;
+    border-radius: 7px; 
+    margin: 10px;
+}
+#up{
+    background-color: rgb(8, 90, 0);
+    color: #edfeff;
+    height: 40px;
+    width: 130px;
+    border-radius: 7px;
+    border: 0;
+    margin: 10px;
+
+}
+
+.menu li {
+    list-style: none;
+}
+
+
+.btn-secondary,
+#ellipsis {
+    margin: 5px 0px 10px 5px;
+    align-items: center;
+    outline: none;
+    border: 1px solid #000;
+    background-color: #ffffff;
+    border: none;
+}
+
+#number {
+    margin: 5px 0px 10px 5px;
+    align-items: center;
+    border: 1px solid #000;
+    background-color: #ffffff;
+    color: #000;
+}
+
+.dd {
+    margin: 5px;
+    width: 100%;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+#ellipsis {
+    background-color: transparent;
+    justify-content: center;
+    display: flex;
+    border: none;
+    cursor: pointer; 
+}
+
+
+#serial{
+    margin-left: 15px;
+}
+
+.line {
+    flex-direction: row; 
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.search {
+    flex-direction: row;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.search-text {
+    font-size: 15px;
+    margin: 5px;
+}
+
+#one{
+    color: rgb(224, 83, 1); 
+}
+.search-holder{
+    border: 1px solid rgb(224, 83, 1);
+    border-radius: 5px;
+    outline: none;
+    padding: 5px;
+}
+
+
+#bottom{
+    display: flex;
+    align-items: center;
+    width: 98%;
+    justify-content: flex-end;
+}
+
+#pagination{
+    border: 1px solid #d4d4d4;
+}
+#pg1{
+    height: 30px;
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    color: #838383;
+    align-items: center;
+}
+#pg2{
+height: 30px;
+    width: 50px;
+    display: flex;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    background-color:  rgb(224, 83, 1);
+    border:none;
+}
+#pg3{
+    height: 30px;
+    color:  rgb(224, 83, 1);
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#form{
+    overflow-y: scroll;
+    height: 400px;
+    width: 700px;
+}
+
+.modal-dialog-scrollable , .modal-content{
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#inputGroupFile01{
+    width: 500px;
+    border: 1px dashed #d8d8d8;
+}
+
+.modal-body{
+    overflow-y: auto;
+    flex: 1 1 auto;
+}
+
+.modal-footer{
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 10; 
+}
+#content-one{
+    height: 500px;
+    width: 600px;
+     margin-top: 80px;
+}
+#modal-two{
+    height: 300px;
+    width: 600px;
+    
+}
+#sample-body{
+      display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+ #file{
+    height: 34px;
+    width: 400px;
+    border: 2px solid #d8d8d8;
+    border-radius: 5px;
+    display: flex;
+    align-items: center; 
+}
+
+#xlsx{
+    margin-bottom: 20px;
+    height: 40px;
+    width: 200px;
+    border-radius: 10px;
+    background-color:  rgb(224, 83, 1);
+    border: 0;
+    color: #fff;
+}
+
+.footer{
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+}
+.left-footer p{
+    font-size: 12px;
+}
+ 
+#pass{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#exampleInputEmail1, #exampleInputPassword1{
+    height: 35px;
+    width: 110%;
+    margin-right: 20px;
+}
+
+#active{
+    background-color: transparent;
+}
+
+/* Fixed Action Button - Three Dots with NO background color */
+.btn-action-dots {
+    background-color: transparent !important;
+    border: none !important;
+    color: #000 !important;
+    font-size: 18px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-action-dots:hover {
+    color: rgb(224, 83, 1) !important;
+}
+
+.btn-action-dots:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.accordion-flush, .accordion-header{
+    border: none;
+    justify-content: flex-start;
+    align-items: center;
+    height: 40px;
+    width: 290px;
+    font-size: 17px;
+}
+.menu li {
+    list-style: none;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 17px;
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-start;
+}
+.menu li a{
+    text-decoration: none;
+    color: #000;
+}
+.accordion-body, .menu{
+    padding: 0 !important;
+    margin-left: 5px;
+}
+
+.btns{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 40px;
+    width: 77vw;
+    font-size: 17px;
+    align-items: center;
+    margin: 25px 15px 25px 10px;
+}
+.pendingbtn{
+    color: rgb(233, 96, 47);
+    background-color: white;
+    border: none;
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.onboardbtn{
+    border: none;
+    background-color: rgb(233, 96, 47);
+    color: white;
+    width: 200px;
+    height: 40px;
+    border-radius: 5px; 
+    cursor: pointer;
+}
+
+/* Transfer button styling */
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    background-color: #ffca2c;
+    border-color: #ffc720;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* Success button */
+.btn-success {
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+}
+
+/* Dropdown item icons */
+.dropdown-item i {
+    margin-right: 8px;
+    width: 16px;
+    text-align: center;
+}
+
+/* Action Dropdown Menu Styling */
+.action-dropdown-menu {
+    min-width: 150px !important;
+    padding: 5px 0 !important;
+}
+
+.action-item {
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    color: #000 !important;
+    white-space: nowrap !important;
+    display: block !important;
+    width: 100% !important;
+    text-align: left !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.action-item:hover {
+    background-color: #f8f9fa !important;
+    color: rgb(224, 83, 1) !important;
+}
+
+.action-item:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+   </style> 
 </head>
 
 <body>
@@ -232,9 +844,6 @@
         <div class="top-text">
           <h4>Pending Fees Students</h4>
         </div>
-        <div class="btns">
-          <a href="{{ route('student.student.pending') }}"><button type="button" class="onboardbtn">Student Onboard</button></a>
-        </div>
       </div>
 
       <div class="whole">
@@ -287,29 +896,29 @@
               <td>{{ $pending->courseContent ?? '—' }}</td>
               <td>
                 <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton-{{ $index }}"
+                  <button class="btn-action-dots" type="button" id="actionMenuButton-{{ $index }}"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
                   </button>
-                  <ul class="dropdown-menu" aria-labelledby="actionMenuButton-{{ $index }}">
+                  <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="actionMenuButton-{{ $index }}">
                     <li>
-                      <a class="dropdown-item" href="{{ route('student.pendingfees.view', $pending->_id) }}">
-                        <i class="fa-solid fa-eye"></i> View Details
+                      <a class="dropdown-item action-item" href="{{ route('student.pendingfees.view', $pending->_id) }}">
+                        View Details
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="{{ route('student.pendingfees.edit', $pending->_id) }}">
-                        <i class="fa-solid fa-edit"></i> Edit
+                      <a class="dropdown-item action-item" href="{{ route('student.pendingfees.edit', $pending->_id) }}">
+                        Edit
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="{{ route('student.pendingfees.pay', $pending->_id) }}">
-                        <i class="fa-solid fa-credit-card"></i> Pay Fees
+                      <a class="dropdown-item action-item" href="{{ route('student.pendingfees.pay', $pending->_id) }}">
+                        Pay Fees
                       </a>
                     </li>
                     <li>
-                      <button class="dropdown-item" onclick="loadStudentHistory('{{ $pending->_id }}'); return false;">
-                        <i class="fa-solid fa-clock-rotate-left"></i> History
+                      <button class="dropdown-item action-item" onclick="loadStudentHistory('{{ $pending->_id }}'); return false;">
+                        History
                       </button>
                     </li>
                   </ul>
@@ -341,7 +950,7 @@
     </div>
   </div>
 
-  <!-- History Modal - MOVED OUTSIDE main-container -->
+  <!-- History Modal -->
   <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
@@ -402,7 +1011,7 @@
       historyModal.show();
 
       // Fetch history from server
- fetch(`/student/pendingfees/${studentId}/history`, {
+      fetch(`/student/pendingfees/${studentId}/history`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
