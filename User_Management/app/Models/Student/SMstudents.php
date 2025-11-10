@@ -47,7 +47,14 @@ class SMstudents extends Model
         
         // Status & Audit
         'status', 'password',
-        'transferred_from', 'transferred_at', 'created_by', 'updated_by'
+        'transferred_from', 'transferred_at', 'created_by', 'updated_by',
+
+        // === Added fields from new model ===
+        'name', 'category', 'economic_weaker_section', 'army_police_background',
+        'specially_abled', 'course_type', 'medium', 'board',
+        'scholarship_test', 'board_percentage', 'competition_exam',
+        'scholarship_percentage', 'photo', 'documents',
+        'fees', 'other_fees', 'transactions'
     ];
 
     protected $hidden = ['password'];
@@ -73,6 +80,12 @@ class SMstudents extends Model
         'installment_3' => 'float',
         'paymentHistory' => 'array',
         'transferred_at' => 'datetime',
+
+        // === Added casts from new model ===
+        'fees' => 'array',
+        'other_fees' => 'array',
+        'transactions' => 'array',
+        'documents' => 'array',
     ];
 
     // Accessors
@@ -97,12 +110,12 @@ class SMstudents extends Model
     }
 
     // Relationships
-
-     public function shift()
+    public function shift()
     {
         return $this->belongsTo(Shift::class, 'shift_id');
     }
-        public function batch()
+
+    public function batch()
     {
         return $this->belongsTo(Batch::class, 'batch_id', '_id');
     }
@@ -122,103 +135,48 @@ class SMstudents extends Model
     {
         return $query->where('status', 'inactive');
     }
+
+    // === Added methods from new model ===
+
+    // Display name fallback
+    public function getDisplayNameAttribute()
+    {
+        return $this->student_name ?? $this->name ?? 'N/A';
+    }
+
+    // Ensure collections for arrays
+    public function getFeesAttribute($value)
+    {
+        return is_array($value) ? collect($value) : collect([]);
+    }
+
+    public function getOtherFeesAttribute($value)
+    {
+        return is_array($value) ? collect($value) : collect([]);
+    }
+
+    public function getTransactionsAttribute($value)
+    {
+        return is_array($value) ? collect($value) : collect([]);
+    }
+
+    // Computed totals
+    public function getTotalFeesAttribute()
+    {
+        $regular = $this->fees->sum('actual_amount');
+        $other = $this->other_fees->sum('actual_amount');
+        return $regular + $other;
+    }
+
+    public function getPaidFeesAttribute()
+    {
+        $regular = $this->fees->sum('paid_amount');
+        $other = $this->other_fees->sum('paid_amount');
+        return $regular + $other;
+    }
+
+    public function getPendingFeesAttribute()
+    {
+        return $this->total_fees - $this->paid_fees;
+    }
 }
-// namespace App\Models\Student;
-
-// use App\Models\Master\Batch;
-// use App\Models\Master\Courses;
-// use MongoDB\Laravel\Eloquent\Model;
-
-// class SMstudents extends Model
-// {
-//     protected $connection = 'mongodb';
-//     protected $collection = 's_mstudents';
-
-//     protected $fillable = [
-//     'roll_no',
-//     'student_name', // or keep 'name' if using accessor
-//     'email',
-//     'phone',
-//     'batch_id',
-//     'course_id',
-//     'course_content',
-//     'delivery', // or use accessor 'delivery_mode'
-//     'shift',
-//     'status',
-//     'password' // if storing hashed passwords
-// ];
-
-
-//     protected $hidden = [
-//         'password'
-//     ];
-
-//     protected $casts = [
-//         'created_at' => 'datetime',
-//         'updated_at' => 'datetime'
-//     ];
-
-//     /**
-//      * Accessor for 'name' to use 'student_name'
-//      */
-//     public function getNameAttribute()
-//     {
-//         return $this->attributes['student_name'] ?? null;
-//     }
-
-//     /**
-//      * Mutator for 'name' to set 'student_name'
-//      */
-//     public function setNameAttribute($value)
-//     {
-//         $this->attributes['student_name'] = $value;
-//     }
-
-//     /**
-//      * Accessor for 'delivery_mode' to use 'delivery'
-//      */
-//     public function getDeliveryModeAttribute()
-//     {
-//         return $this->attributes['delivery'] ?? null;
-//     }
-
-//     /**
-//      * Mutator for 'delivery_mode' to set 'delivery'
-//      */
-//     public function setDeliveryModeAttribute($value)
-//     {
-//         $this->attributes['delivery'] = $value;
-//     }
-
-//     /**
-//      * Get the batch that the student belongs to
-//      */
-//     public function batch()
-//     {
-//         return $this->belongsTo(Batch::class, 'batch_id', '_id');
-//     }
-
-//     /**
-//      * Get the course that the student is enrolled in
-//      */
-//     public function course()
-//     {
-//         return $this->belongsTo(Courses::class, 'course_id', '_id');
-//     }
-
-//     /**
-//      * Scope to get only active students
-//      */
-//     public function scopeActive($query)
-//     {
-//         return $query->where('status', 'active');
-//     }
-
-//     /**
-//      * Scope to get only inactive students
-//      */
-//     public function scopeInactive($query)
-//     {
-//         return $query->where('status', 'inactive');
-//     }
-// }

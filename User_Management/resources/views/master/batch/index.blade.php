@@ -74,7 +74,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
 <!DOCTYPE html>
 
-
 <html lang="en">
 
 <head>
@@ -116,14 +115,15 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class=" fa-solid fa-user"></i>Profile</a>
+          </li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
     </div>
   </div>
   <div class="main-container">
-    <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
+    <!-- Left Sidebar -->
     <div class="left" id="sidebar">
 
       <div class="text" id="text">
@@ -144,8 +144,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i>
+                    Employee</a></li>
+                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
+                      id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -162,12 +164,18 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
+                      id="side-icon"></i> Courses</a></li>
+                <li><a class="item" href="{{ route('batches.index') }}"><i
+                      class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
+                      id="side-icon"></i> Scholarship</a></li>
+                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card"
+                      id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet"
+                      id="side-icon"></i> Other Fees Master</a></li>
+                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
+                      id="side-icon"></i> Branch Management</a></li>
               </ul>
             </div>
           </div>
@@ -184,9 +192,12 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
+                      id="side-icon"></i> Session</a></li>
+                <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
+                      id="side-icon"></i> Calendar</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -203,10 +214,14 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
+                      id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Student Onboard</a></li>
+                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Pending Fees Students</a></li>
+                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check"
+                      id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>
@@ -223,7 +238,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -294,9 +310,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a>
+                </li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file"
+                      id="side-icon"></i>Inquiry History</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
               </ul>
             </div>
@@ -316,9 +334,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             Create Batch
           </button>
 
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTwo"
-            id="up">
-            Upload
+          <button type="button" class="btn btn-success d-flex align-items-center justify-content-center"
+            style="min-width: 140px; height: 38px;" data-bs-toggle="modal" data-bs-target="#uploadBatchModal" id="up">
+            <i class="fa-solid fa-upload me-1"></i> Upload
           </button>
         </div>
       </div>
@@ -330,7 +348,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                10
+                {{ request('per_page', 10) }}
               </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item">10</a></li>
@@ -341,478 +359,553 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </div>
           </div>
           <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <form method="GET" action="{{ route('batches.index') }}" id="searchForm">
+              <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+              <input type="search" name="search" placeholder="Search by batch code, course, or class"
+                class="search-holder" value="{{ request('search') }}" id="searchInput">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </form>
           </div>
         </div>
         <table class="table table-hover" id="table">
           <thead>
             <tr>
-      <th scope="col" id="one">Serial No.</th>
-      <th scope="col" id="one">Batch Code</th>
-      <th scope="col" id="one">Class</th>
-      <th scope="col" id="one">Course</th>
-      <th scope="col" id="one">Course Type</th>
-      <th scope="col" id="one">Delivery Mode</th>
-      <th scope="col" id="one">Medium</th>
-      <th scope="col" id="one">Shift</th>
-      <th scope="col" id="one">Status</th>
-      <th scope="col" id="one">Action</th>
-    </tr>
+              <th scope="col" id="one">Serial No.</th>
+              <th scope="col" id="one">Batch Code</th>
+              <th scope="col" id="one">Class</th>
+              <th scope="col" id="one">Course</th>
+              <th scope="col" id="one">Course Type</th>
+              <th scope="col" id="one">Delivery Mode</th>
+              <th scope="col" id="one">Medium</th>
+              <th scope="col" id="one">Shift</th>
+              <th scope="col" id="one">Status</th>
+              <th scope="col" id="one">Action</th>
+            </tr>
           </thead>
           <tbody>
- <!-- Modal fillables where roles are assigned according to dept automatically -->
+            <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-          @foreach($batches as $index => $batch)
-            <tr>
-              <td>{{ $index + 1 }}</td>
-              <td>{{ $batch->batch_id ?? '—' }}</td>
-              <td>{{ $batch->class ?? '—' }}</td>
-              <td>{{ $batch->course ?? '—' }}</td>
-              <td>{{ $batch->course_type ?? '—' }}</td>
-              <td>{{ $batch->medium ?? '—' }}</td>
-              <td>{{ $batch->mode ?? '—' }}</td>
-              <td>{{ $batch->shift ?? '—' }}</td>
-              <td>
-                <span class="badge {{ $batch->status === 'Inactive' ? 'bg-danger' : 'bg-success' }}">
-                  {{ $batch->status ?? 'Active' }}
-                </span>
-              </td>
-             <td>
-  <div class="dropdown">
-    <button class="btn btn-sm btn-outline-secondary" type="button" 
-            id="dropdownMenu{{ $loop->index }}" 
-            data-bs-toggle="dropdown" 
-            aria-expanded="false">
-      <i class="fas fa-ellipsis-v"></i>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end shadow" 
-        aria-labelledby="dropdownMenu{{ $loop->index }}"
-        style="position: absolute;">
-      <li>
-        <a class="dropdown-item" href="#" 
-           data-bs-toggle="modal"
-           data-bs-target="#viewBatchModal{{ $batch->_id }}">
-          View Details
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item" href="#" 
-           data-bs-toggle="modal"
-           data-bs-target="#editBatchModal{{ $batch->_id }}">
-          Edit Details
-        </a>
-      </li>
-       <li>
-          <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" class="d-inline">
-          @csrf
-          <button type="submit" class="dropdown-item {{ ($batch->status ?? 'Active') === 'Active' ? 'text-danger' : 'text-success' }}">
-            {{ ($batch->status ?? 'Active') === 'Active' ? 'Deactivate' : 'Reactivate' }}
-          </button>
-        </form>
-
-      </li>
-    </ul>
-  </div>
-</td>
-            </tr>
-          @endforeach
-  </tbody>
-         
-
+            @forelse($batches as $index => $batch)
+              <tr>
+                <td>{{ $batches->firstItem() + $index }}</td>
+                <td>{{ $batch->batch_id ?? '—' }}</td>
+                <td>{{ $batch->class ?? '—' }}</td>
+                <td>{{ $batch->course ?? '—' }}</td>
+                <td>{{ $batch->course_type ?? '—' }}</td>
+                <td>{{ $batch->medium ?? '—' }}</td>
+                <td>{{ $batch->mode ?? '—' }}</td>
+                <td>{{ $batch->shift ?? '—' }}</td>
+                <td>
+                  <span class="badge {{ $batch->status === 'Inactive' ? 'bg-danger' : 'bg-success' }}">
+                    {{ $batch->status ?? 'Active' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="dropdownMenu{{ $loop->index }}"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownMenu{{ $loop->index }}"
+                      style="position: absolute;">
+                      <li>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                          data-bs-target="#viewBatchModal{{ $batch->_id }}">
+                          View Details
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                          data-bs-target="#editBatchModal{{ $batch->_id }}">
+                          Edit Details
+                        </a>
+                      </li>
+                      <li>
+                        <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" class="d-inline">
+                          @csrf
+                          <button type="submit"
+                            class="dropdown-item {{ ($batch->status ?? 'Active') === 'Active' ? 'text-danger' : 'text-success' }}">
+                            {{ ($batch->status ?? 'Active') === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                          </button>
+                        </form>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="10" class="text-center">No batches found.</td>
+              </tr>
+            @endforelse
+          </tbody>
         </table>
 
         <!-- Here options modals are present. -->
-
         <!-- View Modal -->
+        @foreach($batches as $batch)
+          <div class="modal fade" id="viewBatchModal{{ $batch->_id }}" tabindex="-1"
+            aria-labelledby="viewBatchModalLabel{{ $batch->_id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="viewBatchModalLabel{{ $batch->_id }}">Batch Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Batch Code</label>
+                    <input type="text" class="form-control" value="{{ $batch->batch_id ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Course</label>
+                    <input type="text" class="form-control" value="{{ $batch->course ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Course Type</label>
+                    <input type="text" class="form-control" value="{{ $batch->course_type ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Branch Name</label>
+                    <input type="text" class="form-control" value="{{ $batch->branch_name ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Start Date</label>
+                    <input type="text" class="form-control" value="{{ $batch->start_date ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Delivery Mode</label>
+                    <input type="text" class="form-control" value="{{ $batch->mode ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Medium</label>
+                    <input type="text" class="form-control" value="{{ $batch->medium ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Shift</label>
+                    <input type="text" class="form-control" value="{{ $batch->shift ?? '—' }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Installment Date 2</label>
+                    <input type="text" class="form-control" value="{{ $batch->installment_date_2 ?? 'Not Set' }}"
+                      readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Installment Date 3</label>
+                    <input type="text" class="form-control" value="{{ $batch->installment_date_3 ?? 'Not Set' }}"
+                      readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Status</label>
+                    <input type="text" class="form-control" value="{{ $batch->status ?? 'Active' }}" readonly>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        @endforeach
 
-@foreach($batches as $batch)
-  <div class="modal fade" id="viewBatchModal{{ $batch->_id }}" tabindex="-1" 
-       aria-labelledby="viewBatchModalLabel{{ $batch->_id }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="viewBatchModalLabel{{ $batch->_id }}">Batch Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Edit Batch Modal -->
+        @foreach($batches as $batch)
+          <div class="modal fade" id="editBatchModal{{ $batch->_id }}" tabindex="-1"
+            aria-labelledby="editBatchModalLabel{{ $batch->_id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                <form method="POST" action="{{ route('batches.update', $batch->_id) }}">
+                  @csrf
+                  @method('PUT')
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editBatchModalLabel{{ $batch->_id }}">Edit Batch Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+
+                    <!-- Batch Code -->
+                    <div class="mb-3">
+                      <label class="form-label">Batch Code</label>
+                      <input type="text" class="form-control" name="batch_id" value="{{ $batch->batch_id ?? '' }}"
+                        required>
+                    </div>
+
+                    <!-- Course -->
+                    <div class="mb-3">
+                      <label class="form-label">Course</label>
+                      <select class="form-select" name="course" required>
+                        <option value="Anthesis 11th NEET" {{ ($batch->course ?? '') == 'Anthesis 11th NEET' ? 'selected' : '' }}>Anthesis 11th NEET</option>
+                        <option value="Momentum 12th NEET" {{ ($batch->course ?? '') == 'Momentum 12th NEET' ? 'selected' : '' }}>Momentum 12th NEET</option>
+                        <option value="Dynamic Target NEET" {{ ($batch->course ?? '') == 'Dynamic Target NEET' ? 'selected' : '' }}>Dynamic Target NEET</option>
+                        <option value="Impulse 11th IIT" {{ ($batch->course ?? '') == 'Impulse 11th IIT' ? 'selected' : '' }}>Impulse 11th IIT</option>
+                        <option value="Intensity 12th IIT" {{ ($batch->course ?? '') == 'Intensity 12th IIT' ? 'selected' : '' }}>Intensity 12th IIT</option>
+                        <option value="Thurst Target IIT" {{ ($batch->course ?? '') == 'Thurst Target IIT' ? 'selected' : '' }}>Thurst Target IIT</option>
+                        <option value="Seedling 10th" {{ ($batch->course ?? '') == 'Seedling 10th' ? 'selected' : '' }}>
+                          Seedling 10th</option>
+                        <option value="Plumule 9th" {{ ($batch->course ?? '') == 'Plumule 9th' ? 'selected' : '' }}>Plumule
+                          9th</option>
+                        <option value="Radicle 8th" {{ ($batch->course ?? '') == 'Radicle 8th' ? 'selected' : '' }}>Radicle
+                          8th</option>
+                        <option value="Nucleus 7th" {{ ($batch->course ?? '') == 'Nucleus 7th' ? 'selected' : '' }}>Nucleus
+                          7th</option>
+                        <option value="Atom 6th" {{ ($batch->course ?? '') == 'Atom 6th' ? 'selected' : '' }}>Atom 6th
+                        </option>
+                      </select>
+                    </div>
+
+                    <!-- Course Type -->
+                    <div class="mb-3">
+                      <label class="form-label">Course Type</label>
+                      <select class="form-select" name="course_type" required>
+                        <option value="Pre-Medical" {{ ($batch->course_type ?? '') == 'Pre-Medical' ? 'selected' : '' }}>
+                          Pre-Medical</option>
+                        <option value="Pre-Engineering" {{ ($batch->course_type ?? '') == 'Pre-Engineering' ? 'selected' : '' }}>Pre-Engineering</option>
+                        <option value="Pre-Foundation" {{ ($batch->course_type ?? '') == 'Pre-Foundation' ? 'selected' : '' }}>Pre-Foundation</option>
+                      </select>
+                    </div>
+
+                    <!-- Branch Name -->
+                    <div class="mb-3">
+                      <label class="form-label">Branch Name</label>
+                      <select class="form-select" name="branch_name" required>
+                        <option value="Bikaner" {{ ($batch->branch_name ?? '') == 'Bikaner' ? 'selected' : '' }}>Bikaner
+                        </option>
+                        <option value="Jaipur" {{ ($batch->branch_name ?? '') == 'Jaipur' ? 'selected' : '' }}>Jaipur
+                        </option>
+                        <option value="Jodhpur" {{ ($batch->branch_name ?? '') == 'Jodhpur' ? 'selected' : '' }}>Jodhpur
+                        </option>
+                        <option value="Kota" {{ ($batch->branch_name ?? '') == 'Kota' ? 'selected' : '' }}>Kota</option>
+                      </select>
+                    </div>
+
+                    <!-- Start Date -->
+                    <div class="mb-3">
+                      <label class="form-label">Start Date</label>
+                      <input type="date" class="form-control" name="start_date" value="{{ $batch->start_date ?? '' }}"
+                        required>
+                    </div>
+
+                    <!-- Delivery Mode -->
+                    <div class="mb-3">
+                      <label class="form-label">Delivery Mode</label>
+                      <select class="form-select" name="mode" required>
+                        <option value="Distance Learning" {{ ($batch->mode ?? '') == 'Distance Learning' ? 'selected' : '' }}>Distance Learning</option>
+                        <option value="Online" {{ ($batch->mode ?? '') == 'Online' ? 'selected' : '' }}>Online</option>
+                        <option value="Offline" {{ ($batch->mode ?? '') == 'Offline' ? 'selected' : '' }}>Offline</option>
+                      </select>
+                    </div>
+
+                    <!-- Medium -->
+                    <div class="mb-3">
+                      <label class="form-label">Medium</label>
+                      <select class="form-select" name="medium" required>
+                        <option value="English" {{ ($batch->medium ?? '') == 'English' ? 'selected' : '' }}>English</option>
+                        <option value="Hindi" {{ ($batch->medium ?? '') == 'Hindi' ? 'selected' : '' }}>Hindi</option>
+                      </select>
+                    </div>
+
+                    <!-- Shift -->
+                    <div class="mb-3">
+                      <label class="form-label">Shift</label>
+                      <select class="form-select" name="shift" required>
+                        <option value="Evening" {{ ($batch->shift ?? '') == 'Evening' ? 'selected' : '' }}>Evening</option>
+                        <option value="Morning" {{ ($batch->shift ?? '') == 'Morning' ? 'selected' : '' }}>Morning</option>
+                      </select>
+                    </div>
+
+                    <!-- Installment Date 2 -->
+                    <div class="mb-3">
+                      <label class="form-label">Installment Date 2</label>
+                      <input type="date" class="form-control" name="installment_date_2"
+                        value="{{ $batch->installment_date_2 ?? '' }}">
+                    </div>
+
+                    <!-- Installment Date 3 -->
+                    <div class="mb-3">
+                      <label class="form-label">Installment Date 3</label>
+                      <input type="date" class="form-control" name="installment_date_3"
+                        value="{{ $batch->installment_date_3 ?? '' }}">
+                    </div>
+
+                    <!-- Status -->
+                    <div class="mb-3">
+                      <label class="form-label">Status</label>
+                      <select class="form-select" name="status">
+                        <option value="Active" {{ ($batch->status ?? 'Active') == 'Active' ? 'selected' : '' }}>Active
+                        </option>
+                        <option value="Inactive" {{ ($batch->status ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive
+                        </option>
+                      </select>
+                    </div>
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Batch</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        @endforeach
+
+        <!-- Add Batch Modal -->
+        <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content" id="content-one">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Create Batch</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form method="POST" action="{{ route('batches.add') }}" id="createBatchForm">
+                  @csrf
+
+                  <!-- Course Dropdown - This will auto-fill Class Name & Course Type -->
+                  <div class="mb-3">
+                    <label for="course" class="form-label">Course <span class="text-danger">*</span></label>
+                    <select class="form-select" name="course" id="courseSelect" required>
+                      <option selected disabled>Select Course</option>
+                      <option value="Anthesis 11th NEET">Anthesis 11th NEET</option>
+                      <option value="Momentum 12th NEET">Momentum 12th NEET</option>
+                      <option value="Dynamic Target NEET">Dynamic Target NEET</option>
+                      <option value="Impulse 11th IIT">Impulse 11th IIT</option>
+                      <option value="Intensity 12th IIT">Intensity 12th IIT</option>
+                      <option value="Thrust Target IIT">Thrust Target IIT</option>
+                      <option value="Seedling 10th">Seedling 10th</option>
+                      <option value="Plumule 9th">Plumule 9th</option>
+                      <option value="Radicle 8th">Radicle 8th</option>
+                      <option value="Nucleus 7th">Nucleus 7th</option>
+                      <option value="Atom 6th">Atom 6th</option>
+                    </select>
+                  </div>
+
+                  <!-- Auto-filled fields (Read-only) -->
+                  <div class="mb-3">
+                    <label class="form-label">Class Name</label>
+                    <input type="text" class="form-control bg-light" id="classNameDisplay">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Course Type</label>
+                    <input type="text" class="form-control bg-light" id="courseTypeDisplay">
+                  </div>
+
+                  <!-- Batch Code -->
+                  <div class="mb-3">
+                    <label for="batch_id" class="form-label">Batch Code <span class="text-danger">*</span></label>
+                    <input type="text" name="batch_id" class="form-control" placeholder="e.g., 20T1, 19L1" required>
+                  </div>
+
+                  <!-- Branch Name -->
+                  <div class="mb-3">
+                    <label for="branch_name" class="form-label">Branch Name <span class="text-danger">*</span></label>
+                    <select class="form-select" name="branch_name" required>
+                      <option selected disabled>Select Branch</option>
+                      <option value="Bikaner">Bikaner</option>
+                    </select>
+                  </div>
+
+                  <!-- Start Date -->
+                  <div class="mb-3">
+                    <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
+                    <input type="date" name="start_date" class="form-control" required>
+                  </div>
+
+                  <!-- Delivery Mode -->
+                  <div class="mb-3">
+                    <label for="mode" class="form-label">Delivery Mode <span class="text-danger">*</span></label>
+                    <select class="form-select" name="mode" required>
+                      <option selected disabled>Select Delivery Mode</option>
+                      <option value="Offline">Offline</option>
+                      <option value="Online">Online</option>
+                    </select>
+                  </div>
+
+                  <!-- Medium -->
+                  <div class="mb-3">
+                    <label for="medium" class="form-label">Medium <span class="text-danger">*</span></label>
+                    <select class="form-select" name="medium" required>
+                      <option selected disabled>Select Medium</option>
+                      <option value="English">English</option>
+                      <option value="Hindi">Hindi</option>
+                    </select>
+                  </div>
+
+                  <!-- Shift -->
+                  <div class="mb-3">
+                    <label for="shift" class="form-label">Shift <span class="text-danger">*</span></label>
+                    <select class="form-select" name="shift" required>
+                      <option selected disabled>Select Shift</option>
+                      <option value="Morning">Morning</option>
+                      <option value="Evening">Evening</option>
+                    </select>
+                  </div>
+
+                  <!-- Installment Dates -->
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Installment Dates</label>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="installment_date_2" class="form-label">Installment Date 2</label>
+                    <input type="date" name="installment_date_2" class="form-control">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="installment_date_3" class="form-label">Installment Date 3</label>
+                    <input type="date" name="installment_date_3" class="form-control">
+                  </div>
+
+                  <!-- Status -->
+                  <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" name="status">
+                      <option value="Active" selected>Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </div>
+
+                  <div class="modal-footer" id="footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" id="doneBtn" class="btn btn-primary">Create</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label fw-bold">Batch Code</label>
-            <input type="text" class="form-control" value="{{ $batch->batch_id ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Course</label>
-            <input type="text" class="form-control" value="{{ $batch->course ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Course Type</label>
-            <input type="text" class="form-control" value="{{ $batch->course_type ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Branch Name</label>
-            <input type="text" class="form-control" value="{{ $batch->branch_name ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Start Date</label>
-            <input type="text" class="form-control" value="{{ $batch->start_date ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Delivery Mode</label>
-            <input type="text" class="form-control" value="{{ $batch->mode ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Medium</label>
-            <input type="text" class="form-control" value="{{ $batch->medium ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Shift</label>
-            <input type="text" class="form-control" value="{{ $batch->shift ?? '—' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Installment Date 2</label>
-            <input type="text" class="form-control" value="{{ $batch->installment_date_2 ?? 'Not Set' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Installment Date 3</label>
-            <input type="text" class="form-control" value="{{ $batch->installment_date_3 ?? 'Not Set' }}" readonly>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Status</label>
-            <input type="text" class="form-control" value="{{ $batch->status ?? 'Active' }}" readonly>
+
+        <!-- Upload Batch Modal -->
+        <div class="modal fade" id="uploadBatchModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header" style="background-color: #ed5b00ff; color: white;">
+                <h5 class="modal-title">Upload Batches</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <!-- Export Current Data Section -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Export Current Data</label>
+                  <p class="text-muted small">Download all current batch data as Excel file.</p>
+                  <a href="{{ route('batches.export') }}?search={{ request('search') }}&per_page={{ request('per_page', 10) }}"
+                    class="btn btn-info w-100" style="background-color: #ed5b00ff; color: white;">
+                    <i class="fa-solid fa-download"></i> Download Current Batches
+                  </a>
+                </div>
+                <hr>
+                <!-- Step 2: Upload File -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Step 2: Upload Your File</label>
+                  <p class="text-muted small">Select the edited Excel file to import batches in bulk.</p>
+
+                  <form id="uploadBatchForm" action="{{ route('batches.import') }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                      <input type="file" id="importBatchFile" name="import_file" class="form-control"
+                        accept=".xlsx,.xls,.csv" required>
+                      <small class="form-text text-muted d-block mt-2">
+                        Supported formats: Excel (.xlsx, .xls) or CSV. Max size: 2MB
+                      </small>
+                    </div>
+
+                    <div id="batchFilePreview" class="alert alert-light d-none" style="border: 1px solid #ddd;">
+                      <strong>File Selected:</strong>
+                      <div id="batchPreviewText"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100" id="uploadBatchBtn">
+                      <i class="fa-solid fa-upload"></i> Import Batches
+                    </button>
+                  </form>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <div class="footer">
+          <div class="left-footer">
+            <p>Showing {{ $batches->firstItem() ?? 0 }} to {{ $batches->lastItem() ?? 0 }} of {{ $batches->total() }}
+              entries
+              @if(request('search'))
+                <span class="text-muted">(filtered from {{ \App\Models\Master\Batch::count() }} total entries)</span>
+              @endif
+            </p>
+          </div>
+          <div class="right-footer">
+            <nav aria-label="Page navigation example" id="bottom">
+              <ul class="pagination" id="pagination">
+                {{-- Previous Page Link --}}
+                @if ($batches->onFirstPage())
+                  <li class="page-item disabled">
+                    <span class="page-link" id="pg1">Previous</span>
+                  </li>
+                @else
+                  <li class="page-item">
+                    <a class="page-link" href="{{ $batches->previousPageUrl() }}" id="pg1">Previous</a>
+                  </li>
+                @endif
+
+                {{-- Pagination Elements --}}
+                @php
+                  $start = max($batches->currentPage() - 2, 1);
+                  $end = min($start + 4, $batches->lastPage());
+                  $start = max($end - 4, 1);
+                @endphp
+
+                @if($start > 1)
+                  <li class="page-item">
+                    <a class="page-link" href="{{ $batches->url(1) }}">1</a>
+                  </li>
+                  @if($start > 2)
+                    <li class="page-item disabled">
+                      <span class="page-link">...</span>
+                    </li>
+                  @endif
+                @endif
+
+                @for ($i = $start; $i <= $end; $i++)
+                  <li class="page-item {{ $batches->currentPage() == $i ? 'active' : '' }}">
+                    <a class="page-link" href="{{ $batches->url($i) }}">{{ $i }}</a>
+                  </li>
+                @endfor
+
+                @if($end < $batches->lastPage())
+                  @if($end < $batches->lastPage() - 1)
+                    <li class="page-item disabled">
+                      <span class="page-link">...</span>
+                    </li>
+                  @endif
+                  <li class="page-item">
+                    <a class="page-link" href="{{ $batches->url($batches->lastPage()) }}">{{ $batches->lastPage() }}</a>
+                  </li>
+                @endif
+
+                {{-- Next Page Link --}}
+                @if ($batches->hasMorePages())
+                  <li class="page-item">
+                    <a class="page-link" href="{{ $batches->nextPageUrl() }}" id="pg4">Next</a>
+                  </li>
+                @else
+                  <li class="page-item disabled">
+                    <span class="page-link" id="pg4">Next</span>
+                  </li>
+                @endif
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
     </div>
   </div>
-@endforeach
-
-       <!-- Edit Batch Modal -->
-@foreach($batches as $batch)
-  <div class="modal fade" id="editBatchModal{{ $batch->_id }}" tabindex="-1" 
-       aria-labelledby="editBatchModalLabel{{ $batch->_id }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-      <div class="modal-content">
-        <form method="POST" action="{{ route('batches.update', $batch->_id) }}">
-          @csrf
-          @method('PUT')
-          <div class="modal-header">
-            <h5 class="modal-title" id="editBatchModalLabel{{ $batch->_id }}">Edit Batch Details</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            
-            <!-- Batch Code -->
-            <div class="mb-3">
-              <label class="form-label">Batch Code</label>
-              <input type="text" class="form-control" name="batch_id" value="{{ $batch->batch_id ?? '' }}" required>
-            </div>
-
-            <!-- Course -->
-            <div class="mb-3">
-              <label class="form-label">Course</label>
-              <select class="form-select" name="course" required>
-                <option value="Anthesis 11th NEET" {{ ($batch->course ?? '') == 'Anthesis 11th NEET' ? 'selected' : '' }}>Anthesis 11th NEET</option>
-                <option value="Momentum 12th NEET" {{ ($batch->course ?? '') == 'Momentum 12th NEET' ? 'selected' : '' }}>Momentum 12th NEET</option>
-                <option value="Dynamic Target NEET" {{ ($batch->course ?? '') == 'Dynamic Target NEET' ? 'selected' : '' }}>Dynamic Target NEET</option>
-                <option value="Impulse 11th IIT" {{ ($batch->course ?? '') == 'Impulse 11th IIT' ? 'selected' : '' }}>Impulse 11th IIT</option>
-                <option value="Intensity 12th IIT" {{ ($batch->course ?? '') == 'Intensity 12th IIT' ? 'selected' : '' }}>Intensity 12th IIT</option>
-                <option value="Thurst Target IIT" {{ ($batch->course ?? '') == 'Thurst Target IIT' ? 'selected' : '' }}>Thurst Target IIT</option>
-                <option value="Seedling 10th" {{ ($batch->course ?? '') == 'Seedling 10th' ? 'selected' : '' }}>Seedling 10th</option>
-                <option value="Plumule 9th" {{ ($batch->course ?? '') == 'Plumule 9th' ? 'selected' : '' }}>Plumule 9th</option>
-                <option value="Radicle 8th" {{ ($batch->course ?? '') == 'Radicle 8th' ? 'selected' : '' }}>Radicle 8th</option>
-                <option value="Nucleus 7th" {{ ($batch->course ?? '') == 'Nucleus 7th' ? 'selected' : '' }}>Nucleus 7th</option>
-                <option value="Atom 6th" {{ ($batch->course ?? '') == 'Atom 6th' ? 'selected' : '' }}>Atom 6th</option>
-              </select>
-            </div>
-
-            <!-- Course Type -->
-            <div class="mb-3">
-              <label class="form-label">Course Type</label>
-              <select class="form-select" name="course_type" required>
-                <option value="Pre-Medical" {{ ($batch->course_type ?? '') == 'Pre-Medical' ? 'selected' : '' }}>Pre-Medical</option>
-                <option value="Pre-Engineering" {{ ($batch->course_type ?? '') == 'Pre-Engineering' ? 'selected' : '' }}>Pre-Engineering</option>
-                <option value="Pre-Foundation" {{ ($batch->course_type ?? '') == 'Pre-Foundation' ? 'selected' : '' }}>Pre-Foundation</option>
-              </select>
-            </div>
-
-            <!-- Branch Name -->
-            <div class="mb-3">
-              <label class="form-label">Branch Name</label>
-              <select class="form-select" name="branch_name" required>
-                <option value="Bikaner" {{ ($batch->branch_name ?? '') == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
-                <option value="Jaipur" {{ ($batch->branch_name ?? '') == 'Jaipur' ? 'selected' : '' }}>Jaipur</option>
-                <option value="Jodhpur" {{ ($batch->branch_name ?? '') == 'Jodhpur' ? 'selected' : '' }}>Jodhpur</option>
-                <option value="Kota" {{ ($batch->branch_name ?? '') == 'Kota' ? 'selected' : '' }}>Kota</option>
-              </select>
-            </div>
-
-            <!-- Start Date -->
-            <div class="mb-3">
-              <label class="form-label">Start Date</label>
-              <input type="date" class="form-control" name="start_date" value="{{ $batch->start_date ?? '' }}" required>
-            </div>
-
-            <!-- Delivery Mode -->
-            <div class="mb-3">
-              <label class="form-label">Delivery Mode</label>
-              <select class="form-select" name="mode" required>
-                <option value="Distance Learning" {{ ($batch->mode ?? '') == 'Distance Learning' ? 'selected' : '' }}>Distance Learning</option>
-                <option value="Online" {{ ($batch->mode ?? '') == 'Online' ? 'selected' : '' }}>Online</option>
-                <option value="Offline" {{ ($batch->mode ?? '') == 'Offline' ? 'selected' : '' }}>Offline</option>
-              </select>
-            </div>
-
-            <!-- Medium -->
-            <div class="mb-3">
-              <label class="form-label">Medium</label>
-              <select class="form-select" name="medium" required>
-                <option value="English" {{ ($batch->medium ?? '') == 'English' ? 'selected' : '' }}>English</option>
-                <option value="Hindi" {{ ($batch->medium ?? '') == 'Hindi' ? 'selected' : '' }}>Hindi</option>
-              </select>
-            </div>
-
-            <!-- Shift -->
-            <div class="mb-3">
-              <label class="form-label">Shift</label>
-              <select class="form-select" name="shift" required>
-                <option value="Evening" {{ ($batch->shift ?? '') == 'Evening' ? 'selected' : '' }}>Evening</option>
-                <option value="Morning" {{ ($batch->shift ?? '') == 'Morning' ? 'selected' : '' }}>Morning</option>
-              </select>
-            </div>
-
-            <!-- Installment Date 2 -->
-            <div class="mb-3">
-              <label class="form-label">Installment Date 2</label>
-              <input type="date" class="form-control" name="installment_date_2" value="{{ $batch->installment_date_2 ?? '' }}">
-            </div>
-
-            <!-- Installment Date 3 -->
-            <div class="mb-3">
-              <label class="form-label">Installment Date 3</label>
-              <input type="date" class="form-control" name="installment_date_3" value="{{ $batch->installment_date_3 ?? '' }}">
-            </div>
-
-            <!-- Status -->
-            <div class="mb-3">
-              <label class="form-label">Status</label>
-              <select class="form-select" name="status">
-                <option value="Active" {{ ($batch->status ?? 'Active') == 'Active' ? 'selected' : '' }}>Active</option>
-                <option value="Inactive" {{ ($batch->status ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
-              </select>
-            </div>
-
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Update Batch</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-@endforeach
-
-<!-- Add Batch Modal -->
-<div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content" id="content-one">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Create Batch</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form method="POST" action="{{ route('batches.add') }}" id="createBatchForm">
-          @csrf
-          
-          <!-- Course Dropdown - This will auto-fill Class Name & Course Type -->
-          <div class="mb-3">
-            <label for="course" class="form-label">Course <span class="text-danger">*</span></label>
-            <select class="form-select" name="course" id="courseSelect" required>
-              <option selected disabled>Select Course</option>
-              <option value="Anthesis 11th NEET">Anthesis 11th NEET</option>
-              <option value="Momentum 12th NEET">Momentum 12th NEET</option>
-              <option value="Dynamic Target NEET">Dynamic Target NEET</option>
-              <option value="Impulse 11th IIT">Impulse 11th IIT</option>
-              <option value="Intensity 12th IIT">Intensity 12th IIT</option>
-              <option value="Thrust Target IIT">Thrust Target IIT</option>
-              <option value="Seedling 10th">Seedling 10th</option>
-              <option value="Plumule 9th">Plumule 9th</option>
-              <option value="Radicle 8th">Radicle 8th</option>
-              <option value="Nucleus 7th">Nucleus 7th</option>
-              <option value="Atom 6th">Atom 6th</option>
-            </select>
-          </div>
-
-          <!-- Auto-filled fields (Read-only) -->
-          <div class="mb-3">
-            <label class="form-label">Class Name</label>
-            <input type="text" class="form-control bg-light" id="classNameDisplay">
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Course Type</label>
-            <input type="text" class="form-control bg-light" id="courseTypeDisplay">
-          </div>
-
-          <!-- Batch Code -->
-          <div class="mb-3">
-            <label for="batch_id" class="form-label">Batch Code <span class="text-danger">*</span></label>
-            <input type="text" name="batch_id" class="form-control" placeholder="e.g., 20T1, 19L1" required>
-          </div>
-
-          <!-- Branch Name -->
-          <div class="mb-3">
-            <label for="branch_name" class="form-label">Branch Name <span class="text-danger">*</span></label>
-            <select class="form-select" name="branch_name" required>
-              <option selected disabled>Select Branch</option>
-              <option value="Bikaner">Bikaner</option>
-            </select>
-          </div>
-
-          <!-- Start Date -->
-          <div class="mb-3">
-            <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
-            <input type="date" name="start_date" class="form-control" required>
-          </div>
-
-          <!-- Delivery Mode -->
-          <div class="mb-3">
-            <label for="mode" class="form-label">Delivery Mode <span class="text-danger">*</span></label>
-            <select class="form-select" name="mode" required>
-              <option selected disabled>Select Delivery Mode</option>
-              <option value="Offline">Offline</option>
-              <option value="Online">Online</option>
-            </select>
-          </div>
-
-          <!-- Medium -->
-          <div class="mb-3">
-            <label for="medium" class="form-label">Medium <span class="text-danger">*</span></label>
-            <select class="form-select" name="medium" required>
-              <option selected disabled>Select Medium</option>
-              <option value="English">English</option>
-              <option value="Hindi">Hindi</option>
-            </select>
-          </div>
-
-          <!-- Shift -->
-          <div class="mb-3">
-            <label for="shift" class="form-label">Shift <span class="text-danger">*</span></label>
-            <select class="form-select" name="shift" required>
-              <option selected disabled>Select Shift</option>
-              <option value="Morning">Morning</option>
-              <option value="Evening">Evening</option>
-            </select>
-          </div>
-
-          <!-- Installment Dates -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Installment Dates</label>
-          </div>
-
-          <div class="mb-3">
-            <label for="installment_date_2" class="form-label">Installment Date 2</label>
-            <input type="date" name="installment_date_2" class="form-control">
-          </div>
-
-          <div class="mb-3">
-            <label for="installment_date_3" class="form-label">Installment Date 3</label>
-            <input type="date" name="installment_date_3" class="form-control">
-          </div>
-
-          <!-- Status -->
-          <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
-            <select class="form-select" name="status">
-              <option value="Active" selected>Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </div>
-
-          <div class="modal-footer" id="footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" id="doneBtn" class="btn btn-primary">Create</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-// Auto-fill class name and course type based on selected course
-document.getElementById('courseSelect').addEventListener('change', function() {
-  const courseMapping = {
-    'Anthesis 11th NEET': { class: '11th (XI)', type: 'Pre-Medical' },
-    'Momentum 12th NEET': { class: '12th (XII)', type: 'Pre-Medical' },
-    'Dynamic Target NEET': { class: 'Target (XII +)', type: 'Pre-Medical' },
-    'Impulse 11th IIT': { class: '11th (XI)', type: 'Pre-Engineering' },
-    'Intensity 12th IIT': { class: '12th (XII)', type: 'Pre-Engineering' },
-    'Thrust Target IIT': { class: 'Target (XII +)', type: 'Pre-Engineering' },
-    'Seedling 10th': { class: '10th (X)', type: 'Pre-Foundation' },
-    'Plumule 9th': { class: '9th (IX)', type: 'Pre-Foundation' },
-    'Radicle 8th': { class: '8th (VIII)', type: 'Pre-Foundation' },
-    'Nucleus 7th': { class: '7th (VII)', type: 'Pre-Foundation' },
-    'Atom 6th': { class: '6th (VI)', type: 'Pre-Foundation' }
-  };
-
-  const selectedCourse = this.value;
-  const courseData = courseMapping[selectedCourse];
-
-  if (courseData) {
-    document.getElementById('classNameDisplay').value = courseData.class;
-    document.getElementById('courseTypeDisplay').value = courseData.type;
-  }
-});
-</script>
-
-<!-- Upload Modal-->
-<!-- <div class="modal fade" id="exampleModalTwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" id="modal-two">
-      <div class="modal-header">
-        <h2 class="modal-title fs-5" id="exampleModalLabel">Upload Batches</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="sample-body">
-        <a href="{{ route('batches.downloadSample') }}">
-          <button type="button" class="sampleFile" id="xlsx">Download Sample File</button>
-        </a>
-          @csrf
-          <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
-          <button type="submit" class="btn btn-primary mt-3">Upload</button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div> -->
-
-      </div>
-      <div class="footer">
-        <div class="left-footer">
-          <p>Showing 1 to 10 of 10 Enteries</p>
-        </div>
-        <div class="right-footer">
-          <nav aria-label="...">
-            <ul class="pagination">
-              <li class="page-item"><a href="#" class="page-link" id="pg1">Previous</a></li>
-              <li class="page-item active">
-                <a class="page-link" href="#" aria-current="page" id="pg2">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="/user management/emp/emp2.html" id="pg3">2</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </div>
   </div>
   </div>
   </div>
@@ -822,76 +915,156 @@ document.getElementById('courseSelect').addEventListener('change', function() {
   </div>
   </div>
   </div>
-  </div>
-
 </body>
 <!-- External JavaScript Libraries -->
 <!-- Bootstrap Bundle JS (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 <script src="{{asset('js/emp.js')}}"></script>
-
-
-<!-- AJAX Script: Handles dynamic user addition without page reload -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-// AJAX for dynamic batch addition without page reload
-$('#createBatchForm').on('submit', function (e) {
-    e.preventDefault(); // Prevent default form submission
-    $('.text-danger').text(''); // Clear previous errors
-
-    // AJAX POST request to add batch
-    $.ajax({
-        url: "{{ route('batches.add') }}",
-        method: 'POST',
-        data: $(this).serialize(),
-        success: function (response) {
-            // Close the modal
-            $('#exampleModalOne').modal('hide');
-            
-            // Reset form
-            $('#createBatchForm')[0].reset();
-            
-            // Force page reload to show new batch
-            window.location.href = "{{ route('batches.index') }}";
-        },
-        error: function (xhr) {
-            if (xhr.status === 422) {
-                // Display validation errors
-                const errors = xhr.responseJSON.errors;
-                for (let field in errors) {
-                    $('#error-' + field).text(errors[field][0]);
-                }
-            } else {
-                alert('An error occurred. Please try again.');
-            }
-        }
-    });
-});
-
-// Auto-fill class name and course type based on selected course
-document.getElementById('courseSelect').addEventListener('change', function() {
+  // Auto-fill class name and course type based on selected course
+  document.getElementById('courseSelect').addEventListener('change', function () {
     const courseMapping = {
-        'Anthesis 11th NEET': { class: '11th (XI)', type: 'Pre-Medical' },
-        'Momentum 12th NEET': { class: '12th (XII)', type: 'Pre-Medical' },
-        'Dynamic Target NEET': { class: 'Target (XII +)', type: 'Pre-Medical' },
-        'Impulse 11th IIT': { class: '11th (XI)', type: 'Pre-Engineering' },
-        'Intensity 12th IIT': { class: '12th (XII)', type: 'Pre-Engineering' },
-        'Thrust Target IIT': { class: 'Target (XII +)', type: 'Pre-Engineering' },
-        'Seedling 10th': { class: '10th (X)', type: 'Pre-Foundation' },
-        'Plumule 9th': { class: '9th (IX)', type: 'Pre-Foundation' },
-        'Radicle 8th': { class: '8th (VIII)', type: 'Pre-Foundation' },
-        'Nucleus 7th': { class: '7th (VII)', type: 'Pre-Foundation' },
-        'Atom 6th': { class: '6th (VI)', type: 'Pre-Foundation' }
+      'Anthesis 11th NEET': { class: '11th (XI)', type: 'Pre-Medical' },
+      'Momentum 12th NEET': { class: '12th (XII)', type: 'Pre-Medical' },
+      'Dynamic Target NEET': { class: 'Target (XII +)', type: 'Pre-Medical' },
+      'Impulse 11th IIT': { class: '11th (XI)', type: 'Pre-Engineering' },
+      'Intensity 12th IIT': { class: '12th (XII)', type: 'Pre-Engineering' },
+      'Thrust Target IIT': { class: 'Target (XII +)', type: 'Pre-Engineering' },
+      'Seedling 10th': { class: '10th (X)', type: 'Pre-Foundation' },
+      'Plumule 9th': { class: '9th (IX)', type: 'Pre-Foundation' },
+      'Radicle 8th': { class: '8th (VIII)', type: 'Pre-Foundation' },
+      'Nucleus 7th': { class: '7th (VII)', type: 'Pre-Foundation' },
+      'Atom 6th': { class: '6th (VI)', type: 'Pre-Foundation' }
     };
 
     const selectedCourse = this.value;
     const courseData = courseMapping[selectedCourse];
 
     if (courseData) {
-        document.getElementById('classNameDisplay').value = courseData.class;
-        document.getElementById('courseTypeDisplay').value = courseData.type;
+      document.getElementById('classNameDisplay').value = courseData.class;
+      document.getElementById('courseTypeDisplay').value = courseData.type;
     }
-});
+  });
+
+  // <!-- AJAX Script: Handles dynamic user addition without page reload -->
+  // AJAX for dynamic batch addition without page reload
+  $('#createBatchForm').on('submit', function (e) {
+    e.preventDefault(); // Prevent default form submission
+    $('.text-danger').text(''); // Clear previous errors
+
+    // AJAX POST request to add batch
+    $.ajax({
+      url: "{{ route('batches.add') }}",
+      method: 'POST',
+      data: $(this).serialize(),
+      success: function (response) {
+        // Close the modal
+        $('#exampleModalOne').modal('hide');
+
+        // Reset form
+        $('#createBatchForm')[0].reset();
+
+        // Force page reload to show new batch
+        window.location.href = "{{ route('batches.index') }}";
+      },
+      error: function (xhr) {
+        if (xhr.status === 422) {
+          // Display validation errors
+          const errors = xhr.responseJSON.errors;
+          for (let field in errors) {
+            $('#error-' + field).text(errors[field][0]);
+          }
+        } else {
+          alert('An error occurred. Please try again.');
+        }
+      }
+    });
+  });
+
+  // Auto-fill class name and course type based on selected course
+  document.getElementById('courseSelect').addEventListener('change', function () {
+    const courseMapping = {
+      'Anthesis 11th NEET': { class: '11th (XI)', type: 'Pre-Medical' },
+      'Momentum 12th NEET': { class: '12th (XII)', type: 'Pre-Medical' },
+      'Dynamic Target NEET': { class: 'Target (XII +)', type: 'Pre-Medical' },
+      'Impulse 11th IIT': { class: '11th (XI)', type: 'Pre-Engineering' },
+      'Intensity 12th IIT': { class: '12th (XII)', type: 'Pre-Engineering' },
+      'Thrust Target IIT': { class: 'Target (XII +)', type: 'Pre-Engineering' },
+      'Seedling 10th': { class: '10th (X)', type: 'Pre-Foundation' },
+      'Plumule 9th': { class: '9th (IX)', type: 'Pre-Foundation' },
+      'Radicle 8th': { class: '8th (VIII)', type: 'Pre-Foundation' },
+      'Nucleus 7th': { class: '7th (VII)', type: 'Pre-Foundation' },
+      'Atom 6th': { class: '6th (VI)', type: 'Pre-Foundation' }
+    };
+
+    const selectedCourse = this.value;
+    const courseData = courseMapping[selectedCourse];
+
+    if (courseData) {
+      document.getElementById('classNameDisplay').value = courseData.class;
+      document.getElementById('courseTypeDisplay').value = courseData.type;
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // File preview functionality
+    const fileInput = document.getElementById('importBatchFile');
+    const preview = document.getElementById('batchFilePreview');
+    const previewText = document.getElementById('batchPreviewText');
+
+    if (fileInput) {
+      fileInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+
+        if (file) {
+          preview.classList.remove('d-none');
+          const fileSize = (file.size / 1024).toFixed(2);
+          const fileIcon = file.name.endsWith('.csv') ? 'fa-file-csv' : 'fa-file-excel';
+
+          previewText.innerHTML = `
+          <div class="d-flex align-items-center">
+            <i class="fa-solid ${fileIcon} text-success me-2 fs-4"></i>
+            <div>
+              <div><strong>${file.name}</strong></div>
+              <small class="text-muted">${fileSize} KB</small>
+            </div>
+          </div>
+        `;
+        } else {
+          preview.classList.add('d-none');
+        }
+      });
+    }
+
+    // Reset form when modal closes
+    const uploadModal = document.getElementById('uploadBatchModal');
+    if (uploadModal) {
+      uploadModal.addEventListener('hidden.bs.modal', function () {
+        const form = document.getElementById('uploadBatchForm');
+        if (form) {
+          form.reset();
+          preview.classList.add('d-none');
+        }
+      });
+    }
+
+    // Auto-dismiss alerts after 5 seconds
+    const alerts = document.querySelectorAll('.flash-container .alert');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.classList.add('auto-dismiss');
+      }, 100);
+
+      setTimeout(() => {
+        const container = alert.closest('.flash-container');
+        if (container) {
+          container.remove();
+        }
+      }, 5500);
+    });
+  });
 </script>
 
 </html>

@@ -490,4 +490,334 @@ public function addUser(Request $request)
     //         dd($users->first());
     //     }
     // }
+    /**
+ * Export current employees to Excel
+ */
+public function exportToExcel(Request $request)
+{
+    try {
+        $search = $request->input('search', '');
+
+        // Build query with same filters as index page
+        $query = User::query();
+
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('mobileNumber', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Get all users (not paginated for export)
+        $users = $query->get();
+
+        // Collect all department and role IDs
+        $allRoleIds = collect();
+        $allDepartmentIds = collect();
+
+        foreach ($users as $user) {
+            $userDepts = data_get($user, 'departments', []);
+            $userRoles = data_get($user, 'roles', []);
+
+            if (is_array($userDepts)) {
+                $allDepartmentIds = $allDepartmentIds->merge($userDepts);
+            }
+            
+            if (is_array($userRoles)) {
+                $allRoleIds = $allRoleIds->merge($userRoles);
+            }
+        }
+
+        $allRoleIds = $allRoleIds->map(fn($id) => (string) (is_object($id) ? $id : $id))->unique()->filter();
+        $allDepartmentIds = $allDepartmentIds->map(fn($id) => (string) (is_object($id) ? $id : $id))->unique()->filter();
+
+        // Fetch departments and roles
+        $departments = Department::whereIn('_id', $allDepartmentIds->toArray())
+            ->get()
+            ->keyBy(fn($dept) => (string) $dept->_id);
+
+        $roles = Role::whereIn('_id', $allRoleIds->toArray())
+            ->get()
+            ->keyBy(fn($role) => (string) $role->_id);
+
+        // Prepare CSV data
+        $csvData = [];
+        
+        // Add headers
+        $csvData[] = [
+            'Serial No.',
+            'Name',
+            'Email',
+            'Mobile No.',
+            'Alternate Mobile',
+            'Branch',
+            'Department',
+            'Role',
+            'Status',
+            'Created At',
+            'Updated At'
+        ];
+
+        // Add data rows
+        foreach ($users as $index => $user) {
+            $userDepts = data_get($user, 'departments', []);
+            $userRoles = data_get($user, 'roles', []);
+
+            $departmentNames = collect(is_array($userDepts) ? $userDepts : [])
+                ->map(fn($id) => $departments->get((string) (is_object($id) ? $id : $id))?->name)
+                ->filter()
+                ->implode(', ');
+
+            $roleNames = collect(is_array($userRoles) ? $userRoles : [])
+                ->map(fn($id) => $roles->get((string) (is_object($id) ? $id : $id))?->name)
+                ->filter()
+                ->implode(', ');
+
+            $csvData[] = [
+                $index + 1,
+                $user->name ?? '',
+                $user->email ?? '',
+                $user->mobileNumber ?? '—',
+                $user->alternateNumber ?? '—',
+                $user->branch ?? '—',
+                $departmentNames ?: '—',
+                $roleNames ?: '—',
+                $user->status ?? 'Active',
+                $user->created_at ? $user->created_at->format('d-m-Y H:i:s') : '—',
+                $user->updated_at ? $user->updated_at->format('d-m-Y H:i:s') : '—',
+            ];
+        }
+
+        // Generate filename with timestamp
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "employees_export_{$timestamp}.csv";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        
+        foreach ($csvData as $row) {
+            fputcsv($handle, $row);
+        }
+        
+        rewind($handle);
+        $csvContent = stream_get_contents($handle);
+        fclose($handle);
+
+        // Return as download
+        return response($csvContent, 200)
+            ->header('Content-Type', 'text/csv; charset=UTF-8')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+
+    } catch (\Exception $e) {
+        Log::error('Error exporting employees to Excel:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Failed to export data: ' . $e->getMessage());
+    }
+}
+/**
+ * Download sample Excel file for bulk import
+ */
+public function downloadSample()
+{
+    try {
+        // Define sample data
+        $sampleData = [
+            ['Name', 'Mobile Number', 'Alternate Mobile', 'Email', 'Branch', 'Department', 'Password'],
+            ['John Doe', '9876543210', '9123456789', 'john.doe@example.com', 'Bikaner', 'Front Office', 'Password@123'],
+            ['Jane Smith', '9876543211', '9123456788', 'jane.smith@example.com', 'Bikaner', 'Back Office', 'Password@123'],
+            ['Mike Johnson', '9876543212', '9123456787', 'mike.johnson@example.com', 'Bikaner', 'Admin', 'Password@123'],
+        ];
+
+        // Create CSV content
+        $filename = 'sample_users_import.csv';
+        $handle = fopen('php://temp', 'r+');
+        
+        foreach ($sampleData as $row) {
+            fputcsv($handle, $row);
+        }
+        
+        rewind($handle);
+        $csvContent = stream_get_contents($handle);
+        fclose($handle);
+
+        // Return as download
+        return response($csvContent, 200)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+
+    } catch (\Exception $e) {
+        Log::error('Error generating sample file:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Failed to generate sample file: ' . $e->getMessage());
+    }
+}
+/**
+ * Import users from Excel/CSV file
+ */
+public function import(Request $request)
+{
+    $request->validate([
+        'import_file' => 'required|file|mimes:xlsx,xls,csv|max:2048',
+    ]);
+
+    try {
+        $file = $request->file('import_file');
+        $extension = $file->getClientOriginalExtension();
+        
+        // Read file content
+        if ($extension === 'csv') {
+            $data = array_map('str_getcsv', file($file->getRealPath()));
+        } else {
+            // For Excel files, use a simple reader or require Laravel Excel
+            return redirect()->back()->with('error', 'Please use CSV format or install Laravel Excel package for .xlsx files.');
+        }
+        
+        // Skip header row
+        $header = array_shift($data);
+        
+        // Department to Role mapping
+        $departmentRoleMapping = [
+            'Front Office' => 'Finance',
+            'Back Office' => 'Administration',
+            'Office' => 'Attendance',
+            'Test Management' => 'Floor Incharge',
+            'Admin' => 'Records'
+        ];
+        
+        $imported = 0;
+        $skipped = 0;
+        $errors = [];
+
+        foreach ($data as $rowIndex => $row) {
+            $rowNumber = $rowIndex + 2; // +2 because we skipped header and arrays start at 0
+            
+            // Skip empty rows
+            if (empty(array_filter($row))) {
+                continue;
+            }
+            
+            // Validate required fields
+            if (count($row) < 7) {
+                $errors[] = "Row {$rowNumber}: Insufficient columns";
+                $skipped++;
+                continue;
+            }
+            
+            $name = trim($row[0] ?? '');
+            $mobileNumber = trim($row[1] ?? '');
+            $alternateNumber = trim($row[2] ?? '');
+            $email = trim($row[3] ?? '');
+            $branch = trim($row[4] ?? '');
+            $department = trim($row[5] ?? '');
+            $password = trim($row[6] ?? '');
+            
+            // Validate required fields
+            if (empty($name) || empty($email) || empty($mobileNumber) || empty($department) || empty($password)) {
+                $errors[] = "Row {$rowNumber}: Missing required fields (Name, Email, Mobile, Department, or Password)";
+                $skipped++;
+                continue;
+            }
+            
+            // Validate email format
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Row {$rowNumber}: Invalid email format ({$email})";
+                $skipped++;
+                continue;
+            }
+            
+            // Check if email already exists
+            if (User::where('email', $email)->exists()) {
+                $errors[] = "Row {$rowNumber}: Email already exists ({$email})";
+                $skipped++;
+                continue;
+            }
+            
+            // Validate mobile number (10 digits)
+            if (!preg_match('/^[0-9]{10}$/', $mobileNumber)) {
+                $errors[] = "Row {$rowNumber}: Invalid mobile number format ({$mobileNumber})";
+                $skipped++;
+                continue;
+            }
+            
+            // Validate alternate mobile if provided
+            if (!empty($alternateNumber) && !preg_match('/^[0-9]{10}$/', $alternateNumber)) {
+                $errors[] = "Row {$rowNumber}: Invalid alternate mobile number format ({$alternateNumber})";
+                $skipped++;
+                continue;
+            }
+            
+            try {
+                // Get assigned role based on department
+                $assignedRole = $departmentRoleMapping[$department] ?? 'Administration';
+                
+                // Find or create department
+                $dept = Department::firstOrCreate(['name' => $department]);
+                
+                // Find or create role
+                $role = Role::firstOrCreate(['name' => $assignedRole]);
+                
+                // Create user
+                User::create([
+                    'name' => $name,
+                    'email' => $email,
+                    'mobileNumber' => $mobileNumber,
+                    'alternateNumber' => $alternateNumber ?: null,
+                    'branch' => $branch ?: 'Bikaner',
+                    'departments' => [$dept->_id],
+                    'roles' => [$role->_id],
+                    'password' => Hash::make($password),
+                    'status' => 'Active',
+                ]);
+                
+                $imported++;
+                
+            } catch (\Exception $e) {
+                $errors[] = "Row {$rowNumber}: " . $e->getMessage();
+                $skipped++;
+                Log::error("Import error at row {$rowNumber}:", [
+                    'error' => $e->getMessage(),
+                    'data' => $row
+                ]);
+            }
+        }
+        
+        // Build success message
+        $message = "Import completed: {$imported} users imported successfully";
+        if ($skipped > 0) {
+            $message .= ", {$skipped} rows skipped";
+        }
+        
+        // If there are errors, add them to session
+        if (!empty($errors)) {
+            session()->flash('import_errors', $errors);
+        }
+        
+        return redirect()->route('user.emp.emp')
+            ->with('success', $message);
+
+    } catch (\Exception $e) {
+        Log::error('Import file processing error:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Error processing file: ' . $e->getMessage());
+    }
+}
 }

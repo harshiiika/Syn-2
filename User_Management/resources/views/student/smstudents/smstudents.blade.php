@@ -16,7 +16,7 @@
       padding-right: 10px;
     }
     .activity-item {
-      border-left: 3px solid #0d6efd;
+      border-left: 3px solid #fd550dff;
       padding-left: 20px;
       padding-bottom: 20px;
       position: relative;
@@ -34,7 +34,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-color: #0d6efd;
+      background-color: #fd550dff;
       border: 2px solid white;
     }
     .activity-header {
@@ -59,9 +59,15 @@
       margin: 0;
     }
     .activity-user {
-      color: #0d6efd;
+      color: #fd550dff;
       font-weight: 500;
     }
+
+    #history{
+      background-color: #fd550dff;
+    }
+
+    
   </style>
 </head>
 
@@ -382,13 +388,14 @@
                           </button>
                         </li>
                         <li>
-                          <button class="dropdown-item" type="button" data-bs-toggle="modal"
-                            data-bs-target="#batchModal{{ $studentId }}">
-                            Batch Update
-                          </button>
-                        </li>
-
-                        <li>
+<button class="dropdown-item open-batch-modal" data-student-id="{{ $studentId }}">Batch Update</button>                        <li>
+                          <!-- <button class="dropdown-item" type="button" data-bs-toggle="modal"
+                            data-bs-target="#shiftModal{{ $studentId }}">
+                            Shift Update
+                          </button> -->
+                          @if(empty($batches))
+                              <div class="alert alert-danger">⚠️ No batches found!</div>
+                            @endif
                           <button class="dropdown-item open-shift-modal" data-student-id="{{ $studentId }}">Shift Update</button>
                         </li>
 
@@ -466,33 +473,100 @@
     </div>
 
     <!-- Batch Update Modal -->
-    <div class="modal fade" id="batchModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog">
-        <form method="POST" action="{{ route('smstudents.updateBatch', $studentId) }}" class="modal-content">
-          @csrf
-          <div class="modal-header">
-            <h5 class="modal-title">Update Batch</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label">Select New Batch</label>
-              <select name="batch_id" class="form-select" required>
-                @foreach($batches as $batch)
-                  <option value="{{ $batch->_id ?? $batch->id }}" {{ ($student->batch_id == ($batch->_id ?? $batch->id)) ? 'selected' : '' }}>
-                    {{ $batch->name }}
-                  </option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Update Batch</button>
-          </div>
-        </form>
+    @php
+  $studentId = $student->_id ?? $student->id ?? null;
+  if (is_object($studentId)) {
+    $studentId = (string) $studentId;
+  }
+@endphp
+
+<div class="modal fade" id="batchModal{{ $studentId }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{{ route('smstudents.updateBatch', $studentId) }}" class="modal-content">
+      @csrf
+      
+      <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
+        <h5 class="modal-title text-white">
+          <i class="fas fa-user-group me-2"></i>Update Batch
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-    </div>
+      
+      <div class="modal-body">
+        <!-- Current Batch Info -->
+        <div class="alert alert-info mb-3">
+          <strong>Current Batch:</strong> 
+          {{ $student->batch->batch_id ?? $student->batch_name ?? 'N/A' }}
+          <br>
+          <small class="text-muted">Course: {{ $student->course->name ?? $student->course_name ?? 'N/A' }}</small>
+        </div>
+        
+        <!-- New Batch Selection -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">
+            Select New Batch <span class="text-danger">*</span>
+          </label>
+          <select name="batch_id" class="form-select" required>
+            <option value="">-- Select Batch --</option>
+            @foreach($batches as $batch)
+              @php
+                $batchId = $batch->_id ?? $batch->id;
+                if (is_object($batchId)) {
+                  $batchId = (string) $batchId;
+                }
+                $currentBatchId = $student->batch_id ?? null;
+                if (is_object($currentBatchId)) {
+                  $currentBatchId = (string) $currentBatchId;
+                }
+                $isSelected = ($currentBatchId == $batchId);
+              @endphp
+              <option value="{{ $batchId }}" {{ $isSelected ? 'selected' : '' }}>
+                {{ $batch->batch_id ?? 'Batch' }}
+                @if($batch->course)
+                  - {{ $batch->course }}
+                @endif
+                @if($batch->class)
+                  ({{ $batch->class }})
+                @endif
+                @if($batch->shift)
+                  - {{ $batch->shift }}
+                @endif
+                @if($batch->mode)
+                  [{{ $batch->mode }}]
+                @endif
+              </option>
+            @endforeach
+          </select>
+          <small class="text-muted d-block mt-1">
+            <i class="fas fa-info-circle me-1"></i>
+            This will update batch, course, and delivery mode
+          </small>
+        </div>
+
+        <!-- Warning Message -->
+        <div class="alert alert-warning mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <strong>Note:</strong> Changing the batch will automatically update:
+          <ul class="mb-0 mt-1 small">
+            <li>Course information</li>
+            <li>Delivery mode</li>
+            <li>Batch-related details</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-2"></i>Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save me-2"></i>Update Batch
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 
 <!-- Global Shift Modal -->
@@ -534,7 +608,7 @@
         <div class="modal-content border-0 shadow-lg rounded-3">
           
           <!-- Modal Header -->
-          <div class="modal-header bg-primary text-white">
+          <div class="modal-header bg-primary text-white" id="history">
             <h5 class="modal-title fw-semibold" id="historyModalLabel{{ $studentId }}">
               Student History - {{ $student->student_name ?? $student->name ?? 'N/A' }}
             </h5>
@@ -742,10 +816,10 @@
   @endforeach
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
     // Sidebar toggle
     const toggleBtn = document.getElementById('toggleBtn');
     const sidebar = document.getElementById('sidebar');
@@ -774,174 +848,173 @@
     let allRows = [];
     let filteredRows = [];
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const tableBody = document.getElementById('tableBody');
-      
-      // Get all data rows (exclude "No students found" row)
+    const tableBody = document.getElementById('tableBody');
+    if (tableBody) {
       allRows = Array.from(tableBody.querySelectorAll('tr[data-row="true"]'));
       filteredRows = [...allRows];
-      
-      // Initialize
       updateTable();
-      
-      // Entries per page dropdown
-      document.querySelectorAll('.entries-option').forEach(option => {
-        option.addEventListener('click', function(e) {
-          e.preventDefault();
-          entriesPerPage = parseInt(this.dataset.value);
-          document.getElementById('number').textContent = entriesPerPage;
-          currentPage = 1;
-          updateTable();
-        });
+    }
+
+    document.querySelectorAll('.entries-option').forEach(option => {
+      option.addEventListener('click', function (e) {
+        e.preventDefault();
+        entriesPerPage = parseInt(this.dataset.value);
+        document.getElementById('number').textContent = entriesPerPage;
+        currentPage = 1;
+        updateTable();
       });
-      
-      // Search functionality
-      const searchInput = document.getElementById('searchInput');
-      if (searchInput) {
-        searchInput.addEventListener('input', function() {
-          const searchTerm = this.value.toLowerCase().trim();
-          
-          if (searchTerm === '') {
-            filteredRows = [...allRows];
-          } else {
-            filteredRows = allRows.filter(row => {
-              const text = row.textContent.toLowerCase();
-              return text.includes(searchTerm);
-            });
-          }
-          
-          currentPage = 1;
-          updateTable();
-        });
-      }
     });
 
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        const searchTerm = this.value.toLowerCase().trim();
+        filteredRows = searchTerm === ''
+          ? [...allRows]
+          : allRows.filter(row => row.textContent.toLowerCase().includes(searchTerm));
+        currentPage = 1;
+        updateTable();
+      });
+    }
+
     function updateTable() {
-      const tableBody = document.getElementById('tableBody');
       const start = (currentPage - 1) * entriesPerPage;
       const end = start + entriesPerPage;
       const pageRows = filteredRows.slice(start, end);
-      
-      // Hide all rows first
+
       allRows.forEach(row => row.style.display = 'none');
-      
-      // Remove "no results" message if exists
+
       const noResultsRow = document.getElementById('noResultsRow');
-      if (noResultsRow) {
-        noResultsRow.style.display = 'none';
-      }
-      
-      // Show current page rows
+      if (noResultsRow) noResultsRow.style.display = 'none';
+
       if (pageRows.length > 0) {
         pageRows.forEach(row => row.style.display = '');
       } else {
-        // Show no results message
         if (noResultsRow) {
           noResultsRow.style.display = '';
         } else {
-          // Create temporary no results row
           const tempRow = document.createElement('tr');
           tempRow.innerHTML = '<td colspan="8" class="text-center">No matching students found</td>';
           tempRow.id = 'tempNoResults';
           tableBody.appendChild(tempRow);
         }
       }
-      
-      // Update pagination info
+
       const totalEntries = filteredRows.length;
-      const showingFrom = document.getElementById('showingFrom');
-      const showingTo = document.getElementById('showingTo');
-      const totalEntriesSpan = document.getElementById('totalEntries');
-      
-      if (showingFrom) showingFrom.textContent = totalEntries > 0 ? start + 1 : 0;
-      if (showingTo) showingTo.textContent = Math.min(end, totalEntries);
-      if (totalEntriesSpan) totalEntriesSpan.textContent = totalEntries;
-      
-      // Update pagination buttons
+      document.getElementById('showingFrom').textContent = totalEntries > 0 ? start + 1 : 0;
+      document.getElementById('showingTo').textContent = Math.min(end, totalEntries);
+      document.getElementById('totalEntries').textContent = totalEntries;
+
       updatePagination();
     }
 
     function updatePagination() {
       const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
       const pagination = document.getElementById('pagination');
-      
       if (!pagination) return;
-      
+
       pagination.innerHTML = '';
-      
-      if (totalPages === 0) {
-        return; // No pagination needed
-      }
-      
-      // Previous button
+      if (totalPages === 0) return;
+
       const prevLi = document.createElement('li');
       prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
       prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
       pagination.appendChild(prevLi);
-      
-      // Page numbers
+
       const maxVisiblePages = 5;
       let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
       let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-      
       if (endPage - startPage < maxVisiblePages - 1) {
         startPage = Math.max(1, endPage - maxVisiblePages + 1);
       }
-      
-      // First page button
+
       if (startPage > 1) {
-        const li = document.createElement('li');
-        li.className = 'page-item';
-        li.innerHTML = `<a class="page-link" href="#" onclick="changePage(1); return false;">1</a>`;
-        pagination.appendChild(li);
-        
+        pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(1); return false;">1</a></li>`;
         if (startPage > 2) {
-          const dots = document.createElement('li');
-          dots.className = 'page-item disabled';
-          dots.innerHTML = `<span class="page-link">...</span>`;
-          pagination.appendChild(dots);
+          pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
         }
       }
-      
-      // Page number buttons
+
       for (let i = startPage; i <= endPage; i++) {
-        const li = document.createElement('li');
-        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-        li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
-        pagination.appendChild(li);
+        pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a></li>`;
       }
-      
-      // Last page button
+
       if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
-          const dots = document.createElement('li');
-          dots.className = 'page-item disabled';
-          dots.innerHTML = `<span class="page-link">...</span>`;
-          pagination.appendChild(dots);
+          pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
         }
-        
-        const li = document.createElement('li');
-        li.className = 'page-item';
-        li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a>`;
-        pagination.appendChild(li);
+        pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a></li>`;
       }
-      
-      // Next button
+
       const nextLi = document.createElement('li');
       nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
       nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
       pagination.appendChild(nextLi);
     }
 
-    function changePage(page) {
+    window.changePage = function (page) {
       const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
       if (page >= 1 && page <= totalPages) {
         currentPage = page;
         updateTable();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-    }
+    };
 
+    // Shift modal setup
+    document.querySelectorAll('.open-shift-modal').forEach(button => {
+      button.addEventListener('click', function () {
+        const studentId = this.dataset.studentId;
+        const form = document.getElementById('shiftForm');
+        form.action = `/smstudents/${studentId}/update-shift`;
+        $('#shiftModal').modal('show');
+      });
+    });
+
+    // Batch modal setup
+    document.querySelectorAll('.open-batch-modal').forEach(button => {
+      button.addEventListener('click', function () {
+        const studentId = this.dataset.studentId;
+        document.getElementById('batchStudentId').value = studentId;
+        $('#batchModal').modal('show');
+      });
+    });
+
+    // AJAX batch update
+     document.getElementById('batchForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const studentId = document.getElementById('batchStudentId').value;
+  const batchId = document.getElementById('batchSelect').value;
+  const token = document.querySelector('#batchForm input[name="_token"]').value;
+
+  fetch(`/smstudents/${studentId}/update-batch`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': token
+    },
+    body: JSON.stringify({ batch_id: batchId })
+  })
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Server returned non-JSON response');
+    }
+    const data = await response.json();
+    if (data.success) {
+      alert('✅ Batch updated successfully!');
+      $('#batchModal').modal('hide');
+    } else {
+      alert('❌ Failed to update batch: ' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('❌ Something went wrong: ' + error.message);
+  });
+});
     //shift modal
     document.addEventListener('DOMContentLoaded', function () {
       document.querySelectorAll('.open-shift-modal').forEach(button => {
@@ -954,6 +1027,37 @@
       });
     });
 
-  </script>
+  const studentId = document.getElementById('batchStudentId').value;
+  const batchId = document.getElementById('batchSelect').value;
+  const token = document.querySelector('#batchForm input[name="_token"]').value;
+
+  fetch(`/smstudents/${studentId}/update-batch`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': token
+    },
+    body: JSON.stringify({ batch_id: batchId })
+  })
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Server returned non-JSON response');
+    }
+    const data = await response.json();
+    if (data.success) {
+      alert('✅ Batch updated successfully!');
+      $('#batchModal').modal('hide');
+    } else {
+      alert('❌ Failed to update batch: ' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('❌ Something went wrong: ' + error.message);
+  });
+});
+</script>
 </body>
 </html>
