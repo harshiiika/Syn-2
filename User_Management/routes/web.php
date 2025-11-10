@@ -197,59 +197,82 @@ Route::prefix('master')->name('master.')->group(function () {
 |--------------------------------------------------------------------------
 | STUDENT MANAGEMENT ROUTES
 |--------------------------------------------------------------------------
-*/
+// */
 
-// ========================================
-// 1. PENDING STUDENTS (Incomplete Profiles) 
-// Changed to /student/pending to match route list
-// ========================================
-Route::prefix('student')->name('student.')->group(function () {
+// // ========================================
+// // 1. PENDING STUDENTS (Incomplete Profiles) 
+// // Changed to /student/pending to match route list
+// // ========================================
+// Route::prefix('student')->name('student.')->group(function () {
 
-    /**   PENDING INQUIRY STUDENTS (Incomplete forms) */
-    Route::get('/pending', [StudentController::class, 'index'])
-        ->name('student.pending');  // student.student.pending
+//     /**   PENDING INQUIRY STUDENTS (Incomplete forms) */
+//     Route::get('/pending', [StudentController::class, 'index'])
+//         ->name('student.pending');  // student.student.pending
      
-    /**   VIEW / EDIT A PENDING STUDENT */
-    Route::get('/{id}/edit', [StudentController::class, 'edit'])
-        ->name('student.edit');
-    Route::put('/{id}', [StudentController::class, 'update'])
-        ->name('student.update');
+//     /**   VIEW / EDIT A PENDING STUDENT */
+//     Route::get('/{id}/edit', [StudentController::class, 'edit'])
+//         ->name('student.edit');
+//     Route::put('/{id}', [StudentController::class, 'update'])
+//         ->name('student.update');
 
-    /**   ONBOARDED STUDENTS (Complete form, not active yet) */
-    Route::get('/onboarded', [StudentController::class, 'onboardedStudents'])
-        ->name('onboard.onboard');  // student.onboard.onboard
+//     /**   ONBOARDED STUDENTS (Complete form, not active yet) */
+//     Route::get('/onboarded', [StudentController::class, 'onboardedStudents'])
+//         ->name('onboard.onboard');  // student.onboard.onboard
 
-    /**   VIEW SINGLE STUDENT DETAILS */
-    Route::get('/view/{id}', [StudentController::class, 'show'])
-        ->name('student.view');  // student.student.view
+//     /**   VIEW SINGLE STUDENT DETAILS */
+//     Route::get('/view/{id}', [StudentController::class, 'show'])
+//         ->name('student.view');  // student.student.view
 
-    /**   PENDING FEES STUDENTS */
-    Route::get('/fees/pending', [StudentController::class, 'pendingFees'])
-        ->name('fees.pending'); // student.fees.pending
+//     /**   PENDING FEES STUDENTS */
+//     Route::get('/fees/pending', [StudentController::class, 'pendingFees'])
+//         ->name('fees.pending'); // student.fees.pending
 
-    /**   STUDENTS */
-    Route::get('/active', [StudentController::class, 'activeStudents'])
-        ->name('active'); // student.active
+//     /**   STUDENTS */
+//     Route::get('/active', [StudentController::class, 'activeStudents'])
+//         ->name('active'); // student.active
 
-    /**   CONVERT INQUIRY → STUDENT */
-    Route::post('/convert/{id}', [StudentController::class, 'convertFromInquiry'])
-        ->name('convert');
+//     /**   CONVERT INQUIRY → STUDENT */
+//     Route::post('/convert/{id}', [StudentController::class, 'convertFromInquiry'])
+//         ->name('convert');
 
-    /**   UPDATE FEES */
-    Route::post('/fees/update/{id}', [StudentController::class, 'updateFees'])
-        ->name('fees.update');
+//     /**   UPDATE FEES */
+//     Route::post('/fees/update/{id}', [StudentController::class, 'updateFees'])
+//         ->name('fees.update');
+// });
+
+// // ========================================
+// // 2. ONBOARDED STUDENTS (Complete Profiles)
+// // ========================================
+// Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
+//     Route::get('/', [OnboardController::class, 'index'])->name('onboard');
+//     Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
+//     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
+//     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
+    
+//     // Transfer to Pending Fees
+//     Route::post('/{id}/transfer', [OnboardController::class, 'transfer'])->name('transfer');
+// });
+
+// ========================================
+// PENDING STUDENTS (Incomplete Onboarding Forms)
+// Collection: student_pending
+// ========================================
+Route::prefix('student/pending')->name('student.student.')->group(function () {
+    Route::get('/', [StudentController::class, 'index'])->name('pending');
+    Route::get('/{id}/edit', [StudentController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [StudentController::class, 'update'])->name('update');
 });
 
 // ========================================
-// 2. ONBOARDED STUDENTS (Complete Profiles)
+// ONBOARDED STUDENTS (Complete Forms, Ready for Fees)
+// Collection: student_onboard (or students with status='onboarded')
 // ========================================
+// In web.php
 Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
     Route::get('/', [OnboardController::class, 'index'])->name('onboard');
-    Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
+    Route::get('/{id}/view', [OnboardController::class, 'show'])->name('show'); // Changed from 'view' to 'show'
     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
-    
-    // Transfer to Pending Fees
     Route::post('/{id}/transfer', [OnboardController::class, 'transfer'])->name('transfer');
 });
 
