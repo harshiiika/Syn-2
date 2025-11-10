@@ -277,6 +277,11 @@ Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
 });
 
 // ========================================
+// Initialize History Route (Run Once)
+// ========================================
+Route::get('/initialize-onboard-history', [OnboardController::class, 'initializeHistory'])->name('onboard.initialize.history');
+
+// ========================================
 // 3. PENDING FEES STUDENTS
 // ========================================
 Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(function () {
