@@ -195,7 +195,7 @@ Route::prefix('student')->name('student.')->group(function () {
     /**   PENDING INQUIRY STUDENTS (Incomplete forms) */
     Route::get('/pending', [StudentController::class, 'index'])
         ->name('student.pending');  // student.student.pending
-
+     
     /**   VIEW / EDIT A PENDING STUDENT */
     Route::get('/{id}/edit', [StudentController::class, 'edit'])
         ->name('student.edit');
@@ -248,6 +248,7 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
     Route::get('/{id}/view', [PendingFeesController::class, 'view'])->name('view');
     Route::get('/{id}/edit', [PendingFeesController::class, 'edit'])->name('edit');
     Route::put('/{id}', [PendingFeesController::class, 'update'])->name('update');
+    Route::get('/{id}/history', [PendingFeesController::class, 'getHistory'])->name('history'); // ⭐ ADDED - History route
 
     // Payment routes
     Route::get('/{id}/pay', [PendingFeesController::class, 'pay'])->name('pay');
@@ -270,14 +271,13 @@ Route::prefix('smstudents')
         
         //   POST/PUT routes
         Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
-        Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');
-        Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
-        Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch'); // ✅ FIXED: Correct path
+Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
+Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');        Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
         Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
 
         // ✅ Generic show route LAST
-        Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
-    });
+// ✅ View student detail
+Route::get('/{id}/view', [SmStudentsController::class, 'show'])->name('show');    });
 
 //  Onboard transfer route OUTSIDE smstudents group
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])
@@ -289,6 +289,7 @@ Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStude
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
     Route::get('/', [InquiryController::class, 'index'])->name('index');
     Route::get('/data', [InquiryController::class, 'data'])->name('data');
+        Route::get('/{id}/history', [InquiryController::class, 'getHistory'])->name('history');
     Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('bulkOnboard');
     Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
     Route::post('/', [InquiryController::class, 'store'])->name('store');

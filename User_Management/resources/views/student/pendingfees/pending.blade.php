@@ -1,100 +1,25 @@
-{{--
-
-PENDING INQUIRIES BLADE FILE - CODE SUMMARY
-
-
-LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title, 
-           external CSS (Font Awesome, custom emp.css, Bootstrap)
-
-LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
-            notification bell, user dropdown menu with profile and login options
-
-LINE 50-51: Main container div starts
-
-LINE 52-233: Left Sidebar Navigation
-  - LINE 52-58: Sidebar container and admin info display
-  - LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
-    * LINE 61-75: User Management (Employee, Batches Assignment)
-    * LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
-    * LINE 100-114: Session Management (Session, Calendar, Student Migrate)
-    * LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
-    * LINE 132-142: Fees Management (Fees Collection)
-    * LINE 143-155: Attendance Management (Student, Employee)
-    * LINE 156-168: Study Material (Units, Dispatch Material)
-    * LINE 169-179: Test Series Management (Test Master)
-    * LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
-
-LINE 234-252: Right Content Area Header
-  - LINE 236-238: Page title "Pending Inquiries"
-  - LINE 239-246: Action buttons
-
-LINE 253-282: Table Controls
-  - LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
-  - LINE 269-274: Search input field with icon
-
-LINE 275-295: Onboarding Table Structure
-  - LINE 276-286: Table headers 
-  - LINE 287-289: Empty tbody tag
-  - LINE 290-294: Comment indicating modal fillables location
-
-LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
-  - Displays user data from database
-  - Status badge with color coding
-  - Action dropdown with 4 options: View, Edit, Transfer, History
-
-LINE 340-342: Comment for options modals section
-
-LINE 344-375: View Modal (foreach loop for each user)
-  - Read-only display of employee details
-  - Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
-
-LINE 377-445: Edit Modal (foreach loop for each user)
-  - LINE 379-382: PHP variables setup for current department and roles
-  - LINE 384-443: Edit form with PUT method
-
-  LINE 481-498: Footer Section
-  - LINE 482-484: Pagination info text
-  - LINE 485-493: Pagination controls (Previous, page numbers, Next)
-
-LINE 499-500: Closing divs for main container
-
-
-LINE 622-624: Closing divs and body tag
-
-LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js, jQuery)
-
-LINE 629-665: AJAX Script for Dynamic User Addition
-  - Prevents page reload on form submit
-  - Handles form validation errors
-  - Appends new user to table without refresh
---}}
-
 <!DOCTYPE html>
-
-
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Pending Fees Students</title>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-    <!-- Custom CSS -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="{{asset('css/onboard.css')}}">
-   <!-- Bootstrap 5.3.6 CSS -->
+  <!-- Bootstrap 5.3.6 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-
 </head>
 
 <body>
   <!-- Header Section: Contains logo, sidebar toggle, session selector, notifications, and user menu -->
- 
   <div class="header">
     <div class="logo">
       <img src="{{asset('images/logo.png.jpg')}}" class="img">
-
       <!-- Sidebar toggle button -->
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
@@ -119,17 +44,17 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
     </div>
   </div>
-  <div class="main-container">
- <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
-    <div class="left" id="sidebar">
 
+  <div class="main-container">
+    <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
+    <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
       <!-- Left side bar accordian -->
-    <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -202,8 +127,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <ul class="menu" id="dropdown-body">
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                <li><a class="item active" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+                <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>
@@ -301,17 +226,19 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
       </div>
     </div>
+
     <div class="right" id="right">
       <div class="top">
         <div class="top-text">
+          <h4>Pending Fees Students</h4>
         </div>
-            <div class="btns">
-               <a href="{{ route('student.student.pending') }}"><button type="button" class="onboardbtn">Pending Fees Students</button></a>
-            </div>
-
+        <div class="btns">
+          <a href="{{ route('student.student.pending') }}"><button type="button" class="onboardbtn">Student Onboard</button></a>
+        </div>
       </div>
+
       <div class="whole">
-         <!-- Table controls: entries dropdown and search -->
+        <!-- Table controls: entries dropdown and search -->
         <div class="dd">
           <div class="line">
             <h6>Show Enteries:</h6>
@@ -334,6 +261,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
+
         <table class="table table-hover" id="table">
           <thead>
             <tr>
@@ -348,52 +276,51 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </tr>
           </thead>
           <tbody>
+            @foreach($pendingFees as $index => $pending)
             <tr>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ $pending->name }}</td>
+              <td>{{ $pending->father }}</td>
+              <td>{{ $pending->mobileNumber ?? '—' }}</td>
+              <td>{{ $pending->courseName ?? '—' }}</td>
+              <td>{{ $pending->deliveryMode ?? '—' }}</td>
+              <td>{{ $pending->courseContent ?? '—' }}</td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton-{{ $index }}"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="actionMenuButton-{{ $index }}">
+                    <li>
+                      <a class="dropdown-item" href="{{ route('student.pendingfees.view', $pending->_id) }}">
+                        <i class="fa-solid fa-eye"></i> View Details
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{{ route('student.pendingfees.edit', $pending->_id) }}">
+                        <i class="fa-solid fa-edit"></i> Edit
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{{ route('student.pendingfees.pay', $pending->_id) }}">
+                        <i class="fa-solid fa-credit-card"></i> Pay Fees
+                      </a>
+                    </li>
+                    <li>
+                      <button class="dropdown-item" onclick="loadStudentHistory('{{ $pending->_id }}'); return false;">
+                        <i class="fa-solid fa-clock-rotate-left"></i> History
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </td>
             </tr>
+            @endforeach
           </tbody>
-<!-- Modal fillables where roles are assigned according to dept automatically -->
-
-@foreach($pendingFees as $index => $pending)
-<tr>
-   <!-- Serial number (index + 1) -->
-  <td>{{ $index + 1 }}</td>
-  <td>{{ $pending->name }}</td>
-  <td>{{ $pending->father }}</td>
-  <td>{{ $pending->mobileNumber ?? '—' }}</td>
-<td>{{ $pending->courseName ?? '—' }}</td>
-<td>{{ $pending->deliveryMode ?? '—' }}</td>
-<td>{{ $pending->courseContent ?? '—' }}</td>
-  <td>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-      <li>
-  <a class="dropdown-item" href="{{ route('student.pendingfees.edit', $pending->_id) }}">Edit</a>
-      </li>
-      <li>
-       <a class="dropdown-item" href="{{ route('student.pendingfees.view', $pending->_id) }}">
-    View Details
-</a>
-<li>
-    <a class="dropdown-item" href="{{ route('student.pendingfees.pay', $pending->_id) }}">
-        Pay Fees
-    </a>
-</li>
-      <li>
-        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#historyModal{{ $pending->_id }}">
-        History
-        </button>
-      </li>
-    </ul>
-    </div>
-  </td>
-</tr>
-@endforeach
         </table>
       </div>
+
       <div class="footer">
         <div class="left-footer">
           <p>Showing 1 to 10 of 10 Enteries</p>
@@ -405,7 +332,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <li class="page-item active">
                 <a class="page-link" href="#" aria-current="page" id="pg2">1</a>
               </li>
-              <li class="page-item"><a class="page-link" href="/user management/emp/emp2.html" id="pg3">2</a></li>
+              <li class="page-item"><a class="page-link" href="#" id="pg3">2</a></li>
               <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
             </ul>
           </nav>
@@ -413,62 +340,213 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
     </div>
   </div>
+
+  <!-- History Modal - MOVED OUTSIDE main-container -->
+  <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: rgb(224, 83, 1); color: white;">
+          <h5 class="modal-title" id="historyModalLabel">
+            <i class="fa-solid fa-clock-rotate-left me-2"></i>Student Activity History
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="historyModalBody" style="min-height: 300px; background-color: #f8f9fa;">
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading history...</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark me-1"></i>Close
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-</body>
-<!-- External JavaScript Libraries -->
-<!-- Bootstrap Bundle JS (includes Popper) -->
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-<script src="{{asset('js/emp.js')}}"></script>
 
+  <!-- External JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+  <script src="{{asset('js/emp.js')}}"></script>
 
-<!-- AJAX Script: Handles dynamic user addition without page reload -->
-<script>
-// Event handler for add user form submission
-  // Ajax for dynamic user addition without page reload
-  $('#addUserForm').on('submit', function (e) {
-    // Prevent default form submission behavior
-    e.preventDefault();
-    // Clear previous error messages
-    $('.text-danger').text('');
+  <!-- History Modal JavaScript -->
+  <script>
+    // Initialize Bootstrap modal
+    let historyModal;
 
-
-    // AJAX POST request to add user
-    $.ajax({
-      url: "{{ route('users.add') }}",
-      method: 'POST',
-      data: $(this).serialize(),
-      success: function (response) {
-        // On successful user addition
-        if (response.status === 'success') {
-          // Close the modal
-          $('#addUserModal').modal('hide');
-          // Reset form fields
-          $('#addUserForm')[0].reset();
-
-          // Dynamically append new user row to table without page reload
-          // Append user to table
-          $('#users-table tbody').append(`
-                    <tr>
-                        <td>${response.user.name}</td>
-                        <td>${response.user.email}</td>
-                        <td>${response.user.phone}</td>
-                    </tr>
-                `);
-        }
-      },
-      error: function (xhr) {
-        // Handle validation errors (HTTP 422)
-        if (xhr.status === 422) {
-          const errors = xhr.responseJSON.errors;
-          // Display error messages for each field
-          for (let field in errors) {
-           $(`#error-${field}`).text(errors[field][0]);
-          }
-        }
-      }
+    document.addEventListener('DOMContentLoaded', function() {
+      historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
+      console.log('✅ History Modal initialized');
     });
-  });
-</script>
+
+    // Load student history function
+    function loadStudentHistory(studentId) {
+      console.log('📋 Loading history for student:', studentId);
+
+      // Show loading spinner
+      document.getElementById('historyModalBody').innerHTML = `
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3 text-muted">Loading student history...</p>
+        </div>
+      `;
+
+      // Show modal
+      historyModal.show();
+
+      // Fetch history from server
+ fetch(`/student/pendingfees/${studentId}/history`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          }
+        })
+        .then(response => {
+          console.log('📡 Response status:', response.status);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: Failed to load history`);
+          }
+          return response.json();
+        })
+        .then(json => {
+          console.log('✅ History response:', json);
+
+          if (!json.success) {
+            throw new Error(json.message || 'Failed to load history');
+          }
+
+          const history = json.data || [];
+
+          // If no history exists
+          if (history.length === 0) {
+            document.getElementById('historyModalBody').innerHTML = `
+              <div class="text-center text-muted py-5">
+                <i class="fa-solid fa-clock-rotate-left fa-4x mb-3" style="color: #ddd;"></i>
+                <h5 class="mb-2">No History Available</h5>
+                <p class="text-muted">Activity will appear here once changes are made to this student</p>
+              </div>
+            `;
+            return;
+          }
+
+          // Render history timeline
+          let historyHtml = '<div class="timeline p-3">';
+
+          history.forEach((item, index) => {
+            const date = new Date(item.timestamp);
+            const formattedDate = date.toLocaleString('en-IN', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            });
+
+            // Format changes if they exist
+            let changesHtml = '';
+            if (item.changes && typeof item.changes === 'object' && Object.keys(item.changes).length > 0) {
+              const changesList = Object.entries(item.changes).map(([key, value]) => {
+                if (typeof value === 'object' && value.from !== undefined && value.to !== undefined) {
+                  return `<li><strong>${formatKey(key)}:</strong> <span class="text-muted">"${escapeHtml(value.from)}"</span> → <span class="text-success">"${escapeHtml(value.to)}"</span></li>`;
+                }
+                return `<li><strong>${formatKey(key)}:</strong> ${escapeHtml(JSON.stringify(value))}</li>`;
+              }).join('');
+
+              if (changesList) {
+                changesHtml = `
+                  <div class="mt-3 p-3 bg-warning-subtle border-start border-warning border-3 rounded">
+                    <strong class="text-warning-emphasis">
+                      <i class="fa-solid fa-pen-to-square me-1"></i>Changes Made:
+                    </strong>
+                    <ul class="mb-0 mt-2 ps-3">
+                      ${changesList}
+                    </ul>
+                  </div>
+                `;
+              }
+            }
+
+            historyHtml += `
+              <div class="timeline-item position-relative mb-4 pb-3 border-start border-3 border-primary ps-4">
+                <div class="position-absolute start-0 translate-middle bg-primary rounded-circle" 
+                     style="width: 15px; height: 15px; top: 20px; left: 0; border: 3px solid white;"></div>
+                
+                <div class="card shadow-sm">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div>
+                        <h6 class="text-primary mb-1">
+                          <i class="fa-solid fa-circle-check me-1"></i>
+                          ${escapeHtml(item.action || 'Activity')}
+                        </h6>
+                        <small class="text-muted">
+                          <i class="fa-solid fa-user me-1"></i>
+                          ${escapeHtml(item.user || 'Admin')}
+                        </small>
+                      </div>
+                      <small class="badge bg-secondary">
+                        <i class="fa-solid fa-clock me-1"></i>
+                        ${formattedDate}
+                      </small>
+                    </div>
+                    
+                    <p class="text-secondary mb-2">
+                      ${escapeHtml(item.description || 'Activity recorded')}
+                    </p>
+                    
+                    ${changesHtml}
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+
+          historyHtml += '</div>';
+
+          document.getElementById('historyModalBody').innerHTML = historyHtml;
+
+        })
+        .catch(error => {
+          console.error('❌ History error:', error);
+          document.getElementById('historyModalBody').innerHTML = `
+            <div class="text-center text-danger py-5">
+              <i class="fa-solid fa-exclamation-triangle fa-4x mb-3"></i>
+              <h5 class="mb-2">Failed to Load History</h5>
+              <p class="text-muted">${escapeHtml(error.message)}</p>
+              <small class="text-muted">Please try again or check the console for details</small>
+            </div>
+          `;
+        });
+    }
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Helper function to format keys
+    function formatKey(key) {
+      return key
+        .replace(/_/g, ' ')
+        .replace(/([A-Z])/g, ' $1')
+        .trim()
+        .replace(/\b\w/g, l => l.toUpperCase());
+    }
+  </script>
+
+</body>
+
 </html>

@@ -8,6 +8,61 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('css/emp.css') }}">
+  <style>
+    /* Activity Timeline Styles */
+    .activity-timeline {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+    .activity-item {
+      border-left: 3px solid #0d6efd;
+      padding-left: 20px;
+      padding-bottom: 20px;
+      position: relative;
+      margin-bottom: 10px;
+    }
+    .activity-item:last-child {
+      border-left-color: transparent;
+      padding-bottom: 0;
+    }
+    .activity-item::before {
+      content: '';
+      position: absolute;
+      left: -7px;
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #0d6efd;
+      border: 2px solid white;
+    }
+    .activity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+    .activity-title {
+      font-weight: 600;
+      color: #212529;
+      margin: 0;
+    }
+    .activity-time {
+      font-size: 0.875rem;
+      color: #6c757d;
+      white-space: nowrap;
+    }
+    .activity-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .activity-user {
+      color: #0d6efd;
+      font-weight: 500;
+    }
+  </style>
 </head>
 
 <body>
@@ -477,10 +532,11 @@
       </div>
     </form>
   </div>
-</div>w
-    <!-- History Modal -->
+</div>
+
+    <!-- History Modal with Activity Timeline -->
     <div class="modal fade" id="historyModal{{ $studentId }}" tabindex="-1" aria-labelledby="historyModalLabel{{ $studentId }}" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg rounded-3">
           
           <!-- Modal Header -->
@@ -493,102 +549,196 @@
 
           <!-- Modal Body -->
           <div class="modal-body p-4">
-            <div class="row g-3">
+            
+            <!-- Student Details Section -->
+            <h6 class="fw-bold text-primary mb-3 border-bottom pb-2">
+              <i class="fas fa-user-circle me-2"></i>Student Details
+            </h6>
+            <div class="row g-3 mb-4">
               
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Roll No</label>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Roll No</label>
                 <div class="border rounded p-2 bg-light">{{ $student->roll_no ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Student Name</label>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Student Name</label>
                 <div class="border rounded p-2 bg-light">{{ $student->student_name ?? $student->name ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Email</label>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Email</label>
                 <div class="border rounded p-2 bg-light">{{ $student->email ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Phone</label>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Phone</label>
                 <div class="border rounded p-2 bg-light">{{ $student->phone ?? $student->mobileNumber ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Course Name</label>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Course Name</label>
                 <div class="border rounded p-2 bg-light">{{ $student->course->name ?? $student->course_name ?? $student->courseName ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Batch</label>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Batch</label>
                 <div class="border rounded p-2 bg-light">{{ $student->batch->name ?? $student->batch_name ?? $student->batchName ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Course Content</label>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Course Content</label>
                 <div class="border rounded p-2 bg-light">{{ $student->course_content ?? $student->courseContent ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Delivery Mode</label>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Delivery Mode</label>
                 <div class="border rounded p-2 bg-light">{{ $student->delivery ?? $student->delivery_mode ?? $student->deliveryMode ?? 'N/A' }}</div>
               </div>
 
-              <div class="col-md-6">
-                <label class="fw-semibold text-secondary">Shift</label>
-                <div class="border rounded p-2 bg-light">{{ $student->shift ?? 'N/A' }}</div>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Shift</label>
+                <div class="border rounded p-2 bg-light">
+                  @if($student->shift_id && $student->shift)
+                    {{ $student->shift->name }}
+                  @elseif($student->shift)
+                    {{ $student->shift }}
+                  @else
+                    N/A
+                  @endif
+                </div>
               </div>
 
-            <div class="col-md-6">
-  <label class="fw-semibold text-secondary">Status</label>
-  <div class="border rounded p-2 bg-light">
-    <span class="badge {{ ($student->status ?? 'active') == 'active' ? 'bg-success' : 'bg-danger' }}">
-      {{ ucfirst($student->status ?? 'active') }}
-    </span>
-  </div>
-</div>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Status</label>
+                <div class="border rounded p-2 bg-light">
+                  <span class="badge {{ ($student->status ?? 'active') == 'active' ? 'bg-success' : 'bg-danger' }}">
+                    {{ ucfirst($student->status ?? 'active') }}
+                  </span>
+                </div>
+              </div>
 
-<div class="col-md-6">
-  <label class="fw-semibold text-secondary">Created At</label>
-  <div class="border rounded p-2 bg-light">
-    @if(isset($student->created_at))
-      {{ $student->created_at->format('d M Y, h:i A') }}
-    @else
-      N/A
-    @endif
-  </div>
-</div>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Created At</label>
+                <div class="border rounded p-2 bg-light">
+                  @if(isset($student->created_at))
+                    {{ $student->created_at->format('d M Y, h:i A') }}
+                  @else
+                    N/A
+                  @endif
+                </div>
+              </div>
 
-<div class="col-md-6">
-  <label class="fw-semibold text-secondary">Last Updated</label>
-  <div class="border rounded p-2 bg-light">
-    @if(isset($student->updated_at))
-      {{ $student->updated_at->format('d M Y, h:i A') }}
-    @else
-      N/A
-    @endif
-  </div>
-</div>
-
-<div class="col-md-6">
-  <label class="fw-semibold text-secondary">Shift</label>
-  <div class="border rounded p-2 bg-light">
-    @if($student->shift_id && $student->shift)
-      {{ $student->shift->name }}
-    @elseif($student->shift)
-      {{ $student->shift }}
-    @else
-      N/A
-    @endif
-  </div>
-</div>
+              <div class="col-md-4">
+                <label class="fw-semibold text-secondary small">Last Updated</label>
+                <div class="border rounded p-2 bg-light">
+                  @if(isset($student->updated_at))
+                    {{ $student->updated_at->format('d M Y, h:i A') }}
+                  @else
+                    N/A
+                  @endif
+                </div>
+              </div>
 
             </div>
 
+            <!-- Activity Timeline Section -->
+            <h6 class="fw-bold text-primary mb-3 border-bottom pb-2">
+              <i class="fas fa-history me-2"></i>Activity Timeline
+            </h6>
+            <div class="activity-timeline">
+              @if(isset($student->activities) && count($student->activities) > 0)
+                @foreach($student->activities as $activity)
+                  <div class="activity-item">
+                    <div class="activity-header">
+                      <div>
+                        <p class="activity-title">{{ $activity->title ?? 'Activity' }}</p>
+                        <p class="activity-description">
+                          <span class="activity-user">{{ $activity->performed_by ?? 'Admin' }}</span> 
+                          {{ $activity->description ?? 'performed an action' }}
+                        </p>
+                      </div>
+                      <span class="activity-time">
+                        @if(isset($activity->created_at))
+                          {{ $activity->created_at->format('d M Y h:i A') }}
+                        @else
+                          N/A
+                        @endif
+                      </span>
+                    </div>
+                  </div>
+                @endforeach
+              @else
+                <!-- Sample Activity Data - Replace with actual data from controller -->
+                <div class="activity-item">
+                  <div class="activity-header">
+                    <div>
+                      <p class="activity-title">Fee Paid & Student Onboarding Complete</p>
+                      <p class="activity-description">
+                        <span class="activity-user">Admin</span> has paid the fee for {{ $student->student_name ?? $student->name ?? 'student' }} and completed the onboarding process.
+                      </p>
+                    </div>
+                    <span class="activity-time">05 Nov 2025 03:23 PM</span>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-header">
+                    <div>
+                      <p class="activity-title">Student Transferred to Pay Fees</p>
+                      <p class="activity-description">
+                        <span class="activity-user">Admin</span> transferred student {{ $student->student_name ?? $student->name ?? 'student' }} to accounts section.
+                      </p>
+                    </div>
+                    <span class="activity-time">05 Nov 2025 03:01 PM</span>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-header">
+                    <div>
+                      <p class="activity-title">Student Onboarded</p>
+                      <p class="activity-description">
+                        <span class="activity-user">Admin</span> onboarded the student {{ $student->student_name ?? $student->name ?? 'student' }}.
+                      </p>
+                    </div>
+                    <span class="activity-time">05 Nov 2025 03:00 PM</span>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-header">
+                    <div>
+                      <p class="activity-title">Student Enquiry Transferred</p>
+                      <p class="activity-description">
+                        <span class="activity-user">Admin</span> transferred the enquiry to Onboard for student {{ $student->student_name ?? $student->name ?? 'student' }}.
+                      </p>
+                    </div>
+                    <span class="activity-time">05 Nov 2025 02:58 PM</span>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-header">
+                    <div>
+                      <p class="activity-title">New Student Enquiry Created</p>
+                      <p class="activity-description">
+                        <span class="activity-user">Admin</span> created a new enquiry for {{ $student->student_name ?? $student->name ?? 'student' }}.
+                      </p>
+                    </div>
+                    <span class="activity-time">05 Nov 2025 02:58 PM</span>
+                  </div>
+                </div>
+              @endif
+            </div>
+
+          </div>
+
           <!-- Modal Footer -->
           <div class="modal-footer bg-light">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              <i class="fas fa-times me-2"></i>Close
+            </button>
           </div>
 
         </div>
@@ -743,6 +893,7 @@
       }
     };
 
+<<<<<<< HEAD
     // Shift modal setup
     document.querySelectorAll('.open-shift-modal').forEach(button => {
       button.addEventListener('click', function () {
@@ -797,6 +948,19 @@
     alert('❌ Something went wrong: ' + error.message);
   });
 });
+=======
+    //shift modal
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.open-shift-modal').forEach(button => {
+        button.addEventListener('click', function () {
+          const studentId = this.dataset.studentId;
+          const form = document.getElementById('shiftForm');
+          form.action = `/smstudents/${studentId}/update-shift`;
+          $('#shiftModal').modal('show');
+        });
+      });
+    });
+>>>>>>> 60a497ae19cf71074712b4e2edea0fce8e6daab8
 
   const studentId = document.getElementById('batchStudentId').value;
   const batchId = document.getElementById('batchSelect').value;
