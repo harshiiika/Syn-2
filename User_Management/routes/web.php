@@ -270,7 +270,7 @@ Route::prefix('student/pending')->name('student.student.')->group(function () {
 // In web.php
 Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
     Route::get('/', [OnboardController::class, 'index'])->name('onboard');
-    Route::get('/{id}/view', [OnboardController::class, 'show'])->name('show'); // Changed from 'view' to 'show'
+    Route::get('/{id}', [OnboardController::class, 'show'])->name('show'); // ✅ Remove /view from URL
     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
     Route::post('/{id}/transfer', [OnboardController::class, 'transfer'])->name('transfer');
