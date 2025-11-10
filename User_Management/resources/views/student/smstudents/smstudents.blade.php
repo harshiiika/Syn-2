@@ -893,62 +893,6 @@
       }
     };
 
-<<<<<<< HEAD
-    // Shift modal setup
-    document.querySelectorAll('.open-shift-modal').forEach(button => {
-      button.addEventListener('click', function () {
-        const studentId = this.dataset.studentId;
-        const form = document.getElementById('shiftForm');
-        form.action = `/smstudents/${studentId}/update-shift`;
-        $('#shiftModal').modal('show');
-      });
-    });
-
-    // Batch modal setup
-    document.querySelectorAll('.open-batch-modal').forEach(button => {
-      button.addEventListener('click', function () {
-        const studentId = this.dataset.studentId;
-        document.getElementById('batchStudentId').value = studentId;
-        $('#batchModal').modal('show');
-      });
-    });
-
-    // AJAX batch update
-     document.getElementById('batchForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const studentId = document.getElementById('batchStudentId').value;
-  const batchId = document.getElementById('batchSelect').value;
-  const token = document.querySelector('#batchForm input[name="_token"]').value;
-
-  fetch(`/smstudents/${studentId}/update-batch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-CSRF-TOKEN': token
-    },
-    body: JSON.stringify({ batch_id: batchId })
-  })
-  .then(async response => {
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Server returned non-JSON response');
-    }
-    const data = await response.json();
-    if (data.success) {
-      alert('✅ Batch updated successfully!');
-      $('#batchModal').modal('hide');
-    } else {
-      alert('❌ Failed to update batch: ' + data.message);
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('❌ Something went wrong: ' + error.message);
-  });
-});
-=======
     //shift modal
     document.addEventListener('DOMContentLoaded', function () {
       document.querySelectorAll('.open-shift-modal').forEach(button => {
@@ -960,7 +904,6 @@
         });
       });
     });
->>>>>>> 60a497ae19cf71074712b4e2edea0fce8e6daab8
 
   const studentId = document.getElementById('batchStudentId').value;
   const batchId = document.getElementById('batchSelect').value;
