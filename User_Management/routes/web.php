@@ -70,6 +70,11 @@ Route::put('/users/update/{id}', [UserController::class, 'updateUser'])->name('u
 Route::put('/users/{id}/update-password', [UserController::class, 'updatePassword'])->name('users.password.update');
 Route::post('/users/toggle-status/{id}', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
 Route::post('/users/store', [UserController::class, 'addUser'])->name('users.store');
+Route::get('/users/export', [UserController::class, 'exportToExcel'])->name('users.export');
+// Download sample Excel file
+Route::get('/users/sample-download', [UserController::class, 'downloadSample'])->name('users.downloadSample');
+// Import employees from Excel/CSV
+Route::post('/users/import', [UserController::class, 'import'])->name('users.import');
 
 /*
 |--------------------------------------------------------------------------
@@ -104,10 +109,14 @@ Route::prefix('courses')->name('courses.')->group(function () {
 */
 Route::prefix('master/batch')->name('batches.')->group(function () {
     Route::get('/', [BatchController::class, 'index'])->name('index');
-    Route::get('/download/sample', [BatchController::class, 'downloadSample'])->name('downloadSample');
     Route::post('/add', [BatchController::class, 'store'])->name('add');
     Route::put('/{id}/update', [BatchController::class, 'update'])->name('update');
-    Route::post('/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('batches.toggleStatus.master');
+    Route::post('/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('toggleStatus');
+    
+    //Export/Import Routes
+    Route::get('/export', [BatchController::class, 'exportToExcel'])->name('export');
+    Route::get('/download-sample', [BatchController::class, 'downloadSample'])->name('downloadSample');
+    Route::post('/import', [BatchController::class, 'import'])->name('import');
 });
 
 /*
@@ -144,11 +153,15 @@ Route::prefix('master/other_fees')->group(function () {
 | Branch Routes
 |--------------------------------------------------------------------------
 */
-Route::prefix('master/branch')->name('branches.')->group(function () {
-    Route::get('/', [BranchController::class, 'index'])->name('index');
-    Route::post('/add', [BranchController::class, 'store'])->name('add');
-    Route::put('/{id}/update', [BranchController::class, 'update'])->name('update');
-    Route::post('/{id}/toggle-status', [BranchController::class, 'toggleStatus'])->name('toggleStatus');
+Route::prefix('master/branch')->group(function () {
+    Route::get('/', [BranchController::class, 'index'])->name('branches.index');
+    Route::post('/add', [BranchController::class, 'store'])->name('branches.add');
+    Route::put('/{id}', [BranchController::class, 'update'])->name('branches.update');
+    Route::post('/{id}/toggle-status', [BranchController::class, 'toggleStatus'])->name('branches.toggleStatus');
+    
+    // Upload/Import routes
+    Route::get('/sample-download', [BranchController::class, 'downloadSample'])->name('branches.downloadSample');
+    Route::post('/import', [BranchController::class, 'import'])->name('branches.import');
 });
 
 /*

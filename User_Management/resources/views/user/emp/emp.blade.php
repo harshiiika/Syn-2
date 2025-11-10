@@ -327,10 +327,15 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             Add Employee
           </button>
 
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTwo"
+              <button type="button" 
+            class="btn btn-success d-flex align-items-center justify-content-center" 
+            style="min-width: 140px; height: 38px;" 
+            data-bs-toggle="modal" 
+            data-bs-target="#uploadBranchModal"
             id="up">
-            Upload
-          </button>
+      <i class="fa-solid fa-upload me-1"></i> Upload
+    </button>
+
         </div>
       </div>
       <div class="whole">
@@ -354,10 +359,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div class="search">
                   <form method="GET" action="{{ route('user.emp.emp') }}" id="searchForm">
         <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
-            <h4 class="search-text">Search</h4>
            <input type="search" 
                name="search" 
-               placeholder="Search by name, email, or mobile" 
+               placeholder="Search" 
                class="search-holder" 
                value="{{ request('search') }}"
                id="searchInput">
@@ -642,7 +646,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </div>
 @endforeach
 
-
       </div>
 <div class="footer">
   <div class="left-footer">
@@ -676,7 +679,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         @endphp
 
         @if($start > 1)
-          <li class="page-item">
+          <li class="page-item" id="pg2">
             <a class="page-link" href="{{ $users->url(1) }}">1</a>
           </li>
           @if($start > 2)
@@ -815,32 +818,67 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </div>
 
   <!-- Upload Modal -->
-  <div class="modal fade" id="exampleModalTwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="uploadBranchModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #ed5b00ff; color: white;">
+        <h5 class="modal-title">Upload Employees</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-      <div class="modal-dialog">
-        <div class="modal-content" id="modal-two">
-          <div class="modal-header">
-            <h2 class="modal-title fs-5" id="exampleModalLabel">Upload</h2>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-
-          <div class="modal-body" id="sample-body">
-            <a href="/user management/emp/employees_synthesis.xlsx"><button class="sampleFile" id="xlsx">Download
-                Sample File</button></a>
-            <form action="upload.php" method="post" enctype="multipart/form-data" id="form-control">
-              <input type="file" class="form-control" id="inputGroupFile01">
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submit">Close</button>
-            <button type="button" class="btn btn-primary" id="add">Save changes</button>
-          </div>
+      <div class="modal-body">
+        <!-- Export Current Data Section -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Export Current Data</label>
+          <p class="text-muted small">Download all current employee data as Excel file.</p>
+          <a href="{{ route('users.export') }}?search={{ request('search') }}&per_page={{ request('per_page', 10) }}" 
+             class="btn btn-info w-100" 
+Route::prefix('master/batch')->name('batches.')->group(function () {
+    Route::get('/', [BatchController::class, 'index'])->name('index');
+    Route::post('/add', [BatchController::class, 'store'])->name('add');
+    Route::put('/{id}/update', [BatchController::class, 'update'])->name('update');
+    Route::post('/{id}/toggle-status', [BatchController::class, 'toggleStatus'])->name('toggleStatus');
+    
+    // NEW: Export/Import Routes
+    Route::get('/export', [BatchController::class, 'exportToExcel'])->name('export');
+    Route::get('/download-sample', [BatchController::class, 'downloadSample'])->name('downloadSample');
+    Route::post('/import', [BatchController::class, 'import'])->name('import');
+});            <i class="fa-solid fa-download"></i> Download Current Employees
+          </a>
         </div>
+
+        <hr>
+
+        <!-- Step 2: Upload File -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Upload Your File</label>          
+          <form id="uploadEmployeeForm" action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            
+            <div class="mb-3">
+              <input type="file" id="importEmployeeFile" name="import_file" class="form-control" 
+                accept=".xlsx,.xls,.csv" required>
+            </div>
+
+            <div id="employeeFilePreview" class="alert alert-light d-none" style="border: 1px solid #ddd;">
+              <strong>File Selected:</strong>
+              <div id="employeePreviewText"></div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100" id="uploadEmployeeBtn">
+              <i class="fa-solid fa-upload"></i> Import Employees
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
-  </div>
+</div>
 
 </body>
 <!-- Custom JS -->
@@ -856,7 +894,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <!-- Your custom JS (must come after jQuery + Bootstrap) -->
 <script src="{{ asset('js/emp.js') }}"></script>
 
-<!-- Enhanced JavaScript for Password Update -->
+<!-- Enhanced JavaScript for Password Update and upload modal -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   @foreach($users as $user)
@@ -1000,6 +1038,47 @@ document.addEventListener('DOMContentLoaded', function() {
   })();
   @endforeach
 });
-</script>
 
+document.addEventListener('DOMContentLoaded', function() {
+  const fileInput = document.getElementById('importEmployeeFile');
+  const preview = document.getElementById('employeeFilePreview');
+  const previewText = document.getElementById('employeePreviewText');
+  
+  if (fileInput) {
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      
+      if (file) {
+        preview.classList.remove('d-none');
+        const fileSize = (file.size / 1024).toFixed(2);
+        const fileIcon = file.name.endsWith('.csv') ? 'fa-file-csv' : 'fa-file-excel';
+        
+        previewText.innerHTML = `
+          <div class="d-flex align-items-center">
+            <i class="fa-solid ${fileIcon} text-success me-2 fs-4"></i>
+            <div>
+              <div><strong>${file.name}</strong></div>
+              <small class="text-muted">${fileSize} KB</small>
+            </div>
+          </div>
+        `;
+      } else {
+        preview.classList.add('d-none');
+      }
+    });
+  }
+
+  // Reset form when modal closes
+  const uploadModal = document.getElementById('uploadBranchModal');
+  if (uploadModal) {
+    uploadModal.addEventListener('hidden.bs.modal', function() {
+      const form = document.getElementById('uploadEmployeeForm');
+      if (form) {
+        form.reset();
+        preview.classList.add('d-none');
+      }
+    });
+  }
+});
+</script>
 </html>
