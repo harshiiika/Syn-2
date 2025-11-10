@@ -355,43 +355,44 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </tbody>
 <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-      @foreach($students as $index => $student)
+@foreach($students as $index => $student)
 <tr>
-   <!-- Serial number (index + 1) -->
   <td>{{ $index + 1 }}</td>
   <td>{{ $student->name }}</td>
   <td>{{ $student->father }}</td>
   <td>{{ $student->mobileNumber ?? '—' }}</td>
-<td>{{ $student->courseName ?? '—' }}</td>
-<td>{{ $student->deliveryMode ?? '—' }}</td>
-<td>{{ $student->courseContent ?? '—' }}</td>
+  <td>{{ $student->courseName ?? '—' }}</td>
+  <td>{{ $student->deliveryMode ?? '—' }}</td>
+  <td>{{ $student->courseContent ?? '—' }}</td>
   <td>
     <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
+      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton-{{ $student->_id }}"
               data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+        <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
       </button>
-      <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-  <li>
-           <a href="{{ route('student.onboard.edit', $student->_id) }}">
-<button class="dropdown-item">
-            Edit Details
-          </button></a>
-          <li>
-  <a href="{{ route('student.onboard.show', $student->_id) }}">
-    <button class="dropdown-item">View Details</button>
-  </a>
-</li>
-  <form action="{{ route('student.onboard.transfer', $student->_id) }}" method="POST" style="display: inline;">
-    @csrf
-    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to transfer this student to Students?')">Transfer to Active Students</button>
-  </form>
-</li>
+      <ul class="dropdown-menu" aria-labelledby="actionMenuButton-{{ $student->_id }}">
         <li>
-<button class="dropdown-item">
-            History
-          </button></a>
+          <a href="{{ route('student.onboard.edit', $student->_id) }}" class="dropdown-item">
+            Edit Details
+          </a>
         </li>
+        <li>
+          <a href="{{ route('student.onboard.show', $student->_id) }}" class="dropdown-item">
+            View Details
+          </a>
+        </li>
+        <li>
+          <form action="{{ route('student.onboard.transfer', $student->_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to transfer {{ $student->name }} to Pending Fees?')">
+            @csrf
+            <button type="submit" class="dropdown-item">
+              Transfer to Pending Fees
+            </button>
+          </form>
+        </li>
+        <li>
+          <button class="dropdown-item" onclick="alert('History feature coming soon')">
+            History
+          </button>
         </li>
       </ul>
     </div>

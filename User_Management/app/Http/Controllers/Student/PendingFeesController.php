@@ -9,9 +9,90 @@ use App\Models\Student\SMstudents;
 use App\Models\Student\Pending;
 use Illuminate\Support\Facades\Log;
 use App\Services\RollNumberService;
+use App\Models\Student\PendingFee;  
 
 class PendingFeesController extends Controller
 {
+
+public function transfer(Request $request, $id)
+{
+    try {
+        // Find the student in onboard collection
+        $student = Onboard::findOrFail($id);
+        
+        Log::info('Starting transfer from onboard to pending fees', [
+            'student_id' => $id,
+            'student_name' => $student->name ?? 'N/A'
+        ]);
+        
+        // Prepare data for pending_fees collection
+        $pendingFeesData = $student->toArray();
+        
+        // Remove MongoDB's _id to let it generate a new one
+        unset($pendingFeesData['_id']);
+        
+        // Update status and transfer metadata
+        $pendingFeesData['status'] = 'pending_fees';
+        $pendingFeesData['transferred_from'] = 'onboard';
+        $pendingFeesData['transferred_at'] = now();
+        $pendingFeesData['transferred_by'] = auth()->user()->email ?? 'Admin';
+        $pendingFeesData['transfer_reason'] = $request->input('transfer_reason', 'Moved to pending fees for fee collection');
+        $pendingFeesData['created_by'] = $pendingFeesData['created_by'] ?? (auth()->user()->email ?? 'Admin');
+        $pendingFeesData['updated_by'] = auth()->user()->email ?? 'Admin';
+        
+        // Initialize payment tracking fields
+        $totalFeesInclusive = $pendingFeesData['total_fees_inclusive_tax'] ?? 
+                             ($pendingFeesData['total_fees'] ?? 0);
+        
+        $pendingFeesData['paid_fees'] = 0;
+        $pendingFeesData['paidAmount'] = 0;
+        $pendingFeesData['remaining_fees'] = $totalFeesInclusive;
+        $pendingFeesData['remainingAmount'] = $totalFeesInclusive;
+        $pendingFeesData['fee_status'] = 'pending';
+        $pendingFeesData['paymentHistory'] = [];
+        $pendingFeesData['last_payment_date'] = null;
+        
+        // Ensure timestamps
+        $pendingFeesData['created_at'] = $student->created_at ?? now();
+        $pendingFeesData['updated_at'] = now();
+        
+        Log::info('Prepared data for pending fees', [
+            'total_fees_inclusive_tax' => $totalFeesInclusive,
+            'remaining_fees' => $pendingFeesData['remaining_fees']
+        ]);
+        
+        // Create new record in student_pending_fee collection using PendingFee model
+        $pendingFeeStudent = PendingFee::create($pendingFeesData);
+        
+        Log::info('Created pending fee record', [
+            'pending_fee_id' => $pendingFeeStudent->_id,
+            'student_name' => $pendingFeeStudent->name
+        ]);
+        
+        // Delete from onboard collection
+        $student->delete();
+        
+        Log::info('Student transferred to pending fees successfully', [
+            'original_id' => $id,
+            'new_id' => $pendingFeeStudent->_id,
+            'student_name' => $pendingFeeStudent->name,
+            'transferred_by' => auth()->user()->email ?? 'Admin'
+        ]);
+        
+        return redirect()->route('student.onboard.onboard')
+            ->with('success', "Student '{$pendingFeeStudent->name}' transferred to Pending Fees successfully");
+            
+    } catch (\Exception $e) {
+        Log::error('Error transferring student to pending fees', [
+            'student_id' => $id,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Failed to transfer student: ' . $e->getMessage());
+    }
+}
     /**
      * Display all students with pending fees
      */

@@ -778,13 +778,6 @@
           <a href="{{ route('student.onboard.edit', $student->_id ?? $student->id) }}" class="btn-edit">
             <i class="fa-solid fa-edit"></i> Edit Details
           </a>
-          
-          <form method="POST" action="{{ route('student.onboard.transfer', $student->_id ?? $student->id) }}" style="display: inline;">
-            @csrf
-            <button type="submit" class="btn-transfer" onclick="return confirm('Transfer this student to Pending Fees?')">
-              <i class="fa-solid fa-arrow-right"></i> Transfer to Pending Fees
-            </button>
-          </form>
         </div>
       </div>
     </div>
