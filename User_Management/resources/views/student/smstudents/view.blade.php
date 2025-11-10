@@ -873,88 +873,321 @@
         </div>
 
         <!-- TAB 3: Fees Management -->
-        <div class="tab-content-section" id="fees-management">
-          <!-- Scholarship Info -->
-          <div class="scholarship-box">
-            <strong>Is Eligible For Scholarship:</strong> <span style="color: #e05301;">No</span>
-          </div>
+       <!-- TAB 3: Fees Management - UPDATED WITH DYNAMIC DATA -->
+<div class="tab-content-section" id="fees-management">
+  <!-- Scholarship Info -->
+  <div class="scholarship-box">
+    <div class="row">
+      <div class="col-md-6">
+        <strong>Is Eligible For Scholarship:</strong> 
+        <span style="color: {{ $scholarshipEligible['eligible'] ? '#28a745' : '#dc3545' }}; font-weight: 600;">
+          {{ $scholarshipEligible['eligible'] ? 'Yes' : 'No' }}
+        </span>
+      </div>
+      @if($scholarshipEligible['eligible'])
+      <div class="col-md-6">
+        <strong>Scholarship Reason:</strong> 
+        <span style="color: #e05301;">{{ $scholarshipEligible['reason'] }}</span>
+      </div>
+      <div class="col-md-6 mt-2">
+        <strong>Discount Percentage:</strong> 
+        <span style="color: #e05301; font-weight: 600;">{{ $scholarshipEligible['discountPercent'] }}%</span>
+      </div>
+      @endif
+    </div>
+  </div>
 
-          <!-- Fees Tabs -->
-          <div class="fees-tabs">
-            <button class="fees-tab-btn active" data-fees-tab="fees">Fees</button>
-            <button class="fees-tab-btn" data-fees-tab="other-fees">OtherFees</button>
-            <button class="fees-tab-btn" data-fees-tab="transaction">Transaction</button>
-          </div>
-
-          <!-- Fees Table -->
-          <div class="fees-content active" id="fees-content">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <label>Show</label>
-                <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
-                  <option>10</option>
-                  <option>25</option>
-                  <option>50</option>
-                </select>
-                <span>entries</span>
-              </div>
-              <div>
-                <label>Search:</label>
-                <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
-              </div>
-            </div>
-
-            <table class="table table-bordered">
-              <thead>
-                <tr style="background-color: #f8f9fa;">
-                  <th>Fee Type</th>
-                  <th>Actual Amount</th>
-                  <th>Paid Amount</th>
-                  <th>Due Date</th>
-                  <th>Paid Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>4720</td>
-                  <td>4720</td>
-                  <td></td>
-                  <td>2025-10-24</td>
-                  <td><span class="badge bg-success">Paid</span></td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>3540</td>
-                  <td>3540</td>
-                  <td>2025-07-14</td>
-                  <td>2025-10-24</td>
-                  <td><span class="badge bg-success">Paid</span></td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>3540</td>
-                  <td>1740</td>
-                  <td>2025-08-14</td>
-                  <td>2025-10-24</td>
-                  <td><span class="badge bg-success">Paid</span></td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div class="d-flex justify-content-between align-items-center">
-              <span>Showing 1 to 3 of 3 entries</span>
-              <nav>
-                <ul class="pagination pagination-sm mb-0">
-                  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+  <!-- Fee Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card border-primary">
+        <div class="card-body text-center">
+          <h6 class="text-muted mb-2">Total Fees</h6>
+          <h3 class="text-primary mb-0">₹{{ number_format($feeSummary['grand']['total'], 2) }}</h3>
         </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-success">
+        <div class="card-body text-center">
+          <h6 class="text-muted mb-2">Paid Amount</h6>
+          <h3 class="text-success mb-0">₹{{ number_format($feeSummary['grand']['paid'], 2) }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-danger">
+        <div class="card-body text-center">
+          <h6 class="text-muted mb-2">Pending Amount</h6>
+          <h3 class="text-danger mb-0">₹{{ number_format($feeSummary['grand']['pending'], 2) }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fees Tabs -->
+  <div class="fees-tabs">
+    <button class="fees-tab-btn active" data-fees-tab="fees">
+      Fees ({{ $student->fees->count() }})
+    </button>
+    <button class="fees-tab-btn" data-fees-tab="other-fees">
+      Other Fees ({{ $student->other_fees->count() }})
+    </button>
+    <button class="fees-tab-btn" data-fees-tab="transaction">
+      Transactions ({{ $student->transactions->count() }})
+    </button>
+  </div>
+
+  <!-- Regular Fees Table -->
+  <div class="fees-content active" id="fees-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <label>Show</label>
+        <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
+          <option>10</option>
+          <option>25</option>
+          <option>50</option>
+        </select>
+        <span>entries</span>
+      </div>
+      <div>
+        <label>Search:</label>
+        <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead style="background-color: #f8f9fa;">
+          <tr>
+            <th>Installment</th>
+            <th>Fee Type</th>
+            <th>Actual Amount</th>
+            <th>Discount</th>
+            <th>Paid Amount</th>
+            <th>Remaining</th>
+            <th>Due Date</th>
+            <th>Paid Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($student->fees as $index => $fee)
+          <tr>
+            <td>{{ $fee['installment_number'] ?? ($index + 1) }}</td>
+            <td>{{ ucfirst($fee['fee_type'] ?? 'Regular Fee') }}</td>
+            <td class="text-end">₹{{ number_format($fee['actual_amount'] ?? 0, 2) }}</td>
+            <td class="text-end">₹{{ number_format($fee['discount_amount'] ?? 0, 2) }}</td>
+            <td class="text-end">₹{{ number_format($fee['paid_amount'] ?? 0, 2) }}</td>
+            <td class="text-end">₹{{ number_format($fee['remaining_amount'] ?? 0, 2) }}</td>
+            <td>
+              @if(isset($fee['due_date']))
+                {{ is_string($fee['due_date']) ? \Carbon\Carbon::parse($fee['due_date'])->format('d-m-Y') : $fee['due_date']->format('d-m-Y') }}
+              @else
+                N/A
+              @endif
+            </td>
+            <td>
+              @if(isset($fee['paid_date']) && $fee['paid_date'])
+                {{ is_string($fee['paid_date']) ? \Carbon\Carbon::parse($fee['paid_date'])->format('d-m-Y') : $fee['paid_date']->format('d-m-Y') }}
+              @else
+                -
+              @endif
+            </td>
+            <td>
+              <span class="badge bg-{{ $fee['status_badge'] ?? 'secondary' }}">
+                {{ ucfirst($fee['status'] ?? 'pending') }}
+              </span>
+            </td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="9" class="text-center text-muted py-4">
+              <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+              No fees data available
+            </td>
+          </tr>
+          @endforelse
+        </tbody>
+        @if($student->fees->count() > 0)
+        <tfoot style="background-color: #f8f9fa; font-weight: 600;">
+          <tr>
+            <td colspan="2" class="text-end">Total</td>
+            <td class="text-end">₹{{ number_format($feeSummary['fees']['total'], 2) }}</td>
+            <td class="text-end">₹{{ number_format($feeSummary['fees']['discount'] ?? 0, 2) }}</td>
+            <td class="text-end">₹{{ number_format($feeSummary['fees']['paid'], 2) }}</td>
+            <td class="text-end">₹{{ number_format($feeSummary['fees']['pending'], 2) }}</td>
+            <td colspan="3"></td>
+          </tr>
+        </tfoot>
+        @endif
+      </table>
+    </div>
+  </div>
+
+  <!-- Other Fees Table -->
+  <div class="fees-content" id="other-fees-content" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <label>Show</label>
+        <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
+          <option>10</option>
+          <option>25</option>
+          <option>50</option>
+        </select>
+        <span>entries</span>
+      </div>
+      <div>
+        <label>Search:</label>
+        <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead style="background-color: #f8f9fa;">
+          <tr>
+            <th>Sr. No.</th>
+            <th>Fee Name</th>
+            <th>Description</th>
+            <th>Actual Amount</th>
+            <th>Paid Amount</th>
+            <th>Remaining</th>
+            <th>Due Date</th>
+            <th>Paid Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($student->other_fees as $index => $otherFee)
+          <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $otherFee['fee_name'] ?? 'N/A' }}</td>
+            <td>{{ $otherFee['description'] ?? '-' }}</td>
+            <td class="text-end">₹{{ number_format($otherFee['actual_amount'] ?? 0, 2) }}</td>
+            <td class="text-end">₹{{ number_format($otherFee['paid_amount'] ?? 0, 2) }}</td>
+            <td class="text-end">₹{{ number_format($otherFee['remaining_amount'] ?? 0, 2) }}</td>
+            <td>
+              @if(isset($otherFee['due_date']))
+                {{ is_string($otherFee['due_date']) ? \Carbon\Carbon::parse($otherFee['due_date'])->format('d-m-Y') : $otherFee['due_date']->format('d-m-Y') }}
+              @else
+                N/A
+              @endif
+            </td>
+            <td>
+              @if(isset($otherFee['paid_date']) && $otherFee['paid_date'])
+                {{ is_string($otherFee['paid_date']) ? \Carbon\Carbon::parse($otherFee['paid_date'])->format('d-m-Y') : $otherFee['paid_date']->format('d-m-Y') }}
+              @else
+                -
+              @endif
+            </td>
+            <td>
+              <span class="badge bg-{{ $otherFee['status_badge'] ?? 'secondary' }}">
+                {{ ucfirst($otherFee['status'] ?? 'pending') }}
+              </span>
+            </td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="9" class="text-center text-muted py-4">
+              <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+              No other fees data available
+            </td>
+          </tr>
+          @endforelse
+        </tbody>
+        @if($student->other_fees->count() > 0)
+        <tfoot style="background-color: #f8f9fa; font-weight: 600;">
+          <tr>
+            <td colspan="3" class="text-end">Total</td>
+            <td class="text-end">₹{{ number_format($feeSummary['other_fees']['total'], 2) }}</td>
+            <td class="text-end">₹{{ number_format($feeSummary['other_fees']['paid'], 2) }}</td>
+            <td class="text-end">₹{{ number_format($feeSummary['other_fees']['pending'], 2) }}</td>
+            <td colspan="3"></td>
+          </tr>
+        </tfoot>
+        @endif
+      </table>
+    </div>
+  </div>
+
+  <!-- Transactions Table -->
+  <div class="fees-content" id="transaction-content" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <label>Show</label>
+        <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
+          <option>10</option>
+          <option>25</option>
+          <option>50</option>
+        </select>
+        <span>entries</span>
+      </div>
+      <div>
+        <label>Search:</label>
+        <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead style="background-color: #f8f9fa;">
+          <tr>
+            <th>Sr. No.</th>
+            <th>Transaction ID</th>
+            <th>Fee Type</th>
+            <th>Amount</th>
+            <th>Payment Method</th>
+            <th>Payment Date</th>
+            <th>Received By</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($student->transactions as $index => $transaction)
+          <tr>
+            <td>{{ $index + 1 }}</td>
+            <td><span class="badge bg-info">{{ $transaction['transaction_id'] ?? 'N/A' }}</span></td>
+            <td>{{ ucfirst($transaction['fee_type'] ?? 'N/A') }}</td>
+            <td class="text-end fw-bold">₹{{ number_format($transaction['amount'] ?? 0, 2) }}</td>
+            <td>
+              <span class="badge bg-secondary">
+                {{ ucfirst($transaction['payment_method'] ?? 'N/A') }}
+              </span>
+            </td>
+            <td>
+              @if(isset($transaction['payment_date']))
+                {{ is_string($transaction['payment_date']) ? \Carbon\Carbon::parse($transaction['payment_date'])->format('d-m-Y h:i A') : $transaction['payment_date']->format('d-m-Y h:i A') }}
+              @else
+                N/A
+              @endif
+            </td>
+            <td>{{ $transaction['received_by'] ?? 'N/A' }}</td>
+            <td>{{ $transaction['remarks'] ?? '-' }}</td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="8" class="text-center text-muted py-4">
+              <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+              No transaction history available
+            </td>
+          </tr>
+          @endforelse
+        </tbody>
+        @if($student->transactions->count() > 0)
+        <tfoot style="background-color: #f8f9fa; font-weight: 600;">
+          <tr>
+            <td colspan="3" class="text-end">Total Transactions</td>
+            <td class="text-end">₹{{ number_format($student->transactions->sum('amount'), 2) }}</td>
+            <td colspan="4"></td>
+          </tr>
+        </tfoot>
+        @endif
+      </table>
+    </div>
+  </div>
+</div>
+
 
         <!-- TAB 4: Test Series -->
         <div class="tab-content-section" id="test-series">
@@ -1211,5 +1444,30 @@
       }
     });
   </script>
+  <script>
+  // Fees tab switching with content display
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.fees-tab-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.fees-tab-btn').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Hide all fee contents
+        document.querySelectorAll('.fees-content').forEach(content => {
+          content.style.display = 'none';
+        });
+        
+        // Show selected content
+        const tab = this.getAttribute('data-fees-tab');
+        const contentId = tab + '-content';
+        const content = document.getElementById(contentId);
+        if (content) {
+          content.style.display = 'block';
+        }
+      });
+    });
+  });
+</script>
 </body>
 </html>

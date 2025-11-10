@@ -7,39 +7,33 @@ use Illuminate\Http\Request;
 use App\Models\Student\SMstudents;
 use App\Models\Master\Batch;
 use App\Models\Master\Courses;
+use App\Models\Master\Scholarship;
 use App\Models\Student\Shift; 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class SmStudentsController extends Controller
 {
     /**
      * Display a listing of students
      */
-public function index()
-{
-    try {
-        // Load students without shift relationship to avoid errors
-        $students = SMstudents::with(['batch', 'course'])->get();
-        $batches = Batch::all();
-        $courses = Courses::all();
-        $shifts = Shift::where('is_active', true)->get();
+    public function index()
+    {
+        try {
+            $students = SMstudents::with(['batch', 'course'])->get();
+            $batches = Batch::where('status', 'Active')->orderBy('name')->get();
+            $courses = Courses::all();
+            $shifts = Shift::where('is_active', true)->get();
 
-        Log::info('Students page loaded successfully', [
-            'students_count' => $students->count()
-        ]);
-
-        // ✅ FIXED: Correct view path
-        return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
-        
-    } catch (\Exception $e) {
-        Log::error('Error in smstudents index: ' . $e->getMessage());
-        Log::error('Stack trace: ' . $e->getTraceAsString());
-        return back()->with('error', 'Failed to load students: ' . $e->getMessage());
+            return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
+        } catch (\Exception $e) {
+            Log::error('Error loading students: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load students');
+        }
     }
-}
 
     /**
      * Display the specified student with full details
@@ -47,32 +41,54 @@ public function index()
     public function show($id)
     {
         try {
-            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id); // ✅ ADDED: 'shift' relationship
-            
+            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id);
+ 
+            // ✅ Process fees data and ensure proper formatting
+            $this->processFeesData($student);
+ 
+            // ✅ Calculate comprehensive fee summary
+            $feeSummary = $this->calculateFeeSummary($student);
+ 
+            // ✅ Check scholarship eligibility
+            $scholarshipEligible = $this->checkScholarshipEligibility($student);
+ 
+            // ✅ Add debug logging
+            Log::info('Student View Data', [
+                'student_id' => $id,
+                'fees_count' => $student->fees->count(),
+                'other_fees_count' => $student->other_fees->count(),
+                'transactions_count' => $student->transactions->count(),
+                'fee_summary' => $feeSummary,
+                'scholarship' => $scholarshipEligible
+            ]);
+ 
             if (request()->wantsJson()) {
-                return response()->json($student);
+                return response()->json([
+                    'student' => $student,
+                    'feeSummary' => $feeSummary,
+                    'scholarshipEligible' => $scholarshipEligible
+                ]);
             }
-            
-            // Return the separate view page
-            return view('student.smstudents.view', compact('student'));
+ 
+            return view('student.smstudents.view', compact('student', 'feeSummary', 'scholarshipEligible'));
         } catch (\Exception $e) {
             Log::error('Error showing student: ' . $e->getMessage());
-            return back()->with('error', 'Student not found');
+            return back()->with('error', 'Student not found: ' . $e->getMessage());
         }
     }
 
     /**
-     * Show the form for editing student (NEW METHOD)
+     * Show the form for editing student
      */
     public function edit($id)
     {
         try {
-            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id); // ✅ ADDED: 'shift' relationship
+            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id);
             $batches = Batch::all();
             $courses = Courses::all();
-            $shifts = Shift::where('is_active', true)->get(); // ✅ ADDED: Get shifts for edit form
-            
-            return view('student.smstudents.edit', compact('student', 'batches', 'courses', 'shifts')); // ✅ ADDED: 'shifts'
+            $shifts = Shift::where('is_active', true)->get();
+
+            return view('student.smstudents.edit', compact('student', 'batches', 'courses', 'shifts'));
         } catch (\Exception $e) {
             Log::error('Error loading edit form: ' . $e->getMessage());
             return back()->with('error', 'Failed to load student data');
@@ -80,60 +96,18 @@ public function index()
     }
 
     /**
-     * Update the specified student (UPDATED METHOD)
+     * Update the specified student
      */
     public function update(Request $request, $id)
     {
         $student = SMstudents::findOrFail($id);
 
-        // Validation rules for the comprehensive form
         $validator = Validator::make($request->all(), [
-            // Basic validation (existing)
             'roll_no' => 'nullable|unique:smstudents,roll_no,' . $id . ',_id',
             'student_name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:smstudents,email,' . $id . ',_id',
             'phone' => 'required|string|max:15',
-            
-            // New comprehensive validations
-            'father_name' => 'nullable|string|max:255',
-            'mother_name' => 'nullable|string|max:255',
-            'dob' => 'nullable|date',
-            'father_contact' => 'nullable|string|max:15',
-            'father_whatsapp' => 'nullable|string|max:15',
-            'mother_contact' => 'nullable|string|max:15',
-            'gender' => 'nullable|in:Male,Female,Others',
-            'father_occupation' => 'nullable|string|max:255',
-            'father_caste' => 'nullable|string|max:255',
-            'mother_occupation' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'pincode' => 'nullable|string|max:6',
-            'address' => 'nullable|string',
-            'belongs_other_city' => 'nullable|in:Yes,No',
-            
-            // Academic details
-            'previous_class' => 'nullable|string|max:255',
-            'academic_medium' => 'nullable|string|max:255',
-            'school_name' => 'nullable|string|max:255',
-            'academic_board' => 'nullable|string|max:255',
-            'passing_year' => 'nullable|string|max:4',
-            'percentage' => 'nullable|string|max:10',
-            
-            // Course related (existing)
-            'batch_id' => 'nullable',
-            'course_id' => 'nullable',
-            'course_content' => 'nullable|string',
-            'delivery_mode' => 'nullable|in:Offline,Online,Hybrid',
-            'shift_id' => 'nullable|exists:shifts,_id', // ✅ CHANGED: From 'shift' to 'shift_id'
-            'status' => 'nullable|in:active,inactive',
-            
-            // File uploads
-            'passport_photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-            'marksheet' => 'nullable|mimes:pdf,jpeg,jpg,png|max:5120',
-            'caste_certificate' => 'nullable|mimes:pdf,jpeg,jpg,png|max:5120',
-            'scholarship_proof' => 'nullable|mimes:pdf,jpeg,jpg,png|max:5120',
-            'secondary_marksheet' => 'nullable|mimes:pdf,jpeg,jpg,png|max:5120',
-            'senior_secondary_marksheet' => 'nullable|mimes:pdf,jpeg,jpg,png|max:5120',
+            'shift_id' => 'nullable|exists:shifts,_id',
         ]);
 
         if ($validator->fails()) {
@@ -141,7 +115,6 @@ public function index()
         }
 
         try {
-            // ✅ ADDED: Handle shift update
             $shiftId = null;
             $shiftName = null;
             if ($request->filled('shift_id')) {
@@ -150,80 +123,14 @@ public function index()
                 $shiftName = $shift ? $shift->name : null;
             }
 
-            // Prepare update data (all fields)
-            $updateData = [
-                // Basic info
-                'roll_no' => $request->roll_no,
-                'student_name' => $request->student_name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                
-                // Personal details
-                'father_name' => $request->father_name,
-                'mother_name' => $request->mother_name,
-                'dob' => $request->dob,
-                'father_contact' => $request->father_contact,
-                'father_whatsapp' => $request->father_whatsapp,
-                'mother_contact' => $request->mother_contact,
-                'gender' => $request->gender,
-                'father_occupation' => $request->father_occupation,
-                'father_caste' => $request->father_caste,
-                'mother_occupation' => $request->mother_occupation,
-                'state' => $request->state,
-                'city' => $request->city,
-                'pincode' => $request->pincode,
-                'address' => $request->address,
-                'belongs_other_city' => $request->belongs_other_city ?? 'No',
-                
-                // Academic details
-                'previous_class' => $request->previous_class,
-                'academic_medium' => $request->academic_medium,
-                'school_name' => $request->school_name,
-                'academic_board' => $request->academic_board,
-                'passing_year' => $request->passing_year,
-                'percentage' => $request->percentage,
-                
-                // Course details
-                'batch_id' => $request->batch_id,
-                'course_id' => $request->course_id,
-                'course_content' => $request->course_content,
-                'delivery_mode' => $request->delivery_mode,
-                'shift_id' => $shiftId, // ✅ ADDED: Store shift_id
-                'shift' => $shiftName, // ✅ ADDED: Store shift name for backward compatibility
-                'status' => $request->status ?? 'active',
-            ];
+            $updateData = $request->all();
+            $updateData['shift_id'] = $shiftId;
+            $updateData['shift'] = $shiftName;
 
-            // Handle file uploads
-            $fileFields = [
-                'passport_photo',
-                'marksheet',
-                'caste_certificate',
-                'scholarship_proof',
-                'secondary_marksheet',
-                'senior_secondary_marksheet'
-            ];
-
-            foreach ($fileFields as $field) {
-                if ($request->hasFile($field)) {
-                    // Delete old file if exists
-                    if (isset($student->$field) && Storage::disk('public')->exists($student->$field)) {
-                        Storage::disk('public')->delete($student->$field);
-                    }
-
-                    // Store new file
-                    $file = $request->file($field);
-                    $filename = time() . '_' . $field . '_' . $file->getClientOriginalName();
-                    $path = $file->storeAs('students/documents', $filename, 'public');
-                    $updateData[$field] = $path;
-                }
-            }
-
-            // Handle password update if provided
             if ($request->filled('password')) {
                 $updateData['password'] = Hash::make($request->password);
             }
 
-            // Update the student
             $student->update($updateData);
 
             return redirect()->route('smstudents.index')->with('success', 'Student updated successfully');
@@ -317,6 +224,41 @@ public function updatePassword(Request $request, $id)
             ->with('error', 'Failed to update password. Please try again.');
     }
 }
+    // /**
+    //  * Update student batch
+    //  */
+    // public function updateBatch(Request $request, $id)
+    // {
+    //     try {
+    //         $request->validate(['batch_id' => 'required']);
+
+    //         $student = SMstudents::findOrFail($id);
+    //         $batch = Batch::find($request->batch_id);
+            
+    //         if (!$batch) {
+    //             return response()->json([
+    //                 'success' => false, 
+    //                 'message' => 'Batch not found'
+    //             ], 404);
+    //         }
+
+    //         $student->batch_id = $request->batch_id;
+    //         $student->batch_name = $batch->name;
+    //         $student->save();
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Batch updated successfully'
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         Log::error('Batch update failed: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false, 
+    //             'message' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
 
 /**
  * Helper method to create activity log
@@ -364,8 +306,6 @@ private function createActivityLog($student, $title, $description)
         
         try {
             $student = SMstudents::findOrFail($id);
-            
-            // Get shift name for backward compatibility
             $shift = Shift::find($request->shift_id);
             
             $student->update([
@@ -409,7 +349,7 @@ private function createActivityLog($student, $title, $description)
     public function export(Request $request)
     {
         try {
-            $students = SMstudents::with(['batch', 'course', 'shift'])->get(); // ✅ ADDED: 'shift' relationship
+            $students = SMstudents::with(['batch', 'course', 'shift'])->get();
             
             $filename = 'students_' . date('Y-m-d_His') . '.csv';
             
@@ -420,22 +360,7 @@ private function createActivityLog($student, $title, $description)
 
             $callback = function() use ($students) {
                 $file = fopen('php://output', 'w');
-                
-                // CSV Headers
-                fputcsv($file, [
-                    'Roll No',
-                    'Student Name',
-                    'Email',
-                    'Phone',
-                    'Batch Name',
-                    'Course Name',
-                    'Course Content',
-                    'Delivery Mode',
-                    'Shift',
-                    'Status'
-                ]);
-
-                // CSV Data
+                fputcsv($file, ['Roll No','Student Name','Email','Phone','Batch Name','Course Name','Course Content','Delivery Mode','Shift','Status']);
                 foreach ($students as $student) {
                     fputcsv($file, [
                         $student->roll_no,
@@ -446,11 +371,10 @@ private function createActivityLog($student, $title, $description)
                         $student->course->name ?? 'N/A',
                         $student->course_content,
                         $student->delivery_mode,
-                        $student->shift->name ?? $student->shift ?? 'N/A', // ✅ FIXED: Use relationship first
+                        $student->shift->name ?? $student->shift ?? 'N/A',
                         ucfirst($student->status)
                     ]);
                 }
-
                 fclose($file);
             };
 
@@ -468,8 +392,7 @@ private function createActivityLog($student, $title, $description)
     public function history($id)
     {
         try {
-            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id); // ✅ ADDED: 'shift' relationship
-            
+            $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id);
             return view('student.smstudents.history', compact('student'));
         } catch (\Exception $e) {
             Log::error('Error loading history: ' . $e->getMessage());
@@ -555,4 +478,292 @@ public function updateBatch(Request $request, $id)
             ->with('error', 'Failed to update batch: ' . $e->getMessage());
     }
 }
+    
+    /* =======================================================
+       ✅ ENHANCED PRIVATE HELPER METHODS
+    ======================================================= */
+
+    /**
+     * ✅ ENHANCED: Process and format fees data with proper date handling
+     */
+    private function processFeesData($student)
+    {
+        // Process regular fees
+        if ($student->fees && is_array($student->fees)) {
+            $student->fees = collect($student->fees)->map(function ($fee) {
+                // Parse dates
+                if (isset($fee['due_date'])) {
+                    $fee['due_date'] = Carbon::parse($fee['due_date']);
+                }
+                if (isset($fee['paid_date']) && $fee['paid_date']) {
+                    $fee['paid_date'] = Carbon::parse($fee['paid_date']);
+                }
+                
+                // Calculate remaining amount
+                $actualAmount = floatval($fee['actual_amount'] ?? 0);
+                $discountAmount = floatval($fee['discount_amount'] ?? 0);
+                $paidAmount = floatval($fee['paid_amount'] ?? 0);
+                $fee['remaining_amount'] = $actualAmount - $discountAmount - $paidAmount;
+                
+                // Determine status if not set
+                if (!isset($fee['status'])) {
+                    if ($paidAmount >= ($actualAmount - $discountAmount)) {
+                        $fee['status'] = 'paid';
+                    } elseif ($paidAmount > 0) {
+                        $fee['status'] = 'partial';
+                    } elseif (isset($fee['due_date']) && Carbon::parse($fee['due_date'])->isPast()) {
+                        $fee['status'] = 'overdue';
+                    } else {
+                        $fee['status'] = 'pending';
+                    }
+                }
+                
+                // Add status badge
+                $fee['status_badge'] = $this->getStatusBadge($fee['status']);
+                
+                return $fee;
+            });
+        } else {
+            $student->fees = collect([]);
+        }
+
+        // Process other fees
+        if ($student->other_fees && is_array($student->other_fees)) {
+            $student->other_fees = collect($student->other_fees)->map(function ($fee) {
+                // Parse dates
+                if (isset($fee['due_date'])) {
+                    $fee['due_date'] = Carbon::parse($fee['due_date']);
+                }
+                if (isset($fee['paid_date']) && $fee['paid_date']) {
+                    $fee['paid_date'] = Carbon::parse($fee['paid_date']);
+                }
+                
+                // Calculate remaining amount
+                $actualAmount = floatval($fee['actual_amount'] ?? 0);
+                $paidAmount = floatval($fee['paid_amount'] ?? 0);
+                $fee['remaining_amount'] = $actualAmount - $paidAmount;
+                
+                // Determine status if not set
+                if (!isset($fee['status'])) {
+                    if ($paidAmount >= $actualAmount) {
+                        $fee['status'] = 'paid';
+                    } elseif ($paidAmount > 0) {
+                        $fee['status'] = 'partial';
+                    } elseif (isset($fee['due_date']) && Carbon::parse($fee['due_date'])->isPast()) {
+                        $fee['status'] = 'overdue';
+                    } else {
+                        $fee['status'] = 'pending';
+                    }
+                }
+                
+                // Add status badge
+                $fee['status_badge'] = $this->getStatusBadge($fee['status']);
+                
+                return $fee;
+            });
+        } else {
+            $student->other_fees = collect([]);
+        }
+
+        // Process transactions
+        if ($student->transactions && is_array($student->transactions)) {
+            $student->transactions = collect($student->transactions)->map(function ($txn) {
+                if (isset($txn['payment_date'])) {
+                    $txn['payment_date'] = Carbon::parse($txn['payment_date']);
+                }
+                return $txn;
+            })->sortByDesc('payment_date');
+        } else {
+            $student->transactions = collect([]);
+        }
     }
+
+    /**
+     * ✅ ENHANCED: Calculate comprehensive fee summary
+     */
+    private function calculateFeeSummary($student)
+    {
+        // Regular Fees Summary
+        $totalFees = $student->fees->sum(fn($f) => floatval($f['actual_amount'] ?? 0));
+        $discountFees = $student->fees->sum(fn($f) => floatval($f['discount_amount'] ?? 0));
+        $paidFees = $student->fees->sum(fn($f) => floatval($f['paid_amount'] ?? 0));
+        $pendingFees = $totalFees - $discountFees - $paidFees;
+
+        // Other Fees Summary
+        $totalOtherFees = $student->other_fees->sum(fn($f) => floatval($f['actual_amount'] ?? 0));
+        $paidOtherFees = $student->other_fees->sum(fn($f) => floatval($f['paid_amount'] ?? 0));
+        $pendingOtherFees = $totalOtherFees - $paidOtherFees;
+
+        // Grand Total
+        $grandTotal = $totalFees + $totalOtherFees;
+        $grandPaid = $paidFees + $paidOtherFees;
+        $grandPending = $pendingFees + $pendingOtherFees;
+
+        return [
+            'fees' => [
+                'total' => $totalFees,
+                'discount' => $discountFees,
+                'paid' => $paidFees,
+                'pending' => $pendingFees
+            ],
+            'other_fees' => [
+                'total' => $totalOtherFees,
+                'paid' => $paidOtherFees,
+                'pending' => $pendingOtherFees
+            ],
+            'grand' => [
+                'total' => $grandTotal,
+                'paid' => $grandPaid,
+                'pending' => $grandPending
+            ]
+        ];
+    }
+
+    /**
+     * ✅ ENHANCED: Check scholarship eligibility with Scholarship model integration
+     */
+    private function checkScholarshipEligibility($student)
+    {
+        $result = [
+            'eligible' => false,
+            'reason' => 'Not Eligible',
+            'discountPercent' => 0
+        ];
+
+        // 1. Check if already has scholarship assigned
+        if (in_array(strtolower($student->eligible_for_scholarship ?? ''), ['yes', 'true', '1'])) {
+            $result['eligible'] = true;
+            $result['reason'] = $student->scholarship_name ?? 'Scholarship Applied';
+            $result['discountPercent'] = floatval($student->discount_percentage ?? 0);
+            return $result;
+        }
+
+        // 2. Get student's course and category
+        $courseName = $student->course_name ?? $student->course->name ?? null;
+        $category = $student->category ?? 'General';
+
+        // 3. Check Scholarship Test (Competition Exam)
+        if (in_array(strtolower($student->scholarship_test ?? ''), ['yes'])) {
+            $testPercentage = floatval($student->scholarship_percentage ?? 0);
+            
+            $scholarship = Scholarship::getByTestScore($testPercentage, $courseName, $category);
+            
+            if ($scholarship) {
+                return [
+                    'eligible' => true,
+                    'reason' => $scholarship->scholarship_name ?? 'Scholarship Test',
+                    'discountPercent' => floatval($scholarship->discount_percentage)
+                ];
+            }
+        }
+
+        // 4. Check Board Exam Percentage
+        if (!empty($student->board_percentage)) {
+            $boardPercent = floatval($student->board_percentage);
+            
+            $scholarship = Scholarship::getByPercentage($boardPercent, $courseName, $category);
+            
+            if ($scholarship) {
+                return [
+                    'eligible' => true,
+                    'reason' => $scholarship->scholarship_name ?? 'Board Exam Merit',
+                    'discountPercent' => floatval($scholarship->discount_percentage)
+                ];
+            }
+        }
+
+        // 5. Check Special Categories
+        $specialCategories = [
+            'economic_weaker_section' => Scholarship::APPLICABLE_EWS,
+            'army_police_background' => Scholarship::APPLICABLE_DEFENCE,
+            'specially_abled' => Scholarship::APPLICABLE_PWD
+        ];
+
+        foreach ($specialCategories as $field => $applicableFor) {
+            if (in_array(strtolower($student->$field ?? ''), ['yes'])) {
+                $scholarships = Scholarship::getApplicableScholarships($category, $applicableFor, $courseName);
+                
+                if ($scholarships->isNotEmpty()) {
+                    $scholarship = $scholarships->first();
+                    return [
+                        'eligible' => true,
+                        'reason' => $scholarship->scholarship_name,
+                        'discountPercent' => floatval($scholarship->discount_percentage)
+                    ];
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * ✅ Get Bootstrap badge class based on status
+     */
+    private function getStatusBadge($status)
+    {
+        $status = strtolower($status ?? 'pending');
+        
+        return match($status) {
+            'paid' => 'success',
+            'partial', 'partially_paid' => 'warning',
+            'pending' => 'danger',
+            'overdue' => 'dark',
+            'cancelled' => 'secondary',
+            default => 'secondary'
+        };
+    }
+
+    /**
+     * Add a new fee entry
+     */
+    public function addFee(Request $request, $id)
+    {
+        $student = SMstudents::findOrFail($id);
+        $fees = $student->fees ?? [];
+        
+        $fees[] = [
+            'installment_number' => count($fees) + 1,
+            'fee_type' => $request->fee_type ?? 'tuition',
+            'actual_amount' => floatval($request->actual_amount),
+            'discount_amount' => floatval($request->discount_amount ?? 0),
+            'paid_amount' => floatval($request->paid_amount ?? 0),
+            'due_date' => $request->due_date,
+            'paid_date' => $request->paid_date ?? null,
+            'status' => $request->status ?? 'pending',
+            'payment_method' => $request->payment_method ?? null,
+            'transaction_id' => $request->transaction_id ?? null,
+            'remarks' => $request->remarks ?? null,
+            'created_at' => now()->toDateTimeString()
+        ];
+        
+        $student->fees = $fees;
+        $student->save();
+
+        return redirect()->back()->with('success', 'Fee added successfully');
+    }
+
+    /**
+     * Add a new transaction
+     */
+    public function addTransaction(Request $request, $id)
+    {
+        $student = SMstudents::findOrFail($id);
+        $transactions = $student->transactions ?? [];
+        
+        $transactions[] = [
+            'transaction_id' => $request->transaction_id ?? 'TXN' . time(),
+            'fee_type' => $request->fee_type,
+            'amount' => floatval($request->amount),
+            'payment_method' => $request->payment_method,
+            'payment_date' => now()->toDateTimeString(),
+            'received_by' => auth()->user()->name ?? 'Admin',
+            'remarks' => $request->remarks ?? null
+        ];
+        
+        $student->transactions = $transactions;
+        $student->save();
+
+        return redirect()->back()->with('success', 'Transaction recorded successfully');
+    }
+}

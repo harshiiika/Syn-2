@@ -284,9 +284,8 @@ Route::prefix('smstudents')
         
         //   POST/PUT routes
         Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
-        Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');
-        Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
-        Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
+Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
+Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');        Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
         Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
         
         //   Generic show route LAST
@@ -298,7 +297,6 @@ Route::prefix('smstudents')
 //  Onboard transfer route OUTSIDE smstudents group
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])
     ->name('onboard.transfer');
-
     
 // ========================================
 // 5. INQUIRY MANAGEMENT
