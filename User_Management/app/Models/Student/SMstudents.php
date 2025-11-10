@@ -20,7 +20,8 @@ class SMstudents extends Model
         'student_name',
         'email',
         'phone',
-        
+        'shift_id', 
+
         // Basic Details (from onboarding)
         'father',
         'mother',

@@ -832,8 +832,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <label class="form-label fw-bold">Export Current Data</label>
           <p class="text-muted small">Download all current employee data as Excel file.</p>
           <a href="{{ route('users.export') }}?search={{ request('search') }}&per_page={{ request('per_page', 10) }}" 
-             class="btn btn-info w-100" ></a>
+             class="btn btn-info w-100" style="background-color: #ffffffff ;  border-color: #ffffffff""><button type="submit" class="btn btn-success w-100" style="background-color: #ed5b00ff ; border-color: #ed5b00ff">
      <i class="fa-solid fa-download"></i> Download Current Employees
+            </button></a>
           </a>
         </div>
 
@@ -871,9 +872,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </div>
 
 </body>
-<!-- Custom JS -->
-<script src="{{asset('js/emp.js')}}"></script>
-
 <!-- AJAX Script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
