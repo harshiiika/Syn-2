@@ -9,9 +9,247 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Models\Master\Scholarship;
 use App\Models\Master\FeesMaster;
+use App\Models\Student\Pending;
+
 
 class InquiryController extends Controller
 {
+    /**
+     * ✅ SINGLE ONBOARD - Transfer ONE inquiry to pending students
+     */
+    public function singleOnboard($id)
+    {
+        try {
+            Log::info('=== SINGLE ONBOARD START ===', ['inquiry_id' => $id]);
+            
+            $inquiry = Inquiry::find($id);
+            
+            if (!$inquiry) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Inquiry not found!'
+                ], 404);
+            }
+
+            // Check if already transferred
+            if (in_array($inquiry->status, ['transferred', 'onboarded', 'converted'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This inquiry has already been processed!'
+                ], 400);
+            }
+
+            // Transfer to pending
+            $pendingStudent = $this->transferToPending($inquiry);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Student transferred to pending list successfully!',
+                'pending_student_id' => (string) $pendingStudent->_id
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Single onboard error: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to transfer student: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * ✅ BULK ONBOARD - Transfer multiple inquiries to pending students
+     */
+    public function bulkOnboard(Request $request)
+    {
+        try {
+            $request->validate([
+                'inquiry_ids' => 'required|array',
+                'inquiry_ids.*' => 'required|string'
+            ]);
+
+            $inquiryIds = $request->inquiry_ids;
+            $inquiries = Inquiry::whereIn('_id', $inquiryIds)->get();
+
+            if ($inquiries->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No valid inquiries found'
+                ], 404);
+            }
+
+            $transferredCount = 0;
+            $errors = [];
+
+            foreach ($inquiries as $inquiry) {
+                try {
+                    // Skip already processed
+                    if (in_array($inquiry->status, ['transferred', 'onboarded', 'converted'])) {
+                        $errors[] = "{$inquiry->student_name} - Already processed";
+                        continue;
+                    }
+
+                    $this->transferToPending($inquiry);
+                    $transferredCount++;
+                    
+                } catch (\Exception $e) {
+                    Log::error("Failed to transfer inquiry {$inquiry->_id}: " . $e->getMessage());
+                    $errors[] = "{$inquiry->student_name} - " . $e->getMessage();
+                }
+            }
+
+            $message = "Successfully transferred {$transferredCount} student(s) to pending list!";
+            if (!empty($errors)) {
+                $message .= " Errors: " . implode(', ', $errors);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'transferred_count' => $transferredCount,
+                'errors' => $errors
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Bulk transfer error: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to transfer students: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * ✅ HELPER METHOD - Transfer inquiry to pending collection
+     */
+    private function transferToPending($inquiry)
+    {
+        Log::info('Transferring inquiry to pending', [
+            'inquiry_id' => $inquiry->_id,
+            'student_name' => $inquiry->student_name,
+        ]);
+
+        // Create pending student record
+        $pendingData = [
+            // Basic Details
+            'name' => $inquiry->student_name,
+            'father' => $inquiry->father_name,
+            'mother' => $inquiry->mother ?? null,
+            'dob' => $inquiry->dob ?? null,
+            'mobileNumber' => $inquiry->father_contact,
+            'fatherWhatsapp' => $inquiry->father_whatsapp ?? null,
+            'motherContact' => $inquiry->motherContact ?? null,
+            'studentContact' => $inquiry->student_contact ?? null,
+            'category' => $inquiry->category ?? 'GENERAL',
+            'gender' => $inquiry->gender ?? null,
+            'fatherOccupation' => $inquiry->fatherOccupation ?? null,
+            'fatherGrade' => $inquiry->fatherGrade ?? null,
+            'motherOccupation' => $inquiry->motherOccupation ?? null,
+            
+            // Address Details
+            'state' => $inquiry->state ?? null,
+            'city' => $inquiry->city ?? null,
+            'pinCode' => $inquiry->pinCode ?? null,
+            'address' => $inquiry->address ?? null,
+            'belongToOtherCity' => $inquiry->belongToOtherCity ?? 'No',
+            'economicWeakerSection' => $inquiry->economicWeakerSection ?? 'No',
+            'armyPoliceBackground' => $inquiry->armyPoliceBackground ?? 'No',
+            'speciallyAbled' => $inquiry->speciallyAbled ?? 'No',
+            
+            // Course Details
+            'course_type' => $inquiry->courseType ?? null,
+            'courseType' => $inquiry->courseType ?? null,
+            'courseName' => $inquiry->course_name ?? null,
+            'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
+            'medium' => $inquiry->medium ?? null,
+            'board' => $inquiry->board ?? null,
+            'courseContent' => $inquiry->course_content ?? 'Class Room Course',
+            
+            // Academic Details
+            'previousClass' => $inquiry->previousClass ?? null,
+            'previousMedium' => $inquiry->previousMedium ?? null,
+            'schoolName' => $inquiry->schoolName ?? null,
+            'previousBoard' => $inquiry->previousBoard ?? null,
+            'passingYear' => $inquiry->passingYear ?? null,
+            'percentage' => $inquiry->percentage ?? null,
+            
+            // Scholarship Eligibility
+            'isRepeater' => $inquiry->isRepeater ?? 'No',
+            'scholarshipTest' => $inquiry->scholarshipTest ?? 'No',
+            'lastBoardPercentage' => $inquiry->lastBoardPercentage ?? null,
+            'competitionExam' => $inquiry->competitionExam ?? 'No',
+            
+            // Batch Details
+            'batchName' => $inquiry->batchName ?? null,
+            
+            // Scholarship & Fees Details
+            'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
+            'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
+            'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
+            'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
+            'discretionary_discount_type' => $inquiry->discretionary_discount_type ?? null,
+            'discretionary_discount_value' => $inquiry->discretionary_discount_value ?? null,
+            'discretionary_discount_reason' => $inquiry->discretionary_discount_reason ?? null,
+            'discount_percentage' => $inquiry->discount_percentage ?? 0,
+            'discounted_fee' => $inquiry->discounted_fee ?? 0,
+            'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
+            'total_fees' => $inquiry->total_fees ?? 0,
+            'gst_amount' => $inquiry->gst_amount ?? 0,
+            'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax ?? 0,
+            'single_installment_amount' => $inquiry->single_installment_amount ?? 0,
+            'installment_1' => $inquiry->installment_1 ?? 0,
+            'installment_2' => $inquiry->installment_2 ?? 0,
+            'installment_3' => $inquiry->installment_3 ?? 0,
+            'fees_calculated_at' => $inquiry->fees_calculated_at ?? null,
+            
+            // Metadata
+            'branch' => $inquiry->branch ?? 'Main Branch',
+            'session' => session('current_session', '2025-2026'),
+            'status' => 'pending',
+            'transferred_from_inquiry' => true,
+            'inquiry_id' => (string) $inquiry->_id,
+            'transferred_at' => now(),
+        ];
+
+        $pendingStudent = Pending::create($pendingData);
+
+        Log::info('✅ Pending student created', [
+            'pending_id' => $pendingStudent->_id,
+            'name' => $pendingStudent->name,
+        ]);
+
+        // Update inquiry with history
+        $history = $inquiry->history ?? [];
+        $history[] = [
+            'action' => 'Transferred to Pending Students',
+            'user' => auth()->check() ? auth()->user()->name : 'Admin',
+            'description' => 'Student transferred to pending students list for form completion',
+            'timestamp' => now()->toIso8601String(),
+            'changes' => [
+                'status' => [
+                    'from' => $inquiry->status ?? 'new',
+                    'to' => 'transferred'
+                ],
+                'pending_student_id' => (string) $pendingStudent->_id
+            ]
+        ];
+
+        $inquiry->update([
+            'status' => 'transferred',
+            'transferred_to_pending' => true,
+            'pending_student_id' => (string) $pendingStudent->_id,
+            'history' => $history
+        ]);
+
+        Log::info('✅ Inquiry updated with transfer status');
+
+        return $pendingStudent;
+    }
+
     /**
      * Display the inquiry management page
      */
@@ -28,8 +266,8 @@ class InquiryController extends Controller
         try {
             $query = Inquiry::query();
             
-            // ⭐ Filter out onboarded inquiries - only show active inquiries
-            $query->whereNotIn('status', ['onboarded', 'converted']);
+            // Filter out transferred/onboarded inquiries
+            $query->whereNotIn('status', ['transferred', 'onboarded', 'converted']);
 
             // Search functionality
             if ($request->has('search') && $request->search) {
@@ -51,17 +289,11 @@ class InquiryController extends Controller
                                ->take($perPage)
                                ->get();
 
-            // Transform MongoDB _id to string for JavaScript
+            // Transform MongoDB _id to string
             $inquiries = $inquiries->map(function($inquiry) {
                 $inquiry->_id = (string) $inquiry->_id;
                 return $inquiry;
             });
-
-            Log::info('Data method - Returning inquiries', [
-                'count' => $inquiries->count(),
-                'total' => $total,
-                'page' => $page
-            ]);
 
             return response()->json([
                 'success' => true,
@@ -74,7 +306,6 @@ class InquiryController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Inquiry Data Error: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
             
             return response()->json([
                 'success' => false,
@@ -89,76 +320,32 @@ class InquiryController extends Controller
     }
 
     /**
-     * Edit inquiry
-     */
-    public function edit($id)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($id);
-            
-            \Log::info('Edit inquiry data:', [
-                'id' => $id,
-                'student_name' => $inquiry->student_name,
-                'father_name' => $inquiry->father_name,
-                'father_contact' => $inquiry->father_contact,
-                'course_name' => $inquiry->course_name,
-                'courseType' => $inquiry->courseType,
-                'all_data' => $inquiry->toArray()
-            ]);
-            
-            return view('inquiries.edit', compact('inquiry'));
-        } catch (\Exception $e) {
-            \Log::error('Edit page error: ' . $e->getMessage());
-            return redirect()->route('inquiries.index')->with('error', 'Unable to load inquiry for editing.');
-        }
-    }
-
-    /**
-     * Show single inquiry
-     */
-    public function show($id)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($id);
-            return response()->json([
-                'success' => true,
-                'data' => $inquiry
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Inquiry not found'
-            ], 404);
-        }
-    }
-
-    /**
-     * Store a new inquiry with initial history entry
+     * Store a new inquiry
      */
     public function store(Request $request)
     {
         Log::info('Inquiry Store Request:', $request->all());
 
         $validator = Validator::make($request->all(), [
-            'student_name'       => 'required|string|max:255',
-            'father_name'        => 'required|string|max:255',
-            'father_contact'     => 'required|string|max:20',
-            'father_whatsapp'    => 'nullable|string|max:20',
-            'student_contact'    => 'nullable|string|max:20',
-            'category'           => 'required|string|in:General,OBC,SC,ST',
-            'course_name'        => 'nullable|string|max:255',
-            'delivery_mode'      => 'nullable|string|in:Online,Offline,Hybrid',
-            'course_content'     => 'nullable|string|max:255',
-            'branch'             => 'required|string|max:255',
-            'state'              => 'nullable|string|max:255',
-            'city'               => 'nullable|string|max:255',
-            'address'            => 'nullable|string',
-            'ews'                => 'required|string|in:Yes,No',
-            'defense'            => 'required|string|in:Yes,No',
-            'specially_abled'    => 'required|string|in:Yes,No',
-            'status'             => 'nullable|string|in:Pending,Active,Closed,Converted',
-            'remarks'            => 'nullable|string',
-            'follow_up_date'     => 'nullable|date',
+            'student_name' => 'required|string|max:255',
+            'father_name' => 'required|string|max:255',
+            'father_contact' => 'required|string|max:20',
+            'father_whatsapp' => 'nullable|string|max:20',
+            'student_contact' => 'nullable|string|max:20',
+            'category' => 'required|string|in:General,OBC,SC,ST',
+            'course_name' => 'nullable|string|max:255',
+            'delivery_mode' => 'nullable|string|in:Online,Offline,Hybrid',
+            'course_content' => 'nullable|string|max:255',
+            'branch' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'ews' => 'required|string|in:Yes,No',
+            'defense' => 'required|string|in:Yes,No',
+            'specially_abled' => 'required|string|in:Yes,No',
+            'status' => 'nullable|string|in:Pending,Active,Closed,Converted',
+            'remarks' => 'nullable|string',
+            'follow_up_date' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {
@@ -174,13 +361,13 @@ class InquiryController extends Controller
             $data = $validator->validated();
             $data['status'] = $data['status'] ?? 'Pending';
             
-            // ⭐ AUTO-CALCULATE FEES BASED ON COURSE
+            // Auto-calculate fees if course provided
             if (!empty($data['course_name'])) {
                 $feesData = $this->calculateDefaultFees($data['course_name']);
                 $data = array_merge($data, $feesData);
             }
             
-            // ⭐ ADD INITIAL HISTORY ENTRY
+            // Add initial history
             $data['history'] = [[
                 'action' => 'Inquiry Created',
                 'user' => auth()->check() ? auth()->user()->name : 'Admin',
@@ -213,11 +400,10 @@ class InquiryController extends Controller
     }
 
     /**
-     * Calculate default fees for a course (without any discounts)
+     * Calculate default fees for a course
      */
     private function calculateDefaultFees($courseName)
     {
-        // Course fees mapping
         $courseFees = [
             'Anthesis 11th NEET' => 88000,
             'Momentum 12th NEET' => 88000,
@@ -231,425 +417,215 @@ class InquiryController extends Controller
         ];
 
         $totalFeeBeforeDiscount = $courseFees[$courseName] ?? 88000;
-
-        // No scholarship eligibility check here - just base fees
-        $eligibleForScholarship = 'No';
-        $scholarshipName = 'N/A';
-        $discountPercentage = 0;
-        $discountedFee = $totalFeeBeforeDiscount;
-        $discretionaryDiscount = 'No';
-
-        // Calculate final fees with GST
-        $totalFees = $discountedFee;
+        $totalFees = $totalFeeBeforeDiscount;
         $gstAmount = ($totalFees * 18) / 100;
         $totalFeesInclusiveTax = $totalFees + $gstAmount;
 
-        // Calculate installments
-        $singleInstallmentAmount = $totalFeesInclusiveTax;
-        $installment1 = round($totalFeesInclusiveTax * 0.40, 2);
-        $installment2 = round($totalFeesInclusiveTax * 0.30, 2);
-        $installment3 = round($totalFeesInclusiveTax * 0.30, 2);
-
         return [
-            'eligible_for_scholarship' => $eligibleForScholarship,
-            'scholarship_name' => $scholarshipName,
+            'eligible_for_scholarship' => 'No',
+            'scholarship_name' => 'N/A',
             'total_fee_before_discount' => $totalFeeBeforeDiscount,
-            'discretionary_discount' => $discretionaryDiscount,
+            'discretionary_discount' => 'No',
             'discretionary_discount_type' => null,
             'discretionary_discount_value' => null,
             'discretionary_discount_reason' => null,
-            'discount_percentage' => $discountPercentage,
-            'discounted_fee' => $discountedFee,
+            'discount_percentage' => 0,
+            'discounted_fee' => $totalFeeBeforeDiscount,
             'fees_breakup' => 'Class room course (with test series & study material)',
             'total_fees' => $totalFees,
             'gst_amount' => $gstAmount,
             'total_fees_inclusive_tax' => $totalFeesInclusiveTax,
-            'single_installment_amount' => $singleInstallmentAmount,
-            'installment_1' => $installment1,
-            'installment_2' => $installment2,
-            'installment_3' => $installment3,
+            'single_installment_amount' => $totalFeesInclusiveTax,
+            'installment_1' => round($totalFeesInclusiveTax * 0.40, 2),
+            'installment_2' => round($totalFeesInclusiveTax * 0.30, 2),
+            'installment_3' => round($totalFeesInclusiveTax * 0.30, 2),
             'fees_calculated_at' => now(),
         ];
     }
 
     /**
-     * Delete an inquiry
+     * Edit inquiry
      */
-    public function destroy($id)
+    public function edit($id)
     {
         try {
             $inquiry = Inquiry::findOrFail($id);
-            $inquiry->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Inquiry deleted successfully',
-            ], 200);
+            
+            Log::info('Edit inquiry data:', [
+                'id' => $id,
+                'student_name' => $inquiry->student_name,
+                'father_name' => $inquiry->father_name,
+                'all_data' => $inquiry->toArray()
+            ]);
+            
+            return view('inquiries.edit', compact('inquiry'));
         } catch (\Exception $e) {
-            Log::error('Inquiry Delete Error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error deleting inquiry: ' . $e->getMessage(),
-            ], 500);
+            Log::error('Edit page error: ' . $e->getMessage());
+            return redirect()->route('inquiries.index')->with('error', 'Unable to load inquiry for editing.');
         }
     }
 
     /**
-     * Handle file upload for bulk inquiry import
+     * Update inquiry
      */
-    public function upload(Request $request)
+    public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:csv,xlsx,xls|max:5120',
+        Log::info('UPDATE METHOD CALLED', [
+            'id' => $id,
+            'all_data' => $request->all()
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid file format. Please upload CSV or Excel file.',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'father' => 'required|string|max:255',
+            'mother' => 'nullable|string|max:255',
+            'dob' => 'nullable|date',
+            'mobileNumber' => 'required|string|max:15',
+            'fatherWhatsapp' => 'nullable|string|max:15',
+            'motherContact' => 'nullable|string|max:15',
+            'studentContact' => 'nullable|string|max:15',
+            'category' => 'required|in:GENERAL,OBC,SC,ST',
+            'gender' => 'required|in:Male,Female,Others',
+            'fatherOccupation' => 'nullable|string|max:255',
+            'fatherGrade' => 'nullable|string|max:255',
+            'motherOccupation' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'pinCode' => 'nullable|string|max:6',
+            'address' => 'nullable|string',
+            'belongToOtherCity' => 'nullable|in:Yes,No',
+            'economicWeakerSection' => 'nullable|in:Yes,No',
+            'armyPoliceBackground' => 'nullable|in:Yes,No',
+            'speciallyAbled' => 'nullable|in:Yes,No',
+            'courseType' => 'nullable|string|max:255',
+            'courseName' => 'nullable|string|max:255',
+            'deliveryMode' => 'nullable|in:Offline,Online,Hybrid',
+            'medium' => 'nullable|in:English,Hindi',
+            'board' => 'nullable|in:CBSE,RBSE,ICSE',
+            'courseContent' => 'nullable|string|max:255',
+            'isRepeater' => 'nullable|in:Yes,No',
+            'scholarshipTest' => 'nullable|in:Yes,No',
+            'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
+            'competitionExam' => 'nullable|in:Yes,No',
+        ]);
+
+        Log::info('VALIDATION PASSED');
 
         try {
-            return response()->json([
-                'success' => true,
-                'message' => 'File uploaded successfully',
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Inquiry Upload Error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Upload failed: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
+            $inquiry = Inquiry::findOrFail($id);
+            
+            Log::info('INQUIRY FOUND', ['inquiry_id' => $inquiry->_id]);
+            
+            // Store old data for change tracking
+            $oldData = $inquiry->toArray();
+            
+            // Check if course changed
+            $courseChanged = ($inquiry->course_name !== $validatedData['courseName']);
+            
+            // Map form fields to database fields
+            $updateData = [
+                'student_name' => $validatedData['name'],
+                'father_name' => $validatedData['father'],
+                'mother' => $validatedData['mother'] ?? null,
+                'dob' => $validatedData['dob'] ?? null,
+                'father_contact' => $validatedData['mobileNumber'],
+                'father_whatsapp' => $validatedData['fatherWhatsapp'] ?? null,
+                'motherContact' => $validatedData['motherContact'] ?? null,
+                'student_contact' => $validatedData['studentContact'] ?? null,
+                'category' => $validatedData['category'],
+                'gender' => $validatedData['gender'],
+                'fatherOccupation' => $validatedData['fatherOccupation'] ?? null,
+                'fatherGrade' => $validatedData['fatherGrade'] ?? null,
+                'motherOccupation' => $validatedData['motherOccupation'] ?? null,
+                'state' => $validatedData['state'] ?? null,
+                'city' => $validatedData['city'] ?? null,
+                'pinCode' => $validatedData['pinCode'] ?? null,
+                'address' => $validatedData['address'] ?? null,
+                'belongToOtherCity' => $validatedData['belongToOtherCity'] ?? 'No',
+                'economicWeakerSection' => $validatedData['economicWeakerSection'] ?? 'No',
+                'armyPoliceBackground' => $validatedData['armyPoliceBackground'] ?? 'No',
+                'speciallyAbled' => $validatedData['speciallyAbled'] ?? 'No',
+                'courseType' => $validatedData['courseType'] ?? null,
+                'course_name' => $validatedData['courseName'] ?? null,
+                'delivery_mode' => $validatedData['deliveryMode'] ?? null,
+                'medium' => $validatedData['medium'] ?? null,
+                'board' => $validatedData['board'] ?? null,
+                'course_content' => $validatedData['courseContent'] ?? null,
+                'isRepeater' => $validatedData['isRepeater'] ?? 'No',
+                'scholarshipTest' => $validatedData['scholarshipTest'] ?? 'No',
+                'lastBoardPercentage' => $validatedData['lastBoardPercentage'] ?? null,
+                'competitionExam' => $validatedData['competitionExam'] ?? 'No',
+            ];
 
-    /**
-     * Bulk onboard inquiries to students
-     */
-    public function bulkOnboard(Request $request)
-    {
-        try {
-            $request->validate([
-                'inquiry_ids' => 'required|array',
-                'inquiry_ids.*' => 'required|string'
-            ]);
-
-            $inquiryIds = $request->inquiry_ids;
-            $inquiries = Inquiry::whereIn('_id', $inquiryIds)->get();
-
-            if ($inquiries->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No valid inquiries found'
-                ], 404);
+            // Track changes
+            $changes = [];
+            foreach ($updateData as $key => $value) {
+                $oldValue = $oldData[$key] ?? null;
+                if ($oldValue != $value && $value !== null) {
+                    $changes[$key] = [
+                        'from' => $oldValue,
+                        'to' => $value
+                    ];
+                }
             }
 
-            $onboardedCount = 0;
-
-            foreach ($inquiries as $inquiry) {
-                //   DEBUG: Log inquiry data before creating student
-                \Log::info('=== INQUIRY DATA BEFORE ONBOARD ===', [
-                    'inquiry_id' => $inquiry->_id,
-                    'student_name' => $inquiry->student_name,
-                    'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'NOT SET',
-                    'scholarship_name' => $inquiry->scholarship_name ?? 'NOT SET',
-                    'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 'NOT SET',
-                    'total_fees' => $inquiry->total_fees ?? 'NOT SET',
-                    'gst_amount' => $inquiry->gst_amount ?? 'NOT SET',
-                    'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax ?? 'NOT SET',
-                    'installment_1' => $inquiry->installment_1 ?? 'NOT SET',
-                ]);
-
-                //   Create student record in 'students' collection with ALL fields
-                $student = \App\Models\Student\Student::create([
-                    // Basic Details
-                    'name' => $inquiry->student_name,
-                    'father' => $inquiry->father_name,
-                    'mother' => $inquiry->mother,
-                    'dob' => $inquiry->dob,
-                    'mobileNumber' => $inquiry->father_contact,
-                    'fatherWhatsapp' => $inquiry->father_whatsapp ?? null,
-                    'motherContact' => $inquiry->motherContact ?? null,
-                    'studentContact' => $inquiry->student_contact ?? null,
-                    'category' => $inquiry->category ?? 'General',
-                    'gender' => $inquiry->gender ?? null,
-                    'fatherOccupation' => $inquiry->fatherOccupation ?? null,
-                    'fatherGrade' => $inquiry->fatherGrade ?? null,
-                    'motherOccupation' => $inquiry->motherOccupation ?? null,
-                    
-                    // Address Details
-                    'state' => $inquiry->state,
-                    'city' => $inquiry->city,
-                    'pinCode' => $inquiry->pinCode ?? null,
-                    'address' => $inquiry->address,
-                    'belongToOtherCity' => $inquiry->belongToOtherCity ?? 'No',
-                    'economicWeakerSection' => $inquiry->economicWeakerSection ?? 'No',
-                    'armyPoliceBackground' => $inquiry->armyPoliceBackground ?? 'No',
-                    'speciallyAbled' => $inquiry->speciallyAbled ?? 'No',
-                    
-                    // Course Details
-                    'course_type' => $inquiry->courseType ?? null,
-                    'courseName' => $inquiry->course_name ?? 'Not Assigned',
-                    'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
-                    'medium' => $inquiry->medium ?? null,
-                    'board' => $inquiry->board ?? null,
-                    'courseContent' => $inquiry->course_content ?? 'Class Room Course',
-                    
-                    // Academic Details
-                    'previousClass' => $inquiry->previousClass ?? null,
-                    'previousMedium' => $inquiry->previousMedium ?? null,
-                    'schoolName' => $inquiry->schoolName ?? null,
-                    'previousBoard' => $inquiry->previousBoard ?? null,
-                    'passingYear' => $inquiry->passingYear ?? null,
-                    'percentage' => $inquiry->percentage ?? null,
-                    
-                    // Scholarship Eligibility
-                    'isRepeater' => $inquiry->isRepeater ?? 'No',
-                    'scholarshipTest' => $inquiry->scholarshipTest ?? 'No',
-                    'lastBoardPercentage' => $inquiry->lastBoardPercentage ?? null,
-                    'competitionExam' => $inquiry->competitionExam ?? 'No',
-                    
-                    // Batch Details
-                    'batchName' => $inquiry->batchName ?? null,
-                    
-                    //   SCHOLARSHIP & FEES DETAILS (all fields from inquiry)
-                    'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
-                    'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
-                    'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
-                    'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
-                    'discretionary_discount_type' => $inquiry->discretionary_discount_type ?? null,
-                    'discretionary_discount_value' => $inquiry->discretionary_discount_value ?? null,
-                    'discretionary_discount_reason' => $inquiry->discretionary_discount_reason ?? null,
-                    'discount_percentage' => $inquiry->discount_percentage ?? 0,
-                    'discounted_fee' => $inquiry->discounted_fee ?? 0,
-                    'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
-                    'total_fees' => $inquiry->total_fees ?? 0,
-                    'gst_amount' => $inquiry->gst_amount ?? 0,
-                    'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax ?? 0,
-                    'single_installment_amount' => $inquiry->single_installment_amount ?? 0,
-                    'installment_1' => $inquiry->installment_1 ?? 0,
-                    'installment_2' => $inquiry->installment_2 ?? 0,
-                    'installment_3' => $inquiry->installment_3 ?? 0,
-                    'fees_calculated_at' => $inquiry->fees_calculated_at ?? null,
-                    
-                    //   METADATA & STATUS FIELDS
-                    'email' => $inquiry->student_name . '@temp.com',
-                    'branch' => $inquiry->branch ?? 'Main Branch',
-                    'session' => session('current_session', '2025-2026'),
-                    
-                    //   PAYMENT STATUS (for pending fees tracking) - FIXED: No duplicate total_fees
-                    'paid_fees' => 0,
-                    'remaining_fees' => $inquiry->total_fees_inclusive_tax ?? 0,
-                    'status' => 'pending_fees',
-                    'fee_status' => 'pending',
-                    'admission_date' => now(),
-                ]);
-
-                \Log::info('✅ Student created with scholarship data:', [
-                    'id' => $student->_id,
-                    'name' => $student->name,
-                    'status' => $student->status,
-                    'eligible_for_scholarship' => $student->eligible_for_scholarship,
-                    'scholarship_name' => $student->scholarship_name,
-                    'total_fee_before_discount' => $student->total_fee_before_discount,
-                    'discount_percentage' => $student->discount_percentage,
-                    'total_fees' => $student->total_fees,
-                    'gst_amount' => $student->gst_amount,
-                    'total_fees_inclusive_tax' => $student->total_fees_inclusive_tax,
-                    'remaining_fees' => $student->remaining_fees
-                ]);
-
-                // ⭐ ADD ONBOARD HISTORY ENTRY
-                $history = $inquiry->history ?? [];
-                $history[] = [
-                    'action' => 'Student Onboarded',
-                    'user' => auth()->check() ? auth()->user()->name : 'Admin',
-                    'description' => 'Student ' . $inquiry->student_name . ' successfully onboarded to student management',
-                    'timestamp' => now()->toIso8601String(),
-                    'changes' => [
-                        'status' => [
-                            'from' => $inquiry->status,
-                            'to' => 'onboarded'
-                        ],
-                        'student_id' => (string) $student->_id
-                    ]
-                ];
-
-                //   Mark inquiry as onboarded with history
-                $inquiry->update([
-                    'status' => 'onboarded',
-                    'history' => $history
+            // Recalculate fees if course changed
+            if ($courseChanged && !empty($validatedData['courseName'])) {
+                Log::info('Course changed, recalculating fees', [
+                    'old_course' => $inquiry->course_name,
+                    'new_course' => $validatedData['courseName']
                 ]);
                 
-                $onboardedCount++;
+                $feesData = $this->calculateDefaultFees($validatedData['courseName']);
+                $updateData = array_merge($updateData, $feesData);
+                
+                $changes['fees_recalculated'] = 'Due to course change';
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => "Successfully onboarded {$onboardedCount} student(s)!"
+            // Add history entry
+            $history = $inquiry->history ?? [];
+            $history[] = [
+                'action' => 'Student Enquiry Updated',
+                'user' => auth()->check() ? auth()->user()->name : 'Admin',
+                'description' => 'Admin updated the enquiry for student ' . $inquiry->student_name,
+                'timestamp' => now()->toIso8601String(),
+                'changes' => $changes
+            ];
+            
+            $updateData['history'] = $history;
+
+            $inquiry->update($updateData);
+
+            Log::info('INQUIRY UPDATED SUCCESSFULLY WITH HISTORY', [
+                'updated_fields' => array_keys($changes),
+                'history_count' => count($history)
             ]);
+            
+            // Redirect to scholarship page
+            return redirect()->route('inquiries.scholarship.show', $id)
+                ->with('success', 'Inquiry saved! Please review scholarship details.');
 
         } catch (\Exception $e) {
-            \Log::error('Bulk onboard error: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            Log::error('ERROR IN UPDATE: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to onboard students: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Show onboard form for an inquiry
-     */
-    public function showOnboardForm($inquiryId)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($inquiryId);
-            
-            // Get dropdown data
-            $courses = \App\Models\Master\Courses::all(); 
-            $branches = ['Bikaner']; // Or get from database
-            $deliveryModes = ['Offline', 'Online', 'Hybrid'];
-            $courseContents = ['Class Room Course', 'Test Series Only'];
-            
-            return view('student.inquiry.onboard', compact(
-                'inquiry', 
-                'courses', 
-                'branches', 
-                'deliveryModes', 
-                'courseContents'
-            ));
-        } catch (\Exception $e) {
-            return redirect()->route('inquiries.index')
-                ->with('error', 'Inquiry not found');
-        }
-    }
-
-    /**
-     * Process onboarding (convert inquiry to student)
-     */
-    public function processOnboard(Request $request, $inquiryId)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($inquiryId);
-            
-            // Validate
-            $validated = $request->validate([
-                'courseName' => 'required|string',
-                'deliveryMode' => 'required|string',
-                'courseContent' => 'required|string',
-                'branch' => 'required|string',
-                'total_fees' => 'required|numeric|min:0',
-                'paid_fees' => 'nullable|numeric|min:0',
-            ]);
-
-            // Calculate fees
-            $totalFees = $validated['total_fees'];
-            $paidFees = $validated['paid_fees'] ?? 0;
-            $remainingFees = $totalFees - $paidFees;
-
-            // Determine status
-            if ($remainingFees <= 0) {
-                $status = \App\Models\Student\Student::STATUS_ACTIVE;
-                $feeStatus = 'paid';
-            } elseif ($paidFees > 0) {
-                $status = \App\Models\Student\Student::STATUS_PENDING_FEES;
-                $feeStatus = 'partial';
-            } else {
-                $status = \App\Models\Student\Student::STATUS_PENDING_FEES;
-                $feeStatus = 'pending';
-            }
-
-            // Create student
-            $student = \App\Models\Student\Student::create([
-                'name' => $inquiry->student_name,
-                'father' => $inquiry->father_name,
-                'mobileNumber' => $inquiry->father_contact,
-                'alternateNumber' => $inquiry->father_whatsapp ?? null,
-                'email' => $inquiry->student_name . '@temp.com',
-                'courseName' => $validated['courseName'],
-                'deliveryMode' => $validated['deliveryMode'],
-                'courseContent' => $validated['courseContent'],
-                'branch' => $validated['branch'],
-                'total_fees' => $totalFees,
-                'paid_fees' => $paidFees,
-                'remaining_fees' => $remainingFees,
-                'status' => $status,
-                'fee_status' => $feeStatus,
-                'session' => session('current_session', '2025-2026'),
-            ]);
-
-            // Update inquiry status
-            $inquiry->update(['status' => 'converted']);
-
-            // Redirect based on status
-            if ($remainingFees > 0) {
-                return redirect()->route('student.student.pending')
-                    ->with('success', 'Student onboarded! Pending fees: ₹' . number_format($remainingFees, 2));
-            } else {
-                return redirect()->route('student.student.pending')
-                    ->with('success', 'Student onboarded successfully with full payment!');
-            }
-
-        } catch (\Exception $e) {
-            \Log::error('Onboard error: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Failed to onboard student: ' . $e->getMessage())
+            return redirect()->route('inquiries.edit', $id)
+                ->with('error', 'Error updating inquiry: ' . $e->getMessage())
                 ->withInput();
         }
     }
 
     /**
-     * View inquiry details
-     */
-    public function view($id)
-    {
-        try {
-            $inquiry = Inquiry::findOrFail($id);
-            
-            \Log::info('View inquiry data:', $inquiry->toArray());
-            
-            // Prepare fees and scholarship data
-            $feesData = [
-                'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
-                'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
-                'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
-                'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
-                'discount_percentage' => $inquiry->discount_percentage ?? 0,
-                'discounted_fee' => $inquiry->discounted_fee ?? 0,
-                'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
-                'total_fees' => $inquiry->total_fees ?? 0,
-                'gst_amount' => $inquiry->gst_amount ?? 0,
-                'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax ?? 0,
-                'single_installment_amount' => $inquiry->single_installment_amount ?? 0,
-                'installment_1' => $inquiry->installment_1 ?? 0,
-                'installment_2' => $inquiry->installment_2 ?? 0,
-                'installment_3' => $inquiry->installment_3 ?? 0,
-            ];
-            
-            return view('inquiries.view', compact('inquiry', 'feesData'));
-        } catch (\Exception $e) {
-            \Log::error('Failed to load inquiry details: ' . $e->getMessage());
-            return redirect()->route('inquiries.index')
-                ->with('error', 'Unable to load inquiry details.');
-        }
-    }
-
-    /**
-     * Show scholarship details page after updating inquiry
+     * Show scholarship details page
      */
     public function showScholarshipDetails($id)
     {
         try {
-            \Log::info('=== SCHOLARSHIP PAGE LOADING ===', ['inquiry_id' => $id]);
+            Log::info('=== SCHOLARSHIP PAGE LOADING ===', ['inquiry_id' => $id]);
             
             $inquiry = Inquiry::findOrFail($id);
             
-            \Log::info('Inquiry found:', [
+            Log::info('Inquiry found:', [
                 'id' => $inquiry->_id,
                 'student_name' => $inquiry->student_name,
                 'course_name' => $inquiry->course_name,
@@ -672,7 +648,7 @@ class InquiryController extends Controller
             $courseName = $inquiry->course_name ?? '';
             $totalFeeBeforeDiscount = $courseFees[$courseName] ?? 88000;
 
-            \Log::info('Base fee calculated:', [
+            Log::info('Base fee calculated:', [
                 'course_name' => $courseName,
                 'total_fee' => $totalFeeBeforeDiscount
             ]);
@@ -688,12 +664,12 @@ class InquiryController extends Controller
                 ($inquiry->lastBoardPercentage && $inquiry->lastBoardPercentage >= 75) ||
                 ($inquiry->competitionExam === 'Yes')) {
                 
-                \Log::info('Student is eligible for scholarship');
+                Log::info('Student is eligible for scholarship');
                 $eligibleForScholarship = true;
 
                 // Priority 1: Scholarship Test
                 if ($inquiry->scholarshipTest === 'Yes') {
-                    \Log::info('Checking Test Based scholarship');
+                    Log::info('Checking Test Based scholarship');
                     $scholarship = Scholarship::where('scholarship_type', 'Test Based')
                         ->where('is_active', true)
                         ->orderBy('discount_percentage', 'desc')
@@ -703,7 +679,7 @@ class InquiryController extends Controller
                 // Priority 2: Board Percentage
                 if (!$scholarship && $inquiry->lastBoardPercentage >= 75) {
                     $percentage = $inquiry->lastBoardPercentage;
-                    \Log::info('Checking Board scholarship for percentage: ' . $percentage);
+                    Log::info('Checking Board scholarship for percentage: ' . $percentage);
                     
                     $scholarship = Scholarship::where('scholarship_type', 'Board Examination Scholarship')
                         ->where('is_active', true)
@@ -715,7 +691,7 @@ class InquiryController extends Controller
                 
                 // Priority 3: Competition Exam
                 if (!$scholarship && $inquiry->competitionExam === 'Yes') {
-                    \Log::info('Checking Competition Exam scholarship');
+                    Log::info('Checking Competition Exam scholarship');
                     $scholarship = Scholarship::where('scholarship_type', 'Competition Exam Scholarship')
                         ->where('is_active', true)
                         ->orderBy('discount_percentage', 'desc')
@@ -724,7 +700,7 @@ class InquiryController extends Controller
 
                 // Calculate discount if scholarship found
                 if ($scholarship) {
-                    \Log::info('Scholarship found:', [
+                    Log::info('Scholarship found:', [
                         'name' => $scholarship->scholarship_name,
                         'discount' => $scholarship->discount_percentage
                     ]);
@@ -733,10 +709,10 @@ class InquiryController extends Controller
                     $discountAmount = ($totalFeeBeforeDiscount * $discountPercentage) / 100;
                     $scholarshipDiscountedFees = $totalFeeBeforeDiscount - $discountAmount;
                 } else {
-                    \Log::warning('No matching scholarship found');
+                    Log::warning('No matching scholarship found');
                 }
             } else {
-                \Log::info('Student is NOT eligible for scholarship');
+                Log::info('Student is NOT eligible for scholarship');
             }
 
             // Final fees
@@ -745,7 +721,7 @@ class InquiryController extends Controller
             // Create alias for backward compatibility
             $discountedFees = $scholarshipDiscountedFees;
 
-            \Log::info('=== SCHOLARSHIP PAGE DATA READY ===', [
+            Log::info('=== SCHOLARSHIP PAGE DATA READY ===', [
                 'eligible' => $eligibleForScholarship,
                 'discount_percentage' => $discountPercentage,
                 'final_fees' => $finalFees
@@ -763,10 +739,10 @@ class InquiryController extends Controller
             ));
 
         } catch (\Exception $e) {
-            \Log::error('=== SCHOLARSHIP PAGE ERROR ===');
-            \Log::error('Error message: ' . $e->getMessage());
-            \Log::error('File: ' . $e->getFile() . ':' . $e->getLine());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            Log::error('=== SCHOLARSHIP PAGE ERROR ===');
+            Log::error('Error message: ' . $e->getMessage());
+            Log::error('File: ' . $e->getFile() . ':' . $e->getLine());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             
             return redirect()->route('inquiries.edit', $id)
                 ->with('error', 'Error loading scholarship details: ' . $e->getMessage());
@@ -774,12 +750,12 @@ class InquiryController extends Controller
     }
 
     /**
-     * Update scholarship and fees information with history tracking
+     * Update scholarship details
      */
     public function updateScholarshipDetails(Request $request, $id)
     {
         try {
-            \Log::info('=== SCHOLARSHIP UPDATE START ===', [
+            Log::info('=== SCHOLARSHIP UPDATE START ===', [
                 'inquiry_id' => $id,
                 'request_data' => $request->all()
             ]);
@@ -895,7 +871,7 @@ class InquiryController extends Controller
             $updateData['installment_3'] = $installment3;
             $updateData['fees_calculated_at'] = now();
 
-            // ⭐ TRACK CHANGES FOR HISTORY
+            // Track changes for history
             $changes = [];
             if ($oldValues['eligible_for_scholarship'] !== $eligibleForScholarship) {
                 $changes['eligible_for_scholarship'] = [
@@ -928,7 +904,7 @@ class InquiryController extends Controller
                 ];
             }
 
-            // ⭐ ADD HISTORY ENTRY
+            // Add history entry
             $history = $inquiry->history ?? [];
             $history[] = [
                 'action' => 'Scholarship Details Updated',
@@ -940,13 +916,13 @@ class InquiryController extends Controller
             
             $updateData['history'] = $history;
             
-            //   CRITICAL: Update the inquiry
+            // Update the inquiry
             $inquiry->update($updateData);
             
-            //   Verify the save
+            // Verify the save
             $inquiry->refresh();
             
-            \Log::info('✅ Scholarship data saved successfully', [
+            Log::info('✅ Scholarship data saved successfully', [
                 'inquiry_id' => $id,
                 'eligible_for_scholarship' => $inquiry->eligible_for_scholarship,
                 'scholarship_name' => $inquiry->scholarship_name,
@@ -961,7 +937,7 @@ class InquiryController extends Controller
                 ->with('success', '✅ Scholarship details saved successfully!');
                 
         } catch (\Exception $e) {
-            \Log::error('=== SCHOLARSHIP UPDATE ERROR ===', [
+            Log::error('=== SCHOLARSHIP UPDATE ERROR ===', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -973,152 +949,188 @@ class InquiryController extends Controller
     }
 
     /**
-     * Update inquiry with history tracking
+     * Show fees and batches page
      */
-    public function update(Request $request, $id)
+    public function showFeesBatchesDetails($id)
     {
-        \Log::info('UPDATE METHOD CALLED', [
-            'id' => $id,
-            'all_data' => $request->all()
-        ]);
-
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'father' => 'required|string|max:255',
-            'mother' => 'nullable|string|max:255',
-            'dob' => 'nullable|date',
-            'mobileNumber' => 'required|string|max:15',
-            'fatherWhatsapp' => 'nullable|string|max:15',
-            'motherContact' => 'nullable|string|max:15',
-            'studentContact' => 'nullable|string|max:15',
-            'category' => 'required|in:GENERAL,OBC,SC,ST',
-            'gender' => 'required|in:Male,Female,Others',
-            'fatherOccupation' => 'nullable|string|max:255',
-            'fatherGrade' => 'nullable|string|max:255',
-            'motherOccupation' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'pinCode' => 'nullable|string|max:6',
-            'address' => 'nullable|string',
-            'belongToOtherCity' => 'nullable|in:Yes,No',
-            'economicWeakerSection' => 'nullable|in:Yes,No',
-            'armyPoliceBackground' => 'nullable|in:Yes,No',
-            'speciallyAbled' => 'nullable|in:Yes,No',
-            'courseType' => 'nullable|string|max:255',
-            'courseName' => 'nullable|string|max:255',
-            'deliveryMode' => 'nullable|in:Offline,Online,Hybrid',
-            'medium' => 'nullable|in:English,Hindi',
-            'board' => 'nullable|in:CBSE,RBSE,ICSE',
-            'courseContent' => 'nullable|string|max:255',
-            'isRepeater' => 'nullable|in:Yes,No',
-            'scholarshipTest' => 'nullable|in:Yes,No',
-            'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
-            'competitionExam' => 'nullable|in:Yes,No',
-        ]);
-
-        \Log::info('VALIDATION PASSED');
-
         try {
+            Log::info('=== FEES & BATCHES PAGE LOADING ===', ['inquiry_id' => $id]);
+            
             $inquiry = Inquiry::findOrFail($id);
             
-            \Log::info('INQUIRY FOUND', ['inquiry_id' => $inquiry->_id]);
+            // Check if fees have been calculated
+            if (!$inquiry->total_fees || !$inquiry->fees_calculated_at) {
+                return redirect()->route('inquiries.scholarship.show', $id)
+                    ->with('error', 'Please complete the scholarship details first.');
+            }
             
-            // Store old data for change tracking
-            $oldData = $inquiry->toArray();
+            // Prepare data for display
+            $feesData = [
+                'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
+                'scholarship_name' => $inquiry->scholarship_name ?? '-',
+                'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
+                'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
+                'discount_percentage' => $inquiry->discount_percentage ?? 0,
+                'discounted_fee' => $inquiry->discounted_fee ?? 0,
+                'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
+                'total_fees' => $inquiry->total_fees,
+                'gst_amount' => $inquiry->gst_amount,
+                'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax,
+                'single_installment_amount' => $inquiry->single_installment_amount,
+                'installment_1' => $inquiry->installment_1,
+                'installment_2' => $inquiry->installment_2,
+                'installment_3' => $inquiry->installment_3,
+            ];
             
-            // Check if course changed
-            $courseChanged = ($inquiry->course_name !== $validatedData['courseName']);
+            Log::info('Fees data loaded', $feesData);
             
-            // Map form fields to database fields
+            return view('inquiries.fees-batches-details', compact('inquiry', 'feesData'));
+            
+        } catch (\Exception $e) {
+            Log::error('=== FEES & BATCHES PAGE ERROR ===');
+            Log::error('Error: ' . $e->getMessage());
+            
+            return redirect()->route('inquiries.edit', $id)
+                ->with('error', 'Error loading fees details: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update fees and batches details
+     */
+    public function updateFeesBatches(Request $request, $id)
+    {
+        try {
+            Log::info('=== FEES & BATCHES UPDATE START ===', [
+                'inquiry_id' => $id,
+                'request_data' => $request->all()
+            ]);
+            
+            $inquiry = Inquiry::findOrFail($id);
+            
+            $validated = $request->validate([
+                'batchName' => 'nullable|string|max:255',
+                'batch_id' => 'nullable|string',
+            ]);
+
+            // Store old values
+            $oldBatchName = $inquiry->batchName;
+            
+            // Update batch information
             $updateData = [
-                'student_name' => $validatedData['name'],
-                'father_name' => $validatedData['father'],
-                'mother' => $validatedData['mother'] ?? null,
-                'dob' => $validatedData['dob'] ?? null,
-                'father_contact' => $validatedData['mobileNumber'],
-                'father_whatsapp' => $validatedData['fatherWhatsapp'] ?? null,
-                'motherContact' => $validatedData['motherContact'] ?? null,
-                'student_contact' => $validatedData['studentContact'] ?? null,
-                'category' => $validatedData['category'],
-                'gender' => $validatedData['gender'],
-                'fatherOccupation' => $validatedData['fatherOccupation'] ?? null,
-                'fatherGrade' => $validatedData['fatherGrade'] ?? null,
-                'motherOccupation' => $validatedData['motherOccupation'] ?? null,
-                'state' => $validatedData['state'] ?? null,
-                'city' => $validatedData['city'] ?? null,
-                'pinCode' => $validatedData['pinCode'] ?? null,
-                'address' => $validatedData['address'] ?? null,
-                'belongToOtherCity' => $validatedData['belongToOtherCity'] ?? 'No',
-                'economicWeakerSection' => $validatedData['economicWeakerSection'] ?? 'No',
-                'armyPoliceBackground' => $validatedData['armyPoliceBackground'] ?? 'No',
-                'speciallyAbled' => $validatedData['speciallyAbled'] ?? 'No',
-                'courseType' => $validatedData['courseType'] ?? null,
-                'course_name' => $validatedData['courseName'] ?? null,
-                'delivery_mode' => $validatedData['deliveryMode'] ?? null,
-                'medium' => $validatedData['medium'] ?? null,
-                'board' => $validatedData['board'] ?? null,
-                'course_content' => $validatedData['courseContent'] ?? null,
-                'isRepeater' => $validatedData['isRepeater'] ?? 'No',
-                'scholarshipTest' => $validatedData['scholarshipTest'] ?? 'No',
-                'lastBoardPercentage' => $validatedData['lastBoardPercentage'] ?? null,
-                'competitionExam' => $validatedData['competitionExam'] ?? 'No',
+                'batchName' => $validated['batchName'] ?? null,
+                'batch_id' => $validated['batch_id'] ?? null,
             ];
 
-            // ⭐ TRACK WHAT CHANGED
-            $changes = [];
-            foreach ($updateData as $key => $value) {
-                $oldValue = $oldData[$key] ?? null;
-                if ($oldValue != $value && $value !== null) {
-                    $changes[$key] = [
-                        'from' => $oldValue,
-                        'to' => $value
-                    ];
-                }
-            }
-
-            // ⭐ RECALCULATE FEES IF COURSE CHANGED
-            if ($courseChanged && !empty($validatedData['courseName'])) {
-                \Log::info('Course changed, recalculating fees', [
-                    'old_course' => $inquiry->course_name,
-                    'new_course' => $validatedData['courseName']
-                ]);
-                
-                $feesData = $this->calculateDefaultFees($validatedData['courseName']);
-                $updateData = array_merge($updateData, $feesData);
-                
-                $changes['fees_recalculated'] = 'Due to course change';
-            }
-
-            // ⭐ ADD HISTORY ENTRY
+            // Add history
             $history = $inquiry->history ?? [];
             $history[] = [
-                'action' => 'Student Enquiry Updated',
+                'action' => 'Batch Details Updated',
                 'user' => auth()->check() ? auth()->user()->name : 'Admin',
-                'description' => 'Admin updated the enquiry for student ' . $inquiry->student_name,
+                'description' => 'Batch information updated',
                 'timestamp' => now()->toIso8601String(),
-                'changes' => $changes
+                'changes' => [
+                    'batchName' => [
+                        'from' => $oldBatchName,
+                        'to' => $validated['batchName'] ?? null
+                    ]
+                ]
             ];
             
             $updateData['history'] = $history;
-
             $inquiry->update($updateData);
-
-            \Log::info('INQUIRY UPDATED SUCCESSFULLY WITH HISTORY', [
-                'updated_fields' => array_keys($changes),
-                'history_count' => count($history)
+            
+            Log::info('✅ Batch details updated successfully');
+            
+            return redirect()->route('inquiries.view', $id)
+                ->with('success', 'Batch details updated successfully!');
+                
+        } catch (\Exception $e) {
+            Log::error('=== FEES & BATCHES UPDATE ERROR ===', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
             
-            // Redirect to scholarship page
-            return redirect()->route('inquiries.scholarship.show', $id)
-                ->with('success', 'Inquiry saved! Please review scholarship details.');
-
-        } catch (\Exception $e) {
-            \Log::error('ERROR IN UPDATE: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
-            
-            return redirect()->route('inquiries.edit', $id)
-                ->with('error', 'Error updating inquiry: ' . $e->getMessage())
+            return redirect()->back()
+                ->with('error', 'Error updating batch details: ' . $e->getMessage())
                 ->withInput();
+        }
+    }
+
+    /**
+     * View inquiry details
+     */
+    public function view($id)
+    {
+        try {
+            $inquiry = Inquiry::findOrFail($id);
+            
+            Log::info('View inquiry data:', $inquiry->toArray());
+            
+            // Prepare fees and scholarship data
+            $feesData = [
+                'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
+                'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
+                'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
+                'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
+                'discount_percentage' => $inquiry->discount_percentage ?? 0,
+                'discounted_fee' => $inquiry->discounted_fee ?? 0,
+                'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
+                'total_fees' => $inquiry->total_fees ?? 0,
+                'gst_amount' => $inquiry->gst_amount ?? 0,
+                'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax ?? 0,
+                'single_installment_amount' => $inquiry->single_installment_amount ?? 0,
+                'installment_1' => $inquiry->installment_1 ?? 0,
+                'installment_2' => $inquiry->installment_2 ?? 0,
+                'installment_3' => $inquiry->installment_3 ?? 0,
+            ];
+            
+            return view('inquiries.view', compact('inquiry', 'feesData'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load inquiry details: ' . $e->getMessage());
+            return redirect()->route('inquiries.index')
+                ->with('error', 'Unable to load inquiry details.');
+        }
+    }
+
+    /**
+     * Show single inquiry (API)
+     */
+    public function show($id)
+    {
+        try {
+            $inquiry = Inquiry::findOrFail($id);
+            return response()->json([
+                'success' => true,
+                'data' => $inquiry
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Inquiry not found'
+            ], 404);
+        }
+    }
+
+    /**
+     * Delete an inquiry
+     */
+    public function destroy($id)
+    {
+        try {
+            $inquiry = Inquiry::findOrFail($id);
+            $inquiry->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Inquiry deleted successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Inquiry Delete Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting inquiry: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -1141,7 +1153,7 @@ class InquiryController extends Controller
             $history = $inquiry->history ?? [];
             $history = array_reverse($history);
             
-            \Log::info('History retrieved for inquiry', [
+            Log::info('History retrieved for inquiry', [
                 'inquiry_id' => $id,
                 'history_count' => count($history)
             ]);
@@ -1152,7 +1164,7 @@ class InquiryController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            \Log::error('Get history error: ' . $e->getMessage());
+            Log::error('Get history error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch history: ' . $e->getMessage()
@@ -1161,7 +1173,7 @@ class InquiryController extends Controller
     }
 
     /**
-     * Get paginated data
+     * Get paginated data (alternative method)
      */
     public function getData(Request $request)
     {
@@ -1170,6 +1182,9 @@ class InquiryController extends Controller
             $search = $request->get('search', '');
             
             $query = Inquiry::query();
+            
+            // Filter out transferred inquiries
+            $query->whereNotIn('status', ['transferred', 'onboarded', 'converted']);
             
             // Add search functionality
             if (!empty($search)) {
@@ -1201,49 +1216,67 @@ class InquiryController extends Controller
     }
 
     /**
-     * Show fees and batches details page
+     * Handle file upload
      */
-    public function showFeesBatchesDetails($id)
+    public function upload(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:5120',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid file format. Please upload CSV or Excel file.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            // TODO: Implement file upload logic
+            return response()->json([
+                'success' => true,
+                'message' => 'File uploaded successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Inquiry Upload Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Upload failed: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Show onboard form (redirects to pending edit)
+     */
+    public function showOnboardForm($inquiryId)
     {
         try {
-            \Log::info('=== FEES & BATCHES PAGE LOADING ===', ['inquiry_id' => $id]);
+            $inquiry = Inquiry::findOrFail($inquiryId);
             
-            $inquiry = Inquiry::findOrFail($id);
-            
-            // Check if fees have been calculated
-            if (!$inquiry->total_fees || !$inquiry->fees_calculated_at) {
-                return redirect()->route('inquiries.scholarship.show', $id)
-                    ->with('error', 'Please complete the scholarship details first.');
+            // Check if already has pending student
+            if ($inquiry->pending_student_id) {
+                return redirect()->route('student.pending.edit', $inquiry->pending_student_id)
+                    ->with('info', 'This inquiry already has a pending student. Edit details here.');
             }
             
-            // Prepare data for display
-            $feesData = [
-                'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
-                'scholarship_name' => $inquiry->scholarship_name ?? '-',
-                'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
-                'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
-                'discount_percentage' => $inquiry->discount_percentage ?? 0,
-                'discounted_fee' => $inquiry->discounted_fee ?? 0,
-                'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
-                'total_fees' => $inquiry->total_fees,
-                'gst_amount' => $inquiry->gst_amount,
-                'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax,
-                'single_installment_amount' => $inquiry->single_installment_amount,
-                'installment_1' => $inquiry->installment_1,
-                'installment_2' => $inquiry->installment_2,
-                'installment_3' => $inquiry->installment_3,
-            ];
+            // Transfer to pending first
+            $response = $this->singleOnboard($inquiryId);
+            $responseData = json_decode($response->getContent(), true);
             
-            \Log::info('Fees data loaded', $feesData);
-            
-            return view('inquiries.fees-batches-details', compact('inquiry', 'feesData'));
-            
+            if ($responseData['success']) {
+                return redirect()->route('student.pending.edit', $responseData['pending_student_id'])
+                    ->with('success', 'Student transferred to pending list. Complete the form.');
+            } else {
+                return redirect()->route('inquiries.index')
+                    ->with('error', $responseData['message']);
+            }
+                
         } catch (\Exception $e) {
-            \Log::error('=== FEES & BATCHES PAGE ERROR ===');
-            \Log::error('Error: ' . $e->getMessage());
-            
-            return redirect()->route('inquiries.edit', $id)
-                ->with('error', 'Error loading fees details: ' . $e->getMessage());
+            Log::error('Show onboard form error: ' . $e->getMessage());
+            return redirect()->route('inquiries.index')
+                ->with('error', 'Error: ' . $e->getMessage());
         }
     }
 }
