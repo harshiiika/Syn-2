@@ -15,14 +15,12 @@
       padding: 20px;
     }
     .page-header {
-      background-color: #ffffff;
       padding: 20px 30px;
-      margin: 20px;
-      border-radius: 8px;
+      margin: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 90%;
     }
     .page-title {
       color: #e05301;
@@ -48,6 +46,7 @@
       border-radius: 8px;
       padding: 30px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 80%;
     }
     .section-title {
       color: #e05301;

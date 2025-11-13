@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Student\PendingFee;  // ✅ Changed from Student
+use App\Models\Student\PendingFee;
 use App\Models\Student\SMstudents;
-use App\Models\Student\Onboard;
 use Illuminate\Support\Facades\Log;
-use App\Services\RollNumberService;
 
 class PendingFeesController extends Controller
 {
@@ -18,12 +16,10 @@ class PendingFeesController extends Controller
     public function index()
     {
         try {
-            // ✅ Changed to PendingFee model - fetches from student_pending_fee collection
             $pendingFees = PendingFee::orderBy('created_at', 'desc')->get();
 
             Log::info('Fetching pending fees students:', [
                 'count' => $pendingFees->count(),
-                'students' => $pendingFees->pluck('name', '_id')->toArray()
             ]);
 
             return view('student.pendingfees.pending', [
@@ -43,7 +39,6 @@ class PendingFeesController extends Controller
     public function view(string $id)
     {
         try {
-            // ✅ Changed to PendingFee model
             $student = PendingFee::findOrFail($id);
             
             Log::info('=== VIEWING PENDING FEES STUDENT DETAILS ===', [
@@ -83,7 +78,6 @@ class PendingFeesController extends Controller
     public function getHistory($id)
     {
         try {
-            // ✅ Changed to PendingFee model
             $student = PendingFee::find($id);
             
             if (!$student) {
@@ -93,11 +87,10 @@ class PendingFeesController extends Controller
                 ], 404);
             }
             
-            // Get history array, newest first
             $history = $student->history ?? [];
             $history = array_reverse($history);
             
-            \Log::info('History retrieved for student', [
+            Log::info('History retrieved for student', [
                 'student_id' => $id,
                 'history_count' => count($history)
             ]);
@@ -108,7 +101,7 @@ class PendingFeesController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            \Log::error('Get history error: ' . $e->getMessage());
+            Log::error('Get history error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch history: ' . $e->getMessage()
@@ -122,7 +115,6 @@ class PendingFeesController extends Controller
     public function edit($id) 
     {
         try {
-            // ✅ Changed to PendingFee model
             $student = PendingFee::findOrFail($id);
             
             Log::info('Editing pending student:', [
@@ -147,10 +139,7 @@ class PendingFeesController extends Controller
         try {
             Log::info('Update request received', ['id' => $id]);
 
-            // ✅ Changed to PendingFee model
             $student = PendingFee::findOrFail($id);
-            
-            // Store old values for history
             $oldData = $student->toArray();
             
             $validated = $request->validate([
@@ -193,7 +182,6 @@ class PendingFeesController extends Controller
             ];
             
             $validated['history'] = $history;
-
             $student->update($validated);
 
             return redirect()
@@ -219,31 +207,101 @@ class PendingFeesController extends Controller
     public function pay($id)
     {
         try {
-            // ✅ Changed to PendingFee model
             $student = PendingFee::findOrFail($id);
 
-            \Log::info('PAYMENT FORM - Loading student data:', [
+            Log::info('PAYMENT FORM - Loading student data:', [
                 'student_id' => $id,
                 'name' => $student->name,
-                'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'NOT SET',
-                'scholarship_name' => $student->scholarship_name ?? 'NOT SET',
-                'discretionary_discount' => $student->discretionary_discount ?? 'NOT SET',
-                'discretionary_discount_value' => $student->discretionary_discount_value ?? 'NOT SET',
             ]);
 
-            // Calculate all fee components
+            // ✅ FIX: Calculate fees if missing
             $totalFees = floatval($student->total_fees ?? 0);
             $gstAmount = floatval($student->gst_amount ?? 0);
-            
-            // Calculate GST if not stored
-            if ($gstAmount == 0 && $totalFees > 0) {
+            $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
+
+            // If fees are missing, calculate them from course
+            if ($totalFeesWithGST == 0 || $totalFees == 0) {
+                Log::warning('Fees missing for student, calculating now', [
+                    'student_id' => $id,
+                    'course_name' => $student->courseName ?? $student->course_name ?? 'unknown'
+                ]);
+                
+                // Course fees mapping
+                $courseFees = [
+                    'Anthesis 11th NEET' => 88000,
+                    'Momentum 12th NEET' => 88000,
+                    'Dynamic Target NEET' => 88000,
+                    'Impulse 11th IIT' => 88000,
+                    'Intensity 12th IIT' => 88000,
+                    'Thurst Target IIT' => 88000,
+                    'Seedling 10th' => 60000,
+                    'Plumule 9th' => 55000,
+                    'Radicle 8th' => 50000
+                ];
+
+                $courseName = $student->courseName ?? $student->course_name ?? '';
+                $baseFee = $courseFees[$courseName] ?? 88000;
+
+                // Apply scholarships if any
+                $discount = floatval($student->discount_percentage ?? 0);
+                $totalFees = $baseFee;
+                
+                if ($discount > 0) {
+                    $totalFees = $baseFee - ($baseFee * $discount / 100);
+                }
+
+                // Apply discretionary discount if any
+                if (($student->discretionary_discount ?? 'No') === 'Yes') {
+                    $discType = $student->discretionary_discount_type ?? 'percentage';
+                    $discValue = floatval($student->discretionary_discount_value ?? 0);
+                    
+                    if ($discType === 'percentage') {
+                        $totalFees = $totalFees - ($totalFees * $discValue / 100);
+                    } else {
+                        $totalFees = $totalFees - $discValue;
+                    }
+                }
+
                 $gstAmount = $totalFees * 0.18;
+                $totalFeesWithGST = $totalFees + $gstAmount;
+
+                // Update student record with calculated fees
+                $student->update([
+                    'total_fees' => $totalFees,
+                    'gst_amount' => $gstAmount,
+                    'total_fees_inclusive_tax' => $totalFeesWithGST,
+                    'installment_1' => round($totalFeesWithGST * 0.40, 2),
+                    'installment_2' => round($totalFeesWithGST * 0.30, 2),
+                    'installment_3' => round($totalFeesWithGST * 0.30, 2),
+                    'single_installment_amount' => $totalFeesWithGST,
+                ]);
+
+                Log::info('Fees calculated and saved:', [
+                    'total_fees' => $totalFees,
+                    'gst_amount' => $gstAmount,
+                    'total_fees_with_gst' => $totalFeesWithGST,
+                ]);
+            } else {
+                // Recalculate GST if missing
+                if ($gstAmount == 0 && $totalFees > 0) {
+                    $gstAmount = $totalFees * 0.18;
+                }
+
+                // Recalculate total with GST if missing
+                if ($totalFeesWithGST == 0) {
+                    $totalFeesWithGST = $totalFees + $gstAmount;
+                }
             }
 
-            // Use stored total_fees_inclusive_tax if available
-            $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
+            // ✅ VALIDATION: Ensure fees are not zero
             if ($totalFeesWithGST == 0) {
-                $totalFeesWithGST = $totalFees + $gstAmount;
+                Log::error('Unable to determine fees for student', [
+                    'student_id' => $id,
+                    'course_name' => $student->courseName ?? $student->course_name ?? 'unknown'
+                ]);
+                
+                return redirect()->route('student.pendingfees.pending')
+                    ->with('error', 'Unable to determine fees for this student. Please update the course information or contact admin.');
             }
 
             // Calculate total paid from payment history
@@ -254,13 +312,23 @@ class PendingFeesController extends Controller
                 }
             }
 
-            // Fallback to paid_fees field
             if ($totalPaid == 0) {
                 $totalPaid = floatval($student->paid_fees ?? 0);
             }
 
             $remainingBalance = max(0, $totalFeesWithGST - $totalPaid);
-            $firstInstallment = $totalFeesWithGST * 0.40;
+
+            // ✅ CALCULATE INSTALLMENTS - 40%, 30%, 30%
+            $installment1 = round($totalFeesWithGST * 0.40, 2);
+            $installment2 = round($totalFeesWithGST * 0.30, 2);
+            $installment3 = round($totalFeesWithGST * 0.30, 2);
+
+            // ✅ CALCULATE ADJUSTED INSTALLMENTS based on payments made
+            $adjustedInstallments = $this->calculateAdjustedInstallments(
+                $totalFeesWithGST,
+                $totalPaid,
+                $student->paymentHistory ?? []
+            );
 
             // Prepare scholarship/discount data
             $scholarshipData = [
@@ -276,17 +344,15 @@ class PendingFeesController extends Controller
 
             Log::info('Payment Form Loaded:', [
                 'student_id' => $id,
-                'student_name' => $student->name,
-                'total_fees' => $totalFees,
-                'gst_amount' => $gstAmount,
                 'total_fees_with_gst' => $totalFeesWithGST,
                 'total_paid' => $totalPaid,
                 'remaining_balance' => $remainingBalance,
-                'scholarship_data' => $scholarshipData,
-                'payment_count' => is_array($student->paymentHistory) ? count($student->paymentHistory) : 0,
+                'installment_1' => $installment1,
+                'installment_2' => $installment2,
+                'installment_3' => $installment3,
+                'adjusted_installments' => $adjustedInstallments,
             ]);
 
-            // Return ALL variables including scholarship data
             return view('student.pendingfees.pay', compact(
                 'student',
                 'totalFees',
@@ -294,18 +360,90 @@ class PendingFeesController extends Controller
                 'totalFeesWithGST',
                 'totalPaid',
                 'remainingBalance',
-                'firstInstallment',
+                'installment1',
+                'installment2',
+                'installment3',
+                'adjustedInstallments',
                 'scholarshipData'
             ));
         } catch (\Exception $e) {
             Log::error('Payment form error:', [
                 'id' => $id, 
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
             ]);
             return redirect()->route('student.pendingfees.pending')
                 ->with('error', 'Unable to load payment form: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * ✅ Calculate adjusted installments based on payment history
+     */
+    private function calculateAdjustedInstallments($totalFees, $totalPaid, $paymentHistory)
+    {
+        // Original installments: 40%, 30%, 30%
+        $original1 = round($totalFees * 0.40, 2);
+        $original2 = round($totalFees * 0.30, 2);
+        $original3 = round($totalFees * 0.30, 2);
+
+        // Track what's been paid per installment
+        $inst1Paid = 0;
+        $inst2Paid = 0;
+        $inst3Paid = 0;
+
+        foreach ($paymentHistory as $payment) {
+            $amount = floatval($payment['amount'] ?? 0);
+            $instNum = $payment['installment_number'] ?? null;
+
+            if ($instNum == 1) {
+                $inst1Paid += $amount;
+            } elseif ($instNum == 2) {
+                $inst2Paid += $amount;
+            } elseif ($instNum == 3) {
+                $inst3Paid += $amount;
+            }
+        }
+
+        // Calculate remaining for each installment
+        $inst1Remaining = max(0, $original1 - $inst1Paid);
+        $inst2Remaining = max(0, $original2 - $inst2Paid);
+        $inst3Remaining = max(0, $original3 - $inst3Paid);
+
+        // If installment 1 or 2 has excess payment, redistribute to next installments
+        if ($inst1Remaining == 0 && $inst1Paid > $original1) {
+            $excess = $inst1Paid - $original1;
+            $inst2Remaining = max(0, $inst2Remaining - $excess);
+        }
+
+        if ($inst2Remaining == 0 && $inst2Paid > $original2) {
+            $excess = $inst2Paid - $original2;
+            $inst3Remaining = max(0, $inst3Remaining - $excess);
+        }
+
+        // Final installment always shows exact remaining balance
+        $totalRemaining = $totalFees - $totalPaid;
+        $inst3Remaining = max(0, $totalRemaining);
+
+        return [
+            'installment_1' => [
+                'original' => $original1,
+                'paid' => $inst1Paid,
+                'remaining' => $inst1Remaining,
+                'status' => $inst1Remaining == 0 ? 'paid' : ($inst1Paid > 0 ? 'partial' : 'pending')
+            ],
+            'installment_2' => [
+                'original' => $original2,
+                'paid' => $inst2Paid,
+                'remaining' => $inst2Remaining,
+                'status' => $inst2Remaining == 0 ? 'paid' : ($inst2Paid > 0 ? 'partial' : 'pending')
+            ],
+            'installment_3' => [
+                'original' => $original3,
+                'paid' => $inst3Paid,
+                'remaining' => $inst3Remaining,
+                'status' => $inst3Remaining == 0 ? 'paid' : ($inst3Paid > 0 ? 'partial' : 'pending')
+            ],
+        ];
     }
 
     /**
@@ -327,7 +465,6 @@ class PendingFeesController extends Controller
                 'other_charges' => 'nullable|numeric|min:0',
             ]);
 
-            // ✅ Changed to PendingFee model
             $student = PendingFee::findOrFail($id);
 
             $paymentAmount = floatval($validated['payment_amount']);
@@ -335,7 +472,7 @@ class PendingFeesController extends Controller
             $paymentMode = $validated['payment_mode'];
             $installmentNumber = $validated['installment_number'] ?? null;
 
-            // Create payment record WITH payment mode info
+            // Create payment record
             $paymentRecord = [
                 'date' => $validated['payment_date'],
                 'amount' => $paymentAmount,
@@ -355,7 +492,6 @@ class PendingFeesController extends Controller
                 $paymentHistory = [];
             }
             
-            // Add new payment
             $paymentHistory[] = $paymentRecord;
             
             Log::info('Payment Record Created:', [
@@ -364,7 +500,6 @@ class PendingFeesController extends Controller
                 'amount' => $paymentAmount,
             ]);
 
-            // Use stored total_fees_inclusive_tax
             $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
             
             if ($totalFeesWithGST == 0) {
@@ -378,7 +513,7 @@ class PendingFeesController extends Controller
                 $totalFeesWithGST = $totalFees + $gstAmount;
             }
 
-            // Calculate total paid from ALL payment history
+            // Calculate total paid
             $newPaidAmount = 0;
             foreach ($paymentHistory as $p) {
                 $newPaidAmount += floatval($p['amount'] ?? 0);
@@ -386,28 +521,50 @@ class PendingFeesController extends Controller
             
             $newRemainingBalance = $totalFeesWithGST - $newPaidAmount;
 
-            // Allow small rounding errors
-            if ($newRemainingBalance < 10 && $newRemainingBalance > -10) {
+            // ✅ CRITICAL FIX: Only consider fully paid if balance is very close to zero (≤ ₹5)
+            // This prevents premature transfer due to rounding errors
+            $isFullyPaid = false;
+            if ($newRemainingBalance <= 5 && $newRemainingBalance >= -5) {
                 $newRemainingBalance = 0;
+                $isFullyPaid = true;
             } else {
                 $newRemainingBalance = max(0, $newRemainingBalance);
+                $isFullyPaid = false;
             }
 
             Log::info('Payment Calculation:', [
                 'total_fees_with_gst' => $totalFeesWithGST,
                 'new_paid_amount' => $newPaidAmount,
                 'new_remaining_balance' => $newRemainingBalance,
-                'payment_count' => count($paymentHistory),
+                'is_fully_paid' => $isFullyPaid,
             ]);
 
-            // CHECK IF FULLY PAID
-            if ($newRemainingBalance <= 0) {
+            // ✅ CHECK IF FULLY PAID - Only transfer when truly paid
+            if ($isFullyPaid && $newRemainingBalance == 0) {
                 Log::info('FEES FULLY PAID - Transferring to SMstudents');
 
                 $totalFees = floatval($student->total_fees ?? ($totalFeesWithGST / 1.18));
                 $gstAmount = floatval($student->gst_amount ?? ($totalFeesWithGST - $totalFees));
 
-                // Create SMstudent record with payment history
+                // ✅ Create activity log for SMstudents
+                $activities = [];
+                
+                // Add payment completion activity
+                $activities[] = [
+                    'title' => 'Fees Payment Completed',
+                    'description' => 'paid full fees amount of ₹' . number_format($totalFeesWithGST, 2),
+                    'performed_by' => auth()->user()->name ?? 'Admin',
+                    'created_at' => now()->toIso8601String(),
+                ];
+
+                // Add transfer activity
+                $activities[] = [
+                    'title' => 'Student Activated',
+                    'description' => 'transferred student from pending fees to active students',
+                    'performed_by' => auth()->user()->name ?? 'Admin',
+                    'created_at' => now()->toIso8601String(),
+                ];
+
                 $smStudentData = [
                     'roll_no' => $student->roll_no ?? 'SM' . now()->format('ymd') . rand(100, 999),
                     'student_name' => $student->name,
@@ -460,25 +617,25 @@ class PendingFeesController extends Controller
                     'status' => 'active',
                     'transferred_from' => 'pending_fees',
                     'transferred_at' => now(),
+                    'activities' => $activities, // ✅ Add activities
                     'created_at' => $student->created_at ?? now(),
                     'updated_at' => now(),
                 ];
 
                 $smStudent = SMstudents::create($smStudentData);
 
-                Log::info('Student transferred to SMstudents', [
+                Log::info('Student transferred to SMstudents with activities', [
                     'sm_student_id' => $smStudent->_id,
-                    'name' => $smStudent->student_name,
+                    'activities_count' => count($activities),
                 ]);
 
-                // Delete from pending fees
                 $student->delete();
 
                 return redirect()->route('smstudents.index')
                     ->with('success', "Payment successful! Student '{$smStudent->student_name}' moved to Active Students. Total Paid: ₹" . number_format($newPaidAmount, 2));
             }
 
-            // PARTIAL PAYMENT - Update student record
+            // ✅ PARTIAL PAYMENT - Update student record
             $feeStatus = $newPaidAmount > 0 ? 'partial' : 'pending';
 
             $student->paid_fees = $newPaidAmount;
@@ -496,7 +653,6 @@ class PendingFeesController extends Controller
                 'paid_this_time' => $paymentAmount,
                 'total_paid' => $newPaidAmount,
                 'remaining' => $newRemainingBalance,
-                'payment_mode' => $paymentMode,
             ]);
 
             $message = "Payment of ₹" . number_format($paymentAmount, 2) . " recorded";
@@ -526,7 +682,6 @@ class PendingFeesController extends Controller
     public function destroy($id)
     {
         try {
-            // ✅ Changed to PendingFee model
             $student = PendingFee::findOrFail($id);
             $studentName = $student->name;
             
