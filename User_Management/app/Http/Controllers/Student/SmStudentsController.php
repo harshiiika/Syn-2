@@ -17,22 +17,26 @@ use Carbon\Carbon;
 class SmStudentsController extends Controller
 {
     /**
-     * Display a listing of students
-     */
-    public function index()
-    {
-        try {
-            $students = SMstudents::with(['batch', 'course'])->get();
-            $batches = Batch::where('status', 'Active')->orderBy('name')->get();
-            $courses = Courses::all();
-            $shifts = Shift::where('is_active', true)->get();
+ * Display a listing of students
+ */
+public function index()
+{
+    try {
+        $students = SMstudents::with(['batch', 'course', 'shift'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        $batches = Batch::where('status', 'Active')->orderBy('name')->get();
+        $courses = Courses::all();
+        $shifts = Shift::where('is_active', true)->get();
 
-            return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
-        } catch (\Exception $e) {
-            Log::error('Error loading students: ' . $e->getMessage());
-            return back()->with('error', 'Failed to load students');
-        }
+        return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error loading students: ' . $e->getMessage());
+        return back()->with('error', 'Failed to load students');
     }
+}
 
     
     /**
@@ -830,41 +834,161 @@ private function createActivityLog($student, $title, $description)
     }
 }
 
-    /**
-     * Update student shift
-     */
-    public function updateShift(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'shift_id' => 'required|exists:shifts,_id'
-        ]);
+/**
+ * Update student shift with relationship refresh
+ */
+public function updateShift(Request $request, $id)
+{
+    $validator = Validator::make($request->all(), [
+        'shift_id' => 'required|exists:shifts,_id'
+    ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->with('error', 'Shift validation failed');
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->with('error', 'Please select a valid shift');
+    }
+
+    try {
+        $student = SMstudents::findOrFail($id);
+        
+        // Convert to strings for comparison
+        $currentShiftId = (string)($student->shift_id ?? '');
+        $newShiftId = (string)($request->shift_id);
+        
+        // Check if same shift
+        if ($currentShiftId === $newShiftId) {
+            return redirect()->back()
+                ->with('warning', 'Student is already in this shift.');
         }
         
-        try {
-            $student = SMstudents::findOrFail($id);
-            $shift = Shift::find($request->shift_id);
+        // Get old shift name
+        $oldShiftName = $student->shift->name ?? 'N/A';
+        
+        // Find new shift
+        $newShift = Shift::findOrFail($request->shift_id);
+        
+        // Update student
+        $student->update([
+            'shift_id' => $request->shift_id,
+        ]);
+        
+        // Force a fresh database fetch - don't use cached relationships
+        $student = SMstudents::with(['shift', 'batch', 'course'])->findOrFail($id);
+        
+        Log::info('Shift updated for student:', [
+            'student_id' => (string)$student->_id,
+            'student_name' => $student->student_name,
+            'old_shift' => $oldShiftName,
+            'new_shift_id' => $newShiftId,
+            'new_shift_name' => $newShift->name ?? 'N/A'
+        ]);
+        
+        return redirect()->route('smstudents.index')
+            ->with('success', 'Shift updated successfully from "' . $oldShiftName . '" to "' . ($newShift->name ?? 'N/A') . '"');
             
-            $student->update([
-                'shift_id' => $request->shift_id,
-                'shift' => $shift ? $shift->name : null,
-            ]);
-            
-            Log::info('Shift updated for student:', [
-                'student_id' => (string)$student->_id,
-                'student_name' => $student->student_name,
-                'new_shift_id' => (string)$request->shift_id,
-                'new_shift_name' => $shift ? $shift->name : null
-            ]);
-            
-            return redirect()->back()->with('success', 'Shift updated successfully!');
-        } catch (\Exception $e) {
-            Log::error('Error updating shift: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to update shift: ' . $e->getMessage());
-        }
+    } catch (\Exception $e) {
+        Log::error('Error updating shift:', [
+            'error' => $e->getMessage(),
+            'student_id' => $id,
+            'shift_id' => $request->shift_id
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Failed to update shift: ' . $e->getMessage());
     }
+}
+
+/**
+ * Update student batch with relationship refresh
+ */
+public function updateBatch(Request $request, $id)
+{
+    $validator = Validator::make($request->all(), [
+        'batch_id' => 'required|exists:batches,_id'
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->with('error', 'Please select a valid batch');
+    }
+
+    try {
+        $student = SMstudents::findOrFail($id);
+        
+        // Convert to strings for comparison
+        $currentBatchId = (string)($student->batch_id);
+        $newBatchIdInput = (string)($request->batch_id);
+        
+        // Check if same batch
+        if ($currentBatchId === $newBatchIdInput) {
+            return redirect()->back()
+                ->with('warning', 'Student is already in this batch.');
+        }
+        
+        // Get old batch name
+        $oldBatchName = $student->batch->batch_id ?? $student->batch_name ?? 'N/A';
+        
+        // Find new batch
+        $newBatch = Batch::findOrFail($request->batch_id);
+        
+        // Find course by name
+        $course = null;
+        if ($newBatch->course) {
+            $course = Courses::where('name', $newBatch->course)->first();
+        }
+        
+        // Prepare update data
+        $updateData = [
+            'batch_id' => $request->batch_id,
+            'batch_name' => $newBatch->batch_id ?? $newBatch->name,
+            'course_name' => $newBatch->course,
+            'delivery_mode' => $newBatch->mode,
+        ];
+        
+        if ($course) {
+            $updateData['course_id'] = $course->_id ?? $course->id;
+        }
+        
+        if (!empty($newBatch->shift)) {
+            $updateData['shift'] = $newBatch->shift;
+        }
+        
+        // Update student
+        $student->update($updateData);
+        
+        // CRITICAL: Refresh model and reload relationships
+        $student->refresh();
+        $student->unsetRelation('batch'); // Clear cached batch
+        $student->unsetRelation('course'); // Clear cached course
+        $student->load(['batch', 'course']); // Reload fresh data
+        
+        Log::info('Batch updated successfully:', [
+            'student_id' => (string)$student->_id,
+            'student_name' => $student->student_name,
+            'old_batch' => $oldBatchName,
+            'new_batch_id' => (string)$student->batch_id,
+            'new_batch_name' => $student->batch_name,
+            'new_course' => $newBatch->course,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+        
+        return redirect()->route('smstudents.index')
+            ->with('success', 'Batch updated from "' . $oldBatchName . '" to "' . ($newBatch->batch_id ?? $newBatch->name) . '"');
+            
+    } catch (\Exception $e) {
+        Log::error('Error updating batch:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'student_id' => $id,
+            'batch_id' => $request->batch_id
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Failed to update batch: ' . $e->getMessage());
+    }
+}
 
     /**
      * Deactivate student
@@ -939,84 +1063,6 @@ private function createActivityLog($student, $title, $description)
         }
     }
 
- /**
- * Update student batch with comprehensive data synchronization
- */
-public function updateBatch(Request $request, $id)
-{
-    // Validate input
-    $validator = Validator::make($request->all(), [
-        'batch_id' => 'required|exists:batches,_id'
-    ]);
-
-    if ($validator->fails()) {
-        return redirect()->back()
-            ->withErrors($validator)
-            ->with('error', 'Please select a valid batch');
-    }
-
-    try {
-        // Find student
-        $student = SMstudents::findOrFail($id);
-        
-        // Store old values for logging
-        $oldBatchId = $student->batch_id;
-        $oldBatchName = $student->batch_name ?? 'N/A';
-        
-        // Find new batch
-        $newBatch = Batch::findOrFail($request->batch_id);
-        
-        // Find course by name from batch
-        $course = null;
-        if ($newBatch->course) {
-            $course = Courses::where('name', $newBatch->course)->first();
-        }
-        
-        // Prepare comprehensive update data
-        $updateData = [
-            'batch_id' => $request->batch_id,
-            'batch_name' => $newBatch->batch_id, // Use batch_id as batch_name
-            'course_name' => $newBatch->course,
-            'delivery_mode' => $newBatch->mode,
-        ];
-        
-        // Add course_id if course exists
-        if ($course) {
-            $updateData['course_id'] = $course->_id ?? $course->id;
-        }
-        
-        // Update shift if batch has a specific shift
-        if (!empty($newBatch->shift)) {
-            $updateData['shift'] = $newBatch->shift;
-        }
-        
-        // Update the student record
-        $student->update($updateData);
-        
-        // Log the successful update
-        Log::info('Batch updated successfully for student:', [
-            'student_id' => (string)$student->_id,
-            'student_name' => $student->student_name,
-            'old_batch' => $oldBatchName,
-            'new_batch' => $newBatch->batch_id,
-            'new_course' => $newBatch->course,
-            'timestamp' => now()->toDateTimeString()
-        ]);
-        
-        return redirect()->route('smstudents.index')
-            ->with('success', 'Batch updated successfully! Student assigned to ' . $newBatch->batch_id);
-            
-    } catch (\Exception $e) {
-        Log::error('Error updating batch:', [
-            'error' => $e->getMessage(),
-            'student_id' => $id,
-            'batch_id' => $request->batch_id
-        ]);
-        
-        return redirect()->back()
-            ->with('error', 'Failed to update batch: ' . $e->getMessage());
-    }
-}
     
     /* =======================================================
        ✅ ENHANCED PRIVATE HELPER METHODS
