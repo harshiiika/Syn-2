@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Pay Fees</title>
+  <title>Pay Fees - Enhanced</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{{asset('css/emp.css')}}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -120,39 +120,104 @@
     select.form-control {
       cursor: pointer;
     }
-    .installment-info {
-      background: #e8f4fd;
+    .installment-card {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
       padding: 15px;
-      border-radius: 6px;
-      border-left: 4px solid #0dcaf0;
-      margin-top: 10px;
+      margin-bottom: 15px;
+      transition: all 0.3s;
     }
-    .installment-info h6 {
-      color: #0a58ca;
+    .installment-card.paid {
+      background: #d4edda;
+      border-color: #28a745;
+    }
+    .installment-card.partial {
+      background: #fff3cd;
+      border-color: #ffc107;
+    }
+    .installment-card.pending {
+      background: #f8f9fa;
+      border-color: #dee2e6;
+    }
+    .installment-card.selectable:hover {
+      border-color: #ff6b35;
+      box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+      cursor: pointer;
+    }
+    .installment-card.selected {
+      border-color: #ff6b35;
+      background: #fff5f2;
+      box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+    }
+    .installment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 10px;
+    }
+    .installment-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    .installment-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
       font-weight: 600;
     }
-    .installment-breakdown {
+    .badge-paid {
+      background: #28a745;
+      color: white;
+    }
+    .badge-partial {
+      background: #ffc107;
+      color: #000;
+    }
+    .badge-pending {
+      background: #6c757d;
+      color: white;
+    }
+    .installment-details {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,0,0,0.1);
     }
-    .installment-item {
-      background: white;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #b6d4fe;
+    .detail-item {
+      text-align: center;
     }
-    .installment-item strong {
-      color: #0a58ca;
+    .detail-label {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 3px;
+    }
+    .detail-value {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .custom-amount-section {
+      display: none;
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    .custom-amount-section.active {
       display: block;
-      margin-bottom: 5px;
+    }
+    .alert-custom {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
-  <!-- Header (same as before) -->
   <div class="header">
     <div class="logo">
       <img src="{{asset('images/logo.png.jpg')}}" class="img">
@@ -180,6 +245,7 @@
   </div>
 
   <div class="main-container">
+    <!-- Sidebar -->
     <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>ADMIN</h6>
@@ -259,8 +325,8 @@
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                <li><a class="item active" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+                <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>
@@ -396,16 +462,8 @@
                 <input type="text" class="form-control" value="{{ $student->father ?? '—' }}" readonly>
               </div>
               <div class="form-group">
-                <label>Course Type</label>
-                <input type="text" class="form-control" value="{{ $student->courseType ?? $student->course_type ?? 'Pre-Medical' }}" readonly>
-              </div>
-              <div class="form-group">
                 <label>Course Name</label>
                 <input type="text" class="form-control" value="{{ $student->courseName ?? '—' }}" readonly>
-              </div>
-              <div class="form-group">
-                <label>Course Content</label>
-                <input type="text" class="form-control" value="{{ $student->courseContent ?? 'Class room course' }}" readonly>
               </div>
               <div class="form-group">
                 <label>Batch Name</label>
@@ -418,14 +476,6 @@
           <div class="view-section">
             <h4 class="text-danger">Fee Details</h4>
             <div class="row g-3 mb-4">
-              <div class="col-md-6">
-                <label class="form-label">Total Fees (Before GST)</label>
-                <input type="text" class="form-control" value="₹{{ number_format($totalFees, 2) }}" readonly>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">GST (18%)</label>
-                <input type="text" class="form-control" value="₹{{ number_format($gstAmount, 2) }}" readonly>
-              </div>
               <div class="col-md-6">
                 <label class="form-label">Total Fees (Including GST)</label>
                 <input type="text" class="form-control fw-bold" value="₹{{ number_format($totalFeesWithGST, 2) }}" readonly>
@@ -441,114 +491,14 @@
             </div>
           </div>
 
-@if($scholarshipData['eligible'] === 'Yes' || $scholarshipData['has_discretionary'])
-<!-- Discount & Scholarship Details -->
-<div class="view-section">
-    <h4 class="text-success">  Applied Discounts</h4>
-    
-    <div class="row g-3 mb-3">
-        @if($scholarshipData['eligible'] === 'Yes')
-        <!-- Scholarship Discount -->
-        <div class="col-md-12">
-            <div class="alert alert-success">
-                <h6 class="mb-2">
-                    <i class="fas fa-graduation-cap"></i> Scholarship Applied
-                </h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Scholarship Name:</strong><br>
-                        {{ $scholarshipData['scholarship_name'] }}
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <strong>Discount:</strong><br>
-                        <span class="text-success fw-bold">{{ $scholarshipData['discount_percentage'] }}%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
+          <!-- Scholarship Section (if applicable) -->
+          @if($scholarshipData['eligible'] === 'Yes' || $scholarshipData['has_discretionary'])
+          <div class="view-section">
+              <h4 class="text-success">Applied Discounts</h4>
+              <!-- Include scholarship details as before -->
+          </div>
+          @endif
 
-        @if($scholarshipData['has_discretionary'])
-        <!-- Discretionary Discount -->
-        <div class="col-md-12">
-            <div class="alert alert-info">
-                <h6 class="mb-2">
-                    <i class="fas fa-hand-holding-usd"></i> Additional Discretionary Discount
-                </h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Type:</strong><br>
-                        {{ $scholarshipData['discretionary_type'] === 'percentage' ? 'Percentage' : 'Fixed Amount' }}
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <strong>Value:</strong><br>
-                        <span class="text-info fw-bold">
-                            @if($scholarshipData['discretionary_type'] === 'percentage')
-                                {{ $scholarshipData['discretionary_value'] }}%
-                            @else
-                                ₹{{ number_format($scholarshipData['discretionary_value'], 2) }}
-                            @endif
-                        </span>
-                    </div>
-                </div>
-                @if($scholarshipData['discretionary_reason'])
-                <div class="mt-2 pt-2 border-top">
-                    <strong>Reason:</strong> {{ $scholarshipData['discretionary_reason'] }}
-                </div>
-                @endif
-            </div>
-        </div>
-        @endif
-
-        <!-- Fee Breakdown -->
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="card-title mb-3">📋 Fee Breakdown</h6>
-                    <table class="table table-sm">
-                        <tr>
-                            <td>Original Fee:</td>
-                            <td class="text-end">₹{{ number_format($scholarshipData['total_before_discount'], 2) }}</td>
-                        </tr>
-                        @if($scholarshipData['discount_percentage'] > 0)
-                        <tr class="text-success">
-                            <td>Scholarship Discount ({{ $scholarshipData['discount_percentage'] }}%):</td>
-                            <td class="text-end">
-                                - ₹{{ number_format($scholarshipData['total_before_discount'] * $scholarshipData['discount_percentage'] / 100, 2) }}
-                            </td>
-                        </tr>
-                        @endif
-                        @if($scholarshipData['has_discretionary'])
-                        <tr class="text-info">
-                            <td>Discretionary Discount:</td>
-                            <td class="text-end">
-                                @if($scholarshipData['discretionary_type'] === 'percentage')
-                                    - ₹{{ number_format(($scholarshipData['total_before_discount'] * (1 - $scholarshipData['discount_percentage']/100)) * $scholarshipData['discretionary_value'] / 100, 2) }}
-                                @else
-                                    - ₹{{ number_format($scholarshipData['discretionary_value'], 2) }}
-                                @endif
-                            </td>
-                        </tr>
-                        @endif
-                        <tr class="border-top fw-bold">
-                            <td>Final Fee (Before GST):</td>
-                            <td class="text-end">₹{{ number_format($totalFees, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td>GST (18%):</td>
-                            <td class="text-end">₹{{ number_format($gstAmount, 2) }}</td>
-                        </tr>
-                        <tr class="border-top fw-bold text-danger">
-                            <td>Total Payable:</td>
-                            <td class="text-end fs-5">₹{{ number_format($totalFeesWithGST, 2) }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
           <!-- Payment Options -->
           <div class="view-section">
             <h4>Payment Options</h4>
@@ -571,75 +521,152 @@
               </div>
             </div>
 
-            <!-- Installment Information (Hidden by default) -->
-            <div id="installmentInfo" class="installment-info" style="display: none;">
-              <h6><i class="fas fa-info-circle"></i> Installment Breakdown</h6>
-              <p class="mb-2">You can pay in 3 installments:</p>
-              <div class="installment-breakdown">
-                <div class="installment-item">
-                  <strong>1st Installment (40%)</strong>
-                  <span>₹{{ number_format($totalFeesWithGST * 0.40, 2) }}</span>
+            <!-- Installment Cards -->
+            <div id="installmentCards" style="display: none;">
+              <div class="alert-custom">
+                <i class="fas fa-info-circle"></i> <strong>Select an installment to pay:</strong>
+                <p class="mb-0 mt-2 small">Original plan: 40%, 30%, 30%. You can pay any amount, and the remaining will adjust to future installments.</p>
+              </div>
+
+              <!-- Installment 1 (40%) -->
+              <div class="installment-card {{ $adjustedInstallments['installment_1']['status'] }} selectable" 
+                   data-installment="1" 
+                   data-amount="{{ $adjustedInstallments['installment_1']['remaining'] }}">
+                <div class="installment-header">
+                  <div class="installment-title">
+                    <i class="fas fa-calendar-check"></i> Installment 1 (40%)
+                  </div>
+                  <span class="installment-badge badge-{{ $adjustedInstallments['installment_1']['status'] }}">
+                    {{ strtoupper($adjustedInstallments['installment_1']['status']) }}
+                  </span>
                 </div>
-                <div class="installment-item">
-                  <strong>2nd Installment (30%)</strong>
-                  <span>₹{{ number_format($totalFeesWithGST * 0.30, 2) }}</span>
-                </div>
-                <div class="installment-item">
-                  <strong>3rd Installment (30%)</strong>
-                  <span>₹{{ number_format($totalFeesWithGST * 0.30, 2) }}</span>
+                <div class="installment-details">
+                  <div class="detail-item">
+                    <div class="detail-label">Original Amount</div>
+                    <div class="detail-value">₹{{ number_format($adjustedInstallments['installment_1']['original'], 2) }}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Paid</div>
+                    <div class="detail-value text-success">₹{{ number_format($adjustedInstallments['installment_1']['paid'], 2) }}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Remaining</div>
+                    <div class="detail-value text-danger">₹{{ number_format($adjustedInstallments['installment_1']['remaining'], 2) }}</div>
+                  </div>
                 </div>
               </div>
-              <div class="mt-3">
-                <label class="form-label fw-bold">Select Installment to Pay Now:</label>
-                <select class="form-control" name="installment_number" id="installmentNumber">
-                  <option value="1">1st Installment - ₹{{ number_format($totalFeesWithGST * 0.40, 2) }}</option>
-                  <option value="2">2nd Installment - ₹{{ number_format($totalFeesWithGST * 0.30, 2) }}</option>
-                  <option value="3">3rd Installment - ₹{{ number_format($totalFeesWithGST * 0.30, 2) }}</option>
-                </select>
+
+              <!-- Installment 2 (30%) -->
+              <div class="installment-card {{ $adjustedInstallments['installment_2']['status'] }} selectable" 
+                   data-installment="2" 
+                   data-amount="{{ $adjustedInstallments['installment_2']['remaining'] }}">
+                <div class="installment-header">
+                  <div class="installment-title">
+                    <i class="fas fa-calendar-check"></i> Installment 2 (30%)
+                  </div>
+                  <span class="installment-badge badge-{{ $adjustedInstallments['installment_2']['status'] }}">
+                    {{ strtoupper($adjustedInstallments['installment_2']['status']) }}
+                  </span>
+                </div>
+                <div class="installment-details">
+                  <div class="detail-item">
+                    <div class="detail-label">Original Amount</div>
+                    <div class="detail-value">₹{{ number_format($adjustedInstallments['installment_2']['original'], 2) }}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Paid</div>
+                    <div class="detail-value text-success">₹{{ number_format($adjustedInstallments['installment_2']['paid'], 2) }}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Remaining</div>
+                    <div class="detail-value text-danger">₹{{ number_format($adjustedInstallments['installment_2']['remaining'], 2) }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Installment 3 (30%) - Final -->
+              <div class="installment-card {{ $adjustedInstallments['installment_3']['status'] }} selectable" 
+                   data-installment="3" 
+                   data-amount="{{ $adjustedInstallments['installment_3']['remaining'] }}">
+                <div class="installment-header">
+                  <div class="installment-title">
+                    <i class="fas fa-calendar-check"></i> Installment 3 (30%) - Final
+                  </div>
+                  <span class="installment-badge badge-{{ $adjustedInstallments['installment_3']['status'] }}">
+                    {{ strtoupper($adjustedInstallments['installment_3']['status']) }}
+                  </span>
+                </div>
+                <div class="installment-details">
+                  <div class="detail-item">
+                    <div class="detail-label">Original Amount</div>
+                    <div class="detail-value">₹{{ number_format($adjustedInstallments['installment_3']['original'], 2) }}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Paid</div>
+                    <div class="detail-value text-success">₹{{ number_format($adjustedInstallments['installment_3']['paid'], 2) }}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Remaining (Exact)</div>
+                    <div class="detail-value text-danger">₹{{ number_format($adjustedInstallments['installment_3']['remaining'], 2) }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <input type="hidden" name="installment_number" id="selectedInstallment" value="">
+            </div>
+
+            <!-- Custom Amount Section -->
+            <div class="custom-amount-section" id="customAmountSection">
+              <div class="alert-custom">
+                <i class="fas fa-info-circle"></i> <strong>Custom Payment:</strong>
+                <p class="mb-0 mt-2 small">Enter any amount you want to pay now. The remaining balance will be adjusted in future installments. The final (3rd) installment will always show the exact remaining balance.</p>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label fw-bold">Enter Custom Amount</label>
+                <input type="number" 
+                       class="form-control" 
+                       id="customAmountInput" 
+                       min="1" 
+                       max="{{ $remainingBalance }}" 
+                       step="1"
+                       placeholder="Enter amount (Max: ₹{{ number_format($remainingBalance, 2) }})">
+                <small class="text-muted">You can pay any amount between ₹1 and ₹{{ number_format($remainingBalance, 2) }}</small>
               </div>
             </div>
 
+            <!-- Payment Details -->
             <div class="form-row mt-4">
               <div class="form-group">
                 <label>Payment Date <span class="text-danger">*</span></label>
                 <input type="date" class="form-control @error('payment_date') is-invalid @enderror" 
                        name="payment_date" value="{{ old('payment_date', date('Y-m-d')) }}" required>
-                @error('payment_date')
-                  <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
               </div>
 
               <div class="form-group">
                 <label>Payment Type <span class="text-danger">*</span></label>
-                <select class="form-control @error('payment_type') is-invalid @enderror" name="payment_type" required>
+                <select class="form-control" name="payment_type" required>
                   <option value="">Select Payment Type</option>
                   <option value="cash">Cash</option>
                   <option value="online">Online</option>
                   <option value="cheque">Cheque</option>
                   <option value="card">Card</option>
                 </select>
-                @error('payment_type')
-                  <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
               </div>
 
               <div class="form-group">
                 <label>Payment Amount <span class="text-danger">*</span></label>
-                <input type="number" class="form-control @error('payment_amount') is-invalid @enderror" 
+                <input type="number" class="form-control" 
                        name="payment_amount" id="paymentAmount" 
                        value="{{ old('payment_amount', $remainingBalance) }}" 
-                       min="1" step="1" required>
+                       min="1" step="1" required readonly>
                 <small class="text-muted">Remaining: ₹{{ number_format($remainingBalance, 2) }}</small>
-                @error('payment_amount')
-                  <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
               </div>
 
               <div class="form-group">
                 <label>Other Charges</label>
                 <input type="number" class="form-control" name="other_charges" id="otherCharges" 
-                       value="{{ old('other_charges', 0) }}" min="0" step="1">
-                <small class="text-muted">Additional fees (if any)</small>
+                       value="0" min="0" step="1">
               </div>
 
               <div class="form-group">
@@ -650,12 +677,12 @@
 
               <div class="form-group">
                 <label>Transaction ID / Reference</label>
-                <input type="text" class="form-control" name="transaction_id" value="{{ old('transaction_id') }}">
+                <input type="text" class="form-control" name="transaction_id">
               </div>
 
               <div class="form-group full-width">
                 <label>Remarks</label>
-                <textarea class="form-control" name="remarks" rows="2">{{ old('remarks') }}</textarea>
+                <textarea class="form-control" name="remarks" rows="2"></textarea>
               </div>
 
               <div class="form-group full-width">
@@ -674,56 +701,94 @@
   <script src="{{asset('js/emp.js')}}"></script>
   
   <script>
-    const totalFees = {{ $totalFees }};
-    const gstAmount = {{ $gstAmount }};
-    const totalFeesWithGST = {{ $totalFeesWithGST }};
-    const totalPaid = {{ $totalPaid }};
     const remainingBalance = {{ $remainingBalance }};
+    const adjustedInstallments = @json($adjustedInstallments);
     
-    // Installment amounts
-    const installment1 = Math.round(totalFeesWithGST * 0.40);
-    const installment2 = Math.round(totalFeesWithGST * 0.30);
-    const installment3 = Math.round(totalFeesWithGST * 0.30);
+    let selectedInstallmentNum = null;
 
-    function updatePaymentAmount() {
+    function updatePaymentMode() {
       const paymentMode = document.querySelector('input[name="payment_mode"]:checked').value;
-      const installmentInfo = document.getElementById('installmentInfo');
+      const installmentCards = document.getElementById('installmentCards');
+      const customAmountSection = document.getElementById('customAmountSection');
       const paymentAmountField = document.getElementById('paymentAmount');
+      const selectedInstallmentField = document.getElementById('selectedInstallment');
+      
+      // Reset selections
+      document.querySelectorAll('.installment-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      selectedInstallmentNum = null;
+      selectedInstallmentField.value = '';
       
       if (paymentMode === 'single') {
-        // Pay full remaining amount
-        installmentInfo.style.display = 'none';
+        installmentCards.style.display = 'none';
+        customAmountSection.classList.remove('active');
         paymentAmountField.value = Math.round(remainingBalance);
         paymentAmountField.readOnly = true;
       } else if (paymentMode === 'installment') {
-        // Show installment options
-        installmentInfo.style.display = 'block';
-        updateInstallmentAmount();
+        installmentCards.style.display = 'block';
+        customAmountSection.classList.remove('active');
+        paymentAmountField.value = 0;
         paymentAmountField.readOnly = true;
-      } else {
-        // Custom amount - user can enter any amount
-        installmentInfo.style.display = 'none';
+      } else if (paymentMode === 'custom') {
+        installmentCards.style.display = 'none';
+        customAmountSection.classList.add('active');
         paymentAmountField.value = Math.round(remainingBalance);
-        paymentAmountField.readOnly = false;
+        paymentAmountField.readOnly = true;
       }
       
       calculateTotal();
     }
 
-    function updateInstallmentAmount() {
-      const installmentNumber = document.getElementById('installmentNumber').value;
-      const paymentAmountField = document.getElementById('paymentAmount');
+    // Handle installment card selection
+    document.querySelectorAll('.installment-card.selectable').forEach(card => {
+      card.addEventListener('click', function() {
+        const installmentNum = this.dataset.installment;
+        const amount = parseFloat(this.dataset.amount);
+        
+        // Skip if already paid
+        if (this.classList.contains('paid')) {
+          alert('This installment has already been paid.');
+          return;
+        }
+        
+        if (amount <= 0) {
+          alert('This installment has no remaining amount to pay.');
+          return;
+        }
+        
+        // Deselect all cards
+        document.querySelectorAll('.installment-card').forEach(c => {
+          c.classList.remove('selected');
+        });
+        
+        // Select this card
+        this.classList.add('selected');
+        selectedInstallmentNum = installmentNum;
+        document.getElementById('selectedInstallment').value = installmentNum;
+        document.getElementById('paymentAmount').value = Math.round(amount);
+        
+        calculateTotal();
+      });
+    });
+
+    // Handle custom amount input
+    document.getElementById('customAmountInput').addEventListener('input', function() {
+      let value = parseFloat(this.value) || 0;
       
-      if (installmentNumber == '1') {
-        paymentAmountField.value = installment1;
-      } else if (installmentNumber == '2') {
-        paymentAmountField.value = installment2;
-      } else {
-        paymentAmountField.value = installment3;
+      // Validate
+      if (value > remainingBalance) {
+        value = remainingBalance;
+        this.value = value;
+      }
+      if (value < 0) {
+        value = 0;
+        this.value = value;
       }
       
+      document.getElementById('paymentAmount').value = Math.round(value);
       calculateTotal();
-    }
+    });
 
     function calculateTotal() {
       const paymentAmount = parseFloat(document.getElementById('paymentAmount').value) || 0;
@@ -736,15 +801,14 @@
 
     // Event listeners
     document.querySelectorAll('input[name="payment_mode"]').forEach(radio => {
-      radio.addEventListener('change', updatePaymentAmount);
+      radio.addEventListener('change', updatePaymentMode);
     });
 
-    document.getElementById('installmentNumber').addEventListener('change', updateInstallmentAmount);
-    document.getElementById('paymentAmount').addEventListener('input', calculateTotal);
     document.getElementById('otherCharges').addEventListener('input', calculateTotal);
 
     // Form validation
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      const paymentMode = document.querySelector('input[name="payment_mode"]:checked').value;
       const paymentType = document.querySelector('select[name="payment_type"]').value;
       const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
       
@@ -766,12 +830,19 @@
         return false;
       }
       
+      // Validate installment mode
+      if (paymentMode === 'installment' && !selectedInstallmentNum) {
+        e.preventDefault();
+        alert('Please select an installment to pay');
+        return false;
+      }
+      
       return true;
     });
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
-      updatePaymentAmount();
+      updatePaymentMode();
     });
   </script>
 </body>

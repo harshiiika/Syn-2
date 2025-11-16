@@ -359,29 +359,60 @@ Route::prefix('smstudents')
 //  Onboard transfer route OUTSIDE smstudents group
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])
     ->name('onboard.transfer');
-    
-// ========================================
+ // ========================================
 // 5. INQUIRY MANAGEMENT
 // ========================================
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
+    
+    // ⭐ LIST & DATA ROUTES (No ID conflict)
     Route::get('/', [InquiryController::class, 'index'])->name('index');
     Route::get('/data', [InquiryController::class, 'data'])->name('data');
-        Route::get('/{id}/history', [InquiryController::class, 'getHistory'])->name('history');
-    Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('bulkOnboard');
+    Route::get('/get-data', [InquiryController::class, 'getData'])->name('get-data'); // Alternative data method
+    
+    // ⭐ UPLOAD ROUTE (No ID conflict)
     Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
+    
+    // ⭐ CREATE ROUTE (No ID conflict)
     Route::post('/', [InquiryController::class, 'store'])->name('store');
     
-    // ⭐ SPECIFIC ROUTES MUST COME BEFORE GENERIC {id} ROUTES
-    Route::get('/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])->name('scholarship.show');
-    Route::put('/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])->name('scholarship.update');
-    Route::get('/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])->name('fees-batches.show');
-    Route::put('/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])->name('fees-batches.update');
+    // ⭐ BULK ONBOARD (Fixed - removed duplicate 'inquiries' in path)
+    Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('bulk-onboard');
+    
+    // ⭐ SPECIFIC NAMED ROUTES (MUST COME BEFORE GENERIC {id} ROUTES)
+    // These routes have specific paths that won't conflict with {id}
+    
+    // Single onboard
+    Route::post('/{id}/single-onboard', [InquiryController::class, 'singleOnboard'])->name('single-onboard');
+    
+    // Onboard form (redirects to pending edit)
+    Route::get('/{id}/onboard', [InquiryController::class, 'showOnboardForm'])->name('onboard');
+    
+    // History
+    Route::get('/{id}/history', [InquiryController::class, 'getHistory'])->name('history');
+    
+    // Edit form
     Route::get('/{id}/edit', [InquiryController::class, 'edit'])->name('edit');
     
-    // ⭐ ADD THIS: View route for displaying inquiry details
-    Route::get('/{id}', [InquiryController::class, 'view'])->name('view');
+    // Scholarship details (show & update)
+    Route::get('/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])->name('scholarship.show');
+    Route::put('/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])->name('scholarship.update');
     
-    // Generic routes for update and delete
+    // Fees & Batches (show & update)
+    Route::get('/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])->name('fees-batches.show');
+    Route::put('/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])->name('fees-batches.update');
+    
+    // ⭐ GENERIC {id} ROUTES (MUST COME LAST)
+    // These are catch-all routes and should be at the bottom
+    
+    // View inquiry details (page)
+    Route::get('/{id}/view', [InquiryController::class, 'view'])->name('view');
+    
+    // Show inquiry (API - returns JSON)
+    Route::get('/{id}', [InquiryController::class, 'show'])->name('show');
+    
+    // Update inquiry
     Route::put('/{id}', [InquiryController::class, 'update'])->name('update');
+    
+    // Delete inquiry
     Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
 });
