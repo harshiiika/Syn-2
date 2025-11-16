@@ -14,6 +14,7 @@ class StudentController extends Controller
     /**
      * Display PENDING INQUIRY students - students with incomplete forms
      * Route: student.student.pending
+     * this is pending lists ka controller 
      */
 
 //this is pending controller named as StudentController 

@@ -503,6 +503,102 @@
     margin: 0 !important;
     box-shadow: none !important;
   }
+
+  .documents-grid {
+  display: grid;
+  gap: 15px;
+}
+
+.document-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.document-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-color: #e05301;
+}
+
+.document-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.document-header i {
+  color: #e05301;
+  font-size: 18px;
+}
+
+.document-name {
+  flex: 1;
+  font-size: 14px;
+}
+
+.document-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.document-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.document-status.text-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.document-status.text-danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.document-status.text-warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: #e05301;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #c04701;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+}
 }
 
   </style>
@@ -751,266 +847,674 @@
           <button class="tab-btn" data-tab="test-series">Test Series</button>
         </div>
 
-        <!-- TAB 1: Student Detail -->
-        <div class="tab-content-section active" id="student-detail">
-          <!-- Student Avatar and Roll Number -->
-          <div class="student-avatar">
-            <i class="fas fa-user"></i>
+     <!-- COMPLETE FIXED TAB 1 - Replace your entire Tab 1 section -->
+<!-- File: resources/views/student/smstudents/view.blade.php -->
+
+<div class="tab-content-section active" id="student-detail">
+  
+  <!-- Student Avatar and Roll Number -->
+  <div class="student-avatar">
+    <i class="fas fa-user-circle"></i>
+  </div>
+  <div class="roll-number">
+    Roll Number<br>
+    <strong>{{ $student->roll_no ?? 'Not Assigned' }}</strong>
+  </div>
+
+  <!-- ========== PERSONAL INFORMATION ========== -->
+  <div class="detail-section">
+    <h5><i class="fas fa-user"></i> Personal Information</h5>
+    
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Student Name</span>
+        <span class="detail-value">
+          {{ $student->student_name ?? $student->name ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Father Name</span>
+        <span class="detail-value">
+          {{ $student->father_name ?? $student->father ?? 'N/A' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Mother Name</span>
+        <span class="detail-value">
+          {{ $student->mother_name ?? $student->mother ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">DOB</span>
+        <span class="detail-value">
+          @php
+            $dob = $student->dob ?? null;
+            if ($dob && $dob !== 'N/A') {
+              try {
+                if (is_string($dob)) {
+                  echo \Carbon\Carbon::parse($dob)->format('d-m-Y');
+                } elseif ($dob instanceof \Carbon\Carbon) {
+                  echo $dob->format('d-m-Y');
+                } elseif ($dob instanceof \MongoDB\BSON\UTCDateTime) {
+                  echo $dob->toDateTime()->format('d-m-Y');
+                } else {
+                  echo 'N/A';
+                }
+              } catch (\Exception $e) {
+                echo 'N/A';
+              }
+            } else {
+              echo 'N/A';
+            }
+          @endphp
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Father Contact No</span>
+        <span class="detail-value">
+          {{ $student->father_contact ?? $student->mobileNumber ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Father Whatsapp No</span>
+        <span class="detail-value">
+          {{ $student->father_whatsapp ?? $student->fatherWhatsapp ?? 'N/A' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Mother Contact No</span>
+        <span class="detail-value">
+          {{ $student->mother_contact ?? $student->motherContact ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Student Contact No</span>
+        <span class="detail-value">
+          {{ $student->phone ?? $student->studentContact ?? 'N/A' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Category</span>
+        <span class="detail-value">
+          {{ $student->category ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Gender</span>
+        <span class="detail-value">
+          {{ $student->gender ?? 'N/A' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Father Occupation</span>
+        <span class="detail-value">
+          {{ $student->father_occupation ?? $student->fatherOccupation ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Mother Occupation</span>
+        <span class="detail-value">
+          {{ $student->mother_occupation ?? $student->motherOccupation ?? 'N/A' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">State</span>
+        <span class="detail-value">{{ $student->state ?? 'N/A' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">City</span>
+        <span class="detail-value">{{ $student->city ?? 'N/A' }}</span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">PinCode</span>
+        <span class="detail-value">
+          {{ $student->pincode ?? $student->pinCode ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Address</span>
+        <span class="detail-value">{{ $student->address ?? 'N/A' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== ADDITIONAL INFORMATION ========== -->
+  <div class="detail-section">
+    <h5><i class="fas fa-info-circle"></i> Additional Information</h5>
+    
+    <div class="info-box">
+      <div class="info-box-question">
+        <i class="fas fa-map-marker-alt"></i> Do you belong to another city?
+      </div>
+      <div class="info-box-answer">
+        {{ $student->belongs_other_city ?? $student->belongToOtherCity ?? 'No' }}
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-question">
+        <i class="fas fa-hand-holding-usd"></i> Do You Belong to Economic Weaker Section?
+      </div>
+      <div class="info-box-answer">
+        {{ $student->economic_weaker_section ?? $student->economicWeakerSection ?? 'No' }}
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-question">
+        <i class="fas fa-shield-alt"></i> Do You Belong to Any Army/Police/Martyr Background?
+      </div>
+      <div class="info-box-answer">
+        {{ $student->army_police_background ?? $student->armyPoliceBackground ?? 'No' }}
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-question">
+        <i class="fas fa-wheelchair"></i> Are You a Specially Abled?
+      </div>
+      <div class="info-box-answer">
+        {{ $student->specially_abled ?? $student->speciallyAbled ?? 'No' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== COURSE DETAIL ========== -->
+  <div class="detail-section">
+    <h5><i class="fas fa-book"></i> Course Detail</h5>
+    
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Course Type</span>
+        <span class="detail-value">
+          {{ $student->course_type ?? $student->courseType ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Course Name</span>
+        <span class="detail-value">
+          {{ $student->course_name ?? $student->courseName ?? ($student->course->name ?? 'N/A') }}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Delivery Mode</span>
+        <span class="detail-value">
+          {{ $student->delivery_mode ?? $student->deliveryMode ?? $student->delivery ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Medium</span>
+        <span class="detail-value">{{ $student->medium ?? 'N/A' }}</span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Board</span>
+        <span class="detail-value">{{ $student->board ?? 'N/A' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Course Content</span>
+        <span class="detail-value">
+          {{ $student->course_content ?? $student->courseContent ?? 'N/A' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== ACADEMIC DETAIL ========== -->
+  <div class="detail-section">
+    <h5><i class="fas fa-graduation-cap"></i> Academic Detail</h5>
+    
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Previous Class</span>
+        <span class="detail-value">
+          {{ $student->previous_class ?? $student->previousClass ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Medium</span>
+        <span class="detail-value">
+          {{ $student->academic_medium ?? $student->previousMedium ?? 'N/A' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Name of School</span>
+        <span class="detail-value">
+          {{ $student->school_name ?? $student->schoolName ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Board</span>
+        <span class="detail-value">
+          {{ $student->academic_board ?? $student->previousBoard ?? 'N/A' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Passing Year</span>
+        <span class="detail-value">
+          {{ $student->passing_year ?? $student->passingYear ?? 'N/A' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Percentage</span>
+        <span class="detail-value">
+          @php
+            $percentage = $student->percentage ?? null;
+            if ($percentage && $percentage !== 'N/A') {
+              try {
+                echo number_format(floatval($percentage), 2) . '%';
+              } catch (\Exception $e) {
+                echo 'N/A';
+              }
+            } else {
+              echo 'N/A';
+            }
+          @endphp
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCHOLARSHIP ELIGIBILITY ========== -->
+  <div class="detail-section">
+    <h5><i class="fas fa-award"></i> Scholarship Eligibility</h5>
+    
+    <div class="info-box">
+      <div class="info-box-question">
+        <i class="fas fa-certificate"></i> Have You Appeared For the Synthesis Scholarship test?
+      </div>
+      <div class="info-box-answer">
+        {{ $student->scholarship_test ?? $student->scholarshipTest ?? 'No' }}
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Percentage Of Marks in Last Board Exam</span>
+        <span class="detail-value">
+          @php
+            $boardPercentage = null;
+            
+            // Try ALL possible field names
+            if (isset($student->board_percentage)) {
+              $boardPercentage = $student->board_percentage;
+            } elseif (isset($student->last_board_percentage)) {
+              $boardPercentage = $student->last_board_percentage;
+            } elseif (isset($student->lastBoardPercentage)) {
+              $boardPercentage = $student->lastBoardPercentage;
+            }
+            
+            if ($boardPercentage && $boardPercentage !== 'N/A') {
+              try {
+                echo number_format(floatval($boardPercentage), 2) . '%';
+              } catch (\Exception $e) {
+                echo 'N/A';
+              }
+            } else {
+              echo 'N/A';
+            }
+          @endphp
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Is Repeater?</span>
+        <span class="detail-value">
+          {{ $student->is_repeater ?? $student->isRepeater ?? 'No' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-question">
+        <i class="fas fa-medal"></i> Have You Appeared For any of the competition exam?
+      </div>
+      <div class="info-box-answer">
+        {{ $student->competition_exam ?? $student->competitionExam ?? 'No' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BATCH ALLOCATION ========== -->
+  <div class="detail-section">
+    <h5><i class="fas fa-users"></i> Batch Allocation</h5>
+    
+    <div class="detail-row">
+      <div class="detail-item">
+        <span class="detail-label">Batch Name</span>
+        <span class="detail-value">
+          {{ $student->batch_name ?? $student->batchName ?? ($student->batch->name ?? ($student->batch->batch_id ?? 'N/A')) }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Shift</span>
+        <span class="detail-value">
+          {{ $student->shift->name ?? $student->shift ?? 'Not Assigned' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VIEW DOCUMENTS ========== -->
+  <div class="detail-section">
+    <h5><i class="fas fa-folder-open"></i> View Documents</h5>
+    
+    @php
+      $documents = [
+        ['field' => 'passport_photo', 'label' => 'Passport Size Photo', 'icon' => 'fa-id-card'],
+        ['field' => 'marksheet', 'label' => 'Marksheet of Last Qualifying Exam', 'icon' => 'fa-file-alt'],
+        ['field' => 'caste_certificate', 'label' => 'Caste Certificate', 'icon' => 'fa-certificate'],
+        ['field' => 'scholarship_proof', 'label' => 'Scholarship Proof Document', 'icon' => 'fa-award'],
+        ['field' => 'secondary_marksheet', 'label' => 'Secondary Board Marksheet', 'icon' => 'fa-graduation-cap'],
+        ['field' => 'senior_secondary_marksheet', 'label' => 'Senior Secondary Board Marksheet', 'icon' => 'fa-graduation-cap'],
+      ];
+    @endphp
+    
+    <div class="documents-container">
+      @foreach($documents as $doc)
+        @php
+          // Get document value from student
+          $docValue = $student->{$doc['field']} ?? null;
+          $hasDocument = !empty($docValue) && $docValue !== 'N/A' && $docValue !== null;
+        @endphp
+        
+        <div class="document-card {{ $hasDocument ? 'has-document' : 'no-document' }}">
+          <div class="document-icon">
+            <i class="fas {{ $doc['icon'] }}"></i>
           </div>
-          <div class="roll-number">
-            Roll Number<br>
-            <strong>{{ $student->roll_no }}</strong>
-          </div>
-
-          <!-- Personal Information -->
-          <div class="detail-section">
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Student Name</span>
-                <span class="detail-value">{{ $student->student_name ?? $student->name ?? 'N/A' }}</span>
+          <div class="document-info">
+            <div class="document-title">{{ $doc['label'] }}</div>
+            
+            @if($hasDocument)
+              <div class="document-actions">
+                @if(str_starts_with($docValue, 'data:'))
+                  {{-- Base64 Document --}}
+                  <button type="button" 
+                          class="btn-doc btn-view" 
+                          onclick="viewDocument('{{ $docValue }}', '{{ $doc['label'] }}')"
+                          title="View Document">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                  <a href="{{ $docValue }}" 
+                     download="{{ $doc['label'] }}.{{ str_contains($docValue, 'pdf') ? 'pdf' : 'jpg' }}"
+                     class="btn-doc btn-download"
+                     title="Download Document">
+                    <i class="fas fa-download"></i> Download
+                  </a>
+                @else
+                  {{-- URL Path --}}
+                  <a href="{{ asset($docValue) }}" 
+                     target="_blank"
+                     class="btn-doc btn-view"
+                     title="View Document">
+                    <i class="fas fa-eye"></i> View
+                  </a>
+                  <a href="{{ asset($docValue) }}" 
+                     download
+                     class="btn-doc btn-download"
+                     title="Download Document">
+                    <i class="fas fa-download"></i> Download
+                  </a>
+                @endif
+                <span class="document-status uploaded">
+                  <i class="fas fa-check-circle"></i> Uploaded
+                </span>
               </div>
-              <div class="detail-item">
-                <span class="detail-label">Father Name</span>
-                <span class="detail-value">{{ $student->father_name ?? 'N/A' }}</span>
+            @else
+              <div class="document-status not-uploaded">
+                <i class="fas fa-times-circle"></i> Not Uploaded
               </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Mother Name</span>
-                <span class="detail-value">{{ $student->mother_name ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">DOB</span>
-                <span class="detail-value">{{ $student->dob ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Father Contact No</span>
-                <span class="detail-value">{{ $student->father_contact ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Father whatsapp No</span>
-                <span class="detail-value">{{ $student->father_whatsapp ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Mother Contact No</span>
-                <span class="detail-value">{{ $student->mother_contact ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Student contact No</span>
-                <span class="detail-value">{{ $student->phone ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Category</span>
-                <span class="detail-value">{{ $student->category ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Gender</span>
-                <span class="detail-value">{{ $student->gender ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Father Occupation</span>
-                <span class="detail-value">{{ $student->father_occupation ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Mother Occupation</span>
-                <span class="detail-value">{{ $student->mother_occupation ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">State</span>
-                <span class="detail-value">{{ $student->state ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">City</span>
-                <span class="detail-value">{{ $student->city ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">PinCode</span>
-                <span class="detail-value">{{ $student->pincode ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Address</span>
-                <span class="detail-value">{{ $student->address ?? 'N/A' }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Additional Information -->
-          <div class="detail-section">
-            <div class="info-box">
-              <div class="info-box-question">Do you belong to another city</div>
-              <div class="info-box-answer">{{ $student->belongs_other_city ?? 'No' }}</div>
-            </div>
-
-            <div class="info-box">
-              <div class="info-box-question">Do You Belong to Economic Weaker Section</div>
-              <div class="info-box-answer">{{ $student->economic_weaker_section ?? 'No' }}</div>
-            </div>
-
-            <div class="info-box">
-              <div class="info-box-question">Do You Belong to Any Army/Police/Martyr Background?</div>
-              <div class="info-box-answer">{{ $student->army_police_background ?? 'No' }}</div>
-            </div>
-
-            <div class="info-box">
-              <div class="info-box-question">Are You a Specially Abled ?</div>
-              <div class="info-box-answer">{{ $student->specially_abled ?? 'No' }}</div>
-            </div>
-          </div>
-
-          <!-- Course Detail -->
-          <div class="detail-section">
-            <h5>Course Detail</h5>
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Course Type</span>
-                <span class="detail-value">{{ $student->course_type ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Course Name</span>
-                <span class="detail-value">{{ $student->course_name ?? $student->course->name ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Delivery Mode</span>
-                <span class="detail-value">{{ $student->delivery ?? $student->delivery_mode ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Medium</span>
-                <span class="detail-value">{{ $student->medium ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Board</span>
-                <span class="detail-value">{{ $student->board ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Course Content</span>
-                <span class="detail-value">{{ $student->course_content ?? 'N/A' }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Academic Detail -->
-          <div class="detail-section">
-            <h5>Academic Detail</h5>
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Previous Class</span>
-                <span class="detail-value">{{ $student->previous_class ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Medium</span>
-                <span class="detail-value">{{ $student->academic_medium ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Name of School</span>
-                <span class="detail-value">{{ $student->school_name ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Board</span>
-                <span class="detail-value">{{ $student->academic_board ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Passing Year</span>
-                <span class="detail-value">{{ $student->passing_year ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Percentage</span>
-                <span class="detail-value">{{ $student->percentage ?? 'N/A' }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Scholarship Eligibility -->
-          <div class="detail-section">
-            <h5>Scholarship Eligibility</h5>
-            <div class="info-box">
-              <div class="info-box-question">Have You Appeared For the Synthesis Scholarship test?</div>
-              <div class="info-box-answer">{{ $student->scholarship_test ?? 'No' }}</div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Percentage Of Marks in last Board Exam</span>
-                <span class="detail-value">{{ $student->board_percentage ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="info-box">
-              <div class="info-box-question">Have You Appeared For any of the competition exam?</div>
-              <div class="info-box-answer">{{ $student->competition_exam ?? 'No' }}</div>
-            </div>
-          </div>
-
-          <!-- Batch Allocation -->
-          <div class="detail-section">
-            <h5>Batch Allocation</h5>
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Batch Name</span>
-                <span class="detail-value">{{ $student->batch_name ?? $student->batch->name ?? 'N/A' }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- View Documents -->
-          <div class="detail-section">
-            <h5>View Documents</h5>
-            <div class="document-item">
-              <span class="document-name">Passport Size Photo.</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">Marksheet of Last qualifying Exam.</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">If you are an Ex-Synthesisian, upload Identity card issued by Synthesis</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">Upload Proof of Scholarship to avail Concession</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">Secondary Board Marksheet</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">Senior Secondary Board Marksheet</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
+            @endif
           </div>
         </div>
+      @endforeach
+    </div>
+  </div>
+
+</div>
+
+<!-- ========== STYLES ========== -->
+<style>
+.detail-section {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.detail-section h5 {
+  color: #e05301;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e05301;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-section h5 i {
+  font-size: 20px;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 15px;
+  color: #333;
+  font-weight: 600;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #e05301;
+}
+
+.info-box {
+  background: #f8f9fa;
+  border-left: 4px solid #e05301;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.info-box-question {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-box-question i {
+  color: #e05301;
+}
+
+.info-box-answer {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+  padding-left: 24px;
+}
+
+/* Documents Styling */
+.documents-container {
+  display: grid;
+  gap: 15px;
+}
+
+.document-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.document-card.has-document {
+  border-color: #28a745;
+  background: #f0fff4;
+}
+
+.document-card.no-document {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.document-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.document-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e05301;
+  color: white;
+  border-radius: 50%;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.document-info {
+  flex: 1;
+}
+
+.document-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.document-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-doc {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-view {
+  background: #e05301;
+  color: white;
+}
+
+.btn-view:hover {
+  background: #c04701;
+  color: white;
+}
+
+.btn-download {
+  background: #28a745;
+  color: white;
+}
+
+.btn-download:hover {
+  background: #218838;
+  color: white;
+}
+
+.document-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.document-status.uploaded {
+  background: #d4edda;
+  color: #155724;
+}
+
+.document-status.not-uploaded {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+@media (max-width: 768px) {
+  .detail-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .document-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+
 
         <!-- TAB 2: Student Attendance -->
         <div class="tab-content-section" id="student-attendance">
@@ -2329,6 +2833,57 @@ function initializeTestSeriesCharts() {
     });
   }
 }
+
+function viewDocument(base64Data, title) {
+  // Create modal or new window to view document
+  const newWindow = window.open('', '_blank');
+  
+  if (base64Data.includes('application/pdf')) {
+    // PDF Document
+    newWindow.document.write(`
+      <html>
+        <head>
+          <title>${title}</title>
+          <style>
+            body { margin: 0; }
+            iframe { width: 100vw; height: 100vh; border: none; }
+          </style>
+        </head>
+        <body>
+          <iframe src="${base64Data}"></iframe>
+        </body>
+      </html>
+    `);
+  } else {
+    // Image Document
+    newWindow.document.write(`
+      <html>
+        <head>
+          <title>${title}</title>
+          <style>
+            body { 
+              margin: 0; 
+              display: flex; 
+              justify-content: center; 
+              align-items: center;
+              background-color: #f0f0f0;
+              min-height: 100vh;
+            }
+            img { 
+              max-width: 90%; 
+              max-height: 90vh; 
+              box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+          </style>
+        </head>
+        <body>
+          <img src="${base64Data}" alt="${title}">
+        </body>
+      </html>
+    `);
+  }
+}
+
 </script>
 </body>
 </html>

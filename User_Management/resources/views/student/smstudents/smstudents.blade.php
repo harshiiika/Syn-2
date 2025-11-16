@@ -269,7 +269,7 @@
           <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+                <li><a class="item" href="#"><i cl  ass="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
               </ul>
             </div>
           </div>
