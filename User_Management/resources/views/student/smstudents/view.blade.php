@@ -703,9 +703,9 @@
             Fees management
           </button>
           
-          <a href="{{ route('smstudents.testseries', $student->_id) }}" class="tab-btn">
-            Test Series
-          </a>
+    <a href="{{ route('smstudents.testseries', $student->_id) }}" class="tab-btn">
+    Test Series
+</a>
         </div>
 
         <!-- Student Detail Content -->

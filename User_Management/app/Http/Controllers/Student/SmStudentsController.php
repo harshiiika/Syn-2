@@ -16,809 +16,7 @@ use Carbon\Carbon;
 class SmStudentsController extends Controller
 {
     /**
-<<<<<<< HEAD
- * Display a listing of students
- */
-
-public function index()
-{
-    try {
-        $students = SMstudents::with(['batch', 'course', 'shift'])
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-        $batches = Batch::where('status', 'Active')->orderBy('name')->get();
-        $courses = Courses::all();
-        $shifts = Shift::where('is_active', true)->get();
-
-        return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
-        
-    } catch (\Exception $e) {
-        Log::error('Error loading students: ' . $e->getMessage());
-        return back()->with('error', 'Failed to load students');
-    }
-}
-public function testSeries($id)
-{
-    try {
-        Log::info('🔥 TEST SERIES METHOD CALLED', ['student_id' => $id]);
-        
-        // Find the student
-        $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id);
-        
-        // Get batches and shifts
-        $batches = Batch::all();
-        $shifts = Shift::where('is_active', true)->get();
-        
-        // ✅ CREATE SAMPLE TEST SERIES DATA
-        $allTestSeries = collect([
-            // GENERAL - Board Pattern
-            [
-                'test_id' => 'TEST001',
-                'test_name' => 'Weekly Test 1',
-                'test_date' => '2025-10-15',
-                'test_type' => 'general',
-                'pattern_type' => 'board',
-                'total_marks' => 100,
-                'obtained_marks' => 85,
-                'topper_marks' => 95,
-                'avg_marks' => 75,
-                'batch_rank' => 5,
-                'overall_rank' => 12,
-                'percentage' => 85.0,
-                'status' => 'attended'
-            ],
-            [
-                'test_id' => 'TEST002',
-                'test_name' => 'Monthly Test 1',
-                'test_date' => '2025-10-20',
-                'test_type' => 'general',
-                'pattern_type' => 'board',
-                'total_marks' => 100,
-                'obtained_marks' => 78,
-                'topper_marks' => 92,
-                'avg_marks' => 70,
-                'batch_rank' => 8,
-                'overall_rank' => 15,
-                'percentage' => 78.0,
-                'status' => 'attended'
-            ],
-            // GENERAL - NEET Pattern
-            [
-                'test_id' => 'TEST003',
-                'test_name' => 'NEET Mock Test 1',
-                'test_date' => '2025-10-25',
-                'test_type' => 'general',
-                'pattern_type' => 'neet',
-                'total_marks' => 180,
-                'obtained_marks' => 145,
-                'topper_marks' => 170,
-                'avg_marks' => 130,
-                'batch_rank' => 3,
-                'overall_rank' => 8,
-                'percentage' => 80.55,
-                'status' => 'attended'
-            ],
-            // GENERAL - IIT Pattern
-            [
-                'test_id' => 'TEST004',
-                'test_name' => 'JEE Mock Test 1',
-                'test_date' => '2025-10-28',
-                'test_type' => 'general',
-                'pattern_type' => 'iit',
-                'total_marks' => 300,
-                'obtained_marks' => 240,
-                'topper_marks' => 285,
-                'avg_marks' => 200,
-                'batch_rank' => 4,
-                'overall_rank' => 10,
-                'percentage' => 80.0,
-                'status' => 'attended'
-            ],
-            // SPR - Board Pattern
-            [
-                'test_id' => 'SPR001',
-                'test_name' => 'SPR Weekly Test 1',
-                'test_date' => '2025-11-01',
-                'test_type' => 'spr',
-                'pattern_type' => 'board',
-                'total_marks' => 100,
-                'obtained_marks' => 90,
-                'topper_marks' => 98,
-                'avg_marks' => 80,
-                'batch_rank' => 2,
-                'overall_rank' => 5,
-                'percentage' => 90.0,
-                'status' => 'attended'
-            ],
-            // SPR - NEET Pattern
-            [
-                'test_id' => 'SPR002',
-                'test_name' => 'SPR NEET Mock',
-                'test_date' => '2025-11-05',
-                'test_type' => 'spr',
-                'pattern_type' => 'neet',
-                'total_marks' => 180,
-                'obtained_marks' => 155,
-                'topper_marks' => 175,
-                'avg_marks' => 140,
-                'batch_rank' => 2,
-                'overall_rank' => 6,
-                'percentage' => 86.11,
-                'status' => 'attended'
-            ],
-            // SPR - IIT Pattern
-            [
-                'test_id' => 'SPR003',
-                'test_name' => 'SPR JEE Advanced',
-                'test_date' => '2025-11-08',
-                'test_type' => 'spr',
-                'pattern_type' => 'iit',
-                'total_marks' => 300,
-                'obtained_marks' => 260,
-                'topper_marks' => 290,
-                'avg_marks' => 220,
-                'batch_rank' => 3,
-                'overall_rank' => 7,
-                'percentage' => 86.67,
-                'status' => 'attended'
-            ],
-        ]);
-        
-        // ✅ ORGANIZE DATA BY TYPE AND PATTERN
-        $generalTests = $allTestSeries->where('test_type', 'general');
-        $sprTests = $allTestSeries->where('test_type', 'spr');
-        
-        $testSeries = [
-            'general' => [
-                'board' => $generalTests->where('pattern_type', 'board')->values(),
-                'neet' => $generalTests->where('pattern_type', 'neet')->values(),
-                'iit' => $generalTests->where('pattern_type', 'iit')->values(),
-            ],
-            'spr' => [
-                'board' => $sprTests->where('pattern_type', 'board')->values(),
-                'neet' => $sprTests->where('pattern_type', 'neet')->values(),
-                'iit' => $sprTests->where('pattern_type', 'iit')->values(),
-            ]
-        ];
-        
-        // ✅ CALCULATE STATISTICS FOR GENERAL
-        $generalAllTests = $generalTests->where('status', 'attended');
-        $overallRankGeneral = $generalAllTests->isNotEmpty() 
-            ? round($generalAllTests->avg('overall_rank'), 1) 
-            : 0;
-        $overallPercentageGeneral = $generalAllTests->isNotEmpty() 
-            ? round($generalAllTests->avg('percentage'), 2) 
-            : 0;
-        $attendancePercentageGeneral = $generalTests->isNotEmpty()
-            ? round(($generalAllTests->count() / $generalTests->count()) * 100, 2)
-            : 0;
-        
-        // ✅ CALCULATE STATISTICS FOR SPR
-        $sprAllTests = $sprTests->where('status', 'attended');
-        $overallRankSpr = $sprAllTests->isNotEmpty() 
-            ? round($sprAllTests->avg('overall_rank'), 1) 
-            : 0;
-        $overallPercentageSpr = $sprAllTests->isNotEmpty() 
-            ? round($sprAllTests->avg('percentage'), 2) 
-            : 0;
-        $attendancePercentageSpr = $sprTests->isNotEmpty()
-            ? round(($sprAllTests->count() / $sprTests->count()) * 100, 2)
-            : 0;
-        
-        Log::info('✅ Test Series Data Prepared Successfully');
-        
-        // ✅ RETURN VIEW WITH ALL REQUIRED VARIABLES
-        return view('student.smstudents.testseriesSms', compact(
-            'student',
-            'batches',
-            'shifts',
-            'testSeries',
-            'overallRankGeneral',
-            'overallPercentageGeneral',
-            'attendancePercentageGeneral',
-            'overallRankSpr',
-            'overallPercentageSpr',
-            'attendancePercentageSpr'
-        ));
-        
-    } catch (\Exception $e) {
-        Log::error('❌ TEST SERIES ERROR', [
-            'error' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine()
-        ]);
-        
-        return redirect()->route('smstudents.index')
-            ->with('error', 'Failed to load test series: ' . $e->getMessage());
-    }
-}
-/**
- * Display the specified student with full details
- */
-/**
- * Display the specified student with full details
- */
-public function show($id)
-{
-    try {
-        $student = SMstudents::with(['batch', 'course', 'shift'])->find($id);
-        
-        if (!$student) {
-            return back()->with('error', 'Student not found with ID: ' . $id);
-        }
-        
-        $rawData = $student->getAttributes();
-        
-        // Manually set safe values for all fields
-        $safeStudent = new \stdClass();
-        
-        // Basic Info
-        $safeStudent->_id = $student->_id ?? $id;
-        $safeStudent->roll_no = $rawData['roll_no'] ?? 'N/A';
-        $safeStudent->student_name = $rawData['student_name'] ?? $rawData['name'] ?? 'N/A';
-        $safeStudent->email = $rawData['email'] ?? 'N/A';
-        $safeStudent->phone = $rawData['phone'] ?? 'N/A';
-        
-        // Personal Details
-        $safeStudent->father_name = $rawData['father_name'] ?? 'N/A';
-        $safeStudent->mother_name = $rawData['mother_name'] ?? 'N/A';
-        
-        // Handle DOB carefully
-        if (isset($rawData['dob']) && $rawData['dob'] && $rawData['dob'] !== 'N/A') {
-            try {
-                $safeStudent->dob = \Carbon\Carbon::parse($rawData['dob'])->format('d-m-Y');
-            } catch (\Exception $e) {
-                $safeStudent->dob = 'N/A';
-            }
-        } else {
-            $safeStudent->dob = 'N/A';
-        }
-        
-        $safeStudent->father_contact = $rawData['father_contact'] ?? 'N/A';
-        $safeStudent->father_whatsapp = $rawData['father_whatsapp'] ?? 'N/A';
-        $safeStudent->mother_contact = $rawData['mother_contact'] ?? 'N/A';
-        $safeStudent->category = $rawData['category'] ?? 'N/A';
-        $safeStudent->gender = $rawData['gender'] ?? 'N/A';
-        $safeStudent->father_occupation = $rawData['father_occupation'] ?? 'N/A';
-        $safeStudent->mother_occupation = $rawData['mother_occupation'] ?? 'N/A';
-        
-        // Address
-        $safeStudent->state = $rawData['state'] ?? 'N/A';
-        $safeStudent->city = $rawData['city'] ?? 'N/A';
-        $safeStudent->pincode = $rawData['pincode'] ?? 'N/A';
-        $safeStudent->address = $rawData['address'] ?? 'N/A';
-        
-        // Additional Information
-        $safeStudent->belongs_other_city = $rawData['belongs_other_city'] ?? 'No';
-        $safeStudent->economic_weaker_section = $rawData['economic_weaker_section'] ?? 'No';
-        $safeStudent->army_police_background = $rawData['army_police_background'] ?? 'No';
-        $safeStudent->specially_abled = $rawData['specially_abled'] ?? 'No';
-        
-        // Course Details
-        $safeStudent->course_type = $rawData['course_type'] ?? 'N/A';
-        $safeStudent->course_name = $rawData['course_name'] ?? ($student->course->name ?? 'N/A');
-        $safeStudent->delivery = $rawData['delivery'] ?? $rawData['delivery_mode'] ?? 'N/A';
-        $safeStudent->medium = $rawData['medium'] ?? 'N/A';
-        $safeStudent->board = $rawData['board'] ?? 'N/A';
-        $safeStudent->course_content = $rawData['course_content'] ?? 'N/A';
-        
-        // Academic Details
-        $safeStudent->previous_class = $rawData['previous_class'] ?? 'N/A';
-        $safeStudent->academic_medium = $rawData['academic_medium'] ?? 'N/A';
-        $safeStudent->school_name = $rawData['school_name'] ?? 'N/A';
-        $safeStudent->academic_board = $rawData['academic_board'] ?? 'N/A';
-        $safeStudent->passing_year = $rawData['passing_year'] ?? 'N/A';
-        $safeStudent->percentage = $rawData['percentage'] ?? 'N/A';
-        
-        // Scholarship Eligibility
-        $safeStudent->scholarship_test = $rawData['scholarship_test'] ?? 'No';
-        $safeStudent->board_percentage = $rawData['board_percentage'] ?? 'N/A';
-        $safeStudent->competition_exam = $rawData['competition_exam'] ?? 'No';
-        
-        // Batch Allocation
-        $safeStudent->batch_name = $rawData['batch_name'] ?? ($student->batch->name ?? 'N/A');
-        $safeStudent->batch = $student->batch;
-        $safeStudent->course = $student->course;
-        $safeStudent->shift = $student->shift;
-        
-        // Process fees data
-        $rawFees = $rawData['fees'] ?? [];
-        $rawOtherFees = $rawData['other_fees'] ?? [];
-        $rawTransactions = $rawData['transactions'] ?? [];
-        
-        // Decode if they're JSON strings
-        if (is_string($rawFees)) {
-            $rawFees = json_decode($rawFees, true) ?? [];
-        }
-        if (is_string($rawOtherFees)) {
-            $rawOtherFees = json_decode($rawOtherFees, true) ?? [];
-        }
-        if (is_string($rawTransactions)) {
-            $rawTransactions = json_decode($rawTransactions, true) ?? [];
-        }
-        
-        $safeStudent->fees = collect(is_array($rawFees) ? $rawFees : []);
-        $safeStudent->other_fees = collect(is_array($rawOtherFees) ? $rawOtherFees : []);
-        $safeStudent->transactions = collect(is_array($rawTransactions) ? $rawTransactions : []);
-        
-        // Process fees data properly
-        $this->processFeesDataSafe($safeStudent);
-        
-        // Calculate fee summary from paymentHistory if no fees structure exists
-        $paymentHistory = $rawData['paymentHistory'] ?? [];
-        if (is_string($paymentHistory)) {
-            $paymentHistory = json_decode($paymentHistory, true) ?? [];
-        }
-        
-        // Calculate totals from payment history
-        $totalPaidFromHistory = 0;
-        if (is_array($paymentHistory)) {
-            foreach ($paymentHistory as $payment) {
-                $totalPaidFromHistory += floatval($payment['amount'] ?? 0);
-            }
-        }
-        
-        // Get stored fee values
-        $totalFeesInclusive = floatval($rawData['total_fees_inclusive_tax'] ?? 0);
-        $totalFeesBeforeTax = floatval($rawData['total_fees'] ?? 0);
-        $gstAmount = floatval($rawData['gst_amount'] ?? 0);
-        
-        // Calculate GST if not stored
-        if ($gstAmount == 0 && $totalFeesBeforeTax > 0) {
-            $gstAmount = $totalFeesBeforeTax * 0.18;
-        }
-        
-        // Calculate total with GST if not stored
-        if ($totalFeesInclusive == 0 && $totalFeesBeforeTax > 0) {
-            $totalFeesInclusive = $totalFeesBeforeTax + $gstAmount;
-        }
-        
-        // Use paid_fees from database, fallback to calculated value
-        $totalPaid = floatval($rawData['paid_fees'] ?? $rawData['paidAmount'] ?? $totalPaidFromHistory);
-        $remainingBalance = max(0, $totalFeesInclusive - $totalPaid);
-        
-        // Calculate fee summary
-        $feeSummary = [
-            'fees' => [
-                'total' => $totalFeesBeforeTax,
-                'discount' => floatval($rawData['total_fee_before_discount'] ?? 0) - $totalFeesBeforeTax,
-                'paid' => $totalPaid,
-                'pending' => $remainingBalance
-            ],
-            'other_fees' => [
-                'total' => 0,
-                'paid' => 0,
-                'pending' => 0
-            ],
-            'grand' => [
-                'total' => $totalFeesInclusive,
-                'paid' => $totalPaid,
-                'pending' => $remainingBalance
-            ]
-        ];
-        
-        // Check scholarship eligibility from stored data
-        $scholarshipEligible = [
-            'eligible' => in_array(strtolower($rawData['eligible_for_scholarship'] ?? 'no'), ['yes', 'true', '1']),
-            'reason' => $rawData['scholarship_name'] ?? 'N/A',
-            'discountPercent' => floatval($rawData['discount_percentage'] ?? 0)
-        ];
-        
-        // **✅ FIXED: Properly build scholarship data from stored fields**
-        $scholarshipData = [
-            'eligible' => $rawData['eligible_for_scholarship'] ?? 'No',
-            'scholarship_name' => $rawData['scholarship_name'] ?? 'N/A',
-            'total_before_discount' => floatval($rawData['total_fee_before_discount'] ?? $totalFeesBeforeTax),
-            'discount_percentage' => floatval($rawData['discount_percentage'] ?? 0),
-            'has_discretionary' => ($rawData['discretionary_discount'] ?? 'No') === 'Yes',
-            'discretionary_type' => $rawData['discretionary_discount_type'] ?? null,
-            'discretionary_value' => floatval($rawData['discretionary_discount_value'] ?? 0),
-            'discretionary_reason' => $rawData['discretionary_discount_reason'] ?? null,
-        ];
-    
-        Log::info('Student View Data with Scholarship:', [
-            'student_id' => $id,
-            'scholarship_data' => $scholarshipData,
-            'fees_summary' => $feeSummary,
-            'payment_history_count' => is_array($paymentHistory) ? count($paymentHistory) : 0
-        ]);
-        
-        return view('student.smstudents.view', compact('safeStudent', 'feeSummary', 'scholarshipEligible', 'scholarshipData'))
-            ->with('student', $safeStudent);
-    
-    } catch (\Exception $e) {
-        Log::error('Error showing student: ' . $e->getMessage());
-        return back()->with('error', 'Error loading student: ' . $e->getMessage());
-    }
-}
-
-/**
- * Process fees data safely without date casting issues
- */
-private function processFeesDataSafe($student)
-{
-    // Ensure fees is a collection, not a string
-    if (!isset($student->fees)) {
-        $student->fees = collect([]);
-    } elseif (is_string($student->fees)) {
-        // If it's a JSON string, decode it
-        try {
-            $decodedFees = json_decode($student->fees, true);
-            $student->fees = is_array($decodedFees) ? collect($decodedFees) : collect([]);
-        } catch (\Exception $e) {
-            $student->fees = collect([]);
-        }
-    } elseif (is_array($student->fees)) {
-        $student->fees = collect($student->fees);
-    }
-    
-    // Process regular fees
-    if ($student->fees->isNotEmpty()) {
-        $student->fees = $student->fees->map(function ($fee) {
-            // Ensure $fee is an array
-            if (is_string($fee)) {
-                try {
-                    $fee = json_decode($fee, true);
-                } catch (\Exception $e) {
-                    return null;
-                }
-            }
-            
-            if (!is_array($fee)) {
-                return null;
-            }
-            
-            // Parse dates safely
-            if (isset($fee['due_date']) && $fee['due_date'] && $fee['due_date'] !== 'N/A') {
-                try {
-                    $fee['due_date'] = \Carbon\Carbon::parse($fee['due_date']);
-                } catch (\Exception $e) {
-                    $fee['due_date'] = 'N/A';
-                }
-            } else {
-                $fee['due_date'] = 'N/A';
-            }
-            
-            if (isset($fee['paid_date']) && $fee['paid_date'] && $fee['paid_date'] !== 'N/A') {
-                try {
-                    $fee['paid_date'] = \Carbon\Carbon::parse($fee['paid_date']);
-                } catch (\Exception $e) {
-                    $fee['paid_date'] = 'N/A';
-                }
-            } else {
-                $fee['paid_date'] = 'N/A';
-            }
-            
-            // Calculate remaining amount
-            $actualAmount = floatval($fee['actual_amount'] ?? 0);
-            $discountAmount = floatval($fee['discount_amount'] ?? 0);
-            $paidAmount = floatval($fee['paid_amount'] ?? 0);
-            $fee['remaining_amount'] = $actualAmount - $discountAmount - $paidAmount;
-            
-            // Determine status
-            if (!isset($fee['status'])) {
-                if ($paidAmount >= ($actualAmount - $discountAmount)) {
-                    $fee['status'] = 'paid';
-                } elseif ($paidAmount > 0) {
-                    $fee['status'] = 'partial';
-                } else {
-                    $fee['status'] = 'pending';
-                }
-            }
-            
-            $fee['status_badge'] = $this->getStatusBadge($fee['status']);
-            
-            return $fee;
-        })->filter(); // Remove null entries
-    }
-
-    // Ensure other_fees is a collection
-    if (!isset($student->other_fees)) {
-        $student->other_fees = collect([]);
-    } elseif (is_string($student->other_fees)) {
-        try {
-            $decodedOtherFees = json_decode($student->other_fees, true);
-            $student->other_fees = is_array($decodedOtherFees) ? collect($decodedOtherFees) : collect([]);
-        } catch (\Exception $e) {
-            $student->other_fees = collect([]);
-        }
-    } elseif (is_array($student->other_fees)) {
-        $student->other_fees = collect($student->other_fees);
-    }
-
-    // Process other fees
-    if ($student->other_fees->isNotEmpty()) {
-        $student->other_fees = $student->other_fees->map(function ($fee) {
-            // Ensure $fee is an array
-            if (is_string($fee)) {
-                try {
-                    $fee = json_decode($fee, true);
-                } catch (\Exception $e) {
-                    return null;
-                }
-            }
-            
-            if (!is_array($fee)) {
-                return null;
-            }
-            
-            if (isset($fee['due_date']) && $fee['due_date'] && $fee['due_date'] !== 'N/A') {
-                try {
-                    $fee['due_date'] = \Carbon\Carbon::parse($fee['due_date']);
-                } catch (\Exception $e) {
-                    $fee['due_date'] = 'N/A';
-                }
-            } else {
-                $fee['due_date'] = 'N/A';
-            }
-            
-            if (isset($fee['paid_date']) && $fee['paid_date'] && $fee['paid_date'] !== 'N/A') {
-                try {
-                    $fee['paid_date'] = \Carbon\Carbon::parse($fee['paid_date']);
-                } catch (\Exception $e) {
-                    $fee['paid_date'] = 'N/A';
-                }
-            } else {
-                $fee['paid_date'] = 'N/A';
-            }
-            
-            $actualAmount = floatval($fee['actual_amount'] ?? 0);
-            $paidAmount = floatval($fee['paid_amount'] ?? 0);
-            $fee['remaining_amount'] = $actualAmount - $paidAmount;
-            
-            if (!isset($fee['status'])) {
-                if ($paidAmount >= $actualAmount) {
-                    $fee['status'] = 'paid';
-                } elseif ($paidAmount > 0) {
-                    $fee['status'] = 'partial';
-                } else {
-                    $fee['status'] = 'pending';
-                }
-            }
-            
-            $fee['status_badge'] = $this->getStatusBadge($fee['status']);
-            
-            return $fee;
-        })->filter(); // Remove null entries
-    }
-
-    // Ensure transactions is a collection
-    if (!isset($student->transactions)) {
-        $student->transactions = collect([]);
-    } elseif (is_string($student->transactions)) {
-        try {
-            $decodedTransactions = json_decode($student->transactions, true);
-            $student->transactions = is_array($decodedTransactions) ? collect($decodedTransactions) : collect([]);
-        } catch (\Exception $e) {
-            $student->transactions = collect([]);
-        }
-    } elseif (is_array($student->transactions)) {
-        $student->transactions = collect($student->transactions);
-    }
-
-    // Process transactions
-    if ($student->transactions->isNotEmpty()) {
-        $student->transactions = $student->transactions->map(function ($txn) {
-            // Ensure $txn is an array
-            if (is_string($txn)) {
-                try {
-                    $txn = json_decode($txn, true);
-                } catch (\Exception $e) {
-                    return null;
-                }
-            }
-            
-            if (!is_array($txn)) {
-                return null;
-            }
-            
-            if (isset($txn['payment_date']) && $txn['payment_date'] && $txn['payment_date'] !== 'N/A') {
-                try {
-                    $txn['payment_date'] = \Carbon\Carbon::parse($txn['payment_date']);
-                } catch (\Exception $e) {
-                    $txn['payment_date'] = 'N/A';
-                }
-            }
-            return $txn;
-        })->filter()->sortByDesc('payment_date'); // Remove null entries and sort
-    }
-}
-
-/**
- * Check scholarship eligibility safely
- */
-private function checkScholarshipEligibilitySafe($rawData, $safeStudent)
-{
-    $result = [
-        'eligible' => false,
-        'reason' => 'Not Eligible',
-        'discountPercent' => 0
-    ];
-
-    // Check if already has scholarship
-    if (in_array(strtolower($rawData['eligible_for_scholarship'] ?? ''), ['yes', 'true', '1'])) {
-        $result['eligible'] = true;
-        $result['reason'] = $rawData['scholarship_name'] ?? 'Scholarship Applied';
-        $result['discountPercent'] = floatval($rawData['discount_percentage'] ?? 0);
-        return $result;
-    }
-
-    return $result;
-}
-
-
-
-// /**
-//  * Process fees data safely without date casting issues
-//  */
-// private function processFeesDataSafe($student)
-// {
-//     // Process regular fees
-//     if ($student->fees && $student->fees->isNotEmpty()) {
-//         $student->fees = $student->fees->map(function ($fee) {
-//             // Parse dates safely
-//             if (isset($fee['due_date']) && $fee['due_date'] && $fee['due_date'] !== 'N/A') {
-//                 try {
-//                     $fee['due_date'] = \Carbon\Carbon::parse($fee['due_date']);
-//                 } catch (\Exception $e) {
-//                     $fee['due_date'] = 'N/A';
-//                 }
-//             } else {
-//                 $fee['due_date'] = 'N/A';
-//             }
-            
-//             if (isset($fee['paid_date']) && $fee['paid_date'] && $fee['paid_date'] !== 'N/A') {
-//                 try {
-//                     $fee['paid_date'] = \Carbon\Carbon::parse($fee['paid_date']);
-//                 } catch (\Exception $e) {
-//                     $fee['paid_date'] = 'N/A';
-//                 }
-//             } else {
-//                 $fee['paid_date'] = 'N/A';
-//             }
-            
-//             // Calculate remaining amount
-//             $actualAmount = floatval($fee['actual_amount'] ?? 0);
-//             $discountAmount = floatval($fee['discount_amount'] ?? 0);
-//             $paidAmount = floatval($fee['paid_amount'] ?? 0);
-//             $fee['remaining_amount'] = $actualAmount - $discountAmount - $paidAmount;
-            
-//             // Determine status
-//             if (!isset($fee['status'])) {
-//                 if ($paidAmount >= ($actualAmount - $discountAmount)) {
-//                     $fee['status'] = 'paid';
-//                 } elseif ($paidAmount > 0) {
-//                     $fee['status'] = 'partial';
-//                 } else {
-//                     $fee['status'] = 'pending';
-//                 }
-//             }
-            
-//             $fee['status_badge'] = $this->getStatusBadge($fee['status']);
-            
-//             return $fee;
-//         });
-//     }
-
-//     // Process other fees
-//     if ($student->other_fees && $student->other_fees->isNotEmpty()) {
-//         $student->other_fees = $student->other_fees->map(function ($fee) {
-//             if (isset($fee['due_date']) && $fee['due_date'] && $fee['due_date'] !== 'N/A') {
-//                 try {
-//                     $fee['due_date'] = \Carbon\Carbon::parse($fee['due_date']);
-//                 } catch (\Exception $e) {
-//                     $fee['due_date'] = 'N/A';
-//                 }
-//             } else {
-//                 $fee['due_date'] = 'N/A';
-//             }
-            
-//             if (isset($fee['paid_date']) && $fee['paid_date'] && $fee['paid_date'] !== 'N/A') {
-//                 try {
-//                     $fee['paid_date'] = \Carbon\Carbon::parse($fee['paid_date']);
-//                 } catch (\Exception $e) {
-//                     $fee['paid_date'] = 'N/A';
-//                 }
-//             } else {
-//                 $fee['paid_date'] = 'N/A';
-//             }
-            
-//             $actualAmount = floatval($fee['actual_amount'] ?? 0);
-//             $paidAmount = floatval($fee['paid_amount'] ?? 0);
-//             $fee['remaining_amount'] = $actualAmount - $paidAmount;
-            
-//             if (!isset($fee['status'])) {
-//                 if ($paidAmount >= $actualAmount) {
-//                     $fee['status'] = 'paid';
-//                 } elseif ($paidAmount > 0) {
-//                     $fee['status'] = 'partial';
-//                 } else {
-//                     $fee['status'] = 'pending';
-//                 }
-//             }
-            
-//             $fee['status_badge'] = $this->getStatusBadge($fee['status']);
-            
-//             return $fee;
-//         });
-//     }
-
-//     // Process transactions
-//     if ($student->transactions && $student->transactions->isNotEmpty()) {
-//         $student->transactions = $student->transactions->map(function ($txn) {
-//             if (isset($txn['payment_date']) && $txn['payment_date'] && $txn['payment_date'] !== 'N/A') {
-//                 try {
-//                     $txn['payment_date'] = \Carbon\Carbon::parse($txn['payment_date']);
-//                 } catch (\Exception $e) {
-//                     $txn['payment_date'] = 'N/A';
-//                 }
-//             }
-//             return $txn;
-//         })->sortByDesc('payment_date');
-//     }
-// }
-
-// /**
-//  * Check scholarship eligibility safely
-//  */
-// private function checkScholarshipEligibilitySafe($rawData, $safeStudent)
-// {
-//     $result = [
-//         'eligible' => false,
-//         'reason' => 'Not Eligible',
-//         'discountPercent' => 0
-//     ];
-
-//     // Check if already has scholarship
-//     if (in_array(strtolower($rawData['eligible_for_scholarship'] ?? ''), ['yes', 'true', '1'])) {
-//         $result['eligible'] = true;
-//         $result['reason'] = $rawData['scholarship_name'] ?? 'Scholarship Applied';
-//         $result['discountPercent'] = floatval($rawData['discount_percentage'] ?? 0);
-//         return $result;
-//     }
-
-//     return $result;
-// }
-
-/**
- * Debug method to check what data exists in database
- */
-public function debug($id)
-{
-    try {
-        $student = SMstudents::findOrFail($id);
-        
-        // Get all attributes
-        $allData = $student->getAttributes();
-        
-        return response()->json([
-            'success' => true,
-            'student_id' => $id,
-            'all_fields' => $allData,
-            'missing_fields' => [
-                'father_name' => isset($allData['father_name']),
-                'mother_name' => isset($allData['mother_name']),
-                'dob' => isset($allData['dob']),
-                'father_contact' => isset($allData['father_contact']),
-                'category' => isset($allData['category']),
-                'gender' => isset($allData['gender']),
-            ]
-        ], 200);
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage()
-        ], 500);
-    }
-}
-
-    /**
-     * Show the form for editing student
-=======
      * Display a listing of students
->>>>>>> 98145ef01c821f65733da1cdfd13635ea9ca219d
      */
     public function index()
     {
@@ -838,7 +36,168 @@ public function debug($id)
             return back()->with('error', 'Failed to load students');
         }
     }
-
+/**
+ * ✅ Display the test series for a specific student
+ */
+public function testSeries($id)
+{
+    try {
+        // Find the student by ID with better error handling
+        $student = SMstudents::with(['batch', 'course', 'shift'])->find($id);
+        
+        if (!$student) {
+            Log::error('Test Series - Student not found:', ['id' => $id]);
+            return redirect()->route('smstudents.index')
+                ->with('error', 'Student not found with ID: ' . $id);
+        }
+        
+        Log::info('Test Series - Loading for student:', [
+            'student_id' => $id,
+            'student_name' => $student->student_name ?? $student->name ?? 'N/A'
+        ]);
+        
+        $rawData = $student->getAttributes();
+        
+        // Initialize test series data structure
+        $testSeries = [
+            'general' => [
+                'board' => [],
+                'neet' => [],
+                'iit' => []
+            ],
+            'spr' => [
+                'board' => [],
+                'neet' => [],
+                'iit' => []
+            ]
+        ];
+        
+        // Get test series data from student record if exists
+        if (isset($rawData['test_series']) && !empty($rawData['test_series'])) {
+            $storedTestSeries = is_string($rawData['test_series']) 
+                ? json_decode($rawData['test_series'], true) 
+                : $rawData['test_series'];
+            
+            if (is_array($storedTestSeries)) {
+                $testSeries = array_merge($testSeries, $storedTestSeries);
+            }
+        }
+        
+        // Calculate attendance percentages
+        $attendancePercentageGeneral = 0;
+        $attendancePercentageSpr = 0;
+        
+        // Calculate for General tests
+        $generalTests = array_merge(
+            $testSeries['general']['board'] ?? [],
+            $testSeries['general']['neet'] ?? [],
+            $testSeries['general']['iit'] ?? []
+        );
+        
+        if (count($generalTests) > 0) {
+            $attendedGeneral = count(array_filter($generalTests, function($test) {
+                return isset($test['obtained_marks']) && $test['obtained_marks'] > 0;
+            }));
+            $attendancePercentageGeneral = ($attendedGeneral / count($generalTests)) * 100;
+        }
+        
+        // Calculate for SPR tests
+        $sprTests = array_merge(
+            $testSeries['spr']['board'] ?? [],
+            $testSeries['spr']['neet'] ?? [],
+            $testSeries['spr']['iit'] ?? []
+        );
+        
+        if (count($sprTests) > 0) {
+            $attendedSpr = count(array_filter($sprTests, function($test) {
+                return isset($test['obtained_marks']) && $test['obtained_marks'] > 0;
+            }));
+            $attendancePercentageSpr = ($attendedSpr / count($sprTests)) * 100;
+        }
+        
+        // Calculate overall statistics for General tests
+        $overallRankGeneral = 0;
+        $overallPercentageGeneral = 0;
+        
+        if (count($generalTests) > 0) {
+            $totalRank = 0;
+            $totalPercentage = 0;
+            $validTests = 0;
+            
+            foreach ($generalTests as $test) {
+                if (isset($test['overall_rank']) && $test['overall_rank'] > 0) {
+                    $totalRank += $test['overall_rank'];
+                    $validTests++;
+                }
+                if (isset($test['percentage'])) {
+                    $totalPercentage += $test['percentage'];
+                }
+            }
+            
+            if ($validTests > 0) {
+                $overallRankGeneral = $totalRank / $validTests;
+            }
+            if (count($generalTests) > 0) {
+                $overallPercentageGeneral = $totalPercentage / count($generalTests);
+            }
+        }
+        
+        // Calculate overall statistics for SPR tests
+        $overallRankSpr = 0;
+        $overallPercentageSpr = 0;
+        
+        if (count($sprTests) > 0) {
+            $totalRank = 0;
+            $totalPercentage = 0;
+            $validTests = 0;
+            
+            foreach ($sprTests as $test) {
+                if (isset($test['overall_rank']) && $test['overall_rank'] > 0) {
+                    $totalRank += $test['overall_rank'];
+                    $validTests++;
+                }
+                if (isset($test['percentage'])) {
+                    $totalPercentage += $test['percentage'];
+                }
+            }
+            
+            if ($validTests > 0) {
+                $overallRankSpr = $totalRank / $validTests;
+            }
+            if (count($sprTests) > 0) {
+                $overallPercentageSpr = $totalPercentage / count($sprTests);
+            }
+        }
+        
+        Log::info('Test Series - Data prepared successfully:', [
+            'general_tests' => count($generalTests),
+            'spr_tests' => count($sprTests),
+            'attendance_general' => $attendancePercentageGeneral,
+            'attendance_spr' => $attendancePercentageSpr
+        ]);
+        
+        return view('student.smstudents.testseries', compact(
+            'student',
+            'testSeries',
+            'attendancePercentageGeneral',
+            'attendancePercentageSpr',
+            'overallRankGeneral',
+            'overallPercentageGeneral',
+            'overallRankSpr',
+            'overallPercentageSpr'
+        ));
+        
+    } catch (\Exception $e) {
+        Log::error('Error loading test series:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'student_id' => $id
+        ]);
+        
+        return redirect()->route('smstudents.index')
+            ->with('error', 'Error loading test series: ' . $e->getMessage());
+    }
+}
     /**
      * Display the specified student with full details
      */
