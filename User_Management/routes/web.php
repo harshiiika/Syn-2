@@ -322,6 +322,7 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
 //         Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
 //     });
 
+
 Route::prefix('smstudents')
     ->name('smstudents.')
     ->group(function () {
@@ -329,9 +330,11 @@ Route::prefix('smstudents')
         Route::get('/', [SmStudentsController::class, 'index'])->name('index');
         Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
         
-        // Specific actions
+        // Specific actions - MUST BE BEFORE /{id} route
         Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
         Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
+        Route::get('/{id}/testseries', [SmStudentsController::class, 'testSeries'])->name('testseries'); // ✅ FIXED
+        Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
         
         // Update & actions
         Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
@@ -340,10 +343,18 @@ Route::prefix('smstudents')
         Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
         Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
         
-        // View routes
+        // Generic view route - MUST BE LAST
         Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
-        Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
     });
+
+
+
+
+
+
+
+
+
 
 //  Onboard transfer route OUTSIDE smstudents group
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])

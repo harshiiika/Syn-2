@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Student View Detail - {{ $student->student_name ?? $student->name }}</title>
+  <title>Student Details - {{ $student->student_name ?? $student->name }}</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('css/smstudents.css') }}">
@@ -12,13 +12,10 @@
   <style>
     .page-header {
       background-color: rgba(0, 0, 0, 0);
-      /* padding: 20px 30px; */
       margin: 20px;
-      /* border-radius: 8px; */
       display: flex;
       justify-content: space-between;
       align-items: center;
-      /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
       width: 80%;
     }
     .page-title {
@@ -62,6 +59,8 @@
       cursor: pointer;
       border-bottom: 3px solid transparent;
       transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
     }
     .tab-btn.active {
       color: #ffffff;
@@ -72,166 +71,325 @@
     .tab-btn:hover:not(.active) {
       color: #e05301;
     }
-    .tab-content-section {
-      display: none;
+
+    /* Student Detail Table Styles */
+    .student-detail-section {
+      margin-bottom: 30px;
     }
-    .tab-content-section.active {
-      display: block;
-    }
-    
-    /* Student Detail Tab Styles */
-    .student-avatar {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background-color: #f0f0f0;
+    .profile-section {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      border: 3px solid #e05301;
-    }
-    .student-avatar i {
-      font-size: 80px;
-      color: #666;
-    }
-    .roll-number {
-      text-align: center;
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 30px;
-    }
-    .detail-section {
-      margin-bottom: 30px;
-    }
-    .detail-section h5 {
-      color: #e05301;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e05301;
-    }
-    .detail-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
       gap: 20px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
-    .detail-item {
-      display: flex;
-      flex-direction: column;
+    .profile-image-box {
+      text-align: center;
     }
-    .detail-label {
-      font-size: 13px;
-      color: #666;
+    .profile-image-box img {
+      width: 120px;
+      height: 150px;
+      border: 1px solid #ddd;
+      object-fit: cover;
+    }
+    .profile-image-box p {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .info-table {
+      flex: 1;
+    }
+    .info-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .info-table table td {
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      font-size: 14px;
+    }
+    .info-table table td:first-child {
+      width: 20%;
       font-weight: 500;
-      margin-bottom: 5px;
+      background-color: #f8f9fa;
     }
-    .detail-value {
-      font-size: 15px;
-      color: #333;
+    .info-table table td:nth-child(2) {
+      width: 30%;
+    }
+    .info-table table td:nth-child(3) {
+      width: 20%;
+      font-weight: 500;
+      background-color: #f8f9fa;
+    }
+    .info-table table td:nth-child(4) {
+      width: 30%;
+    }
+    .question-row {
+      background-color: #fff;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .question-row span:first-child {
       font-weight: 400;
     }
-    .info-box {
+    .section-header {
       background-color: #f8f9fa;
-      padding: 15px;
-      border-radius: 5px;
-      margin-bottom: 20px;
+      padding: 10px;
+      font-weight: 600;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      border-left: 3px solid #e05301;
     }
-    .info-box-question {
+    .document-table {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .document-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .document-table table td {
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
       font-size: 14px;
-      color: #333;
-      margin-bottom: 5px;
     }
-    .info-box-answer {
-      font-size: 15px;
-      font-weight: 500;
-      color: #e05301;
+    .document-table table td:first-child {
+      width: 70%;
     }
-    .document-item {
+    .document-table table td:last-child {
+      width: 30%;
+      text-align: right;
+      color: #dc3545;
+    }
+
+    /* Attendance Tab Styles */
+    .attendance-container {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .calendar-section {
+      flex: 0 0 auto;
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .calendar-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 15px;
-      background-color: #f8f9fa;
-      border-radius: 5px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e0e0e0;
     }
-    .document-name {
+    .calendar-header h5 {
+      margin: 0;
+      color: #e05301;
       font-size: 14px;
-      color: #333;
+      font-weight: 600;
     }
-    .document-status {
-      font-size: 13px;
-      color: #dc3545;
+    .calendar-nav {
+      display: flex;
+      gap: 10px;
+    }
+    .calendar-nav button {
+      background: none;
+      border: 1px solid #ddd;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .calendar-table th {
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
       font-weight: 500;
     }
-    
-    /* Attendance Tab Styles */
-    .attendance-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin-bottom: 30px;
+    .calendar-table td {
+      padding: 8px;
+      text-align: center;
+      font-size: 13px;
+      cursor: pointer;
     }
-    .attendance-card {
-      background-color: #ffffff;
-      border: 1px solid #dee2e6;
+    .calendar-table td:hover {
+      background-color: #f8f9fa;
+    }
+    .calendar-table td.today {
+      background-color: #007bff;
+      color: white;
+      border-radius: 50%;
+    }
+    .calendar-table td.selected {
+      background-color: #e05301;
+      color: white;
+      border-radius: 50%;
+    }
+    .stats-section {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+    }
+    .attendance-status-card {
+      flex: 1;
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
       border-radius: 8px;
       padding: 20px;
+      text-align: center;
     }
-    .calendar-widget {
-      background-color: #ffffff;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      padding: 15px;
+    .attendance-status-card h6 {
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 20px;
     }
-    .attendance-status-circle {
+    .donut-chart {
       width: 200px;
       height: 200px;
-      margin: 0 auto;
-    }
-    .chart-container {
+      margin: 0 auto 15px;
       position: relative;
-      height: 250px;
-      margin: 20px 0;
     }
-    
-    /* Fees Management Tab Styles */
-    .fees-tabs {
-      display: flex;
-      gap: 10px;
+    .attendance-percentage {
+      font-size: 24px;
+      font-weight: 600;
+      color: #e05301;
+    }
+    .attendance-count {
+      font-size: 14px;
+      color: #666;
+      margin-top: 5px;
+    }
+    .avg-attendance-card {
+      flex: 1;
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .avg-attendance-card h6 {
+      color: #333;
+      font-size: 14px;
       margin-bottom: 20px;
     }
-    .fees-tab-btn {
-      padding: 10px 20px;
-      border: 1px solid #e05301;
-      background-color: #ffffff;
+    .month-select {
+      float: right;
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .line-chart {
+      width: 100%;
+      height: 200px;
+    }
+    .attendance-table-section {
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .entries-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .entries-control select {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .search-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .search-control input {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 200px;
+    }
+    .attendance-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    .attendance-data-table thead {
+      background-color: #fff;
+    }
+    .attendance-data-table th {
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
       color: #e05301;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 500;
+      border-bottom: 2px solid #e0e0e0;
     }
-    .fees-tab-btn.active {
-      background-color: #e05301;
-      color: #ffffff;
+    .attendance-data-table td {
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      border-bottom: 1px solid #e0e0e0;
     }
-    .scholarship-box {
+    .attendance-data-table tbody tr:hover {
       background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
+    }
+    .pagination-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+    }
+    .pagination-controls {
+      display: flex;
+      gap: 5px;
+    }
+    .pagination-controls button {
+      padding: 5px 12px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .pagination-controls button.active {
+      background-color: #e05301;
+      color: white;
+      border-color: #e05301;
+    }
+    .pagination-controls button:hover:not(.active) {
+      background-color: #f8f9fa;
+    }
+    .pagination-controls button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Fees Management Styles */
+    .fees-section {
       margin-bottom: 20px;
     }
-    
-    /* Test Series Tab Styles */
-    .test-type-btns {
+    .fees-type-buttons {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
     }
-    .test-type-btn {
+    .fees-type-btn {
       padding: 10px 20px;
       border: 1px solid #e05301;
       background-color: #ffffff;
@@ -239,22 +397,59 @@
       border-radius: 5px;
       cursor: pointer;
       font-weight: 500;
+      transition: all 0.3s;
     }
-    .test-type-btn.active {
+    .fees-type-btn.active {
       background-color: #e05301;
       color: #ffffff;
     }
-    .test-stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-bottom: 30px;
+    .fees-type-btn:hover:not(.active) {
+      background-color: #fff5f0;
     }
-    .stats-card {
-      background-color: #ffffff;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      padding: 20px;
+    .fees-content {
+      display: none;
+    }
+    .fees-content.active {
+      display: block;
+    }
+    .fees-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .fees-data-table thead {
+      background-color: #fff;
+    }
+    .fees-data-table th {
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #e05301;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .fees-data-table td {
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .fees-data-table tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-due {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .status-paid {
+      background-color: #d4edda;
+      color: #155724;
     }
   </style>
 </head>
@@ -310,7 +505,7 @@
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-          <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -322,8 +517,8 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-           <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-           <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+                <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -381,7 +576,7 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
                 <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
@@ -496,349 +691,345 @@
       <div class="tab-container">
         <!-- Tab Navigation -->
         <div class="tab-navigation">
-          <button class="tab-btn active" data-tab="student-detail">Student Detail</button>
-          <button class="tab-btn" data-tab="student-attendance">Student attendance</button>
-          <button class="tab-btn" data-tab="fees-management">Fees management</button>
-          <button class="tab-btn" data-tab="test-series">Test Series</button>
+          <button class="tab-btn active" data-tab="student-detail">
+            Student Detail
+          </button>
+          
+          <button class="tab-btn" data-tab="student-attendance">
+            Student attendance
+          </button>
+          
+          <button class="tab-btn" data-tab="fees-management">
+            Fees management
+          </button>
+          
+          <a href="{{ route('smstudents.testseries', $student->_id) }}" class="tab-btn">
+            Test Series
+          </a>
         </div>
 
-        <!-- TAB 1: Student Detail -->
-        <div class="tab-content-section active" id="student-detail">
-          <!-- Student Avatar and Roll Number -->
-          <div class="student-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="roll-number">
-            Roll Number<br>
-            <strong>{{ $student->roll_no }}</strong>
-          </div>
-
-          <!-- Personal Information -->
-          <div class="detail-section">
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Student Name</span>
-                <span class="detail-value">{{ $student->student_name ?? $student->name ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Father Name</span>
-                <span class="detail-value">{{ $student->father_name ?? 'N/A' }}</span>
-              </div>
+        <!-- Student Detail Content -->
+        <div class="tab-content" id="student-detail-tab">
+          <!-- Profile and Basic Info Section -->
+          <div class="profile-section">
+            <div class="profile-image-box">
+              <img src="{{ asset('images/default-avatar.png') }}" alt="Student Photo">
+              <p><strong>Roll Number</strong><br>{{ $student->roll_no ?? '2513/14133' }}</p>
             </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Mother Name</span>
-                <span class="detail-value">{{ $student->mother_name ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">DOB</span>
-                <span class="detail-value">{{ $student->dob ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Father Contact No</span>
-                <span class="detail-value">{{ $student->father_contact ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Father whatsapp No</span>
-                <span class="detail-value">{{ $student->father_whatsapp ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Mother Contact No</span>
-                <span class="detail-value">{{ $student->mother_contact ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Student contact No</span>
-                <span class="detail-value">{{ $student->phone ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Category</span>
-                <span class="detail-value">{{ $student->category ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Gender</span>
-                <span class="detail-value">{{ $student->gender ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Father Occupation</span>
-                <span class="detail-value">{{ $student->father_occupation ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Mother Occupation</span>
-                <span class="detail-value">{{ $student->mother_occupation ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">State</span>
-                <span class="detail-value">{{ $student->state ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">City</span>
-                <span class="detail-value">{{ $student->city ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">PinCode</span>
-                <span class="detail-value">{{ $student->pincode ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Address</span>
-                <span class="detail-value">{{ $student->address ?? 'N/A' }}</span>
-              </div>
+            
+            <div class="info-table">
+              <table>
+                <tr>
+                  <td>Student Name</td>
+                  <td>{{ $student->student_name ?? $student->name ?? 'SUTVI GAUR' }}</td>
+                  <td>Father Name</td>
+                  <td>{{ $student->father_name ?? 'HANUMAN SHARMA' }}</td>
+                </tr>
+                <tr>
+                  <td>Mother Name</td>
+                  <td>{{ $student->mother_name ?? 'SANTOSH SHARMA' }}</td>
+                  <td>DOB</td>
+                  <td>{{ $student->dob ?? '2004-06-30' }}</td>
+                </tr>
+                <tr>
+                  <td>Father Contact No</td>
+                  <td>{{ $student->father_contact ?? '9251031431' }}</td>
+                  <td>Father whatsApp No</td>
+                  <td>{{ $student->father_whatsapp ?? '9251031431' }}</td>
+                </tr>
+                <tr>
+                  <td>Mother Contact No</td>
+                  <td>{{ $student->mother_contact ?? '7611842680' }}</td>
+                  <td>Student contact No</td>
+                  <td>{{ $student->student_contact ?? '7611842680' }}</td>
+                </tr>
+                <tr>
+                  <td>Category</td>
+                  <td>{{ $student->category ?? 'GENERAL' }}</td>
+                  <td>Gender</td>
+                  <td>{{ $student->gender ?? 'Female' }}</td>
+                </tr>
+                <tr>
+                  <td>Father Occupation</td>
+                  <td>{{ $student->father_occupation ?? 'Business' }}</td>
+                  <td>Mother Occupation</td>
+                  <td>{{ $student->mother_occupation ?? 'House Wife' }}</td>
+                </tr>
+                <tr>
+                  <td>State</td>
+                  <td>{{ $student->state ?? 'RJ Rajasthan' }}</td>
+                  <td>City</td>
+                  <td>{{ $student->city ?? 'Bikaner' }}</td>
+                </tr>
+                <tr>
+                  <td>Pincode</td>
+                  <td>{{ $student->pincode ?? '334001' }}</td>
+                  <td>Address</td>
+                  <td>{{ $student->address ?? 'STREET NO 1 SHIV BARI CIRCLE AMBEDKAR COLONY BIKANER' }}</td>
+                </tr>
+              </table>
             </div>
           </div>
 
-          <!-- Additional Information -->
-          <div class="detail-section">
-            <div class="info-box">
-              <div class="info-box-question">Do you belong to another city</div>
-              <div class="info-box-answer">{{ $student->belongs_other_city ?? 'No' }}</div>
-            </div>
-
-            <div class="info-box">
-              <div class="info-box-question">Do You Belong to Economic Weaker Section</div>
-              <div class="info-box-answer">{{ $student->economic_weaker_section ?? 'No' }}</div>
-            </div>
-
-            <div class="info-box">
-              <div class="info-box-question">Do You Belong to Any Army/Police/Martyr Background?</div>
-              <div class="info-box-answer">{{ $student->army_police_background ?? 'No' }}</div>
-            </div>
-
-            <div class="info-box">
-              <div class="info-box-question">Are You a Specially Abled ?</div>
-              <div class="info-box-answer">{{ $student->specially_abled ?? 'No' }}</div>
-            </div>
+          <!-- Additional Questions -->
+          <div class="question-row">
+            <span>Do you belong to another city</span>
+            <span>{{ $student->belongs_to_another_city ?? 'No' }}</span>
           </div>
 
-          <!-- Course Detail -->
-          <div class="detail-section">
-            <h5>Course Detail</h5>
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Course Type</span>
-                <span class="detail-value">{{ $student->course_type ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Course Name</span>
-                <span class="detail-value">{{ $student->course_name ?? $student->course->name ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Delivery Mode</span>
-                <span class="detail-value">{{ $student->delivery ?? $student->delivery_mode ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Medium</span>
-                <span class="detail-value">{{ $student->medium ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Board</span>
-                <span class="detail-value">{{ $student->board ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Course Content</span>
-                <span class="detail-value">{{ $student->course_content ?? 'N/A' }}</span>
-              </div>
-            </div>
+          <div class="question-row">
+            <span>Do You Belong to Economic Weaker Section</span>
+            <span>{{ $student->economic_weaker_section ?? 'No' }}</span>
           </div>
 
-          <!-- Academic Detail -->
-          <div class="detail-section">
-            <h5>Academic Detail</h5>
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Previous Class</span>
-                <span class="detail-value">{{ $student->previous_class ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Medium</span>
-                <span class="detail-value">{{ $student->academic_medium ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Name of School</span>
-                <span class="detail-value">{{ $student->school_name ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Board</span>
-                <span class="detail-value">{{ $student->academic_board ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Passing Year</span>
-                <span class="detail-value">{{ $student->passing_year ?? 'N/A' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Percentage</span>
-                <span class="detail-value">{{ $student->percentage ?? 'N/A' }}</span>
-              </div>
-            </div>
+          <div class="question-row">
+            <span>Do You Belong to Any Army/Police/Martyr Background?</span>
+            <span>{{ $student->army_police_background ?? 'No' }}</span>
           </div>
 
-          <!-- Scholarship Eligibility -->
-          <div class="detail-section">
-            <h5>Scholarship Eligibility</h5>
-            <div class="info-box">
-              <div class="info-box-question">Have You Appeared For the Synthesis Scholarship test?</div>
-              <div class="info-box-answer">{{ $student->scholarship_test ?? 'No' }}</div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Percentage Of Marks in last Board Exam</span>
-                <span class="detail-value">{{ $student->board_percentage ?? 'N/A' }}</span>
-              </div>
-            </div>
-
-            <div class="info-box">
-              <div class="info-box-question">Have You Appeared For any of the competition exam?</div>
-              <div class="info-box-answer">{{ $student->competition_exam ?? 'No' }}</div>
-            </div>
+          <div class="question-row">
+            <span>Are You a Specially Abled ?</span>
+            <span>{{ $student->specially_abled ?? 'No' }}</span>
           </div>
 
-          <!-- Batch Allocation -->
-          <div class="detail-section">
-            <h5>Batch Allocation</h5>
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">Batch Name</span>
-                <span class="detail-value">{{ $student->batch_name ?? $student->batch->name ?? 'N/A' }}</span>
-              </div>
-            </div>
+          <!-- Course Detail Section -->
+          <div class="section-header">Course Detail</div>
+          <table class="info-table" style="width: 100%;">
+            <tr>
+              <td style="width: 20%; font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Course Type</td>
+              <td style="width: 30%; padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->course_type ?? 'Pre-Medical' }}</td>
+              <td style="width: 20%; font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Course Name</td>
+              <td style="width: 30%; padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->course_name ?? 'Dynamic Target NEET' }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Delivery Mode</td>
+              <td style="padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->delivery_mode ?? 'Offline' }}</td>
+              <td style="font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Medium</td>
+              <td style="padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->medium ?? 'English' }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Board</td>
+              <td style="padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->board ?? 'RBSE' }}</td>
+              <td style="font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Course Content</td>
+              <td style="padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->course_content ?? 'Class room course (with test series & study material)' }}</td>
+            </tr>
+          </table>
+
+          <!-- Academic Detail Section -->
+          <div class="section-header">Academic Detail</div>
+          <table class="info-table" style="width: 100%;">
+            <tr>
+              <td style="width: 20%; font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Previous Class</td>
+              <td style="width: 30%; padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->previous_class ?? '12th (XII)' }}</td>
+              <td style="width: 20%; font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Medium</td>
+              <td style="width: 30%; padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->academic_medium ?? 'English' }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Name of School</td>
+              <td style="padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->school_name ?? 'LADY ALGIN SR.SEC.SCHOOL' }}</td>
+              <td style="font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Board</td>
+              <td style="padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->academic_board ?? 'RBSE' }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Passing Year</td>
+              <td style="padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->passing_year ?? '2025' }}</td>
+              <td style="font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Percentage</td>
+              <td style="padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->percentage ?? '' }}</td>
+            </tr>
+          </table>
+
+          <!-- Scholarship Eligibility Section -->
+          <div class="section-header">Scholarship Eligibility</div>
+          <div class="question-row">
+            <span>Have You Appeared For the Synthesis Scholarship test?</span>
+            <span>{{ $student->scholarship_test ?? 'No' }}</span>
           </div>
 
-          <!-- View Documents -->
-          <div class="detail-section">
-            <h5>View Documents</h5>
-            <div class="document-item">
-              <span class="document-name">Passport Size Photo.</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">Marksheet of Last qualifying Exam.</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">If you are an Ex-Synthesisian, upload Identity card issued by Synthesis</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">Upload Proof of Scholarship to avail Concession</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">Secondary Board Marksheet</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
-            <div class="document-item">
-              <span class="document-name">Senior Secondary Board Marksheet</span>
-              <span class="document-status">Not Uploaded</span>
-            </div>
+          <div class="question-row">
+            <span>Percentage of Marks in last Board Exam</span>
+            <span>{{ $student->board_exam_percentage ?? '' }}</span>
+          </div>
+
+          <div class="question-row">
+            <span>Have You Appeared For any of the competition exam?</span>
+            <span>{{ $student->competition_exam ?? 'No' }}</span>
+          </div>
+
+          <!-- Batch Allocation Section -->
+          <div class="section-header">Batch Allocation</div>
+          <table class="info-table" style="width: 100%;">
+            <tr>
+              <td style="width: 20%; font-weight: 500; background-color: #f8f9fa; padding: 8px 12px; border: 1px solid #e0e0e0;">Batch Name</td>
+              <td style="width: 80%; padding: 8px 12px; border: 1px solid #e0e0e0;">{{ $student->batch_name ?? ($student->batch->name ?? 'D4') }}</td>
+            </tr>
+          </table>
+
+          <!-- View Documents Section -->
+          <div class="section-header">View Documents</div>
+          <div class="document-table">
+            <table>
+              <tr>
+                <td>Passport Size Photo</td>
+                <td>{{ $student->passport_photo ?? 'Not Uploaded' }}</td>
+              </tr>
+              <tr>
+                <td>Marksheet of Last qualifying Exam</td>
+                <td>{{ $student->last_marksheet ?? 'Not Uploaded' }}</td>
+              </tr>
+              <tr>
+                <td>If you are Ex Synthesis, upload Identity card issued by Synthesis</td>
+                <td>{{ $student->synthesis_id ?? 'Not Uploaded' }}</td>
+              </tr>
+              <tr>
+                <td>Upload Proof of Scholarship to avail Concession</td>
+                <td>{{ $student->scholarship_proof ?? 'Not Uploaded' }}</td>
+              </tr>
+              <tr>
+                <td>Secondary Board Marksheet</td>
+                <td>{{ $student->secondary_marksheet ?? 'Not Uploaded' }}</td>
+              </tr>
+              <tr>
+                <td>Senior Secondary Board Marksheet</td>
+                <td>{{ $student->senior_secondary_marksheet ?? 'Not Uploaded' }}</td>
+              </tr>
+            </table>
           </div>
         </div>
 
-        <!-- TAB 2: Student Attendance -->
-        <div class="tab-content-section" id="student-attendance">
-          <div class="attendance-grid">
-            <!-- Calendar Widget -->
-            <div class="attendance-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">OCT 2025</h6>
-              <div class="calendar-widget">
-                <table class="table table-sm text-center">
-                  <thead>
-                    <tr>
-                      <th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td><td></td><td></td><td>1</td><td>2</td><td>3</td><td>4</td>
-                    </tr>
-                    <tr>
-                      <td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td>
-                    </tr>
-                    <tr>
-                      <td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td>
-                    </tr>
-                    <tr>
-                      <td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td>
-                    </tr>
-                    <tr>
-                      <td>26</td><td style="background-color: #e05301; color: white; border-radius: 50%;">27</td><td>28</td><td>29</td><td>30</td><td>31</td><td></td>
-                    </tr>
-                  </tbody>
-                </table>
+        <!-- Student Attendance Content -->
+        <div class="tab-content" id="student-attendance-tab" style="display: none;">
+          <!-- Calendar and Stats Section -->
+          <div class="attendance-container">
+            <!-- Calendar Section -->
+            <div class="calendar-section">
+              <div class="calendar-header">
+                <h5>NOV 2025</h5>
+                <div class="calendar-nav">
+                  <button>&lt;</button>
+                  <button>&gt;</button>
+                </div>
               </div>
+              <table class="calendar-table">
+                <thead>
+                  <tr>
+                    <th>S</th>
+                    <th>M</th>
+                    <th>T</th>
+                    <th>W</th>
+                    <th>T</th>
+                    <th>F</th>
+                    <th>S</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>
+                    <td>8</td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td>10</td>
+                    <td>11</td>
+                    <td>12</td>
+                    <td>13</td>
+                    <td>14</td>
+                    <td>15</td>
+                  </tr>
+                  <tr>
+                    <td class="today">16</td>
+                    <td>17</td>
+                    <td>18</td>
+                    <td>19</td>
+                    <td>20</td>
+                    <td>21</td>
+                    <td>22</td>
+                  </tr>
+                  <tr>
+                    <td>23</td>
+                    <td>24</td>
+                    <td>25</td>
+                    <td>26</td>
+                    <td>27</td>
+                    <td>28</td>
+                    <td>29</td>
+                  </tr>
+                  <tr>
+                    <td>30</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <!-- Attendance Status Circle -->
-            <div class="attendance-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">Attendance Status</h6>
-              <div class="attendance-status-circle">
-                <canvas id="attendanceChart"></canvas>
+            <!-- Stats Section -->
+            <div class="stats-section">
+              <!-- Attendance Status Card -->
+              <div class="attendance-status-card">
+                <h6>Attendance Status</h6>
+                <div class="donut-chart">
+                  <canvas id="attendanceDonutChart"></canvas>
+                </div>
+                <div class="attendance-percentage">0.00%</div>
+                <div class="attendance-count">Total Presence : 0/159</div>
               </div>
-              <p class="text-center mt-3" style="color: #e05301;">Total Presence - 0/167</p>
-            </div>
 
-            <!-- Avg Attendance Rate Chart -->
-            <div class="attendance-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">Avg. Attendance Rate</h6>
-              <select class="form-select form-select-sm mb-3" style="width: 120px;">
-                <option>May-Oct</option>
-              </select>
-              <div class="chart-container">
-                <canvas id="attendanceRateChart"></canvas>
+              <!-- Average Attendance Rate Card -->
+              <div class="avg-attendance-card">
+                <h6>
+                  Avg. Attendance Rate
+                  <select class="month-select">
+                    <option>Jun-Nov</option>
+                    <option>Jan-May</option>
+                  </select>
+                </h6>
+                <div class="line-chart">
+                  <canvas id="attendanceLineChart"></canvas>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Attendance Table -->
-          <div class="detail-section">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <label>Show</label>
-                <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
-                  <option>10</option>
-                  <option>25</option>
-                  <option>50</option>
+          <!-- Attendance Data Table -->
+          <div class="attendance-table-section">
+            <div class="table-controls">
+              <div class="entries-control">
+                <span>Show</span>
+                <select>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
                 </select>
                 <span>entries</span>
               </div>
-              <div>
-                <label>Search:</label>
-                <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
+              <div class="search-control">
+                <span>Search:</span>
+                <input type="text" placeholder="">
               </div>
             </div>
 
-            <table class="table table-bordered">
+            <table class="attendance-data-table">
               <thead>
-                <tr style="background-color: #f8f9fa;">
+                <tr>
                   <th>Serial No.</th>
                   <th>Month</th>
                   <th>Total Days</th>
@@ -847,644 +1038,334 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><td>1</td><td>May</td><td>18</td><td>0</td><td>0</td></tr>
-                <tr><td>2</td><td>June</td><td>30</td><td>0</td><td>0</td></tr>
-                <tr><td>3</td><td>July</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>4</td><td>August</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>5</td><td>September</td><td>30</td><td>0</td><td>0</td></tr>
-                <tr><td>6</td><td>October</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>7</td><td>November</td><td>30</td><td>0</td><td>0</td></tr>
-                <tr><td>8</td><td>December</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>9</td><td>January</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>10</td><td>February</td><td>28</td><td>0</td><td>0</td></tr>
+                @php
+                  $attendanceData = [
+                    ['month' => 'June', 'total_days' => 30, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'July', 'total_days' => 31, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'August', 'total_days' => 31, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'September', 'total_days' => 30, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'October', 'total_days' => 31, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'November', 'total_days' => 30, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'December', 'total_days' => 31, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'January', 'total_days' => 31, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'February', 'total_days' => 28, 'attendance' => 0, 'absent' => 0],
+                    ['month' => 'March', 'total_days' => 31, 'attendance' => 0, 'absent' => 0],
+                  ];
+                @endphp
+
+                @foreach($attendanceData as $index => $data)
+                <tr>
+                  <td>{{ $index + 1 }}</td>
+                  <td>{{ $data['month'] }}</td>
+                  <td>{{ $data['total_days'] }}</td>
+                  <td>{{ $data['attendance'] }}</td>
+                  <td>{{ $data['absent'] }}</td>
+                </tr>
+                @endforeach
               </tbody>
             </table>
 
-            <div class="d-flex justify-content-between align-items-center">
-              <span>Showing 1 to 10 of 12 entries</span>
-              <nav>
-                <ul class="pagination pagination-sm mb-0">
-                  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-              </nav>
+            <div class="pagination-info">
+              <span>Showing 1 to 10 of 11 entries</span>
+              <div class="pagination-controls">
+                <button disabled>Previous</button>
+                <button class="active">1</button>
+                <button>2</button>
+                <button>Next</button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- TAB 3: Fees Management -->
-<!-- TAB 3: Fees Management -->
-<div class="tab-content-section" id="fees-management">
-  <!-- Scholarship Info -->
-  @php
-    // Use scholarshipData if available, otherwise fall back to scholarshipEligible
-    $eligible = isset($scholarshipData) ? $scholarshipData['eligible'] === 'Yes' : ($scholarshipEligible['eligible'] ?? false);
-    $hasDiscretionary = isset($scholarshipData) ? $scholarshipData['has_discretionary'] : false;
-  @endphp
-
-  @if($eligible || $hasDiscretionary)
-  <div class="scholarship-box">
-    <h5 style="color: #28a745; margin-bottom: 15px;">
-      <i class="fas fa-check-circle"></i> Applied Discounts
-    </h5>
-    <div class="row">
-      @if($eligible)
-      <!-- Scholarship Discount -->
-      <div class="col-md-12 mb-3">
-        <div class="alert alert-success">
-          <h6 class="mb-2">
-            <i class="fas fa-graduation-cap"></i> Scholarship Applied
-          </h6>
-          <div class="row">
-            <div class="col-md-6">
-              <strong>Scholarship Name:</strong><br>
-              {{ $scholarshipData['scholarship_name'] ?? $scholarshipEligible['reason'] ?? 'N/A' }}
-            </div>
-            <div class="col-md-6 text-end">
-              <strong>Discount:</strong><br>
-              <span class="text-success fw-bold">
-                {{ $scholarshipData['discount_percentage'] ?? $scholarshipEligible['discountPercent'] ?? 0 }}%
-              </span>
-            </div>
+        <!-- Fees Management Content -->
+        <div class="tab-content" id="fees-management-tab" style="display: none;">
+          <!-- Scholarship Eligibility -->
+          <div class="question-row">
+            <span>Is Eligible For Scholarship</span>
+            <span>{{ $student->scholarship_eligible ?? 'No' }}</span>
           </div>
-        </div>
-      </div>
-      @endif
 
-      @if($hasDiscretionary)
-      <!-- Discretionary Discount -->
-      <div class="col-md-12 mb-3">
-        <div class="alert alert-info">
-          <h6 class="mb-2">
-            <i class="fas fa-hand-holding-usd"></i> Additional Discretionary Discount
-          </h6>
-          <div class="row">
-            <div class="col-md-6">
-              <strong>Type:</strong><br>
-              {{ $scholarshipData['discretionary_type'] === 'percentage' ? 'Percentage' : 'Fixed Amount' }}
+          <!-- Fees Type Buttons -->
+          <div class="fees-section">
+            <div class="fees-type-buttons">
+              <button class="fees-type-btn active" data-fees-type="fees">Fees</button>
+              <button class="fees-type-btn" data-fees-type="other-fees">OtherFees</button>
+              <button class="fees-type-btn" data-fees-type="transaction">Transaction</button>
             </div>
-            <div class="col-md-6 text-end">
-              <strong>Value:</strong><br>
-              <span class="text-info fw-bold">
-                @if($scholarshipData['discretionary_type'] === 'percentage')
-                  {{ $scholarshipData['discretionary_value'] }}%
-                @else
-                  ₹{{ number_format($scholarshipData['discretionary_value'], 2) }}
-                @endif
-              </span>
-            </div>
-          </div>
-          @if(!empty($scholarshipData['discretionary_reason']))
-          <div class="mt-2 pt-2 border-top">
-            <strong>Reason:</strong> {{ $scholarshipData['discretionary_reason'] }}
-          </div>
-          @endif
-        </div>
-      </div>
-      @endif
 
-      <!-- Fee Breakdown -->
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-title mb-3">📋 Fee Breakdown</h6>
-            <table class="table table-sm">
-              <tr>
-                <td>Original Fee:</td>
-                <td class="text-end">
-                  ₹{{ number_format($scholarshipData['total_before_discount'] ?? $feeSummary['grand']['total'], 2) }}
-                </td>
-              </tr>
-              @if(($scholarshipData['discount_percentage'] ?? 0) > 0)
-              <tr class="text-success">
-                <td>Scholarship Discount ({{ $scholarshipData['discount_percentage'] }}%):</td>
-                <td class="text-end">
-                  - ₹{{ number_format(($scholarshipData['total_before_discount'] ?? $feeSummary['grand']['total']) * ($scholarshipData['discount_percentage'] ?? 0) / 100, 2) }}
-                </td>
-              </tr>
-              @endif
-              @if($hasDiscretionary)
-              <tr class="text-info">
-                <td>Discretionary Discount:</td>
-                <td class="text-end">
+            <!-- Fees Content -->
+            <div class="fees-content active" id="fees-content">
+              <div class="table-controls">
+                <div class="entries-control">
+                  <span>Show</span>
+                  <select>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </select>
+                  <span>entries</span>
+                </div>
+                <div class="search-control">
+                  <span>Search:</span>
+                  <input type="text" placeholder="">
+                </div>
+              </div>
+
+              <table class="fees-data-table">
+                <thead>
+                  <tr>
+                    <th>Fee Type</th>
+                    <th>Actual Amount</th>
+                    <th>Paid Amount</th>
+                    <th>Due Date</th>
+                    <th>Paid Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
                   @php
-                    $afterScholarship = ($scholarshipData['total_before_discount'] ?? $feeSummary['grand']['total']) * (1 - ($scholarshipData['discount_percentage'] ?? 0)/100);
+                    $feesData = [
+                      ['fee_type' => '1', 'actual_amount' => 47200, 'paid_amount' => 1, 'due_date' => '', 'paid_date' => '', 'status' => 'Due'],
+                      ['fee_type' => '2', 'actual_amount' => 35400, 'paid_amount' => 0, 'due_date' => '2025-08-11', 'paid_date' => '', 'status' => 'Due'],
+                      ['fee_type' => '3', 'actual_amount' => 35400, 'paid_amount' => 0, 'due_date' => '2025-10-11', 'paid_date' => '', 'status' => 'Due'],
+                    ];
                   @endphp
-                  @if($scholarshipData['discretionary_type'] === 'percentage')
-                    - ₹{{ number_format($afterScholarship * ($scholarshipData['discretionary_value'] ?? 0) / 100, 2) }}
-                  @else
-                    - ₹{{ number_format($scholarshipData['discretionary_value'] ?? 0, 2) }}
-                  @endif
-                </td>
-              </tr>
-              @endif
-              <tr class="border-top fw-bold">
-                <td>Final Fee (Before GST):</td>
-                <td class="text-end">₹{{ number_format($feeSummary['grand']['total'], 2) }}</td>
-              </tr>
-              <tr>
-                <td>GST (18%):</td>
-                <td class="text-end">₹{{ number_format($feeSummary['grand']['total'] * 0.18, 2) }}</td>
-              </tr>
-              <tr class="border-top fw-bold text-danger">
-                <td>Total Payable:</td>
-                <td class="text-end fs-5">₹{{ number_format($feeSummary['grand']['total'] * 1.18, 2) }}</td>
-              </tr>
-            </table>
+
+                  @foreach($feesData as $fee)
+                  <tr>
+                    <td>{{ $fee['fee_type'] }}</td>
+                    <td>{{ $fee['actual_amount'] }}</td>
+                    <td>{{ $fee['paid_amount'] }}</td>
+                    <td>{{ $fee['due_date'] }}</td>
+                    <td>{{ $fee['paid_date'] }}</td>
+                    <td><span class="status-badge status-due">{{ $fee['status'] }}</span></td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+
+              <div class="pagination-info">
+                <span>Showing 1 to 3 of 3 entries</span>
+                <div class="pagination-controls">
+                  <button disabled>Previous</button>
+                  <button class="active">1</button>
+                  <button disabled>Next</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Other Fees Content -->
+            <div class="fees-content" id="other-fees-content">
+              <div class="table-controls">
+                <div class="entries-control">
+                  <span>Show</span>
+                  <select>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                  </select>
+                  <span>entries</span>
+                </div>
+                <div class="search-control">
+                  <span>Search:</span>
+                  <input type="text" placeholder="">
+                </div>
+              </div>
+
+              <table class="fees-data-table">
+                <thead>
+                  <tr>
+                    <th>Fee Type</th>
+                    <th>Actual Amount</th>
+                    <th>Paid Amount</th>
+                    <th>Due Date</th>
+                    <th>Paid Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                      No data available in table
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="pagination-info">
+                <span>Showing 0 to 0 of 0 entries</span>
+                <div class="pagination-controls">
+                  <button disabled>Previous</button>
+                  <button class="active">1</button>
+                  <button disabled>Next</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Transaction Content -->
+            <div class="fees-content" id="transaction-content">
+              <div class="table-controls">
+                <div class="entries-control">
+                  <span>Show</span>
+                  <select>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                  </select>
+                  <span>entries</span>
+                </div>
+                <div class="search-control">
+                  <span>Search:</span>
+                  <input type="text" placeholder="">
+                </div>
+              </div>
+
+              <table class="fees-data-table">
+                <thead>
+                  <tr>
+                    <th>Transaction Date</th>
+                    <th>Amount</th>
+                    <th>Payment Mode</th>
+                    <th>Reference No</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                      No data available in table
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="pagination-info">
+                <span>Showing 0 to 0 of 0 entries</span>
+                <div class="pagination-controls">
+                  <button disabled>Previous</button>
+                  <button class="active">1</button>
+                  <button disabled>Next</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  @else
-  <!-- No Scholarship -->
-  <div class="scholarship-box">
-    <div class="row">
-      <div class="col-md-12">
-        <strong>Is Eligible For Scholarship:</strong> 
-        <span style="color: #dc3545; font-weight: 600;">No</span>
-      </div>
-    </div>
-  </div>
-  @endif
-
-  <!-- Fee Summary Cards -->
-  <div class="row mb-4">
-    <div class="col-md-4">
-      <div class="card border-primary">
-        <div class="card-body text-center">
-          <h6 class="text-muted mb-2">Total Fees</h6>
-          <h3 class="text-primary mb-0">₹{{ number_format($feeSummary['grand']['total'], 2) }}</h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card border-success">
-        <div class="card-body text-center">
-          <h6 class="text-muted mb-2">Paid Amount</h6>
-          <h3 class="text-success mb-0">₹{{ number_format($feeSummary['grand']['paid'], 2) }}</h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card border-danger">
-        <div class="card-body text-center">
-          <h6 class="text-muted mb-2">Pending Amount</h6>
-          <h3 class="text-danger mb-0">₹{{ number_format($feeSummary['grand']['pending'], 2) }}</h3>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Fees Tabs -->
-  <div class="fees-tabs">
-    <button class="fees-tab-btn active" data-fees-tab="fees">
-      Fees ({{ $student->fees->count() }})
-    </button>
-    <button class="fees-tab-btn" data-fees-tab="other-fees">
-      Other Fees ({{ $student->other_fees->count() }})
-    </button>
-    <button class="fees-tab-btn" data-fees-tab="transaction">
-      Transactions ({{ $student->transactions->count() }})
-    </button>
-  </div>
-
-  <!-- Regular Fees Table -->
-  <div class="fees-content active" id="fees-content">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div>
-        <label>Show</label>
-        <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
-          <option>10</option>
-          <option>25</option>
-          <option>50</option>
-        </select>
-        <span>entries</span>
-      </div>
-      <div>
-        <label>Search:</label>
-        <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
-      </div>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover">
-        <thead style="background-color: #f8f9fa;">
-          <tr>
-            <th>Installment</th>
-            <th>Fee Type</th>
-            <th>Actual Amount</th>
-            <th>Discount</th>
-            <th>Paid Amount</th>
-            <th>Remaining</th>
-            <th>Due Date</th>
-            <th>Paid Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($student->fees as $index => $fee)
-          <tr>
-            <td>{{ $fee['installment_number'] ?? ($index + 1) }}</td>
-            <td>{{ ucfirst($fee['fee_type'] ?? 'Regular Fee') }}</td>
-            <td class="text-end">₹{{ number_format($fee['actual_amount'] ?? 0, 2) }}</td>
-            <td class="text-end">₹{{ number_format($fee['discount_amount'] ?? 0, 2) }}</td>
-            <td class="text-end">₹{{ number_format($fee['paid_amount'] ?? 0, 2) }}</td>
-            <td class="text-end">₹{{ number_format($fee['remaining_amount'] ?? 0, 2) }}</td>
-            <td>
-              @if(isset($fee['due_date']))
-                {{ is_string($fee['due_date']) ? \Carbon\Carbon::parse($fee['due_date'])->format('d-m-Y') : $fee['due_date']->format('d-m-Y') }}
-              @else
-                N/A
-              @endif
-            </td>
-            <td>
-              @if(isset($fee['paid_date']) && $fee['paid_date'])
-                {{ is_string($fee['paid_date']) ? \Carbon\Carbon::parse($fee['paid_date'])->format('d-m-Y') : $fee['paid_date']->format('d-m-Y') }}
-              @else
-                -
-              @endif
-            </td>
-            <td>
-              <span class="badge bg-{{ $fee['status_badge'] ?? 'secondary' }}">
-                {{ ucfirst($fee['status'] ?? 'pending') }}
-              </span>
-            </td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="9" class="text-center text-muted py-4">
-              <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
-              No fees data available
-            </td>
-          </tr>
-          @endforelse
-        </tbody>
-        @if($student->fees->count() > 0)
-        <tfoot style="background-color: #f8f9fa; font-weight: 600;">
-          <tr>
-            <td colspan="2" class="text-end">Total</td>
-            <td class="text-end">₹{{ number_format($feeSummary['fees']['total'], 2) }}</td>
-            <td class="text-end">₹{{ number_format($feeSummary['fees']['discount'] ?? 0, 2) }}</td>
-            <td class="text-end">₹{{ number_format($feeSummary['fees']['paid'], 2) }}</td>
-            <td class="text-end">₹{{ number_format($feeSummary['fees']['pending'], 2) }}</td>
-            <td colspan="3"></td>
-          </tr>
-        </tfoot>
-        @endif
-      </table>
-    </div>
-  </div>
-
-  <!-- Other Fees Table -->
-  <div class="fees-content" id="other-fees-content" style="display: none;">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div>
-        <label>Show</label>
-        <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
-          <option>10</option>
-          <option>25</option>
-          <option>50</option>
-        </select>
-        <span>entries</span>
-      </div>
-      <div>
-        <label>Search:</label>
-        <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
-      </div>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover">
-        <thead style="background-color: #f8f9fa;">
-          <tr>
-            <th>Sr. No.</th>
-            <th>Fee Name</th>
-            <th>Description</th>
-            <th>Actual Amount</th>
-            <th>Paid Amount</th>
-            <th>Remaining</th>
-            <th>Due Date</th>
-            <th>Paid Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($student->other_fees as $index => $otherFee)
-          <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $otherFee['fee_name'] ?? 'N/A' }}</td>
-            <td>{{ $otherFee['description'] ?? '-' }}</td>
-            <td class="text-end">₹{{ number_format($otherFee['actual_amount'] ?? 0, 2) }}</td>
-            <td class="text-end">₹{{ number_format($otherFee['paid_amount'] ?? 0, 2) }}</td>
-            <td class="text-end">₹{{ number_format($otherFee['remaining_amount'] ?? 0, 2) }}</td>
-            <td>
-              @if(isset($otherFee['due_date']))
-                {{ is_string($otherFee['due_date']) ? \Carbon\Carbon::parse($otherFee['due_date'])->format('d-m-Y') : $otherFee['due_date']->format('d-m-Y') }}
-              @else
-                N/A
-              @endif
-            </td>
-            <td>
-              @if(isset($otherFee['paid_date']) && $otherFee['paid_date'])
-                {{ is_string($otherFee['paid_date']) ? \Carbon\Carbon::parse($otherFee['paid_date'])->format('d-m-Y') : $otherFee['paid_date']->format('d-m-Y') }}
-              @else
-                -
-              @endif
-            </td>
-            <td>
-              <span class="badge bg-{{ $otherFee['status_badge'] ?? 'secondary' }}">
-                {{ ucfirst($otherFee['status'] ?? 'pending') }}
-              </span>
-            </td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="9" class="text-center text-muted py-4">
-              <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
-              No other fees data available
-            </td>
-          </tr>
-          @endforelse
-        </tbody>
-        @if($student->other_fees->count() > 0)
-        <tfoot style="background-color: #f8f9fa; font-weight: 600;">
-          <tr>
-            <td colspan="3" class="text-end">Total</td>
-            <td class="text-end">₹{{ number_format($feeSummary['other_fees']['total'], 2) }}</td>
-            <td class="text-end">₹{{ number_format($feeSummary['other_fees']['paid'], 2) }}</td>
-            <td class="text-end">₹{{ number_format($feeSummary['other_fees']['pending'], 2) }}</td>
-            <td colspan="3"></td>
-          </tr>
-        </tfoot>
-        @endif
-      </table>
-    </div>
-  </div>
-
-  <!-- Transactions Table -->
-  <div class="fees-content" id="transaction-content" style="display: none;">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div>
-        <label>Show</label>
-        <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
-          <option>10</option>
-          <option>25</option>
-          <option>50</option>
-        </select>
-        <span>entries</span>
-      </div>
-      <div>
-        <label>Search:</label>
-        <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
-      </div>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover">
-        <thead style="background-color: #f8f9fa;">
-          <tr>
-            <th>Sr. No.</th>
-            <th>Transaction ID</th>
-            <th>Fee Type</th>
-            <th>Amount</th>
-            <th>Payment Method</th>
-            <th>Payment Date</th>
-            <th>Received By</th>
-            <th>Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($student->transactions as $index => $transaction)
-          <tr>
-            <td>{{ $index + 1 }}</td>
-            <td><span class="badge bg-info">{{ $transaction['transaction_id'] ?? 'N/A' }}</span></td>
-            <td>{{ ucfirst($transaction['fee_type'] ?? 'N/A') }}</td>
-            <td class="text-end fw-bold">₹{{ number_format($transaction['amount'] ?? 0, 2) }}</td>
-            <td>
-              <span class="badge bg-secondary">
-                {{ ucfirst($transaction['payment_method'] ?? 'N/A') }}
-              </span>
-            </td>
-            <td>
-              @if(isset($transaction['payment_date']))
-                {{ is_string($transaction['payment_date']) ? \Carbon\Carbon::parse($transaction['payment_date'])->format('d-m-Y h:i A') : $transaction['payment_date']->format('d-m-Y h:i A') }}
-              @else
-                N/A
-              @endif
-            </td>
-            <td>{{ $transaction['received_by'] ?? 'N/A' }}</td>
-            <td>{{ $transaction['remarks'] ?? '-' }}</td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="8" class="text-center text-muted py-4">
-              <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
-              No transaction history available
-            </td>
-          </tr>
-          @endforelse
-        </tbody>
-        @if($student->transactions->count() > 0)
-        <tfoot style="background-color: #f8f9fa; font-weight: 600;">
-          <tr>
-            <td colspan="3" class="text-end">Total Transactions</td>
-            <td class="text-end">₹{{ number_format($student->transactions->sum('amount'), 2) }}</td>
-            <td colspan="4"></td>
-          </tr>
-        </tfoot>
-        @endif
-      </table>
-    </div>
-  </div>
-</div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/smstudents.js') }}"></script>
   <script>
-    // Tab switching functionality
-    document.querySelectorAll('.tab-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        // Remove active class from all tab buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    // Tab Switching (Student Detail, Attendance, Fees Management)
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
         
-        // Add active class to clicked button
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         this.classList.add('active');
         
         // Hide all tab contents
-        document.querySelectorAll('.tab-content-section').forEach(content => {
-          content.classList.remove('active');
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.style.display = 'none';
         });
         
         // Show selected tab content
-        const tabId = this.getAttribute('data-tab');
-        document.getElementById(tabId).classList.add('active');
+        const tabId = this.getAttribute('data-tab') + '-tab';
+        const targetTab = document.getElementById(tabId);
+        if (targetTab) {
+          targetTab.style.display = 'block';
+        }
       });
     });
 
-    // Fees tab switching
-    document.querySelectorAll('.fees-tab-btn').forEach(button => {
+    // Fees Type Switching (Fees/OtherFees/Transaction)
+    document.querySelectorAll('.fees-type-btn').forEach(button => {
       button.addEventListener('click', function() {
-        document.querySelectorAll('.fees-tab-btn').forEach(btn => btn.classList.remove('active'));
+        // Remove active from all buttons
+        document.querySelectorAll('.fees-type-btn').forEach(btn => btn.classList.remove('active'));
         this.classList.add('active');
+        
+        // Hide all fees contents
+        document.querySelectorAll('.fees-content').forEach(content => {
+          content.classList.remove('active');
+          content.style.display = 'none';
+        });
+        
+        // Show selected fees content
+        const feesType = this.getAttribute('data-fees-type');
+        const targetContent = document.getElementById(feesType + '-content');
+        if (targetContent) {
+          targetContent.classList.add('active');
+          targetContent.style.display = 'block';
+        }
       });
     });
 
-    // Test type button switching
-    document.querySelectorAll('.test-type-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        const parent = this.parentElement;
-        parent.querySelectorAll('.test-type-btn').forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-
-    // Initialize Charts
+    // Initialize Charts for Attendance Tab
     window.addEventListener('load', function() {
       // Attendance Donut Chart
-      const attendanceCtx = document.getElementById('attendanceChart');
-      if (attendanceCtx) {
-        new Chart(attendanceCtx, {
+      const donutCtx = document.getElementById('attendanceDonutChart');
+      if (donutCtx) {
+        new Chart(donutCtx, {
           type: 'doughnut',
           data: {
             labels: ['Present', 'Absent'],
             datasets: [{
-              data: [0, 167],
-              backgroundColor: ['#28a745', '#dc3545']
+              data: [0, 100],
+              backgroundColor: ['#17a2b8', '#e0e0e0'],
+              borderWidth: 0
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: true,
             plugins: {
-              legend: { display: false }
-            }
+              legend: {
+                display: false
+              }
+            },
+            cutout: '70%'
           }
         });
       }
 
-      // Attendance Rate Line Chart
-      const rateCtx = document.getElementById('attendanceRateChart');
-      if (rateCtx) {
-        new Chart(rateCtx, {
+      // Attendance Line Chart
+      const lineCtx = document.getElementById('attendanceLineChart');
+      if (lineCtx) {
+        new Chart(lineCtx, {
           type: 'line',
           data: {
-            labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+            labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
             datasets: [{
-              label: 'Percentage',
+              label: 'Attendance %',
               data: [0, 0, 0, 0, 0, 0],
               borderColor: '#e05301',
               backgroundColor: 'rgba(224, 83, 1, 0.1)',
-              tension: 0.4
+              tension: 0.4,
+              fill: true
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true, max: 35 }
-            }
-          }
-        });
-      }
-
-      // Test Attendance Donut
-      const testAttCtx = document.getElementById('testAttendanceChart');
-      if (testAttCtx) {
-        new Chart(testAttCtx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Attended', 'Not Attended'],
-            datasets: [{
-              data: [0, 100],
-              backgroundColor: ['#28a745', '#dc3545']
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
             plugins: {
-              legend: { display: false }
-            }
-          }
-        });
-      }
-
-      // Overall Rank Chart
-      const rankCtx = document.getElementById('overallRankChart');
-      if (rankCtx) {
-        new Chart(rankCtx, {
-          type: 'bar',
-          data: {
-            labels: [],
-            datasets: [{
-              label: 'Rank',
-              data: [],
-              backgroundColor: '#e05301'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
+              legend: {
+                display: false
+              }
+            },
             scales: {
-              y: { beginAtZero: true }
-            }
-          }
-        });
-      }
-
-      // Overall Percentage Chart
-      const percentCtx = document.getElementById('overallPercentageChart');
-      if (percentCtx) {
-        new Chart(percentCtx, {
-          type: 'bar',
-          data: {
-            labels: [],
-            datasets: [{
-              label: 'Percentage',
-              data: [],
-              backgroundColor: '#e05301'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true, max: 100 }
+              y: {
+                beginAtZero: true,
+                max: 35,
+                ticks: {
+                  stepSize: 5
+                }
+              }
             }
           }
         });
       }
     });
   </script>
-  <script>
-  // Fees tab switching with content display
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.fees-tab-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        // Remove active class from all buttons
-        document.querySelectorAll('.fees-tab-btn').forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-        
-        // Hide all fee contents
-        document.querySelectorAll('.fees-content').forEach(content => {
-          content.style.display = 'none';
-        });
-        
-        // Show selected content
-        const tab = this.getAttribute('data-fees-tab');
-        const contentId = tab + '-content';
-        const content = document.getElementById(contentId);
-        if (content) {
-          content.style.display = 'block';
-        }
-      });
-    });
-  });
-</script>
 </body>
 </html>

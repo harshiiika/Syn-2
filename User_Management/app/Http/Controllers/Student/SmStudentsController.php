@@ -19,6 +19,7 @@ class SmStudentsController extends Controller
     /**
  * Display a listing of students
  */
+
 public function index()
 {
     try {
@@ -37,9 +38,202 @@ public function index()
         return back()->with('error', 'Failed to load students');
     }
 }
-
-    
-    /**
+public function testSeries($id)
+{
+    try {
+        Log::info('🔥 TEST SERIES METHOD CALLED', ['student_id' => $id]);
+        
+        // Find the student
+        $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id);
+        
+        // Get batches and shifts
+        $batches = Batch::all();
+        $shifts = Shift::where('is_active', true)->get();
+        
+        // ✅ CREATE SAMPLE TEST SERIES DATA
+        $allTestSeries = collect([
+            // GENERAL - Board Pattern
+            [
+                'test_id' => 'TEST001',
+                'test_name' => 'Weekly Test 1',
+                'test_date' => '2025-10-15',
+                'test_type' => 'general',
+                'pattern_type' => 'board',
+                'total_marks' => 100,
+                'obtained_marks' => 85,
+                'topper_marks' => 95,
+                'avg_marks' => 75,
+                'batch_rank' => 5,
+                'overall_rank' => 12,
+                'percentage' => 85.0,
+                'status' => 'attended'
+            ],
+            [
+                'test_id' => 'TEST002',
+                'test_name' => 'Monthly Test 1',
+                'test_date' => '2025-10-20',
+                'test_type' => 'general',
+                'pattern_type' => 'board',
+                'total_marks' => 100,
+                'obtained_marks' => 78,
+                'topper_marks' => 92,
+                'avg_marks' => 70,
+                'batch_rank' => 8,
+                'overall_rank' => 15,
+                'percentage' => 78.0,
+                'status' => 'attended'
+            ],
+            // GENERAL - NEET Pattern
+            [
+                'test_id' => 'TEST003',
+                'test_name' => 'NEET Mock Test 1',
+                'test_date' => '2025-10-25',
+                'test_type' => 'general',
+                'pattern_type' => 'neet',
+                'total_marks' => 180,
+                'obtained_marks' => 145,
+                'topper_marks' => 170,
+                'avg_marks' => 130,
+                'batch_rank' => 3,
+                'overall_rank' => 8,
+                'percentage' => 80.55,
+                'status' => 'attended'
+            ],
+            // GENERAL - IIT Pattern
+            [
+                'test_id' => 'TEST004',
+                'test_name' => 'JEE Mock Test 1',
+                'test_date' => '2025-10-28',
+                'test_type' => 'general',
+                'pattern_type' => 'iit',
+                'total_marks' => 300,
+                'obtained_marks' => 240,
+                'topper_marks' => 285,
+                'avg_marks' => 200,
+                'batch_rank' => 4,
+                'overall_rank' => 10,
+                'percentage' => 80.0,
+                'status' => 'attended'
+            ],
+            // SPR - Board Pattern
+            [
+                'test_id' => 'SPR001',
+                'test_name' => 'SPR Weekly Test 1',
+                'test_date' => '2025-11-01',
+                'test_type' => 'spr',
+                'pattern_type' => 'board',
+                'total_marks' => 100,
+                'obtained_marks' => 90,
+                'topper_marks' => 98,
+                'avg_marks' => 80,
+                'batch_rank' => 2,
+                'overall_rank' => 5,
+                'percentage' => 90.0,
+                'status' => 'attended'
+            ],
+            // SPR - NEET Pattern
+            [
+                'test_id' => 'SPR002',
+                'test_name' => 'SPR NEET Mock',
+                'test_date' => '2025-11-05',
+                'test_type' => 'spr',
+                'pattern_type' => 'neet',
+                'total_marks' => 180,
+                'obtained_marks' => 155,
+                'topper_marks' => 175,
+                'avg_marks' => 140,
+                'batch_rank' => 2,
+                'overall_rank' => 6,
+                'percentage' => 86.11,
+                'status' => 'attended'
+            ],
+            // SPR - IIT Pattern
+            [
+                'test_id' => 'SPR003',
+                'test_name' => 'SPR JEE Advanced',
+                'test_date' => '2025-11-08',
+                'test_type' => 'spr',
+                'pattern_type' => 'iit',
+                'total_marks' => 300,
+                'obtained_marks' => 260,
+                'topper_marks' => 290,
+                'avg_marks' => 220,
+                'batch_rank' => 3,
+                'overall_rank' => 7,
+                'percentage' => 86.67,
+                'status' => 'attended'
+            ],
+        ]);
+        
+        // ✅ ORGANIZE DATA BY TYPE AND PATTERN
+        $generalTests = $allTestSeries->where('test_type', 'general');
+        $sprTests = $allTestSeries->where('test_type', 'spr');
+        
+        $testSeries = [
+            'general' => [
+                'board' => $generalTests->where('pattern_type', 'board')->values(),
+                'neet' => $generalTests->where('pattern_type', 'neet')->values(),
+                'iit' => $generalTests->where('pattern_type', 'iit')->values(),
+            ],
+            'spr' => [
+                'board' => $sprTests->where('pattern_type', 'board')->values(),
+                'neet' => $sprTests->where('pattern_type', 'neet')->values(),
+                'iit' => $sprTests->where('pattern_type', 'iit')->values(),
+            ]
+        ];
+        
+        // ✅ CALCULATE STATISTICS FOR GENERAL
+        $generalAllTests = $generalTests->where('status', 'attended');
+        $overallRankGeneral = $generalAllTests->isNotEmpty() 
+            ? round($generalAllTests->avg('overall_rank'), 1) 
+            : 0;
+        $overallPercentageGeneral = $generalAllTests->isNotEmpty() 
+            ? round($generalAllTests->avg('percentage'), 2) 
+            : 0;
+        $attendancePercentageGeneral = $generalTests->isNotEmpty()
+            ? round(($generalAllTests->count() / $generalTests->count()) * 100, 2)
+            : 0;
+        
+        // ✅ CALCULATE STATISTICS FOR SPR
+        $sprAllTests = $sprTests->where('status', 'attended');
+        $overallRankSpr = $sprAllTests->isNotEmpty() 
+            ? round($sprAllTests->avg('overall_rank'), 1) 
+            : 0;
+        $overallPercentageSpr = $sprAllTests->isNotEmpty() 
+            ? round($sprAllTests->avg('percentage'), 2) 
+            : 0;
+        $attendancePercentageSpr = $sprTests->isNotEmpty()
+            ? round(($sprAllTests->count() / $sprTests->count()) * 100, 2)
+            : 0;
+        
+        Log::info('✅ Test Series Data Prepared Successfully');
+        
+        // ✅ RETURN VIEW WITH ALL REQUIRED VARIABLES
+        return view('student.smstudents.testseriesSms', compact(
+            'student',
+            'batches',
+            'shifts',
+            'testSeries',
+            'overallRankGeneral',
+            'overallPercentageGeneral',
+            'attendancePercentageGeneral',
+            'overallRankSpr',
+            'overallPercentageSpr',
+            'attendancePercentageSpr'
+        ));
+        
+    } catch (\Exception $e) {
+        Log::error('❌ TEST SERIES ERROR', [
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ]);
+        
+        return redirect()->route('smstudents.index')
+            ->with('error', 'Failed to load test series: ' . $e->getMessage());
+    }
+}
+/**
  * Display the specified student with full details
  */
 /**
