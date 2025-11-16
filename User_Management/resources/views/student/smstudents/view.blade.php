@@ -256,6 +256,255 @@
       border-radius: 8px;
       padding: 20px;
     }
+
+    /* Test Series Tab Styles */
+.test-type-section {
+  margin-bottom: 30px;
+}
+
+.test-type-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 10px;
+}
+
+.test-type-btn {
+  padding: 10px 20px;
+  border: 1px solid #e05301;
+  background-color: #ffffff;
+  color: #e05301;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.test-type-btn.active {
+  background-color: #e05301;
+  color: #ffffff;
+}
+
+.test-type-btn:hover:not(.active) {
+  background-color: #fff5f0;
+}
+
+.test-type-content {
+  display: none;
+}
+
+.test-type-content.active {
+  display: block;
+}
+
+.pattern-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pattern-btn {
+  padding: 8px 16px;
+  border: 1px solid #e05301;
+  background-color: #ffffff;
+  color: #e05301;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.pattern-btn.active {
+  background-color: #e05301;
+  color: #ffffff;
+}
+
+.download-report-btn {
+  float: right;
+  padding: 10px 20px;
+  background-color: #e05301;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.download-report-btn:hover {
+  background-color: #c04501;
+  color: white;
+}
+
+/* Report Card Styles */
+.report-card {
+  background: white;
+  border: 2px solid #e05301;
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.institute-logo {
+  width: 80px;
+  height: 80px;
+}
+
+.institute-name {
+  text-align: center;
+}
+
+.institute-name img {
+  max-width: 400px;
+  height: auto;
+}
+
+.student-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.info-item {
+  display: flex;
+  gap: 10px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.info-value {
+  color: #666;
+}
+
+.test-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.test-table th {
+  background-color: #808080;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid #666;
+}
+
+.test-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.test-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.statistics-row {
+  background-color: #e8e8e8;
+  font-weight: 600;
+}
+
+.statistics-row td {
+  padding: 15px 10px;
+  border: 1px solid #999;
+}
+
+.signature-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid #ddd;
+}
+
+.signature-box {
+  text-align: center;
+}
+
+.signature-line {
+  border-top: 1px solid #333;
+  margin-top: 40px;
+  padding-top: 5px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Stats Cards for Type 1 */
+.test-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stats-card h6 {
+  color: #e05301;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.attendance-donut {
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.type-content {
+  display: none;
+}
+
+.type-content:first-child {
+  display: block;
+}
+
+@media print {
+  .header, .left, .page-header, .tab-navigation, 
+  .test-type-buttons, .pattern-buttons, .download-report-btn,
+  .back-link {
+    display: none !important;
+  }
+  
+  .right {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .tab-container {
+    width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
   </style>
 </head>
 
@@ -874,7 +1123,6 @@
           </div>
         </div>
 
-        <!-- TAB 3: Fees Management -->
 <!-- TAB 3: Fees Management -->
 <div class="tab-content-section" id="fees-management">
   <!-- Scholarship Info -->
@@ -1300,6 +1548,475 @@
     </div>
   </div>
 </div>
+
+<!-- TAB 4: Test Series -->
+<div class="tab-content-section" id="test-series">
+  <div class="test-series-content">
+    <!-- Test Type Buttons (General/SPR) -->
+    <div class="test-type-section">
+      <div class="test-type-buttons">
+        <button class="test-type-btn active" data-test-type="general">
+          General
+        </button>
+        <button class="test-type-btn" data-test-type="spr">
+          SPR
+        </button>
+      </div>
+
+      <!-- GENERAL TEST SECTION -->
+      <div class="test-type-content active" id="general-content">
+        <!-- Type 1/Type 2 Buttons -->
+        <div class="pattern-buttons">
+          <button class="pattern-btn active" data-type="type1">Type 1</button>
+          <button class="pattern-btn" data-type="type2">Type 2</button>
+        </div>
+
+        <!-- Type 1 Content: Stats + Table -->
+        <div id="type1-content" class="type-content" style="display: block;">
+          <!-- Stats Grid -->
+          <div class="test-stats-grid">
+            <!-- Overall Rank Chart -->
+            <div class="stats-card">
+              <h6>OverAll Rank</h6>
+              <div class="chart-container">
+                <canvas id="overallRankChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Overall Percentage Chart -->
+            <div class="stats-card">
+              <h6>OverAll Percentage</h6>
+              <div class="chart-container">
+                <canvas id="overallPercentageChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Attendance Status -->
+            <div class="stats-card">
+              <h6>Attendance Status</h6>
+              <div class="attendance-donut">
+                <canvas id="testAttendanceChart"></canvas>
+              </div>
+              <p class="text-center mt-3" style="color: #e05301; font-weight: bold;">
+                0%
+              </p>
+            </div>
+          </div>
+
+          <!-- Data Table -->
+          <div class="table-responsive mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <label>Show</label>
+                <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
+                  <option>5</option>
+                  <option selected>10</option>
+                  <option>25</option>
+                </select>
+                <span>entries</span>
+              </div>
+              <div>
+                <label>Search:</label>
+                <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
+              </div>
+            </div>
+
+            <table class="table table-bordered table-hover">
+              <thead style="background-color: #f8f9fa;">
+                <tr>
+                  <th>Sr. No.</th>
+                  <th>Test Name</th>
+                  <th>Test Date</th>
+                  <th>Total Marks</th>
+                  <th>Obtained Marks</th>
+                  <th>Topper Marks</th>
+                  <th>Avg. Class Marks</th>
+                  <th>Batch Rank</th>
+                  <th>Over all Rank</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="10" class="text-center text-muted py-4">
+                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                    No data available in table
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <span>Showing 0 to 0 of 0 entries</span>
+              <nav>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type 2 Content: Just Table -->
+        <div id="type2-content" class="type-content" style="display: none;">
+          <div class="table-responsive">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <label>Show</label>
+                <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
+                  <option>5</option>
+                  <option selected>10</option>
+                  <option>25</option>
+                </select>
+                <span>entries</span>
+              </div>
+              <div>
+                <label>Search:</label>
+                <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
+              </div>
+            </div>
+
+            <table class="table table-bordered table-hover">
+              <thead style="background-color: #f8f9fa;">
+                <tr>
+                  <th>Sr. No.</th>
+                  <th>Test Name</th>
+                  <th>Test Date</th>
+                  <th>Total Marks</th>
+                  <th>Obtained Marks</th>
+                  <th>Topper Marks</th>
+                  <th>Avg. Class Marks</th>
+                  <th>Batch Rank</th>
+                  <th>Over all Rank</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="10" class="text-center text-muted py-4">
+                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                    No data available in table
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <span>Showing 0 to 0 of 0 entries</span>
+              <nav>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPR TEST SECTION -->
+      <div class="test-type-content" id="spr-content">
+        <!-- Pattern Buttons -->
+        <div class="pattern-buttons">
+          <button class="pattern-btn active" data-pattern="board">Board Pattern</button>
+          <button class="pattern-btn" data-pattern="neet">Neet Pattern</button>
+          <button class="pattern-btn" data-pattern="iit">IIT Pattern</button>
+        </div>
+
+        <button type="button" class="download-report-btn" onclick="window.print();">
+          <i class="fas fa-download"></i> Download Report
+        </button>
+        <div style="clear: both;"></div>
+
+        <!-- Board Pattern Report Card -->
+        <div class="report-card" id="board-pattern-content">
+          <div class="report-header">
+            <div class="logo-section">
+              <img src="{{ asset('images/logo.png.jpg') }}" alt="Logo" class="institute-logo">
+            </div>
+            <div class="institute-name">
+              <img src="{{ asset('images/synthesis-logo.png') }}" alt="Synthesis" style="max-width: 500px;">
+            </div>
+            <div class="logo-section">
+              <img src="{{ asset('images/logo.png.jpg') }}" alt="Logo" class="institute-logo">
+            </div>
+          </div>
+
+          <div class="student-info-grid">
+            <div class="info-item">
+              <span class="info-label">CLASS:</span>
+              <span class="info-value">Target (XII +)</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">SESSION:</span>
+              <span class="info-value">2025-2026</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Student Name:</span>
+              <span class="info-value">{{ $student->student_name ?? $student->name ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Father's Name:</span>
+              <span class="info-value">{{ $student->father_name ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Roll No:</span>
+              <span class="info-value">{{ $student->roll_no ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Contact No:</span>
+              <span class="info-value">{{ $student->father_contact ?? $student->phone ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Batch:</span>
+              <span class="info-value">{{ $student->batch_name ?? ($student->batch->name ?? 'N/A') }}</span>
+            </div>
+          </div>
+
+          <h5 style="text-align: center; background-color: #808080; color: white; padding: 10px; margin: 20px 0;">
+            ::Board Pattern::
+          </h5>
+
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Test Date</th>
+                <th>Test Name</th>
+                <th>Total Marks</th>
+                <th>%</th>
+                <th>Overall Rank</th>
+                <th>Batch Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="6" class="text-center text-muted py-3">No test data available</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table class="test-table" style="margin-top: 20px;">
+            <tbody>
+              <tr class="statistics-row">
+                <td>AVG. Batch Rank: N/A</td>
+                <td>AVG. Overall Rank: N/A</td>
+                <td>AVG. % (ALL TEST): N/A</td>
+                <td>DATE OF JOINING: {{ isset($student->created_at) ? $student->created_at->format('d/m/Y') : 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="signature-section">
+            <div class="signature-box">
+              <div class="signature-line">Sign Batch Mentor</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Director (incharge)</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Parents</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Student</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEET Pattern Report Card (hidden by default) -->
+        <div class="report-card" id="neet-pattern-content" style="display: none;">
+          <div class="report-header">
+            <div class="logo-section">
+              <img src="{{ asset('images/logo.png.jpg') }}" alt="Logo" class="institute-logo">
+            </div>
+            <div class="institute-name">
+              <img src="{{ asset('images/synthesis-logo.png') }}" alt="Synthesis" style="max-width: 500px;">
+            </div>
+            <div class="logo-section">
+              <img src="{{ asset('images/logo.png.jpg') }}" alt="Logo" class="institute-logo">
+            </div>
+          </div>
+
+          <div class="student-info-grid">
+            <div class="info-item">
+              <span class="info-label">CLASS:</span>
+              <span class="info-value">Target (XII +)</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">SESSION:</span>
+              <span class="info-value">2025-2026</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Student Name:</span>
+              <span class="info-value">{{ $student->student_name ?? $student->name ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Father's Name:</span>
+              <span class="info-value">{{ $student->father_name ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Roll No:</span>
+              <span class="info-value">{{ $student->roll_no ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Contact No:</span>
+              <span class="info-value">{{ $student->father_contact ?? $student->phone ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Batch:</span>
+              <span class="info-value">{{ $student->batch_name ?? ($student->batch->name ?? 'N/A') }}</span>
+            </div>
+          </div>
+
+          <h5 style="text-align: center; background-color: #808080; color: white; padding: 10px; margin: 20px 0;">
+            ::NEET Pattern::
+          </h5>
+
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Test Date</th>
+                <th>Test Name</th>
+                <th>Total Marks</th>
+                <th>%</th>
+                <th>Overall Rank</th>
+                <th>Batch Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="6" class="text-center text-muted py-3">No test data available</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table class="test-table" style="margin-top: 20px;">
+            <tbody>
+              <tr class="statistics-row">
+                <td>AVG. Batch Rank: N/A</td>
+                <td>AVG. Overall Rank: N/A</td>
+                <td>AVG. % (ALL TEST): N/A</td>
+                <td>DATE OF JOINING: {{ isset($student->created_at) ? $student->created_at->format('d/m/Y') : 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="signature-section">
+            <div class="signature-box">
+              <div class="signature-line">Sign Batch Mentor</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Director (incharge)</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Parents</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Student</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IIT Pattern Report Card (hidden by default) -->
+        <div class="report-card" id="iit-pattern-content" style="display: none;">
+          <div class="report-header">
+            <div class="logo-section">
+              <img src="{{ asset('images/logo.png.jpg') }}" alt="Logo" class="institute-logo">
+            </div>
+            <div class="institute-name">
+              <img src="{{ asset('images/synthesis-logo.png') }}" alt="Synthesis" style="max-width: 500px;">
+            </div>
+            <div class="logo-section">
+              <img src="{{ asset('images/logo.png.jpg') }}" alt="Logo" class="institute-logo">
+            </div>
+          </div>
+
+          <div class="student-info-grid">
+            <div class="info-item">
+              <span class="info-label">CLASS:</span>
+              <span class="info-value">Target (XII +)</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">SESSION:</span>
+              <span class="info-value">2025-2026</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Student Name:</span>
+              <span class="info-value">{{ $student->student_name ?? $student->name ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Father's Name:</span>
+              <span class="info-value">{{ $student->father_name ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Roll No:</span>
+              <span class="info-value">{{ $student->roll_no ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Contact No:</span>
+              <span class="info-value">{{ $student->father_contact ?? $student->phone ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Batch:</span>
+              <span class="info-value">{{ $student->batch_name ?? ($student->batch->name ?? 'N/A') }}</span>
+            </div>
+          </div>
+
+          <h5 style="text-align: center; background-color: #808080; color: white; padding: 10px; margin: 20px 0;">
+            ::IIT Pattern::
+          </h5>
+
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Test Date</th>
+                <th>Test Name</th>
+                <th>Total Marks</th>
+                <th>%</th>
+                <th>Overall Rank</th>
+                <th>Batch Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="6" class="text-center text-muted py-3">No test data available</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table class="test-table" style="margin-top: 20px;">
+            <tbody>
+              <tr class="statistics-row">
+                <td>AVG. Batch Rank: N/A</td>
+                <td>AVG. Overall Rank: N/A</td>
+                <td>AVG. % (ALL TEST): N/A</td>
+                <td>DATE OF JOINING: {{ isset($student->created_at) ? $student->created_at->format('d/m/Y') : 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="signature-section">
+            <div class="signature-box">
+              <div class="signature-line">Sign Batch Mentor</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Director (incharge)</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Parents</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line">Sign Student</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
     </div>
   </div>
 
@@ -1485,6 +2202,133 @@
       });
     });
   });
+  // Test Series Tab JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  // Test Type Switching (General/SPR)
+  const testTypeButtons = document.querySelector('.test-type-buttons');
+  if (testTypeButtons) {
+    testTypeButtons.addEventListener('click', function(e) {
+      const button = e.target.closest('.test-type-btn');
+      if (!button) return;
+      
+      document.querySelectorAll('.test-type-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      document.querySelectorAll('.test-type-content').forEach(content => {
+        content.style.display = 'none';
+        content.classList.remove('active');
+      });
+      
+      const testType = button.getAttribute('data-test-type');
+      const targetContent = document.getElementById(testType + '-content');
+      if (targetContent) {
+        targetContent.style.display = 'block';
+        targetContent.classList.add('active');
+      }
+    });
+  }
+
+  // Type 1/Type 2 switching
+  document.querySelectorAll('.pattern-btn[data-type]').forEach(button => {
+    button.addEventListener('click', function() {
+      document.querySelectorAll('.pattern-btn[data-type]').forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+      
+      document.querySelectorAll('.type-content').forEach(content => content.style.display = 'none');
+      
+      const type = this.getAttribute('data-type');
+      const targetContent = document.getElementById(type + '-content');
+      if (targetContent) targetContent.style.display = 'block';
+    });
+  });
+
+  // Pattern switching for SPR (Board/NEET/IIT)
+  document.querySelectorAll('.pattern-btn[data-pattern]').forEach(button => {
+    button.addEventListener('click', function() {
+      document.querySelectorAll('.pattern-btn[data-pattern]').forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+      
+      document.querySelectorAll('.report-card').forEach(card => card.style.display = 'none');
+      
+      const pattern = this.getAttribute('data-pattern');
+      const targetCard = document.getElementById(pattern + '-pattern-content');
+      if (targetCard) targetCard.style.display = 'block';
+    });
+  });
+
+  // Initialize Test Series Charts
+  initializeTestSeriesCharts();
+});
+
+function initializeTestSeriesCharts() {
+  // Overall Rank Chart
+  const rankCtx = document.getElementById('overallRankChart');
+  if (rankCtx) {
+    new Chart(rankCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Overall Rank'],
+        datasets: [{
+          label: 'Average Rank',
+          data: [0],
+          backgroundColor: '#e05301'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, reverse: true }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+
+  // Overall Percentage Chart
+  const percentCtx = document.getElementById('overallPercentageChart');
+  if (percentCtx) {
+    new Chart(percentCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Overall %'],
+        datasets: [{
+          label: 'Average Percentage',
+          data: [0],
+          backgroundColor: '#e05301'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, max: 100 } },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+
+  // Test Attendance Donut
+  const testAttCtx = document.getElementById('testAttendanceChart');
+  if (testAttCtx) {
+    new Chart(testAttCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Attended', 'Not Attended'],
+        datasets: [{
+          data: [0, 100],
+          backgroundColor: ['#28a745', '#dc3545']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { 
+          legend: { display: true, position: 'bottom' }
+        }
+      }
+    });
+  }
+}
 </script>
 </body>
 </html>

@@ -802,11 +802,15 @@
           </div>
 
           <div class="form-group">
-            <label>Marksheet of Last Qualifying Exam</label>
-            <input type="file" name="marksheet" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
-            @if(!empty($student->marksheet))
-              <small class="text-muted">Current: <a href="{{ asset('storage/' . $student->marksheet) }}" target="_blank">View</a></small>
-            @endif
+              <label>Marksheet of Last Qualifying Exam</label>
+              <input type="file" name="marksheet" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+
+              @if(!empty($student->marksheet))
+                 <small class="text-muted">
+    Current File: 
+    <a href="{{ $student->marksheet }}" target="_blank">View</a>
+</small>
+              @endif
           </div>
 
           <div class="form-group">
