@@ -164,8 +164,11 @@
           <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a>
-                </li>
+             <li>
+  <a class="item" href="{{ route('fees.management.index') }}">
+    <i class="fa-solid fa-money-bill-wave" id="side-icon"></i> Fees Collection
+  </a>
+</li>
               </ul>
             </div>
           </div>

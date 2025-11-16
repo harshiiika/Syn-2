@@ -21,6 +21,8 @@ use App\Http\Controllers\Student\OnboardController;
 use App\Http\Controllers\Student\PendingController;
 use App\Http\Controllers\Student\SmStudentsController;
 use App\Http\Controllers\Student\PaymentController;
+use App\Http\Controllers\FeesManagementController;
+
 
 // -------------------------
 // Authentication Routes+++++
@@ -193,65 +195,6 @@ Route::prefix('master')->name('master.')->group(function () {
     Route::patch('/scholarship/{id}/toggle-status', [ScholarshipController::class, 'toggleStatus']);
     Route::delete('/scholarship/{id}', [ScholarshipController::class, 'destroy'])->name('scholarship.destroy');
 });
-/*
-|--------------------------------------------------------------------------
-| STUDENT MANAGEMENT ROUTES
-|--------------------------------------------------------------------------
-// */
-
-// // ========================================
-// // 1. PENDING STUDENTS (Incomplete Profiles) 
-// // Changed to /student/pending to match route list
-// // ========================================
-// Route::prefix('student')->name('student.')->group(function () {
-
-//     /**   PENDING INQUIRY STUDENTS (Incomplete forms) */
-//     Route::get('/pending', [StudentController::class, 'index'])
-//         ->name('student.pending');  // student.student.pending
-     
-//     /**   VIEW / EDIT A PENDING STUDENT */
-//     Route::get('/{id}/edit', [StudentController::class, 'edit'])
-//         ->name('student.edit');
-//     Route::put('/{id}', [StudentController::class, 'update'])
-//         ->name('student.update');
-
-//     /**   ONBOARDED STUDENTS (Complete form, not active yet) */
-//     Route::get('/onboarded', [StudentController::class, 'onboardedStudents'])
-//         ->name('onboard.onboard');  // student.onboard.onboard
-
-//     /**   VIEW SINGLE STUDENT DETAILS */
-//     Route::get('/view/{id}', [StudentController::class, 'show'])
-//         ->name('student.view');  // student.student.view
-
-//     /**   PENDING FEES STUDENTS */
-//     Route::get('/fees/pending', [StudentController::class, 'pendingFees'])
-//         ->name('fees.pending'); // student.fees.pending
-
-//     /**   STUDENTS */
-//     Route::get('/active', [StudentController::class, 'activeStudents'])
-//         ->name('active'); // student.active
-
-//     /**   CONVERT INQUIRY → STUDENT */
-//     Route::post('/convert/{id}', [StudentController::class, 'convertFromInquiry'])
-//         ->name('convert');
-
-//     /**   UPDATE FEES */
-//     Route::post('/fees/update/{id}', [StudentController::class, 'updateFees'])
-//         ->name('fees.update');
-// });
-
-// // ========================================
-// // 2. ONBOARDED STUDENTS (Complete Profiles)
-// // ========================================
-// Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
-//     Route::get('/', [OnboardController::class, 'index'])->name('onboard');
-//     Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
-//     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
-//     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
-    
-//     // Transfer to Pending Fees
-//     Route::post('/{id}/transfer', [OnboardController::class, 'transfer'])->name('transfer');
-// });
 
 // ========================================
 // PENDING STUDENTS (Incomplete Onboarding Forms)
@@ -299,30 +242,6 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
 // ========================================
 // 4. ACTIVE STUDENTS (SM Students)
 // ========================================
-// Route::prefix('smstudents')
-//     ->name('smstudents.')
-//     ->group(function () {
-//         //   List and export FIRST (before ID routes)
-//         Route::get('/', [SmStudentsController::class, 'index'])->name('index');
-//         Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
-        
-//         //   Specific action routes BEFORE generic {id} routes
-//         Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
-//         Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
-        
-//         //   POST/PUT routes
-//         Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
-// Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
-// Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');        Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
-//         Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
-        
-//         //   Generic show route LAST
-//         Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
-//         Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
-//         Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
-//     });
-
-
 Route::prefix('smstudents')
     ->name('smstudents.')
     ->group(function () {
@@ -347,15 +266,6 @@ Route::prefix('smstudents')
         Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
     });
 
-
-
-
-
-
-
-
-
-
 //  Onboard transfer route OUTSIDE smstudents group
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])
     ->name('onboard.transfer');
@@ -364,21 +274,21 @@ Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStude
 // ========================================
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
     
-    // ⭐ LIST & DATA ROUTES (No ID conflict)
+    //  LIST & DATA ROUTES (No ID conflict)
     Route::get('/', [InquiryController::class, 'index'])->name('index');
     Route::get('/data', [InquiryController::class, 'data'])->name('data');
     Route::get('/get-data', [InquiryController::class, 'getData'])->name('get-data'); // Alternative data method
     
-    // ⭐ UPLOAD ROUTE (No ID conflict)
+    //  UPLOAD ROUTE (No ID conflict)
     Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
     
-    // ⭐ CREATE ROUTE (No ID conflict)
+    //  CREATE ROUTE (No ID conflict)
     Route::post('/', [InquiryController::class, 'store'])->name('store');
     
-    // ⭐ BULK ONBOARD (Fixed - removed duplicate 'inquiries' in path)
+    //  BULK ONBOARD (Fixed - removed duplicate 'inquiries' in path)
     Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('bulk-onboard');
     
-    // ⭐ SPECIFIC NAMED ROUTES (MUST COME BEFORE GENERIC {id} ROUTES)
+    //  SPECIFIC NAMED ROUTES (MUST COME BEFORE GENERIC {id} ROUTES)
     // These routes have specific paths that won't conflict with {id}
     
     // Single onboard
@@ -401,7 +311,7 @@ Route::prefix('inquiries')->name('inquiries.')->group(function () {
     Route::get('/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])->name('fees-batches.show');
     Route::put('/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])->name('fees-batches.update');
     
-    // ⭐ GENERIC {id} ROUTES (MUST COME LAST)
+    //  GENERIC {id} ROUTES (MUST COME LAST)
     // These are catch-all routes and should be at the bottom
     
     // View inquiry details (page)
@@ -415,4 +325,101 @@ Route::prefix('inquiries')->name('inquiries.')->group(function () {
     
     // Delete inquiry
     Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
+});
+
+
+// Fees Management - Main Page
+Route::get('/fees-management', function () {
+    // Get courses with proper structure
+    $courses = \DB::table('courses')
+        ->select('id', 'name', 'content')
+        ->get();
+    
+    // Get batches with proper structure
+    $batches = \DB::table('batches')
+        ->select('id', 'name', 'delivery_mode')
+        ->get();
+    
+    $data = [
+        'session' => '2025-2026',
+        'activeTab' => 'collect',
+        'courses' => $courses,
+        'batches' => $batches,
+        'feeStatuses' => ['Paid', 'Pending', 'Partial'],
+        'transactions' => null, // For transaction tab
+    ];
+    
+    return view('fees_management.index', $data);
+})->name('fees.management.index');
+
+// Search Student
+Route::post('/fees-management/search-student', function (\Illuminate\Http\Request $request) {
+    $searchTerm = $request->input('search');
+    
+    // Add your search logic here
+    $students = \DB::table('students')
+        ->where('name', 'LIKE', "%{$searchTerm}%")
+        ->orWhere('roll_no', 'LIKE', "%{$searchTerm}%")
+        ->get();
+    
+    return response()->json([
+        'success' => true,
+        'data' => $students
+    ]);
+})->name('fees.collect.search');
+
+// Search by Status
+Route::post('/fees-management/search-status', function (\Illuminate\Http\Request $request) {
+    $courseId = $request->input('course_id');
+    $batchId = $request->input('batch_id');
+    $feeStatus = $request->input('fee_status');
+    
+    // Add your search logic here
+    $students = [];
+    
+    return response()->json([
+        'success' => true,
+        'data' => $students
+    ]);
+})->name('fees.status.search');
+
+// Filter Transactions
+Route::post('/fees-management/filter-transactions', function (\Illuminate\Http\Request $request) {
+    $fromDate = $request->input('from_date');
+    $toDate = $request->input('to_date');
+    
+    // Add your filter logic here
+    $transactions = [];
+    
+    return response()->json([
+        'success' => true,
+        'data' => $transactions
+    ]);
+})->name('fees.transaction.filter');
+
+// Export Pending Fees
+Route::get('/fees-management/export-pending', function () {
+    return response()->json([
+        'message' => 'Export functionality will be added soon'
+    ]);
+})->name('fees.export');
+
+// Fees Management Routes
+Route::prefix('fees')->name('fees.')->group(function () {
+    // Main page
+    Route::get('/management', [FeesManagementController::class, 'index'])->name('management.index');
+    
+    // AJAX Routes
+    Route::post('/collect/search', [FeesManagementController::class, 'searchStudent'])->name('collect.search');
+    Route::post('/status/search', [FeesManagementController::class, 'searchByStatus'])->name('status.search');
+    Route::post('/transaction/filter', [FeesManagementController::class, 'filterTransactions'])->name('transaction.filter');
+    Route::post('/batches-by-course', [FeesManagementController::class, 'getBatchesByCourse'])->name('batches.by.course');
+    
+    // Export
+    Route::get('/export', [FeesManagementController::class, 'exportPendingFees'])->name('export');
+});
+
+// Profile Routes
+Route::prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [ProfileController::class, 'index'])->name('index');
 });
