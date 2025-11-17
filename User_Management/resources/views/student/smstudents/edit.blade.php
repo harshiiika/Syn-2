@@ -113,6 +113,13 @@
       background-color: #c04501;
       color: white;
     }
+    .current-file-info {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      border-left: 3px solid #28a745;
+    }
   </style>
 </head>
 
@@ -248,7 +255,7 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
                 <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
@@ -555,75 +562,112 @@
           <div class="form-section">
             <h5 class="section-title">Upload Documents</h5>
             
+            <!-- Passport Photo -->
             <div class="mb-3">
-              <label class="form-label">Passport Size Photo.</label>
-              <div class="upload-area" onclick="document.getElementById('passport_photo').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="passport_photo" name="passport_photo" class="d-none" accept="image/*">
-              </div>
+                <label class="form-label">Passport Size Photo</label>
+                <div class="upload-area" onclick="document.getElementById('passport_photo').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="passport_photo" name="passport_photo" class="d-none" accept="image/*">
+                </div>
+                @if(isset($student->passport_photo) && !empty($student->passport_photo))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->passport_photo) ? $student->passport_photo[0] : $student->passport_photo }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
-            <!-- This is the continuation from where your document cuts off -->
-
+            <!-- Marksheet -->
             <div class="mb-3">
-              <label class="form-label">Marksheet of Last Qualifying Exam</label>
-              <div class="upload-area" onclick="document.getElementById('marksheet').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="marksheet" name="marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->marksheet))
-                <small class="text-muted">Current file: {{ basename($student->marksheet) }}</small>
-              @endif
+                <label class="form-label">Marksheet of Last Qualifying Exam</label>
+                <div class="upload-area" onclick="document.getElementById('marksheet').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="marksheet" name="marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->marksheet) && !empty($student->marksheet))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->marksheet) ? $student->marksheet[0] : $student->marksheet }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
+            <!-- Caste Certificate -->
             <div class="mb-3">
-              <label class="form-label">If you are SC/ST/OBC/Minority casted kindly upload receipt by Synthesis</label>
-              <div class="upload-area" onclick="document.getElementById('caste_certificate').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="caste_certificate" name="caste_certificate" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->caste_certificate))
-                <small class="text-muted">Current file: {{ basename($student->caste_certificate) }}</small>
-              @endif
+                <label class="form-label">Caste Certificate</label>
+                <div class="upload-area" onclick="document.getElementById('caste_certificate').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="caste_certificate" name="caste_certificate" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->caste_certificate) && !empty($student->caste_certificate))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->caste_certificate) ? $student->caste_certificate[0] : $student->caste_certificate }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
+            <!-- Scholarship Proof -->
             <div class="mb-3">
-              <label class="form-label">Upload Proof of Scholarship to avail Concession</label>
-              <div class="upload-area" onclick="document.getElementById('scholarship_proof').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="scholarship_proof" name="scholarship_proof" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->scholarship_proof))
-                <small class="text-muted">Current file: {{ basename($student->scholarship_proof) }}</small>
-              @endif
+                <label class="form-label">Proof of Scholarship</label>
+                <div class="upload-area" onclick="document.getElementById('scholarship_proof').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="scholarship_proof" name="scholarship_proof" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->scholarship_proof) && !empty($student->scholarship_proof))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->scholarship_proof) ? $student->scholarship_proof[0] : $student->scholarship_proof }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
+            <!-- Secondary Marksheet -->
             <div class="mb-3">
-              <label class="form-label">Secondary Board Marksheet</label>
-              <div class="upload-area" onclick="document.getElementById('secondary_marksheet').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="secondary_marksheet" name="secondary_marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->secondary_marksheet))
-                <small class="text-muted">Current file: {{ basename($student->secondary_marksheet) }}</small>
-              @endif
+                <label class="form-label">Secondary Board Marksheet</label>
+                <div class="upload-area" onclick="document.getElementById('secondary_marksheet').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="secondary_marksheet" name="secondary_marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->secondary_marksheet) && !empty($student->secondary_marksheet))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->secondary_marksheet) ? $student->secondary_marksheet[0] : $student->secondary_marksheet }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
+            <!-- Senior Secondary Marksheet -->
             <div class="mb-3">
-              <label class="form-label">Senior Secondary Board Marksheet</label>
-              <div class="upload-area" onclick="document.getElementById('senior_secondary_marksheet').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="senior_secondary_marksheet" name="senior_secondary_marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->senior_secondary_marksheet))
-                <small class="text-muted">Current file: {{ basename($student->senior_secondary_marksheet) }}</small>
-              @endif
+                <label class="form-label">Senior Secondary Board Marksheet</label>
+                <div class="upload-area" onclick="document.getElementById('senior_secondary_marksheet').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="senior_secondary_marksheet" name="senior_secondary_marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->senior_secondary_marksheet) && !empty($student->senior_secondary_marksheet))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->senior_secondary_marksheet) ? $student->senior_secondary_marksheet[0] : $student->senior_secondary_marksheet }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
           </div>
 
@@ -639,48 +683,48 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
- <script>
-  // Sidebar toggle functionality
-  const toggleBtn = document.getElementById('toggleBtn');
-  const sidebar = document.getElementById('sidebar');
-  const right = document.getElementById('right');
-  const text = document.getElementById('text');
+  <script>
+    // Sidebar toggle functionality
+    const toggleBtn = document.getElementById('toggleBtn');
+    const sidebar = document.getElementById('sidebar');
+    const right = document.getElementById('right');
+    const text = document.getElementById('text');
 
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    right.classList.toggle('expanded');
-    text.classList.toggle('hidden');
-  });
-
-  // File upload preview — show file name when selected
-  document.querySelectorAll('input[type="file"]').forEach(input => {
-    input.addEventListener('change', function (e) {
-      const uploadArea = e.target.closest('.upload-area');
-      if (!uploadArea) return;
-      const fileName = e.target.files[0]?.name;
-      const previewText = uploadArea.querySelector('p');
-      if (fileName) {
-        previewText.innerHTML = `<strong>${fileName}</strong>`;
-        uploadArea.style.borderColor = "#28a745";
-        uploadArea.style.backgroundColor = "#f6fff8";
-      } else {
-        previewText.innerHTML = "Click to upload";
-        uploadArea.style.borderColor = "#dee2e6";
-        uploadArea.style.backgroundColor = "#f8f9fa";
-      }
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      right.classList.toggle('expanded');
+      text.classList.toggle('hidden');
     });
-  });
 
-  // Auto-hide flash messages after a few seconds
-  const flashMessages = document.querySelectorAll('.alert');
-  if (flashMessages.length > 0) {
-    setTimeout(() => {
-      flashMessages.forEach(alert => {
-        const bsAlert = new bootstrap.Alert(alert);
-        bsAlert.close();
+    // File upload preview — show file name when selected
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+      input.addEventListener('change', function (e) {
+        const uploadArea = e.target.closest('.upload-area');
+        if (!uploadArea) return;
+        const fileName = e.target.files[0]?.name;
+        const previewText = uploadArea.querySelector('p');
+        if (fileName) {
+          previewText.innerHTML = `<strong>${fileName}</strong>`;
+          uploadArea.style.borderColor = "#28a745";
+          uploadArea.style.backgroundColor = "#f6fff8";
+        } else {
+          previewText.innerHTML = "Click to upload";
+          uploadArea.style.borderColor = "#dee2e6";
+          uploadArea.style.backgroundColor = "#f8f9fa";
+        }
       });
-    }, 4000);
-  }
-</script>
+    });
+
+    // Auto-hide flash messages after a few seconds
+    const flashMessages = document.querySelectorAll('.alert');
+    if (flashMessages.length > 0) {
+      setTimeout(() => {
+        flashMessages.forEach(alert => {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 4000);
+    }
+  </script>
 </body>
 </html>
