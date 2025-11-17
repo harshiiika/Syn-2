@@ -116,6 +116,7 @@ class SMstudents extends Model
         'pending_amount',      // Alias for remaining_fees
         'fee_status',          // CRITICAL: Paid, Pending, 2nd Installment due, etc.
         'fee_installments',    // Number of installments
+        'paidAmount',
         
         // Documents (Base64 encoded)
         // 'passport_photo',
@@ -150,8 +151,6 @@ class SMstudents extends Model
         'updated_by',
         'session',
         'branch',
-        'branch_id',
-    
 
     'father_grade',
     'paidAmount',
@@ -238,138 +237,112 @@ class SMstudents extends Model
         return $this->belongsTo(Courses::class, 'course_id', '_id');
     }
 
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class, 'shift_id', '_id');
+    }
+    
     /**
-     * Relationship: Student has many Fee Transactions
+     * ✅ ACCESSOR: Get student_name from either 'student_name' or 'name' field
      */
-    public function feeTransactions()
+    public function getStudentNameAttribute($value)
     {
-        return $this->hasMany(\App\Models\FeeTransaction::class, 'student_id', '_id');
+        return $value ?? $this->attributes['name'] ?? 'N/A';
     }
-
+    
     /**
-     * Scopes
+     * ✅ ACCESSOR: Get father_name from either 'father_name' or 'father' field
      */
-    public function scopeActive($query)
+    public function getFatherNameAttribute($value)
     {
-        return $query->where('status', 'active');
+        return $value ?? $this->attributes['father'] ?? 'N/A';
     }
-
-    public function scopeByCourse($query, $courseId)
-    {
-        return $query->where('course_id', $courseId);
-    }
-
-    public function scopeByBatch($query, $batchId)
-    {
-        return $query->where('batch_id', $batchId);
-    }
-
-    public function scopeByFeeStatus($query, $status)
-    {
-        return $query->where('fee_status', $status);
-    }
-
-    public function scopePendingFees($query)
-    {
-        return $query->whereIn('fee_status', [
-            '2nd Installment due',
-            '3rd Installment due',
-            'Pending'
-        ]);
-    }
-
+    
     /**
-     * Accessors (for compatibility with fees management)
+     * ✅ ACCESSOR: Get mother_name from either 'mother_name' or 'mother' field
      */
-    public function getNameAttribute()
+    public function getMotherNameAttribute($value)
     {
-        return $this->attributes['name'] ?? $this->student_name;
+        return $value ?? $this->attributes['mother'] ?? 'N/A';
     }
-
-    public function getFatherNameAttribute()
-    {
-        return $this->attributes['father_name'] ?? $this->father;
-    }
-
-    public function getPaidAmountAttribute()
-    {
-        return $this->attributes['paid_amount'] ?? $this->paid_fees ?? 0;
-    }
-
-    public function getPendingAmountAttribute()
-    {
-        return $this->attributes['pending_amount'] ?? $this->remaining_fees ?? 0;
-    }
-
+    
     /**
-     * Mutators (to ensure consistency)
+     * ✅ ACCESSOR: Get father_contact from either 'father_contact' or 'mobileNumber'
      */
-    public function setStudentNameAttribute($value)
+    public function getFatherContactAttribute($value)
     {
-        $this->attributes['student_name'] = $value;
-        $this->attributes['name'] = $value;
+        return $value ?? $this->attributes['mobileNumber'] ?? 'N/A';
     }
-
-    public function setFatherAttribute($value)
-    {
-        $this->attributes['father'] = $value;
-        $this->attributes['father_name'] = $value;
-    }
-
-    public function setPaidFeesAttribute($value)
-    {
-        $this->attributes['paid_fees'] = $value;
-        $this->attributes['paid_amount'] = $value;
-    }
-
-    public function setRemainingFeesAttribute($value)
-    {
-        $this->attributes['remaining_fees'] = $value;
-        $this->attributes['pending_amount'] = $value;
-    }
-
+    
     /**
-     * Helper: Calculate total paid amount from transactions
+     * ✅ ACCESSOR: Get father_whatsapp from either field
      */
-    public function calculatePaidAmount()
+    public function getFatherWhatsappAttribute($value)
     {
-        return $this->feeTransactions()->sum('amount');
+        return $value ?? $this->attributes['fatherWhatsapp'] ?? 'N/A';
     }
-
+    
     /**
-     * Helper: Calculate pending amount
+     * ✅ ACCESSOR: Get mother_contact from either field
      */
-    public function calculatePendingAmount()
+    public function getMotherContactAttribute($value)
     {
-        $paid = $this->calculatePaidAmount();
-        return max(0, ($this->total_fees ?? 0) - $paid);
+        return $value ?? $this->attributes['motherContact'] ?? 'N/A';
     }
-
+    
     /**
-     * Helper: Update fee status based on payments
+     * ✅ ACCESSOR: Get phone from either 'phone' or 'studentContact'
      */
-    public function updateFeeStatus()
+    public function getPhoneAttribute($value)
     {
-        $totalPaid = $this->calculatePaidAmount();
-        $totalFees = $this->total_fees ?? 0;
-        
-        if ($totalPaid >= $totalFees) {
-            $this->fee_status = 'Paid';
-        } else {
-            $installments = $this->fee_installments ?? 1;
-            $perInstallment = $totalFees / $installments;
-            
-            if ($totalPaid < $perInstallment) {
-                $this->fee_status = '2nd Installment due';
-            } elseif ($totalPaid < ($perInstallment * 2)) {
-                $this->fee_status = '3rd Installment due';
-            } else {
-                $this->fee_status = 'Pending';
-            }
-        }
-        
-        $this->pending_amount = $this->calculatePendingAmount();
-        $this->paid_amount = $totalPaid;
-        $this->save();
+        return $value ?? $this->attributes['studentContact'] ?? 'N/A';
+    }
+    
+    /**
+     * ✅ ACCESSOR: Get pincode
+     */
+    public function getPincodeAttribute($value)
+    {
+        return $value ?? $this->attributes['pinCode'] ?? 'N/A';
+    }
+    
+    /**
+     * ✅ ACCESSOR: Get course_type
+     */
+    public function getCourseTypeAttribute($value)
+    {
+        return $value ?? $this->attributes['courseType'] ?? 'N/A';
+    }
+    
+    /**
+     * ✅ ACCESSOR: Get course_name
+     */
+    public function getCourseNameAttribute($value)
+    {
+        return $value ?? $this->attributes['courseName'] ?? ($this->course->name ?? 'N/A');
+    }
+    
+    /**
+     * ✅ ACCESSOR: Get delivery_mode
+     */
+    public function getDeliveryModeAttribute($value)
+    {
+        return $value ?? $this->attributes['deliveryMode'] ?? $this->attributes['delivery'] ?? 'N/A';
+    }
+    
+    /**
+     * ✅ ACCESSOR: Get academic_medium
+     */
+    public function getAcademicMediumAttribute($value)
+    {
+        return $value ?? $this->attributes['previousMedium'] ?? 'N/A';
+    }
+    
+    /**
+     * ✅ ACCESSOR: Get academic_board
+     */
+    public function getAcademicBoardAttribute($value)
+    {
+        return $value ?? $this->attributes['previousBoard'] ?? 'N/A';
     }
 }
