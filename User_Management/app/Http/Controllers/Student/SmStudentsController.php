@@ -202,196 +202,263 @@ public function testSeries($id)
      * Display the specified student with full details
      */
     public function show($id)
-    {
-        try {
-            $student = SMstudents::with(['batch', 'course', 'shift'])->find($id);
-            
-            if (!$student) {
-                return back()->with('error', 'Student not found with ID: ' . $id);
-            }
-            
-            $rawData = $student->getAttributes();
-            
-            // Create safe student object
-            $safeStudent = new \stdClass();
-            
-            // Basic Info
-            $safeStudent->_id = $student->_id ?? $id;
-            $safeStudent->roll_no = $rawData['roll_no'] ?? 'N/A';
-            $safeStudent->student_name = $rawData['student_name'] ?? $rawData['name'] ?? 'N/A';
-            $safeStudent->email = $rawData['email'] ?? 'N/A';
-            $safeStudent->phone = $rawData['phone'] ?? 'N/A';
-            
-            // Personal Details
-            $safeStudent->father_name = $rawData['father_name'] ?? 'N/A';
-            $safeStudent->mother_name = $rawData['mother_name'] ?? 'N/A';
-            
-            // Handle DOB
-            if (isset($rawData['dob']) && $rawData['dob'] && $rawData['dob'] !== 'N/A') {
-                try {
-                    $safeStudent->dob = \Carbon\Carbon::parse($rawData['dob'])->format('d-m-Y');
-                } catch (\Exception $e) {
-                    $safeStudent->dob = 'N/A';
+{
+    try {
+        $student = SMstudents::with(['batch', 'course', 'shift'])->find($id);
+        
+        if (!$student) {
+            return back()->with('error', 'Student not found with ID: ' . $id);
+        }
+        
+        $rawData = $student->getAttributes();
+        
+        // ✅ DEBUG: Log what fields actually exist
+        Log::info('RAW DATABASE FIELDS:', [
+            'all_fields' => array_keys($rawData),
+            'mother_name' => $rawData['mother_name'] ?? 'NOT SET',
+            'mother' => $rawData['mother'] ?? 'NOT SET',
+            'dob' => $rawData['dob'] ?? 'NOT SET',
+            'category' => $rawData['category'] ?? 'NOT SET',
+            'student_contact' => $rawData['student_contact'] ?? 'NOT SET',
+            'studentContact' => $rawData['studentContact'] ?? 'NOT SET',
+        ]);
+        
+        // Create safe student object
+        $safeStudent = new \stdClass();
+        
+        // ✅ Basic Info
+        $safeStudent->_id = $student->_id ?? $id;
+        $safeStudent->roll_no = $rawData['roll_no'] ?? 'N/A';
+        $safeStudent->student_name = $rawData['student_name'] ?? $rawData['name'] ?? 'N/A';
+        $safeStudent->email = $rawData['email'] ?? 'N/A';
+        $safeStudent->phone = $rawData['phone'] ?? $rawData['mobileNumber'] ?? $rawData['studentContact'] ?? 'N/A';
+        
+        // ✅ Personal Details - FIXED
+        $safeStudent->father_name = $rawData['father_name'] ?? $rawData['father'] ?? 'N/A';
+        $safeStudent->mother_name = $rawData['mother_name'] ?? $rawData['mother'] ?? 'N/A';
+        
+        // ✅ Handle DOB
+        if (isset($rawData['dob']) && $rawData['dob'] && $rawData['dob'] !== 'N/A') {
+            try {
+                $dob = $rawData['dob'];
+                if (is_object($dob) && method_exists($dob, 'format')) {
+                    $safeStudent->dob = $dob->format('d-m-Y');
+                } else {
+                    $safeStudent->dob = \Carbon\Carbon::parse($dob)->format('d-m-Y');
                 }
-            } else {
+            } catch (\Exception $e) {
                 $safeStudent->dob = 'N/A';
             }
-            
-            $safeStudent->father_contact = $rawData['father_contact'] ?? 'N/A';
-            $safeStudent->father_whatsapp = $rawData['father_whatsapp'] ?? 'N/A';
-            $safeStudent->mother_contact = $rawData['mother_contact'] ?? 'N/A';
-            $safeStudent->category = $rawData['category'] ?? 'N/A';
-            $safeStudent->gender = $rawData['gender'] ?? 'N/A';
-            $safeStudent->father_occupation = $rawData['father_occupation'] ?? 'N/A';
-            $safeStudent->mother_occupation = $rawData['mother_occupation'] ?? 'N/A';
-            
-            // Address
-            $safeStudent->state = $rawData['state'] ?? 'N/A';
-            $safeStudent->city = $rawData['city'] ?? 'N/A';
-            $safeStudent->pincode = $rawData['pincode'] ?? 'N/A';
-            $safeStudent->address = $rawData['address'] ?? 'N/A';
-            
-            // Additional Information
-            $safeStudent->belongs_other_city = $rawData['belongs_other_city'] ?? 'No';
-            $safeStudent->economic_weaker_section = $rawData['economic_weaker_section'] ?? 'No';
-            $safeStudent->army_police_background = $rawData['army_police_background'] ?? 'No';
-            $safeStudent->specially_abled = $rawData['specially_abled'] ?? 'No';
-            
-            // Course Details
-            $safeStudent->course_type = $rawData['course_type'] ?? 'N/A';
-            $safeStudent->course_name = $rawData['course_name'] ?? ($student->course->name ?? 'N/A');
-            $safeStudent->delivery = $rawData['delivery'] ?? $rawData['delivery_mode'] ?? 'N/A';
-            $safeStudent->medium = $rawData['medium'] ?? 'N/A';
-            $safeStudent->board = $rawData['board'] ?? 'N/A';
-            $safeStudent->course_content = $rawData['course_content'] ?? 'N/A';
-            
-            // Academic Details
-            $safeStudent->previous_class = $rawData['previous_class'] ?? 'N/A';
-            $safeStudent->academic_medium = $rawData['academic_medium'] ?? 'N/A';
-            $safeStudent->school_name = $rawData['school_name'] ?? 'N/A';
-            $safeStudent->academic_board = $rawData['academic_board'] ?? 'N/A';
-            $safeStudent->passing_year = $rawData['passing_year'] ?? 'N/A';
-            $safeStudent->percentage = $rawData['percentage'] ?? 'N/A';
-            
-            // Scholarship Eligibility
-            $safeStudent->scholarship_test = $rawData['scholarship_test'] ?? 'No';
-            $safeStudent->board_percentage = $rawData['board_percentage'] ?? 'N/A';
-            $safeStudent->competition_exam = $rawData['competition_exam'] ?? 'No';
-            
-            // Batch Allocation
-            $safeStudent->batch_name = $rawData['batch_name'] ?? ($student->batch->name ?? 'N/A');
-            $safeStudent->batch = $student->batch;
-            $safeStudent->course = $student->course;
-            $safeStudent->shift = $student->shift;
-            
-            // Status
-            $safeStudent->status = $rawData['status'] ?? 'active';
-            $safeStudent->created_at = $student->created_at;
-            $safeStudent->updated_at = $student->updated_at;
-            
-            // Process fees data
-            $rawFees = $rawData['fees'] ?? [];
-            $rawOtherFees = $rawData['other_fees'] ?? [];
-            $rawTransactions = $rawData['transactions'] ?? [];
-            
-            if (is_string($rawFees)) {
-                $rawFees = json_decode($rawFees, true) ?? [];
-            }
-            if (is_string($rawOtherFees)) {
-                $rawOtherFees = json_decode($rawOtherFees, true) ?? [];
-            }
-            if (is_string($rawTransactions)) {
-                $rawTransactions = json_decode($rawTransactions, true) ?? [];
-            }
-            
-            $safeStudent->fees = collect(is_array($rawFees) ? $rawFees : []);
-            $safeStudent->other_fees = collect(is_array($rawOtherFees) ? $rawOtherFees : []);
-            $safeStudent->transactions = collect(is_array($rawTransactions) ? $rawTransactions : []);
-            
-            $this->processFeesDataSafe($safeStudent);
-            
-            // Calculate fees
-            $paymentHistory = $rawData['paymentHistory'] ?? [];
-            if (is_string($paymentHistory)) {
-                $paymentHistory = json_decode($paymentHistory, true) ?? [];
-            }
-            
-            $totalPaidFromHistory = 0;
-            if (is_array($paymentHistory)) {
-                foreach ($paymentHistory as $payment) {
-                    $totalPaidFromHistory += floatval($payment['amount'] ?? 0);
-                }
-            }
-            
-            $totalFeesInclusive = floatval($rawData['total_fees_inclusive_tax'] ?? 0);
-            $totalFeesBeforeTax = floatval($rawData['total_fees'] ?? 0);
-            $gstAmount = floatval($rawData['gst_amount'] ?? 0);
-            
-            if ($gstAmount == 0 && $totalFeesBeforeTax > 0) {
-                $gstAmount = $totalFeesBeforeTax * 0.18;
-            }
-            
-            if ($totalFeesInclusive == 0 && $totalFeesBeforeTax > 0) {
-                $totalFeesInclusive = $totalFeesBeforeTax + $gstAmount;
-            }
-            
-            $totalPaid = floatval($rawData['paid_fees'] ?? $rawData['paidAmount'] ?? $totalPaidFromHistory);
-            $remainingBalance = max(0, $totalFeesInclusive - $totalPaid);
-            
-            $feeSummary = [
-                'fees' => [
-                    'total' => $totalFeesBeforeTax,
-                    'discount' => floatval($rawData['total_fee_before_discount'] ?? 0) - $totalFeesBeforeTax,
-                    'paid' => $totalPaid,
-                    'pending' => $remainingBalance
-                ],
-                'other_fees' => [
-                    'total' => 0,
-                    'paid' => 0,
-                    'pending' => 0
-                ],
-                'grand' => [
-                    'total' => $totalFeesInclusive,
-                    'paid' => $totalPaid,
-                    'pending' => $remainingBalance
-                ]
-            ];
-            
-            $scholarshipEligible = [
-                'eligible' => in_array(strtolower($rawData['eligible_for_scholarship'] ?? 'no'), ['yes', 'true', '1']),
-                'reason' => $rawData['scholarship_name'] ?? 'N/A',
-                'discountPercent' => floatval($rawData['discount_percentage'] ?? 0)
-            ];
-            
-            $scholarshipData = [
-                'eligible' => $rawData['eligible_for_scholarship'] ?? 'No',
-                'scholarship_name' => $rawData['scholarship_name'] ?? 'N/A',
-                'total_before_discount' => floatval($rawData['total_fee_before_discount'] ?? $totalFeesBeforeTax),
-                'discount_percentage' => floatval($rawData['discount_percentage'] ?? 0),
-                'has_discretionary' => ($rawData['discretionary_discount'] ?? 'No') === 'Yes',
-                'discretionary_type' => $rawData['discretionary_discount_type'] ?? null,
-                'discretionary_value' => floatval($rawData['discretionary_discount_value'] ?? 0),
-                'discretionary_reason' => $rawData['discretionary_discount_reason'] ?? null,
-            ];
-            
-            // ✅ GET REAL ACTIVITY HISTORY FROM DATABASE
-            $activities = $this->getStudentActivities($student);
-            $safeStudent->activities = $activities;
-        
-            Log::info('Student View Data:', [
-                'student_id' => $id,
-                'activities_count' => count($activities),
-                'fees_summary' => $feeSummary
-            ]);
-            
-            return view('student.smstudents.view', compact('safeStudent', 'feeSummary', 'scholarshipEligible', 'scholarshipData'))
-                ->with('student', $safeStudent);
-        
-        } catch (\Exception $e) {
-            Log::error('Error showing student: ' . $e->getMessage());
-            return back()->with('error', 'Error loading student: ' . $e->getMessage());
+        } else {
+            $safeStudent->dob = 'N/A';
         }
+        
+        // ✅ Contact Numbers - ALL variations
+        $safeStudent->father_contact = $rawData['father_contact'] ?? $rawData['mobileNumber'] ?? $rawData['fatherWhatsapp'] ?? 'N/A';
+        $safeStudent->father_whatsapp = $rawData['father_whatsapp'] ?? $rawData['fatherWhatsapp'] ?? $rawData['mobileNumber'] ?? 'N/A';
+        $safeStudent->mother_contact = $rawData['mother_contact'] ?? $rawData['motherContact'] ?? 'N/A';
+        $safeStudent->student_contact = $rawData['student_contact'] ?? $rawData['studentContact'] ?? $rawData['phone'] ?? 'N/A';
+        
+        // ✅ Other Personal Info
+        $safeStudent->category = $rawData['category'] ?? 'N/A';
+        $safeStudent->gender = $rawData['gender'] ?? 'N/A';
+        $safeStudent->father_occupation = $rawData['father_occupation'] ?? $rawData['fatherOccupation'] ?? 'N/A';
+        $safeStudent->mother_occupation = $rawData['mother_occupation'] ?? $rawData['motherOccupation'] ?? 'N/A';
+        
+        // ✅ Address
+        $safeStudent->state = $rawData['state'] ?? 'N/A';
+        $safeStudent->city = $rawData['city'] ?? 'N/A';
+        $safeStudent->pincode = $rawData['pincode'] ?? $rawData['pinCode'] ?? 'N/A';
+        $safeStudent->address = $rawData['address'] ?? 'N/A';
+        
+        // ✅ Additional Information
+        $safeStudent->belongs_other_city = $rawData['belongs_other_city'] ?? $rawData['belongToOtherCity'] ?? 'No';
+        $safeStudent->belongs_to_another_city = $rawData['belongs_to_another_city'] ?? $rawData['belongToOtherCity'] ?? $rawData['belongs_other_city'] ?? 'No';
+        $safeStudent->economic_weaker_section = $rawData['economic_weaker_section'] ?? $rawData['economicWeakerSection'] ?? 'No';
+        $safeStudent->army_police_background = $rawData['army_police_background'] ?? $rawData['armyPoliceBackground'] ?? 'No';
+        $safeStudent->specially_abled = $rawData['specially_abled'] ?? $rawData['speciallyAbled'] ?? 'No';
+        
+        // ✅ Course Details
+        $safeStudent->course_type = $rawData['course_type'] ?? $rawData['courseType'] ?? 'N/A';
+        $safeStudent->course_name = $rawData['course_name'] ?? $rawData['courseName'] ?? ($student->course->name ?? 'N/A');
+        $safeStudent->delivery = $rawData['delivery'] ?? $rawData['delivery_mode'] ?? $rawData['deliveryMode'] ?? 'N/A';
+        $safeStudent->delivery_mode = $rawData['delivery_mode'] ?? $rawData['deliveryMode'] ?? $rawData['delivery'] ?? 'N/A';
+        $safeStudent->medium = $rawData['medium'] ?? 'N/A';
+        $safeStudent->board = $rawData['board'] ?? 'N/A';
+        $safeStudent->course_content = $rawData['course_content'] ?? $rawData['courseContent'] ?? 'N/A';
+        
+        // ✅ Academic Details
+        $safeStudent->previous_class = $rawData['previous_class'] ?? $rawData['previousClass'] ?? 'N/A';
+        $safeStudent->academic_medium = $rawData['academic_medium'] ?? $rawData['previousMedium'] ?? $rawData['medium'] ?? 'N/A';
+        $safeStudent->school_name = $rawData['school_name'] ?? $rawData['schoolName'] ?? 'N/A';
+        $safeStudent->academic_board = $rawData['academic_board'] ?? $rawData['previousBoard'] ?? $rawData['board'] ?? 'N/A';
+        $safeStudent->passing_year = $rawData['passing_year'] ?? $rawData['passingYear'] ?? 'N/A';
+        $safeStudent->percentage = $rawData['percentage'] ?? 'N/A';
+        
+        // ✅ Scholarship Eligibility
+        $safeStudent->scholarship_test = $rawData['scholarship_test'] ?? $rawData['scholarshipTest'] ?? 'No';
+        $safeStudent->board_percentage = $rawData['board_percentage'] ?? $rawData['lastBoardPercentage'] ?? $rawData['percentage'] ?? 'N/A';
+        $safeStudent->board_exam_percentage = $rawData['board_exam_percentage'] ?? $rawData['lastBoardPercentage'] ?? $rawData['percentage'] ?? 'N/A';
+        $safeStudent->competition_exam = $rawData['competition_exam'] ?? $rawData['competitionExam'] ?? 'No';
+        
+        // ✅ Batch Allocation
+        $safeStudent->batch_name = $rawData['batch_name'] ?? $rawData['batchName'] ?? ($student->batch->name ?? 'N/A');
+        $safeStudent->batch = $student->batch;
+        $safeStudent->course = $student->course;
+        $safeStudent->shift = $student->shift;
+        
+        // ✅ Status
+        $safeStudent->status = $rawData['status'] ?? 'active';
+        $safeStudent->created_at = $student->created_at;
+        $safeStudent->updated_at = $student->updated_at;
+        
+        // ✅ Documents - Handle arrays properly
+        $safeStudent->passport_photo = $this->formatDocumentField($rawData['passport_photo'] ?? null);
+        $safeStudent->last_marksheet = $this->formatDocumentField($rawData['marksheet'] ?? $rawData['last_marksheet'] ?? null);
+        $safeStudent->synthesis_id = $this->formatDocumentField($rawData['synthesis_id'] ?? null);
+        $safeStudent->scholarship_proof = $this->formatDocumentField($rawData['scholarship_proof'] ?? null);
+        $safeStudent->secondary_marksheet = $this->formatDocumentField($rawData['secondary_marksheet'] ?? null);
+        $safeStudent->senior_secondary_marksheet = $this->formatDocumentField($rawData['senior_secondary_marksheet'] ?? null);
+        
+        // Process fees data
+        $rawFees = $rawData['fees'] ?? [];
+        $rawOtherFees = $rawData['other_fees'] ?? [];
+        $rawTransactions = $rawData['transactions'] ?? [];
+        
+        if (is_string($rawFees)) {
+            $rawFees = json_decode($rawFees, true) ?? [];
+        }
+        if (is_string($rawOtherFees)) {
+            $rawOtherFees = json_decode($rawOtherFees, true) ?? [];
+        }
+        if (is_string($rawTransactions)) {
+            $rawTransactions = json_decode($rawTransactions, true) ?? [];
+        }
+        
+        $safeStudent->fees = collect(is_array($rawFees) ? $rawFees : []);
+        $safeStudent->other_fees = collect(is_array($rawOtherFees) ? $rawOtherFees : []);
+        $safeStudent->transactions = collect(is_array($rawTransactions) ? $rawTransactions : []);
+        
+        $this->processFeesDataSafe($safeStudent);
+        
+        // ✅ CALCULATE FEES SUMMARY
+        $paymentHistory = $rawData['paymentHistory'] ?? [];
+        if (is_string($paymentHistory)) {
+            $paymentHistory = json_decode($paymentHistory, true) ?? [];
+        }
+        
+        $totalPaidFromHistory = 0;
+        if (is_array($paymentHistory)) {
+            foreach ($paymentHistory as $payment) {
+                $totalPaidFromHistory += floatval($payment['amount'] ?? 0);
+            }
+        }
+        
+        $totalFeesInclusive = floatval($rawData['total_fees_inclusive_tax'] ?? 0);
+        $totalFeesBeforeTax = floatval($rawData['total_fees'] ?? 0);
+        $gstAmount = floatval($rawData['gst_amount'] ?? 0);
+        
+        if ($gstAmount == 0 && $totalFeesBeforeTax > 0) {
+            $gstAmount = $totalFeesBeforeTax * 0.18;
+        }
+        
+        if ($totalFeesInclusive == 0 && $totalFeesBeforeTax > 0) {
+            $totalFeesInclusive = $totalFeesBeforeTax + $gstAmount;
+        }
+        
+        $totalPaid = floatval($rawData['paid_fees'] ?? $rawData['paidAmount'] ?? $totalPaidFromHistory);
+        $remainingBalance = max(0, $totalFeesInclusive - $totalPaid);
+        
+        // ✅ CREATE FEE SUMMARY ARRAY
+        $feeSummary = [
+            'fees' => [
+                'total' => $totalFeesBeforeTax,
+                'discount' => floatval($rawData['total_fee_before_discount'] ?? 0) - $totalFeesBeforeTax,
+                'paid' => $totalPaid,
+                'pending' => $remainingBalance
+            ],
+            'other_fees' => [
+                'total' => 0,
+                'paid' => 0,
+                'pending' => 0
+            ],
+            'grand' => [
+                'total' => $totalFeesInclusive,
+                'paid' => $totalPaid,
+                'pending' => $remainingBalance
+            ]
+        ];
+        
+        // ✅ CREATE SCHOLARSHIP ELIGIBLE ARRAY
+        $scholarshipEligible = [
+            'eligible' => in_array(strtolower($rawData['eligible_for_scholarship'] ?? 'no'), ['yes', 'true', '1']),
+            'reason' => $rawData['scholarship_name'] ?? 'N/A',
+            'discountPercent' => floatval($rawData['discount_percentage'] ?? 0)
+        ];
+        
+        // ✅ CREATE SCHOLARSHIP DATA ARRAY - FOR FEES TAB
+        $scholarshipData = [
+            'eligible' => $rawData['eligible_for_scholarship'] ?? 'No',
+            'scholarship_name' => $rawData['scholarship_name'] ?? 'N/A',
+            'total_before_discount' => floatval($rawData['total_fee_before_discount'] ?? $totalFeesBeforeTax),
+            'discount_percentage' => floatval($rawData['discount_percentage'] ?? 0),
+            'has_discretionary' => ($rawData['discretionary_discount'] ?? 'No') === 'Yes',
+            'discretionary_type' => $rawData['discretionary_discount_type'] ?? null,
+            'discretionary_value' => floatval($rawData['discretionary_discount_value'] ?? 0),
+            'discretionary_reason' => $rawData['discretionary_discount_reason'] ?? null,
+        ];
+        
+        // ✅ Add scholarship status for Student Detail tab (simple display)
+        $safeStudent->scholarship_eligible = $scholarshipEligible['eligible'] ? 'Yes' : 'No';
+        
+        // ✅ GET ACTIVITIES
+        $activities = $this->getStudentActivities($student);
+        $safeStudent->activities = $activities;
+    
+        Log::info('Student View Data:', [
+            'student_id' => $id,
+            'activities_count' => count($activities),
+            'fees_summary' => $feeSummary
+        ]);
+        
+        // ✅ RETURN VIEW WITH ALL REQUIRED VARIABLES
+        return view('student.smstudents.view', compact('safeStudent', 'feeSummary', 'scholarshipEligible', 'scholarshipData'))
+            ->with('student', $safeStudent);
+    
+    } catch (\Exception $e) {
+        Log::error('Error showing student: ' . $e->getMessage());
+        return back()->with('error', 'Error loading student: ' . $e->getMessage());
     }
+}
+
+/**
+ * Format document field to always return a string
+ */
+private function formatDocumentField($value)
+{
+    if (is_null($value) || $value === '') {
+        return 'Not Uploaded';
+    }
+    
+    if (is_array($value)) {
+        // If it's a base64 image array, return a message
+        if (isset($value['data']) || isset($value['base64'])) {
+            return 'Document Uploaded (Base64)';
+        }
+        // Otherwise convert to JSON string
+        return 'Document Uploaded (Array)';
+    }
+    
+    if (is_string($value)) {
+        // Check if it's a base64 string
+        if (str_starts_with($value, 'data:')) {
+            return 'Document Uploaded';
+        }
+        return $value;
+    }
+    
+    return 'Not Uploaded';
+}
 
     /**
      * ✅ NEW METHOD: Get all activities for a student

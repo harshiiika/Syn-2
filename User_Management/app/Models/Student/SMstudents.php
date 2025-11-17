@@ -23,8 +23,8 @@ class SMstudents extends Model
         'shift_id', 
 
         // Basic Details (from onboarding)
-        'father',
-        'mother',
+        'father_name',
+        'mother_name',
         'dob',
         'father_contact',
         'father_whatsapp',
@@ -95,12 +95,12 @@ class SMstudents extends Model
         'remaining_fees',
         
         // Documents (Base64 encoded)
-        'passport_photo',
-        'marksheet',
-        'caste_certificate',
-        'scholarship_proof',
-        'secondary_marksheet',
-        'senior_secondary_marksheet',
+        // 'passport_photo',
+        // 'marksheet',
+        // 'caste_certificate',
+        // 'scholarship_proof',
+        // 'secondary_marksheet',
+        // 'senior_secondary_marksheet',
         
         // Status & Metadata
         'status',
@@ -111,7 +111,22 @@ class SMstudents extends Model
         'updated_by',
         'session',
         'branch',
-    ];
+
+        'father_grade',
+    'paidAmount',
+    'remainingAmount',
+    'paymentHistory',
+    'last_payment_date',
+    'admission_date',
+    'activities',
+    
+    // Documents
+    'passport_photo',
+    'caste_certificate',
+    'scholarship_proof',
+    'secondary_marksheet',
+    'senior_secondary_marksheet',
+];
     
     protected $casts = [
         'dob' => 'date',
@@ -131,6 +146,9 @@ class SMstudents extends Model
         'installment_3' => 'float',
         'paid_fees' => 'float',
         'remaining_fees' => 'float',
+        'paymentHistory' => 'array',
+    'activities' => 'array',
+    'last_payment_date' => 'date',
     ];
 
     public function batch()
