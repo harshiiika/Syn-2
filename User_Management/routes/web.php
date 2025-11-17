@@ -23,6 +23,8 @@ use App\Http\Controllers\Student\SmStudentsController;
 use App\Http\Controllers\Student\PaymentController;
 use App\Http\Controllers\Attendance\EmployeeController;
 use App\Http\Controllers\FeesManagementController;
+use App\Http\Controllers\Attendance\StudentAController;
+
 
 
 // -------------------------
@@ -355,6 +357,10 @@ Route::prefix('attendance/employee')->name('attendance.employee.')->group(functi
     Route::get('/export', [EmployeeController::class, 'exportAttendance'])
         ->name('export');
 
+       // Monthly Attendance (Simple Table View)
+        Route::get('/monthly', [EmployeeController::class, 'monthly'])->name('monthly');
+        Route::get('/monthly/data', [EmployeeController::class, 'getMonthlyData'])->name('monthly.data');
+        Route::get('/monthly/details', [EmployeeController::class, 'monthlyDetails'])->name('monthly.details');
 });
 
 // Fees Management - Main Page
@@ -432,6 +438,8 @@ Route::get('/fees-management/export-pending', function () {
         'message' => 'Export functionality will be added soon'
     ]);
 })->name('fees.export');
+
+
 // Fees Management Routes
 Route::prefix('fees')->name('fees.')->group(function () {
     // Main page
@@ -449,4 +457,39 @@ Route::prefix('fees')->name('fees.')->group(function () {
 // Profile Routes
 Route::prefix('profile')->name('profile.')->group(function () {
     Route::get('/', [ProfileController::class, 'index'])->name('index');
+});
+
+
+
+Route::prefix('attendance/student')->name('attendance.student.')->group(function () {
+    
+    // Main index page (Daily Attendance)
+    Route::get('/', [StudentAController::class, 'index'])
+        ->name('index');
+    
+    // Get attendance data (AJAX)
+    Route::get('/data', [StudentAController::class, 'getData'])
+        ->name('data');
+    
+    // Mark individual attendance
+    Route::post('/mark', [StudentAController::class, 'markAttendance'])
+        ->name('mark');
+    
+    // Mark all attendance (bulk)
+    Route::post('/mark-all', [StudentController::class, 'markAllAttendance'])
+        ->name('mark.all');
+    
+    // Monthly Attendance (Simple Table View)
+    Route::get('/monthly', [StudentAController::class, 'monthly'])
+        ->name('monthly');
+    
+    Route::get('/monthly/data', [StudentAController::class, 'getMonthlyData'])
+        ->name('monthly.data');
+    
+    Route::get('/monthly/details', [StudentAController::class, 'monthlyDetails'])
+        ->name('monthly.details');
+    
+    // Export attendance (optional - for future)
+    Route::get('/export', [StudentAController::class, 'exportAttendance'])
+        ->name('export');
 });

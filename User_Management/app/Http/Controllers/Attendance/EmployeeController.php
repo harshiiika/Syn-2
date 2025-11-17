@@ -394,4 +394,274 @@ public function markAttendance(Request $request)
             ], 500);
         }
     }
+
+
+/**
+ * Display monthly attendance view (simple table format)
+ */
+  public function monthly()
+    {
+        try {
+            $branches = Branch::where('status', 'Active')
+                ->select('_id', 'name')
+                ->get();
+
+            $roles = Role::select('_id', 'name')
+                ->get();
+
+            Log::info('✅ Monthly Attendance Page Loaded');
+
+            return view('attendance.employee.monthly', compact('branches', 'roles'));
+            
+        } catch (\Exception $e) {
+            Log::error('❌ Error loading monthly attendance page: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load monthly attendance page');
+        }
+    }
+
+/**
+ * Get monthly attendance summary data (simple aggregated view)
+ */
+ public function getMonthlyData(Request $request)
+    {
+        try {
+            Log::info('📊 Getting monthly attendance summary', ['filters' => $request->all()]);
+
+            $branch = $request->get('branch');
+            $role = $request->get('role');
+            $month = $request->get('month', date('Y-m')); // Format: "2025-11"
+            $search = $request->get('search');
+            $perPage = $request->get('per_page', 10);
+
+            // Parse month to get date range
+            $year = (int) substr($month, 0, 4);
+            $monthNum = (int) substr($month, 5, 2);
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNum, $year);
+            
+            $firstDate = sprintf('%04d-%02d-01', $year, $monthNum);
+            $lastDate = sprintf('%04d-%02d-%02d', $year, $monthNum, $daysInMonth);
+
+            // Calculate total working days (excluding weekends)
+            $totalWorkingDays = 0;
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $date = sprintf('%04d-%02d-%02d', $year, $monthNum, $day);
+                $dayOfWeek = date('w', strtotime($date));
+                if ($dayOfWeek != 0 && $dayOfWeek != 6) { // Not Sunday or Saturday
+                    $totalWorkingDays++;
+                }
+            }
+
+            // Build employee query
+            $query = User::where('status', 'Active');
+
+            if ($branch) {
+                $query->where('branch', $branch);
+            }
+
+            if ($role) {
+                $roleDoc = Role::where('name', $role)->first();
+                if ($roleDoc) {
+                    $query->whereRaw([
+                        'roles' => ['$in' => [$roleDoc->_id]]
+                    ]);
+                }
+            }
+
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+
+            $employees = $query->paginate($perPage);
+
+            // Get all roles for mapping
+            $allRoles = Role::all()->keyBy('_id');
+
+            // Get employee IDs
+            $employeeIds = $employees->pluck('_id')->map(function($id) {
+                return (string) $id;
+            })->toArray();
+
+            // Fetch attendance records for the month
+            $attendanceRecords = AttendanceRecord::whereIn('employee_id', $employeeIds)
+                ->where('date', '>=', $firstDate)
+                ->where('date', '<=', $lastDate)
+                ->get();
+
+            Log::info('📋 Found attendance records', [
+                'count' => $attendanceRecords->count(),
+                'date_range' => $firstDate . ' to ' . $lastDate
+            ]);
+
+            // Group by employee and count statuses
+            $attendanceSummary = [];
+            foreach ($attendanceRecords as $record) {
+                $empId = (string) $record->employee_id;
+                
+                if (!isset($attendanceSummary[$empId])) {
+                    $attendanceSummary[$empId] = [
+                        'present' => 0,
+                        'absent' => 0
+                    ];
+                }
+                
+                if ($record->status === 'present') {
+                    $attendanceSummary[$empId]['present']++;
+                } elseif ($record->status === 'absent') {
+                    $attendanceSummary[$empId]['absent']++;
+                }
+            }
+
+            // Format employee data with attendance summary
+            $data = $employees->map(function($employee) use ($allRoles, $attendanceSummary, $totalWorkingDays) {
+                // Extract role names
+                $roleNames = [];
+                if (isset($employee->roles) && is_array($employee->roles)) {
+                    foreach ($employee->roles as $roleId) {
+                        $roleIdStr = (string) $roleId;
+                        if (isset($allRoles[$roleIdStr])) {
+                            $roleNames[] = $allRoles[$roleIdStr]->name;
+                        }
+                    }
+                }
+                $roleDisplay = !empty($roleNames) ? implode(', ', $roleNames) : 'N/A';
+
+                $employeeIdStr = (string) $employee->_id;
+                $summary = $attendanceSummary[$employeeIdStr] ?? ['present' => 0, 'absent' => 0];
+
+                return [
+                    '_id' => $employeeIdStr,
+                    'name' => $employee->name,
+                    'email' => $employee->email,
+                    'role' => $roleDisplay,
+                    'branch' => $employee->branch ?? 'N/A',
+                    'present_count' => $summary['present'],
+                    'absent_count' => $summary['absent'],
+                    'total_working_days' => $totalWorkingDays
+                ];
+            });
+
+            Log::info('✅ Monthly summary processed', [
+                'employee_count' => $data->count(),
+                'working_days' => $totalWorkingDays
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $data->values(),
+                'current_page' => $employees->currentPage(),
+                'last_page' => $employees->lastPage(),
+                'per_page' => $employees->perPage(),
+                'total' => $employees->total()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Error getting monthly summary: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load monthly attendance data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+/**
+ * Get detailed attendance records for a specific employee in a month
+ */
+   public function monthlyDetails(Request $request)
+    {
+        try {
+            $employeeId = $request->get('employee_id');
+            $month = $request->get('month', date('Y-m'));
+
+            // Parse month
+            $year = (int) substr($month, 0, 4);
+            $monthNum = (int) substr($month, 5, 2);
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNum, $year);
+
+            Log::info('🔍 Fetching monthly details', [
+                'employee_id' => $employeeId,
+                'month' => $month,
+                'days_in_month' => $daysInMonth
+            ]);
+
+            // Get all attendance records for this employee in this month
+            $firstDate = sprintf('%04d-%02d-01', $year, $monthNum);
+            $lastDate = sprintf('%04d-%02d-%02d', $year, $monthNum, $daysInMonth);
+
+            $records = AttendanceRecord::where('employee_id', $employeeId)
+                ->where('date', '>=', $firstDate)
+                ->where('date', '<=', $lastDate)
+                ->get()
+                ->keyBy('date'); // Key by date for easy lookup
+
+            Log::info('📋 Found records', [
+                'count' => $records->count(),
+                'dates' => $records->keys()->toArray()
+            ]);
+
+            // Generate all days of the month
+            $allDays = [];
+            $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $dateStr = sprintf('%04d-%02d-%02d', $year, $monthNum, $day);
+                $timestamp = strtotime($dateStr);
+                $dayOfWeek = date('w', $timestamp);
+                $dayName = $dayNames[$dayOfWeek];
+                
+                // Format date nicely
+                $formattedDate = date('Y-m-d', $timestamp);
+                
+                // Check if there's an attendance record
+                $status = 'N'; // Default: Not Marked
+                $statusText = 'Not Marked';
+                
+                if (isset($records[$dateStr])) {
+                    $record = $records[$dateStr];
+                    $status = $record->status === 'present' ? 'Present' : 'Absent';
+                    $statusText = $status;
+                }
+                
+                // If it's a weekend, mark as such
+                if ($dayOfWeek == 0 || $dayOfWeek == 6) {
+                    // Weekend - don't change status if already marked
+                    if ($status === 'Not Marked') {
+                        $statusText = 'Weekend';
+                    }
+                }
+
+                $allDays[] = [
+                    'date' => $formattedDate,
+                    'day' => $dayName,
+                    'status' => $statusText,
+                    'is_weekend' => ($dayOfWeek == 0 || $dayOfWeek == 6)
+                ];
+            }
+
+            Log::info('✅ Generated full month calendar', [
+                'total_days' => count($allDays),
+                'marked_days' => $records->count()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $allDays
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Error fetching monthly details: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
