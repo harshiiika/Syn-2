@@ -287,8 +287,8 @@
           <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Student</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Employee</a></li>
               </ul>
             </div>
           </div>
@@ -802,11 +802,15 @@
           </div>
 
           <div class="form-group">
-            <label>Marksheet of Last Qualifying Exam</label>
-            <input type="file" name="marksheet" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
-            @if(!empty($student->marksheet))
-              <small class="text-muted">Current: <a href="{{ asset('storage/' . $student->marksheet) }}" target="_blank">View</a></small>
-            @endif
+              <label>Marksheet of Last Qualifying Exam</label>
+              <input type="file" name="marksheet" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+
+              @if(!empty($student->marksheet))
+                 <small class="text-muted">
+    Current File: 
+    <a href="{{ $student->marksheet }}" target="_blank">View</a>
+</small>
+              @endif
           </div>
 
           <div class="form-group">

@@ -521,7 +521,6 @@ class PendingFeesController extends Controller
             
             $newRemainingBalance = $totalFeesWithGST - $newPaidAmount;
 
-            // ✅ CRITICAL FIX: Only consider fully paid if balance is very close to zero (≤ ₹5)
             // This prevents premature transfer due to rounding errors
             $isFullyPaid = false;
             if ($newRemainingBalance <= 5 && $newRemainingBalance >= -5) {
@@ -539,101 +538,160 @@ class PendingFeesController extends Controller
                 'is_fully_paid' => $isFullyPaid,
             ]);
 
-            // ✅ CHECK IF FULLY PAID - Only transfer when truly paid
-            if ($isFullyPaid && $newRemainingBalance == 0) {
-                Log::info('FEES FULLY PAID - Transferring to SMstudents');
+           // ✅ CHECK IF FULLY PAID - Only transfer when truly paid
+if ($isFullyPaid && $newRemainingBalance == 0) {
+    Log::info('FEES FULLY PAID - Transferring to SMstudents');
 
-                $totalFees = floatval($student->total_fees ?? ($totalFeesWithGST / 1.18));
-                $gstAmount = floatval($student->gst_amount ?? ($totalFeesWithGST - $totalFees));
+    $totalFees = floatval($student->total_fees ?? ($totalFeesWithGST / 1.18));
+    $gstAmount = floatval($student->gst_amount ?? ($totalFeesWithGST - $totalFees));
 
-                // ✅ Create activity log for SMstudents
-                $activities = [];
-                
-                // Add payment completion activity
-                $activities[] = [
-                    'title' => 'Fees Payment Completed',
-                    'description' => 'paid full fees amount of ₹' . number_format($totalFeesWithGST, 2),
-                    'performed_by' => auth()->user()->name ?? 'Admin',
-                    'created_at' => now()->toIso8601String(),
-                ];
+    // ✅ Create activity log for SMstudents
+    $activities = [];
+    
+    // Add payment completion activity
+    $activities[] = [
+        'title' => 'Fees Payment Completed',
+        'description' => 'paid full fees amount of ₹' . number_format($totalFeesWithGST, 2),
+        'performed_by' => auth()->user()->name ?? 'Admin',
+        'created_at' => now()->toIso8601String(),
+    ];
 
-                // Add transfer activity
-                $activities[] = [
-                    'title' => 'Student Activated',
-                    'description' => 'transferred student from pending fees to active students',
-                    'performed_by' => auth()->user()->name ?? 'Admin',
-                    'created_at' => now()->toIso8601String(),
-                ];
+    // Add transfer activity
+    $activities[] = [
+        'title' => 'Student Activated',
+        'description' => 'transferred student from pending fees to active students',
+        'performed_by' => auth()->user()->name ?? 'Admin',
+        'created_at' => now()->toIso8601String(),
+    ];
 
-                $smStudentData = [
-                    'roll_no' => $student->roll_no ?? 'SM' . now()->format('ymd') . rand(100, 999),
-                    'student_name' => $student->name,
-                    'email' => $student->email ?? $student->studentContact ?? ($student->name . '@temp.com'),
-                    'phone' => $student->mobileNumber ?? null,
-                    'father_name' => $student->father ?? null,
-                    'mother_name' => $student->mother ?? null,
-                    'dob' => $student->dob ?? null,
-                    'father_contact' => $student->mobileNumber ?? null,
-                    'father_whatsapp' => $student->fatherWhatsapp ?? null,
-                    'mother_contact' => $student->motherContact ?? null,
-                    'gender' => $student->gender ?? null,
-                    'father_occupation' => $student->fatherOccupation ?? null,
-                    'father_caste' => $student->category ?? null,
-                    'mother_occupation' => $student->motherOccupation ?? null,
-                    'state' => $student->state ?? null,
-                    'city' => $student->city ?? null,
-                    'pincode' => $student->pinCode ?? null,
-                    'address' => $student->address ?? null,
-                    'belongs_other_city' => $student->belongToOtherCity ?? 'No',
-                    'previous_class' => $student->previousClass ?? null,
-                    'academic_medium' => $student->previousMedium ?? $student->medium ?? null,
-                    'school_name' => $student->schoolName ?? null,
-                    'academic_board' => $student->previousBoard ?? $student->board ?? null,
-                    'passing_year' => $student->passingYear ?? null,
-                    'percentage' => $student->percentage ?? null,
-                    'batch_id' => $student->batch_id ?? null,
-                    'batch_name' => $student->batchName ?? null,
-                    'course_id' => $student->course_id ?? null,
-                    'course_name' => $student->courseName ?? null,
-                    'course_content' => $student->courseContent ?? null,
-                    'delivery' => $student->deliveryMode ?? 'Offline',
-                    'delivery_mode' => $student->deliveryMode ?? 'Offline',
-                    'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
-                    'scholarship_name' => $student->scholarship_name ?? 'N/A',
-                    'total_fee_before_discount' => $student->total_fee_before_discount ?? $totalFees,
-                    'discount_percentage' => $student->discount_percentage ?? 0,
-                    'discounted_fee' => $student->discounted_fee ?? $totalFees,
-                    'total_fees' => $totalFees,
-                    'gst_amount' => $gstAmount,
-                    'total_fees_inclusive_tax' => $totalFeesWithGST,
-                    'fees_breakup' => $student->fees_breakup ?? 'Class room course (with test series & study material)',
-                    'paid_fees' => $newPaidAmount,
-                    'paidAmount' => $newPaidAmount,
-                    'remaining_fees' => 0,
-                    'remainingAmount' => 0,
-                    'fee_status' => 'paid',
-                    'paymentHistory' => $paymentHistory,
-                    'last_payment_date' => $validated['payment_date'],
-                    'status' => 'active',
-                    'transferred_from' => 'pending_fees',
-                    'transferred_at' => now(),
-                    'activities' => $activities, // ✅ Add activities
-                    'created_at' => $student->created_at ?? now(),
-                    'updated_at' => now(),
-                ];
+    // ✅ COMPLETE FIELD MAPPING - All fields properly mapped
+    $smStudentData = [
+        // Roll Number & Basic Identity
+        'roll_no' => $student->roll_no ?? 'SM' . now()->format('ymd') . rand(100, 999),
+        'student_name' => $student->name,
+        'email' => $student->email ?? $student->studentContact ?? ($student->name . '@temp.com'),
+        'phone' => $student->studentContact ?? $student->mobileNumber,
+        
+        // ✅ FIXED: Parent Details
+        'father_name' => $student->father,
+        'mother_name' => $student->mother,
+        'dob' => $student->dob,
+        
+        // ✅ FIXED: Contact Numbers
+        'father_contact' => $student->mobileNumber,
+        'father_whatsapp' => $student->fatherWhatsapp,
+        'mother_contact' => $student->motherContact,
+        'student_contact' => $student->studentContact,
+        
+        // ✅ FIXED: Personal Details
+        'category' => $student->category,  // This was missing!
+        'gender' => $student->gender,
+        'father_occupation' => $student->fatherOccupation,
+        'father_grade' => $student->fatherGrade ?? null,
+        'mother_occupation' => $student->motherOccupation,
+        
+        // ✅ FIXED: Address Details
+        'state' => $student->state,
+        'city' => $student->city,
+        'pincode' => $student->pinCode,  // Note: pinCode -> pincode
+        'address' => $student->address,
+        'belongs_other_city' => $student->belongToOtherCity ?? 'No',
+        'economic_weaker_section' => $student->economicWeakerSection ?? 'No',
+        'army_police_background' => $student->armyPoliceBackground ?? 'No',
+        'specially_abled' => $student->speciallyAbled ?? 'No',
+        
+        // ✅ FIXED: Academic Details
+        'previous_class' => $student->previousClass,
+        'academic_medium' => $student->previousMedium ?? $student->medium,
+        'school_name' => $student->schoolName,
+        'academic_board' => $student->previousBoard ?? $student->board,
+        'passing_year' => $student->passingYear,
+        'percentage' => $student->percentage,
+        
+        // ✅ FIXED: Scholarship Test Info
+        'is_repeater' => $student->isRepeater ?? 'No',
+        'scholarship_test' => $student->scholarshipTest ?? 'No',
+        'last_board_percentage' => $student->lastBoardPercentage,
+        'competition_exam' => $student->competitionExam ?? 'No',
+        
+        // ✅ FIXED: Course & Batch
+        'batch_id' => $student->batch_id,
+        'batch_name' => $student->batchName,
+        'course_id' => $student->course_id,
+        'course_name' => $student->courseName,
+        'course_type' => $student->courseType ?? $student->course_type,
+        'delivery_mode' => $student->deliveryMode ?? 'Offline',
+        'course_content' => $student->courseContent ?? 'Class room course (with test series & study material)',
+        'medium' => $student->medium,
+        'board' => $student->board,
+        
+        // ✅ FIXED: Scholarship & Discount Details
+        'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
+        'scholarship_name' => $student->scholarship_name ?? 'N/A',
+        'total_fee_before_discount' => $student->total_fee_before_discount ?? $totalFees,
+        'discretionary_discount' => $student->discretionary_discount ?? 'No',
+        'discretionary_discount_type' => $student->discretionary_discount_type,
+        'discretionary_discount_value' => $student->discretionary_discount_value ?? 0,
+        'discretionary_discount_reason' => $student->discretionary_discount_reason,
+        'discount_percentage' => $student->discount_percentage ?? 0,
+        'discounted_fee' => $student->discounted_fee ?? $totalFees,
+        
+        // ✅ FIXED: Fees Details
+        'fees_breakup' => $student->fees_breakup ?? 'Class room course (with test series & study material)',
+        'total_fees' => $totalFees,
+        'gst_amount' => $gstAmount,
+        'total_fees_inclusive_tax' => $totalFeesWithGST,
+        'single_installment_amount' => $student->single_installment_amount ?? $totalFeesWithGST,
+        'installment_1' => $student->installment_1 ?? round($totalFeesWithGST * 0.40, 2),
+        'installment_2' => $student->installment_2 ?? round($totalFeesWithGST * 0.30, 2),
+        'installment_3' => $student->installment_3 ?? round($totalFeesWithGST * 0.30, 2),
+        'paid_fees' => $newPaidAmount,
+        'paidAmount' => $newPaidAmount,
+        'remaining_fees' => 0,
+        'remainingAmount' => 0,
+        'fee_status' => 'paid',
+        'paymentHistory' => $paymentHistory,
+        'last_payment_date' => $validated['payment_date'],
+        
+        // ✅ FIXED: Documents - preserve from pending_fees
+        'passport_photo' => $student->passport_photo,
+        'marksheet' => $student->marksheet,
+        'caste_certificate' => $student->caste_certificate ?? null,
+        'scholarship_proof' => $student->scholarship_proof ?? null,
+        'secondary_marksheet' => $student->secondary_marksheet ?? null,
+        'senior_secondary_marksheet' => $student->senior_secondary_marksheet ?? null,
+        
+        // ✅ FIXED: Status & Metadata
+        'status' => 'active',
+        'admission_date' => now(),
+        'transferred_from' => 'pending_fees',
+        'transferred_at' => now(),
+        'activities' => $activities,
+        'session' => session('current_session', '2025-2026'),
+        'branch' => $student->branch ?? 'Main Branch',
+        'created_at' => $student->created_at ?? now(),
+        'updated_at' => now(),
+    ];
 
-                $smStudent = SMstudents::create($smStudentData);
+    Log::info('Creating SMstudents record with complete data', [
+        'student_name' => $smStudentData['student_name'],
+        'category' => $smStudentData['category'],
+        'dob' => $smStudentData['dob'],
+        'mother_name' => $smStudentData['mother_name'],
+    ]);
 
-                Log::info('Student transferred to SMstudents with activities', [
-                    'sm_student_id' => $smStudent->_id,
-                    'activities_count' => count($activities),
-                ]);
+    $smStudent = SMstudents::create($smStudentData);
 
-                $student->delete();
+    Log::info('✅ Student transferred successfully with ALL fields', [
+        'sm_student_id' => $smStudent->_id,
+        'activities_count' => count($activities),
+    ]);
 
-                return redirect()->route('smstudents.index')
-                    ->with('success', "Payment successful! Student '{$smStudent->student_name}' moved to Active Students. Total Paid: ₹" . number_format($newPaidAmount, 2));
-            }
+    $student->delete();
+
+    return redirect()->route('smstudents.index')
+        ->with('success', "Payment successful! Student '{$smStudent->student_name}' moved to Active Students. Total Paid: ₹" . number_format($newPaidAmount, 2));
+}
 
             // ✅ PARTIAL PAYMENT - Update student record
             $feeStatus = $newPaidAmount > 0 ? 'partial' : 'pending';
@@ -701,4 +759,245 @@ class PendingFeesController extends Controller
                 ->with('error', 'Failed to delete student');
         }
     }
+public function transferToSmStudents($id)
+{
+    try {
+        $pendingFees = PendingFee::findOrFail($id);
+        $rawData = $pendingFees->getAttributes();
+        
+        Log::info('Transferring Pending Fees to SM Students:', [
+            'pending_fees_id' => $id,
+            'name' => $rawData['name'] ?? 'N/A',
+            'father' => $rawData['father'] ?? 'N/A',
+            'has_documents' => isset($rawData['passport_photo'])
+        ]);
+        
+        // Generate roll number
+        $rollNo = $this->generateRollNumber();
+        
+        // ✅ CREATE SM STUDENTS DATA WITH BOTH FIELD NAME FORMATS
+        $smStudentData = [
+            // ✅ PRIMARY FIELDS (snake_case for view)
+            'roll_no' => $rollNo,
+            'student_name' => $rawData['name'] ?? 'N/A',
+            'email' => $rawData['email'] ?? null,
+            'phone' => $rawData['studentContact'] ?? $rawData['mobileNumber'] ?? null,
+            
+            // ✅ PERSONAL DETAILS (both formats)
+            'father_name' => $rawData['father'] ?? 'N/A',
+            'father' => $rawData['father'] ?? 'N/A', // Keep camelCase too
+            
+            'mother_name' => $rawData['mother'] ?? 'N/A',
+            'mother' => $rawData['mother'] ?? 'N/A', // Keep camelCase too
+            
+            'dob' => $rawData['dob'] ?? null,
+            
+            'father_contact' => $rawData['mobileNumber'] ?? null,
+            'mobileNumber' => $rawData['mobileNumber'] ?? null, // Keep camelCase too
+            
+            'father_whatsapp' => $rawData['fatherWhatsapp'] ?? null,
+            'fatherWhatsapp' => $rawData['fatherWhatsapp'] ?? null, // Keep camelCase too
+            
+            'mother_contact' => $rawData['motherContact'] ?? null,
+            'motherContact' => $rawData['motherContact'] ?? null, // Keep camelCase too
+            
+            'category' => $rawData['category'] ?? null,
+            'gender' => $rawData['gender'] ?? null,
+            
+            'father_occupation' => $rawData['fatherOccupation'] ?? null,
+            'fatherOccupation' => $rawData['fatherOccupation'] ?? null, // Keep camelCase too
+            
+            'mother_occupation' => $rawData['motherOccupation'] ?? null,
+            'motherOccupation' => $rawData['motherOccupation'] ?? null, // Keep camelCase too
+            
+            // ✅ ADDRESS (both formats)
+            'state' => $rawData['state'] ?? null,
+            'city' => $rawData['city'] ?? null,
+            
+            'pincode' => $rawData['pinCode'] ?? null,
+            'pinCode' => $rawData['pinCode'] ?? null, // Keep camelCase too
+            
+            'address' => $rawData['address'] ?? null,
+            
+            // ✅ ADDITIONAL INFO (both formats)
+            'belongs_other_city' => $rawData['belongToOtherCity'] ?? 'No',
+            'belongToOtherCity' => $rawData['belongToOtherCity'] ?? 'No',
+            
+            'economic_weaker_section' => $rawData['economicWeakerSection'] ?? 'No',
+            'economicWeakerSection' => $rawData['economicWeakerSection'] ?? 'No',
+            
+            'army_police_background' => $rawData['armyPoliceBackground'] ?? 'No',
+            'armyPoliceBackground' => $rawData['armyPoliceBackground'] ?? 'No',
+            
+            'specially_abled' => $rawData['speciallyAbled'] ?? 'No',
+            'speciallyAbled' => $rawData['speciallyAbled'] ?? 'No',
+            
+            // ✅ COURSE DETAILS (both formats)
+            'course_type' => $rawData['courseType'] ?? $rawData['course_type'] ?? null,
+            'courseType' => $rawData['courseType'] ?? $rawData['course_type'] ?? null,
+            
+            'course_name' => $rawData['courseName'] ?? null,
+            'courseName' => $rawData['courseName'] ?? null,
+            
+            'delivery_mode' => $rawData['deliveryMode'] ?? null,
+            'deliveryMode' => $rawData['deliveryMode'] ?? null,
+            
+            'medium' => $rawData['medium'] ?? null,
+            'board' => $rawData['board'] ?? null,
+            
+            'course_content' => $rawData['courseContent'] ?? null,
+            'courseContent' => $rawData['courseContent'] ?? null,
+            
+            // ✅ ACADEMIC DETAILS (both formats)
+            'previous_class' => $rawData['previousClass'] ?? null,
+            'previousClass' => $rawData['previousClass'] ?? null,
+            
+            'academic_medium' => $rawData['previousMedium'] ?? null,
+            'previousMedium' => $rawData['previousMedium'] ?? null,
+            
+            'school_name' => $rawData['schoolName'] ?? null,
+            'schoolName' => $rawData['schoolName'] ?? null,
+            
+            'academic_board' => $rawData['previousBoard'] ?? null,
+            'previousBoard' => $rawData['previousBoard'] ?? null,
+            
+            'passing_year' => $rawData['passingYear'] ?? null,
+            'passingYear' => $rawData['passingYear'] ?? null,
+            
+            'percentage' => $rawData['percentage'] ?? null,
+            
+            // ✅ SCHOLARSHIP (both formats - CRITICAL FIX)
+            'is_repeater' => $rawData['isRepeater'] ?? 'No',
+            'isRepeater' => $rawData['isRepeater'] ?? 'No',
+            
+            'scholarship_test' => $rawData['scholarshipTest'] ?? 'No',
+            'scholarshipTest' => $rawData['scholarshipTest'] ?? 'No',
+            
+            // ⭐ BOARD PERCENTAGE - ALL 3 FORMATS TO FIX YOUR ERROR
+            'board_percentage' => $rawData['lastBoardPercentage'] ?? null,
+            'last_board_percentage' => $rawData['lastBoardPercentage'] ?? null,
+            'lastBoardPercentage' => $rawData['lastBoardPercentage'] ?? null,
+            
+            'competition_exam' => $rawData['competitionExam'] ?? 'No',
+            'competitionExam' => $rawData['competitionExam'] ?? 'No',
+            
+            // ✅ BATCH (both formats)
+            'batch_name' => $rawData['batchName'] ?? null,
+            'batchName' => $rawData['batchName'] ?? null,
+            
+            'batch_id' => $rawData['batch_id'] ?? null,
+            'course_id' => $rawData['course_id'] ?? null,
+            
+            // ✅ FEES & SCHOLARSHIP
+            'eligible_for_scholarship' => $rawData['eligible_for_scholarship'] ?? 'No',
+            'scholarship_name' => $rawData['scholarship_name'] ?? null,
+            'total_fee_before_discount' => $rawData['total_fee_before_discount'] ?? 0,
+            'discretionary_discount' => $rawData['discretionary_discount'] ?? 'No',
+            'discretionary_discount_type' => $rawData['discretionary_discount_type'] ?? null,
+            'discretionary_discount_value' => $rawData['discretionary_discount_value'] ?? 0,
+            'discretionary_discount_reason' => $rawData['discretionary_discount_reason'] ?? null,
+            'discount_percentage' => $rawData['discount_percentage'] ?? 0,
+            'discounted_fee' => $rawData['discounted_fee'] ?? 0,
+            'fees_breakup' => $rawData['fees_breakup'] ?? null,
+            'total_fees' => $rawData['total_fees'] ?? 0,
+            'gst_amount' => $rawData['gst_amount'] ?? 0,
+            'total_fees_inclusive_tax' => $rawData['total_fees_inclusive_tax'] ?? 0,
+            'single_installment_amount' => $rawData['single_installment_amount'] ?? 0,
+            'installment_1' => $rawData['installment_1'] ?? 0,
+            'installment_2' => $rawData['installment_2'] ?? 0,
+            'installment_3' => $rawData['installment_3'] ?? 0,
+            'paid_fees' => 0,
+            'remaining_fees' => $rawData['total_fees_inclusive_tax'] ?? 0,
+            
+            // ⭐ CRITICAL: DOCUMENTS - Copy ALL
+            'passport_photo' => $rawData['passport_photo'] ?? null,
+            'marksheet' => $rawData['marksheet'] ?? null,
+            'caste_certificate' => $rawData['caste_certificate'] ?? null,
+            'scholarship_proof' => $rawData['scholarship_proof'] ?? null,
+            'secondary_marksheet' => $rawData['secondary_marksheet'] ?? null,
+            'senior_secondary_marksheet' => $rawData['senior_secondary_marksheet'] ?? null,
+            
+            // ✅ ARRAYS
+            'fees' => [],
+            'other_fees' => [],
+            'transactions' => [],
+            'paymentHistory' => [],
+            'history' => $rawData['history'] ?? [],
+            
+            // ✅ ACTIVITY LOG
+            'activities' => [[
+                'title' => 'Student Enrolled',
+                'description' => 'Student successfully enrolled with Roll No: ' . $rollNo,
+                'performed_by' => auth()->user()->name ?? 'System',
+                'performed_by_email' => auth()->user()->email ?? 'system@school.com',
+                'created_at' => now()->toDateTimeString(),
+                'timestamp' => now()->timestamp,
+                'ip_address' => request()->ip()
+            ]],
+            
+            // ✅ STATUS
+            'status' => 'active',
+            'admission_date' => $rawData['admission_date'] ?? now(),
+            'transferred_from' => 'pending_fees',
+            'pending_fees_id' => (string)$pendingFees->_id,
+            'transferred_at' => now(),
+            'created_by' => $rawData['created_by'] ?? auth()->user()->name ?? 'System',
+            'updated_by' => auth()->user()->name ?? 'System'
+        ];
+        
+        // Create SM Student
+        $smStudent = SMstudents::create($smStudentData);
+        
+        // Update Pending Fees status
+        $pendingFees->update([
+            'status' => 'completed',
+            'sm_student_id' => (string)$smStudent->_id
+        ]);
+        
+        Log::info('Transfer to SM Students successful:', [
+            'sm_student_id' => (string)$smStudent->_id,
+            'roll_no' => $rollNo,
+            'name' => $smStudentData['student_name'],
+            'father_name' => $smStudentData['father_name'],
+            'mother_name' => $smStudentData['mother_name'],
+            'documents' => [
+                'passport_photo' => !empty($smStudentData['passport_photo']),
+                'marksheet' => !empty($smStudentData['marksheet']),
+                'caste_certificate' => !empty($smStudentData['caste_certificate'])
+            ]
+        ]);
+        
+        return redirect()->route('smstudents.index')
+            ->with('success', 'Student enrolled successfully! Roll No: ' . $rollNo);
+        
+    } catch (\Exception $e) {
+        Log::error('Transfer to SM Students failed:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return back()->with('error', 'Enrollment failed: ' . $e->getMessage());
+    }
+}
+
+
+/**
+ * Generate unique roll number
+ */
+private function generateRollNumber()
+{
+    $year = date('y');
+    $lastStudent = SMstudents::orderBy('created_at', 'desc')->first();
+    
+    if ($lastStudent && isset($lastStudent->roll_no)) {
+        // Extract number from last roll no (e.g., STU240001 -> 0001)
+        preg_match('/\d+$/', $lastStudent->roll_no, $matches);
+        $lastNumber = isset($matches[0]) ? intval($matches[0]) : 0;
+        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+    } else {
+        $newNumber = '0001';
+    }
+    
+    return 'STU' . $year . $newNumber;
+}
+
 }
