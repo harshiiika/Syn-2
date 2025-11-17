@@ -21,6 +21,8 @@ use App\Http\Controllers\Student\OnboardController;
 use App\Http\Controllers\Student\PendingController;
 use App\Http\Controllers\Student\SmStudentsController;
 use App\Http\Controllers\Student\PaymentController;
+use App\Http\Controllers\Attendance\EmployeeController;
+
 
 // -------------------------
 // Authentication Routes+++++
@@ -333,7 +335,7 @@ Route::prefix('smstudents')
         // Specific actions - MUST BE BEFORE /{id} route
         Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
         Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
-        Route::get('/{id}/testseries', [SmStudentsController::class, 'testSeries'])->name('testseries'); // ✅ FIXED
+        Route::get('/{id}/testseries', [SmStudentsController::class, 'testSeries'])->name('testseries');
         Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
         
         // Update & actions
@@ -346,15 +348,6 @@ Route::prefix('smstudents')
         // Generic view route - MUST BE LAST
         Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
     });
-
-
-
-
-
-
-
-
-
 
 //  Onboard transfer route OUTSIDE smstudents group
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])
@@ -415,4 +408,32 @@ Route::prefix('inquiries')->name('inquiries.')->group(function () {
     
     // Delete inquiry
     Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
+});
+
+
+//Attendance Routes
+//Employee in Attendance
+
+// Employee Attendance Routes
+Route::prefix('attendance/employee')->name('attendance.employee.')->group(function () {
+    
+    // Main index page
+    Route::get('/', [EmployeeController::class, 'index'])
+        ->name('index');
+    
+    // Get attendance data (AJAX)
+    Route::get('/data', [EmployeeController::class, 'getData'])
+        ->name('data');
+    
+    // Mark individual attendance
+    Route::post('/mark', [EmployeeController::class, 'markAttendance'])
+        ->name('mark');
+    
+    // Mark all attendance (bulk)
+    Route::post('/mark-all', [EmployeeController::class, 'markAllAttendance'])
+        ->name('mark.all');
+    
+    // Export attendance (optional - for future)
+    Route::get('/export', [EmployeeController::class, 'exportAttendance'])
+        ->name('export');
 });
