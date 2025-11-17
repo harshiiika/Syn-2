@@ -789,6 +789,7 @@
         </div>
       </div>
 
+      <!-- edit-onboard -->
       <!-- Upload Documents Section -->
       <div class="form-section">
         <h4>Upload Documents</h4>

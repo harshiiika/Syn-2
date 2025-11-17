@@ -62,19 +62,18 @@ class StudentController extends Controller
     /**
      * Update pending student information with file uploads
      */
-   public function update(Request $request, $id)
+public function update(Request $request, $id)
 {
     try {
         Log::info('=== PENDING STUDENT UPDATE START ===', [
-            'student_id' => $id
+            'student_id' => $id,
+            'has_passport_photo' => $request->hasFile('passport_photo'),
+            'has_marksheet' => $request->hasFile('marksheet'),
+            'has_secondary_marksheet' => $request->hasFile('secondary_marksheet')
         ]);
 
         $student = Pending::findOrFail($id);
         
-        Log::info('Pending student found:', [
-            'name' => $student->name
-        ]);
-
         // Validate all fields
         $validated = $request->validate([
             // Basic Details
@@ -135,7 +134,7 @@ class StudentController extends Controller
             'senior_secondary_marksheet' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
         ]);
 
-        // Handle file uploads
+        // ✅ CRITICAL FIX: Handle file uploads and preserve existing documents
         $fileFields = [
             'passport_photo',
             'marksheet', 
@@ -145,46 +144,75 @@ class StudentController extends Controller
             'senior_secondary_marksheet'
         ];
 
+        $documentData = [];
+        
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
+                // New file uploaded - convert to Base64
                 $file = $request->file($field);
                 $fileContent = file_get_contents($file->getRealPath());
                 $base64 = base64_encode($fileContent);
                 $mimeType = $file->getMimeType();
-                $validated[$field] = "data:{$mimeType};base64,{$base64}";
+                $documentData[$field] = "data:{$mimeType};base64,{$base64}";
                 
-                Log::info("File uploaded: {$field}");
+                Log::info("✅ New file uploaded: {$field}", [
+                    'mime_type' => $mimeType,
+                    'size' => strlen($base64)
+                ]);
+            } else {
+                // No new file - preserve existing document if it exists
+                if (!empty($student->$field) && $student->$field !== 'N/A') {
+                    $documentData[$field] = $student->$field;
+                    Log::info("✅ Preserved existing document: {$field}");
+                }
             }
         }
 
         // Store courseType for compatibility
         $validated['courseType'] = $validated['course_type'];
 
-        Log::info('✅ ALL REQUIRED FIELDS FILLED - MOVING TO ONBOARDED');
+        Log::info('✅ ALL REQUIRED FIELDS FILLED - MOVING TO ONBOARDED', [
+            'documents_count' => count(array_filter($documentData))
+        ]);
 
         try {
-            // Create in student_onboard collection
-            $onboardData = array_merge($student->toArray(), $validated);
+            // ✅ Create in student_onboard collection WITH ALL DOCUMENTS
+            $onboardData = array_merge($student->toArray(), $validated, $documentData);
             $onboardData['status'] = 'onboarded';
             $onboardData['onboardedAt'] = now();
             unset($onboardData['_id']); // Remove old _id to create new
+            
+            Log::info('✅ Onboard data prepared:', [
+                'documents' => [
+                    'passport_photo' => !empty($onboardData['passport_photo']),
+                    'marksheet' => !empty($onboardData['marksheet']),
+                    'secondary_marksheet' => !empty($onboardData['secondary_marksheet']),
+                    'senior_secondary_marksheet' => !empty($onboardData['senior_secondary_marksheet']),
+                    'caste_certificate' => !empty($onboardData['caste_certificate']),
+                    'scholarship_proof' => !empty($onboardData['scholarship_proof']),
+                ]
+            ]);
             
             $onboardStudent = \App\Models\Student\Onboard::create($onboardData);
             
             // Delete from pending
             $student->delete();
             
-            Log::info('✅ Student moved to onboard collection:', [
+            Log::info('✅ Student moved to onboard collection WITH DOCUMENTS:', [
                 'new_id' => $onboardStudent->_id,
-                'name' => $onboardStudent->name
+                'name' => $onboardStudent->name,
+                'has_passport_photo' => !empty($onboardStudent->passport_photo),
+                'has_marksheet' => !empty($onboardStudent->marksheet),
+                'has_secondary_marksheet' => !empty($onboardStudent->secondary_marksheet)
             ]);
 
             return redirect()->route('student.onboard.onboard')
-                ->with('success', 'Student onboarding completed! Student moved to Onboarding list.');
+                ->with('success', 'Student onboarding completed! All documents transferred successfully.');
                 
         } catch (\Exception $e) {
             Log::error('❌ ERROR MOVING STUDENT:', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
             
             return redirect()->route('student.student.pending')
