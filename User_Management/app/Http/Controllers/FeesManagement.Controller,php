@@ -3,42 +3,140 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Student;
-use App\Models\Course;
-use App\Models\Batch;
-use App\Models\FeeTransaction;
-use Carbon\Carbon;
+use App\Models\Master\Courses;
+use App\Models\Master\Batch;
+use App\Models\Student\SMstudents;
+use Illuminate\Support\Facades\Log;
 
 class FeesManagementController extends Controller
 {
-    // Main index page
-    public function index()
+    /**
+     * Display the main fees management page
+     */
+   public function index()
+{
+    try {
+        // Get all active courses - RAW attributes
+        $coursesRaw = Courses::where('status', 'active')->get();
+        
+        // Map to ensure we have the correct structure
+        $courses = $coursesRaw->map(function($course) {
+            $attrs = $course->getAttributes();
+            
+            // Try all possible name fields
+            $courseName = $attrs['course_name'] 
+                ?? $attrs['name'] 
+                ?? $attrs['class_name'] 
+                ?? $attrs['course_type']
+                ?? 'Unnamed Course';
+            
+            $courseId = (string)($attrs['_id'] ?? $attrs['id'] ?? '');
+            
+            // Log each course for debugging
+            Log::info('Processing course', [
+                'id' => $courseId,
+                'name' => $courseName,
+                'all_attrs' => array_keys($attrs)
+            ]);
+            
+            return (object)[
+                'id' => $courseId,
+                'name' => $courseName,
+                'course_name' => $courseName, // Backup
+            ];
+        })->sortBy('name')->values();
+        
+        Log::info('Courses loaded for fees management', [
+            'count' => $courses->count(),
+            'sample' => $courses->take(3)->toArray()
+        ]);
+        
+        return view('fees_management.index', compact('courses'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error loading courses', [
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile()
+        ]);
+        
+        $courses = collect([]);
+        return view('fees_management.index', compact('courses'));
+    }
+}
+    /**
+     * Get batches by course ID - DYNAMIC LOADING
+     */
+    public function getBatchesByCourse(Request $request)
     {
-        $courses = Course::where('status', 'active')->get();
-        return view('fees.management.index', compact('courses'));
+        $courseId = $request->course_id;
+        
+        Log::info('Getting batches for course', ['course_id' => $courseId]);
+        
+        if (!$courseId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course ID is required',
+                'data' => []
+            ]);
+        }
+        
+        // Get batches using Eloquent (works with MongoDB _id)
+        $batches = Batch::where('course_id', $courseId)
+            ->where('status', 'active')
+            ->get()
+            ->map(function($batch) {
+                return [
+                    'id' => $batch->_id,
+                    'batch_name' => $batch->name ?? $batch->batch_id,
+                    'delivery_mode' => $batch->delivery_mode ?? $batch->mode
+                ];
+            });
+
+        Log::info('Batches found', ['count' => $batches->count(), 'data' => $batches]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $batches,
+            'count' => $batches->count()
+        ]);
     }
 
-    // Search student for fee collection
+    /**
+     * Search student for fee collection (Tab 1: Collect Fees)
+     */
     public function searchStudent(Request $request)
     {
         $search = $request->search;
         
-        $students = Student::where(function($query) use ($search) {
-                $query->where('name', 'LIKE', "%{$search}%")
+        if (!$search) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Search term is required',
+                'data' => []
+            ]);
+        }
+        
+        // Search using Eloquent with relationships
+        $students = SMstudents::where(function($query) use ($search) {
+                $query->where('student_name', 'LIKE', "%{$search}%")
+                      ->orWhere('name', 'LIKE', "%{$search}%")
                       ->orWhere('roll_no', 'LIKE', "%{$search}%")
+                      ->orWhere('father', 'LIKE', "%{$search}%")
                       ->orWhere('father_name', 'LIKE', "%{$search}%");
             })
-            ->with(['course', 'batch', 'feeTransactions'])
+            ->with(['course', 'batch'])
             ->get()
             ->map(function($student) {
                 return [
+                    'id' => $student->_id,
                     'roll_no' => $student->roll_no,
-                    'name' => $student->name,
-                    'father_name' => $student->father_name,
-                    'course_content' => $student->course->course_content ?? '-',
-                    'course_name' => $student->course->course_name ?? '-',
-                    'delivery_mode' => $student->delivery_mode ?? '-',
-                    'fee_status' => $this->calculateFeeStatus($student),
+                    'name' => $student->name ?? $student->student_name,
+                    'father_name' => $student->father_name ?? $student->father,
+                    'course_content' => $student->course->content ?? $student->course->class_name ?? '-',
+                    'course_name' => $student->course->name ?? $student->course->course_name ?? '-',
+                    'delivery_mode' => $student->delivery_mode ?? $student->batch->delivery_mode ?? '-',
+                    'fee_status' => $student->fee_status ?? 'Pending'
                 ];
             });
 
@@ -48,67 +146,62 @@ class FeesManagementController extends Controller
         ]);
     }
 
-    // Get batches by course
-    public function getBatchesByCourse(Request $request)
-    {
-        $batches = Batch::where('course_id', $request->course_id)
-                        ->where('status', 'active')
-                        ->get(['id', 'batch_name']);
-
-        return response()->json([
-            'success' => true,
-            'data' => $batches
-        ]);
-    }
-
-    // Search by fee status
+    /**
+     * Search by fee status (Tab 2: Fee Status)
+     */
     public function searchByStatus(Request $request)
     {
+        // Validate fee status is required
         $request->validate([
             'fee_status' => 'required'
         ]);
 
-        $query = Student::with(['course', 'batch', 'feeTransactions']);
+        $query = SMstudents::with(['course', 'batch']);
 
+        // Apply course filter if provided
         if ($request->course_id) {
             $query->where('course_id', $request->course_id);
         }
 
+        // Apply batch filter if provided
         if ($request->batch_id) {
             $query->where('batch_id', $request->batch_id);
+        }
+
+        // Apply fee status filter
+        if ($request->fee_status !== 'All') {
+            $query->where('fee_status', $request->fee_status);
         }
 
         $students = $query->get()
             ->map(function($student) {
                 return [
+                    'id' => $student->_id,
                     'roll_no' => $student->roll_no,
-                    'name' => $student->name,
-                    'father_name' => $student->father_name,
-                    'course_content' => $student->course->course_content ?? '-',
-                    'course_name' => $student->course->course_name ?? '-',
-                    'delivery_mode' => $student->delivery_mode ?? '-',
-                    'fee_status' => $this->calculateFeeStatus($student),
+                    'name' => $student->name ?? $student->student_name,
+                    'father_name' => $student->father_name ?? $student->father,
+                    'course_content' => $student->course->content ?? $student->course->class_name ?? '-',
+                    'course_name' => $student->course->name ?? $student->course->course_name ?? '-',
+                    'delivery_mode' => $student->delivery_mode ?? $student->batch->delivery_mode ?? '-',
+                    'fee_status' => $student->fee_status ?? 'Pending'
                 ];
-            })
-            ->filter(function($student) use ($request) {
-                if ($request->fee_status == 'All') {
-                    return true;
-                }
-                return $student['fee_status'] == $request->fee_status;
-            })
-            ->values();
+            });
 
         return response()->json([
             'success' => true,
-            'data' => $students
+            'data' => $students,
+            'count' => $students->count()
         ]);
     }
 
-    // Filter daily transactions
+    /**
+     * Filter daily transactions (Tab 3: Daily Transaction)
+     */
     public function filterTransactions(Request $request)
     {
-        $query = FeeTransaction::with(['student', 'course']);
+        $query = \App\Models\FeeTransaction::with(['student', 'course']);
 
+        // Apply date filters
         if ($request->from_date) {
             $query->whereDate('transaction_date', '>=', $request->from_date);
         }
@@ -121,87 +214,72 @@ class FeesManagementController extends Controller
             ->get()
             ->map(function($transaction) {
                 return [
-                    'student_name' => $transaction->student->name ?? '-',
+                    'student_name' => $transaction->student->name ?? $transaction->student->student_name ?? '-',
                     'student_roll_no' => $transaction->student->roll_no ?? '-',
-                    'course' => $transaction->course->course_name ?? '-',
+                    'course' => $transaction->course->name ?? $transaction->course->course_name ?? '-',
                     'session' => $transaction->session ?? '-',
                     'amount' => '₹' . number_format($transaction->amount, 2),
                     'payment_type' => $transaction->payment_type ?? '-',
-                    'transaction_number' => $transaction->transaction_number ?? '-',
+                    'transaction_number' => $transaction->transaction_number ?? '-'
                 ];
             });
 
         return response()->json([
             'success' => true,
-            'data' => $transactions
+            'data' => $transactions,
+            'count' => $transactions->count()
         ]);
     }
 
-    // Export pending fees list
+    /**
+     * Export pending fees list to CSV
+     */
     public function exportPendingFees()
     {
-        $students = Student::with(['course', 'batch', 'feeTransactions'])
-            ->get()
-            ->filter(function($student) {
-                $status = $this->calculateFeeStatus($student);
-                return in_array($status, ['2nd Installment due', '3rd Installment due', 'Pending']);
-            });
+        // Get all students with pending fees
+        $students = SMstudents::with(['course', 'batch'])
+            ->whereIn('fee_status', ['2nd Installment due', '3rd Installment due', 'Pending'])
+            ->orderBy('student_name', 'asc')
+            ->get();
 
-        // You can use Laravel Excel or custom export
-        // For now, returning CSV
-        $filename = 'pending_fees_' . date('Y-m-d') . '.csv';
+        // Generate filename with current date
+        $filename = 'pending_fees_' . date('Y-m-d_H-i-s') . '.csv';
         
-        header('Content-Type: text/csv');
+        // Set headers for CSV download
+        header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         
+        // Create output stream
         $output = fopen('php://output', 'w');
         
-        fputcsv($output, ['Roll No', 'Student Name', 'Father Name', 'Course', 'Batch', 'Fee Status', 'Pending Amount']);
+        // Add BOM for Excel UTF-8 support
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
         
+        // Add CSV headers
+        fputcsv($output, [
+            'Roll No', 
+            'Student Name', 
+            'Father Name', 
+            'Course', 
+            'Batch', 
+            'Fee Status', 
+            'Pending Amount'
+        ]);
+        
+        // Add student data
         foreach ($students as $student) {
             fputcsv($output, [
-                $student->roll_no,
-                $student->name,
-                $student->father_name,
-                $student->course->course_name ?? '-',
-                $student->batch->batch_name ?? '-',
-                $this->calculateFeeStatus($student),
-                $this->calculatePendingAmount($student)
+                $student->roll_no ?? '-',
+                $student->name ?? $student->student_name ?? '-',
+                $student->father_name ?? $student->father ?? '-',
+                $student->course->name ?? $student->course->course_name ?? '-',
+                $student->batch->name ?? $student->batch->batch_id ?? '-',
+                $student->fee_status ?? '-',
+                '₹' . number_format($student->pending_amount ?? $student->remaining_fees ?? 0, 2)
             ]);
         }
         
         fclose($output);
         exit;
     }
-
-    // Helper function to calculate fee status
-    private function calculateFeeStatus($student)
-    {
-        $totalPaid = $student->feeTransactions->sum('amount');
-        $totalFees = $student->total_fees ?? 0;
-        
-        if ($totalPaid >= $totalFees) {
-            return 'Paid';
-        }
-        
-        $installments = $student->fee_installments ?? 1;
-        $perInstallment = $totalFees / $installments;
-        
-        if ($totalPaid < $perInstallment) {
-            return '2nd Installment due';
-        } elseif ($totalPaid < ($perInstallment * 2)) {
-            return '3rd Installment due';
-        }
-        
-        return 'Pending';
-    }
-
-    // Calculate pending amount
-    private function calculatePendingAmount($student)
-    {
-        $totalPaid = $student->feeTransactions->sum('amount');
-        $totalFees = $student->total_fees ?? 0;
-        return max(0, $totalFees - $totalPaid);
-    }
 }
-

@@ -403,7 +403,6 @@ Route::get('/fees-management/export-pending', function () {
         'message' => 'Export functionality will be added soon'
     ]);
 })->name('fees.export');
-
 // Fees Management Routes
 Route::prefix('fees')->name('fees.')->group(function () {
     // Main page
@@ -418,7 +417,6 @@ Route::prefix('fees')->name('fees.')->group(function () {
     // Export
     Route::get('/export', [FeesManagementController::class, 'exportPendingFees'])->name('export');
 });
-
 // Profile Routes
 Route::prefix('profile')->name('profile.')->group(function () {
     Route::get('/', [ProfileController::class, 'index'])->name('index');
