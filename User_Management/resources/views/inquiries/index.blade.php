@@ -579,6 +579,91 @@
             background-color: rgb(224, 83, 1);
             border-color: rgb(224, 83, 1);
         }
+
+        /* Simple History Timeline Styles */
+.history-timeline {
+    position: relative;
+    padding: 20px;
+}
+
+.history-item {
+    background: white;
+    border-left: 4px solid #e05301;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.history-item:hover {
+    box-shadow: 0 4px 8px rgba(224, 83, 1, 0.15);
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+
+.history-action {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e05301;
+}
+
+.history-date {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.history-user {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.history-description {
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.history-changes {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.change-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.change-label {
+    font-weight: 600;
+    min-width: 120px;
+    color: #495057;
+}
+
+.change-value {
+    color: #666;
+}
+
+.empty-history {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-history i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
     </style>
 </head>
 <body>
@@ -1048,20 +1133,26 @@
     </div>
 
 <!-- History Modal -->
-<div class="modal fade" id="historyModal" tabindex="-1">
+<div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Inquiry History</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background: linear-gradient(135deg, #e05301 0%, #ff7733 100%);">
+                <h5 class="modal-title text-white">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="historyModalBody">
-                <div class="text-center">
+
+            <div class="modal-body" id="historyModalBody" style="max-height: 500px; overflow-y: auto; background: #f8f9fa;">
+                <!-- Loading spinner -->
+                <div class="text-center py-4">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
+                    <p class="mt-3 text-muted">Loading history...</p>
                 </div>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
@@ -1072,6 +1163,167 @@
     <script src="{{asset('js/emp.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Simple History Function
+window.History = async function(id) {
+    try {
+        const modal = new bootstrap.Modal(document.getElementById('historyModal'));
+        const modalBody = document.getElementById('historyModalBody');
+        
+        // Show loading
+        modalBody.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading history...</p>
+            </div>
+        `;
+        
+        modal.show();
+        
+        // Fetch history
+        const response = await fetch(`/inquiries/${id}/history`);
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to load history');
+        }
+        
+        const history = data.data || [];
+        
+        if (history.length === 0) {
+            modalBody.innerHTML = `
+                <div class="empty-history">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <h5>No History Yet</h5>
+                    <p>No activity recorded for this inquiry</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Render history
+        let html = '<div class="history-timeline">';
+        
+        history.forEach(item => {
+            const actionIcon = getActionIcon(item.action);
+            
+            html += `
+                <div class="history-item">
+                    <div class="history-header">
+                        <div class="history-action">
+                            <i class="${actionIcon}"></i>
+                            ${escapeHtml(item.action)}
+                        </div>
+                        <div class="history-date">
+                            <i class="fa-regular fa-clock"></i>
+                            ${escapeHtml(item.date || formatDate(item.timestamp))}
+                        </div>
+                    </div>
+                    
+                    <div class="history-user">
+                        <i class="fa-solid fa-user"></i>
+                        by ${escapeHtml(item.user || 'Admin')}
+                    </div>
+                    
+                    <div class="history-description">
+                        ${escapeHtml(item.description)}
+                    </div>
+            `;
+            
+            // Show changes if present
+            if (item.changes && Object.keys(item.changes).length > 0) {
+                html += `<div class="history-changes">`;
+                html += `<strong style="font-size: 13px; color: #495057;"><i class="fa-solid fa-list"></i> Changes:</strong><br>`;
+                
+                for (const [field, change] of Object.entries(item.changes)) {
+                    if (typeof change === 'object' && change.from !== undefined) {
+                        html += `
+                            <div class="change-row">
+                                <span class="change-label">${formatFieldName(field)}:</span>
+                                <span class="change-value">
+                                    <span style="color: #dc3545; text-decoration: line-through;">${formatValue(change.from)}</span>
+                                    <i class="fa-solid fa-arrow-right mx-2"></i>
+                                    <span style="color: #28a745; font-weight: 600;">${formatValue(change.to)}</span>
+                                </span>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="change-row">
+                                <span class="change-label">${formatFieldName(field)}:</span>
+                                <span class="change-value">${formatValue(change)}</span>
+                            </div>
+                        `;
+                    }
+                }
+                
+                html += `</div>`;
+            }
+            
+            html += `</div>`;
+        });
+        
+        html += '</div>';
+        
+        modalBody.innerHTML = html;
+        
+    } catch (error) {
+        console.error('History error:', error);
+        document.getElementById('historyModalBody').innerHTML = `
+            <div class="empty-history">
+                <i class="fa-solid fa-exclamation-triangle text-danger"></i>
+                <h5>Error</h5>
+                <p>Failed to load history: ${error.message}</p>
+            </div>
+        `;
+    }
+};
+
+// Helper functions
+function getActionIcon(action) {
+    const icons = {
+        'Created': 'fa-solid fa-plus-circle',
+        'Updated': 'fa-solid fa-pen',
+        'Transferred': 'fa-solid fa-arrow-right',
+        'Deleted': 'fa-solid fa-trash'
+    };
+    return icons[action] || 'fa-solid fa-circle-info';
+}
+
+function formatFieldName(field) {
+    return field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function formatValue(value) {
+    if (value === null || value === undefined || value === '') {
+        return '<span class="text-muted">N/A</span>';
+    }
+    return escapeHtml(String(value));
+}
+
+function formatDate(timestamp) {
+    try {
+        const date = new Date(timestamp);
+        return date.toLocaleString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    } catch (e) {
+        return timestamp;
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
     document.addEventListener('DOMContentLoaded', () => {
         const ENDPOINT = '/inquiries';
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
