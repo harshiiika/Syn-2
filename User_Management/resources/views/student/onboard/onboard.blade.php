@@ -429,66 +429,72 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <div class="modal fade" id="historyModal-{{ $student->_id }}" tabindex="-1" aria-labelledby="historyModalLabel-{{ $student->_id }}" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="historyModalLabel-{{ $student->_id }}">History - {{ $student->name }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-header" style="background: linear-gradient(135deg, #e05301 0%, #ff7733 100%);">
+        <h5 class="modal-title text-white" id="historyModalLabel-{{ $student->_id }}">
+          <i class="fa-solid fa-clock-rotate-left me-2"></i>Activity History - {{ $student->name }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="background: #f8f9fa;">
         @if(isset($student->history) && is_array($student->history) && count($student->history) > 0)
-          <div class="timeline">
-            @foreach($student->history as $historyItem)
-              <div class="history-entry mb-4 pb-3 border-bottom">
-                <div class="d-flex justify-content-between align-items-start">
+          <div class="timeline" style="position: relative; padding: 10px;">
+            @foreach($student->history as $index => $historyItem)
+              <div class="history-item" style="background: white; border-left: 4px solid #e05301; padding: 15px; margin-bottom: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">
+                <div class="d-flex justify-content-between align-items-start mb-2">
                   <div class="flex-grow-1">
-                    <h6 class="mb-1">
-                      <i class="fas fa-circle-dot text-primary me-2"></i>
-                      <strong>{{ $historyItem['action'] ?? 'Action' }}</strong>
+                    <h6 class="mb-1" style="color: #e05301; font-weight: 600;">
+                      @php
+                        $actionIcons = [
+                          'Created' => 'fa-plus-circle',
+                          'New Student Enquiry Created' => 'fa-plus-circle',
+                          'Student Enquiry Transferred' => 'fa-arrow-right',
+                          'Transferred' => 'fa-arrow-right',
+                          'Student Onboarded' => 'fa-check-circle',
+                          'Student Details Updated' => 'fa-pen',
+                          'Transferred to Pending Fees' => 'fa-exchange-alt'
+                        ];
+                        $icon = $actionIcons[$historyItem['action'] ?? ''] ?? 'fa-circle-info';
+                      @endphp
+                      <i class="fas {{ $icon }} me-2"></i>
+                      {{ $historyItem['action'] ?? 'Action' }}
                     </h6>
+                    
                     @if(isset($historyItem['description']))
-                      <p class="mb-1 ms-4 text-muted">{{ $historyItem['description'] }}</p>
+                      <p class="mb-2 ms-4" style="color: #495057; font-size: 14px;">
+                        {{ $historyItem['description'] }}
+                      </p>
                     @endif
+                    
                     @if(isset($historyItem['changed_by']))
-                      <small class="ms-4 text-secondary">
-                        <i class="fas fa-user me-1"></i>Changed by: {{ $historyItem['changed_by'] }}
+                      <small class="ms-4" style="color: #666; font-size: 13px;">
+                        <i class="fas fa-user me-1"></i>
+                        by {{ $historyItem['changed_by'] }}
                       </small>
                     @endif
                   </div>
-                  <div class="text-end">
-                    @if(isset($historyItem['timestamp']))
-                      <small class="text-muted">
+                  
+                  <div class="text-end" style="min-width: 150px;">
+                    @if(isset($historyItem['date']))
+                      <small style="color: #6c757d; font-size: 12px;">
+                        <i class="far fa-clock me-1"></i>
+                        {{ $historyItem['date'] }}
+                      </small>
+                    @elseif(isset($historyItem['timestamp']))
+                      <small style="color: #6c757d; font-size: 12px;">
                         <i class="far fa-clock me-1"></i>
                         {{ \Carbon\Carbon::parse($historyItem['timestamp'])->format('d M Y, h:i A') }}
                       </small>
                     @endif
                   </div>
                 </div>
-                @if(isset($historyItem['changes']) && is_array($historyItem['changes']) && count($historyItem['changes']) > 0)
-                  <div class="ms-4 mt-2">
-                    <small class="text-secondary d-block mb-1"><strong>Changes:</strong></small>
-                    <ul class="list-unstyled ms-3">
-                      @foreach($historyItem['changes'] as $field => $change)
-                        <li class="mb-1">
-                          <small>
-                            <span class="badge bg-secondary">{{ ucfirst($field) }}</span>
-                            @if(isset($change['from']))
-                              <span class="text-decoration-line-through text-danger">{{ $change['from'] }}</span>
-                            @endif
-                            @if(isset($change['to']))
-                              → <span class="text-success">{{ $change['to'] }}</span>
-                            @endif
-                          </small>
-                        </li>
-                      @endforeach
-                    </ul>
-                  </div>
-                @endif
               </div>
             @endforeach
           </div>
         @else
           <div class="text-center py-5">
-            <i class="fas fa-history fa-3x text-muted mb-3"></i>
-            <p class="text-muted">No history records found for this student.</p>
+            <i class="fas fa-clock-rotate-left fa-3x mb-3" style="color: #e0e0e0;"></i>
+            <h5 style="color: #6c757d;">No History Yet</h5>
+            <p class="text-muted">No activity recorded for this student.</p>
           </div>
         @endif
       </div>

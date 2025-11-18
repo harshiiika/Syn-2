@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Master\Scholarship;
 use App\Models\Master\FeesMaster;
 use App\Models\Student\Pending;
+use Carbon\Carbon;
 
 
 class InquiryController extends Controller
@@ -61,194 +62,194 @@ class InquiryController extends Controller
 
     /**
      * ✅ BULK ONBOARD - Transfer multiple inquiries to pending students
-     */
-    public function bulkOnboard(Request $request)
-    {
-        try {
-            $request->validate([
-                'inquiry_ids' => 'required|array',
-                'inquiry_ids.*' => 'required|string'
-            ]);
+    //  */
+    // public function bulkOnboard(Request $request)
+    // {
+    //     try {
+    //         $request->validate([
+    //             'inquiry_ids' => 'required|array',
+    //             'inquiry_ids.*' => 'required|string'
+    //         ]);
 
-            $inquiryIds = $request->inquiry_ids;
-            $inquiries = Inquiry::whereIn('_id', $inquiryIds)->get();
+    //         $inquiryIds = $request->inquiry_ids;
+    //         $inquiries = Inquiry::whereIn('_id', $inquiryIds)->get();
 
-            if ($inquiries->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No valid inquiries found'
-                ], 404);
-            }
+    //         if ($inquiries->isEmpty()) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'No valid inquiries found'
+    //             ], 404);
+    //         }
 
-            $transferredCount = 0;
-            $errors = [];
+    //         $transferredCount = 0;
+    //         $errors = [];
 
-            foreach ($inquiries as $inquiry) {
-                try {
-                    // Skip already processed
-                    if (in_array($inquiry->status, ['transferred', 'onboarded', 'converted'])) {
-                        $errors[] = "{$inquiry->student_name} - Already processed";
-                        continue;
-                    }
+    //         foreach ($inquiries as $inquiry) {
+    //             try {
+    //                 // Skip already processed
+    //                 if (in_array($inquiry->status, ['transferred', 'onboarded', 'converted'])) {
+    //                     $errors[] = "{$inquiry->student_name} - Already processed";
+    //                     continue;
+    //                 }
 
-                    $this->transferToPending($inquiry);
-                    $transferredCount++;
+    //                 $this->transferToPending($inquiry);
+    //                 $transferredCount++;
                     
-                } catch (\Exception $e) {
-                    Log::error("Failed to transfer inquiry {$inquiry->_id}: " . $e->getMessage());
-                    $errors[] = "{$inquiry->student_name} - " . $e->getMessage();
-                }
-            }
+    //             } catch (\Exception $e) {
+    //                 Log::error("Failed to transfer inquiry {$inquiry->_id}: " . $e->getMessage());
+    //                 $errors[] = "{$inquiry->student_name} - " . $e->getMessage();
+    //             }
+    //         }
 
-            $message = "Successfully transferred {$transferredCount} student(s) to pending list!";
-            if (!empty($errors)) {
-                $message .= " Errors: " . implode(', ', $errors);
-            }
+    //         $message = "Successfully transferred {$transferredCount} student(s) to pending list!";
+    //         if (!empty($errors)) {
+    //             $message .= " Errors: " . implode(', ', $errors);
+    //         }
 
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'transferred_count' => $transferredCount,
-                'errors' => $errors
-            ]);
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => $message,
+    //             'transferred_count' => $transferredCount,
+    //             'errors' => $errors
+    //         ]);
 
-        } catch (\Exception $e) {
-            Log::error('Bulk transfer error: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
+    //     } catch (\Exception $e) {
+    //         Log::error('Bulk transfer error: ' . $e->getMessage());
+    //         Log::error('Stack trace: ' . $e->getTraceAsString());
             
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to transfer students: ' . $e->getMessage()
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to transfer students: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
     /**
      * ✅ HELPER METHOD - Transfer inquiry to pending collection
      */
-    private function transferToPending($inquiry)
-    {
-        Log::info('Transferring inquiry to pending', [
-            'inquiry_id' => $inquiry->_id,
-            'student_name' => $inquiry->student_name,
-        ]);
+    // private function transferToPending($inquiry)
+    // {
+    //     Log::info('Transferring inquiry to pending', [
+    //         'inquiry_id' => $inquiry->_id,
+    //         'student_name' => $inquiry->student_name,
+    //     ]);
 
-        // Create pending student record
-        $pendingData = [
-            // Basic Details
-            'name' => $inquiry->student_name,
-            'father' => $inquiry->father_name,
-            'mother' => $inquiry->mother ?? null,
-            'dob' => $inquiry->dob ?? null,
-            'mobileNumber' => $inquiry->father_contact,
-            'fatherWhatsapp' => $inquiry->father_whatsapp ?? null,
-            'motherContact' => $inquiry->motherContact ?? null,
-            'studentContact' => $inquiry->student_contact ?? null,
-            'category' => $inquiry->category ?? 'GENERAL',
-            'gender' => $inquiry->gender ?? null,
-            'fatherOccupation' => $inquiry->fatherOccupation ?? null,
-            'fatherGrade' => $inquiry->fatherGrade ?? null,
-            'motherOccupation' => $inquiry->motherOccupation ?? null,
+    //     // Create pending student record
+    //     $pendingData = [
+    //         // Basic Details
+    //         'name' => $inquiry->student_name,
+    //         'father' => $inquiry->father_name,
+    //         'mother' => $inquiry->mother ?? null,
+    //         'dob' => $inquiry->dob ?? null,
+    //         'mobileNumber' => $inquiry->father_contact,
+    //         'fatherWhatsapp' => $inquiry->father_whatsapp ?? null,
+    //         'motherContact' => $inquiry->motherContact ?? null,
+    //         'studentContact' => $inquiry->student_contact ?? null,
+    //         'category' => $inquiry->category ?? 'GENERAL',
+    //         'gender' => $inquiry->gender ?? null,
+    //         'fatherOccupation' => $inquiry->fatherOccupation ?? null,
+    //         'fatherGrade' => $inquiry->fatherGrade ?? null,
+    //         'motherOccupation' => $inquiry->motherOccupation ?? null,
             
-            // Address Details
-            'state' => $inquiry->state ?? null,
-            'city' => $inquiry->city ?? null,
-            'pinCode' => $inquiry->pinCode ?? null,
-            'address' => $inquiry->address ?? null,
-            'belongToOtherCity' => $inquiry->belongToOtherCity ?? 'No',
-            'economicWeakerSection' => $inquiry->economicWeakerSection ?? 'No',
-            'armyPoliceBackground' => $inquiry->armyPoliceBackground ?? 'No',
-            'speciallyAbled' => $inquiry->speciallyAbled ?? 'No',
+    //         // Address Details
+    //         'state' => $inquiry->state ?? null,
+    //         'city' => $inquiry->city ?? null,
+    //         'pinCode' => $inquiry->pinCode ?? null,
+    //         'address' => $inquiry->address ?? null,
+    //         'belongToOtherCity' => $inquiry->belongToOtherCity ?? 'No',
+    //         'economicWeakerSection' => $inquiry->economicWeakerSection ?? 'No',
+    //         'armyPoliceBackground' => $inquiry->armyPoliceBackground ?? 'No',
+    //         'speciallyAbled' => $inquiry->speciallyAbled ?? 'No',
             
-            // Course Details
-            'course_type' => $inquiry->courseType ?? null,
-            'courseType' => $inquiry->courseType ?? null,
-            'courseName' => $inquiry->course_name ?? null,
-            'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
-            'medium' => $inquiry->medium ?? null,
-            'board' => $inquiry->board ?? null,
-            'courseContent' => $inquiry->course_content ?? 'Class Room Course',
+    //         // Course Details
+    //         'course_type' => $inquiry->courseType ?? null,
+    //         'courseType' => $inquiry->courseType ?? null,
+    //         'courseName' => $inquiry->course_name ?? null,
+    //         'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
+    //         'medium' => $inquiry->medium ?? null,
+    //         'board' => $inquiry->board ?? null,
+    //         'courseContent' => $inquiry->course_content ?? 'Class Room Course',
             
-            // Academic Details
-            'previousClass' => $inquiry->previousClass ?? null,
-            'previousMedium' => $inquiry->previousMedium ?? null,
-            'schoolName' => $inquiry->schoolName ?? null,
-            'previousBoard' => $inquiry->previousBoard ?? null,
-            'passingYear' => $inquiry->passingYear ?? null,
-            'percentage' => $inquiry->percentage ?? null,
+    //         // Academic Details
+    //         'previousClass' => $inquiry->previousClass ?? null,
+    //         'previousMedium' => $inquiry->previousMedium ?? null,
+    //         'schoolName' => $inquiry->schoolName ?? null,
+    //         'previousBoard' => $inquiry->previousBoard ?? null,
+    //         'passingYear' => $inquiry->passingYear ?? null,
+    //         'percentage' => $inquiry->percentage ?? null,
             
-            // Scholarship Eligibility
-            'isRepeater' => $inquiry->isRepeater ?? 'No',
-            'scholarshipTest' => $inquiry->scholarshipTest ?? 'No',
-            'lastBoardPercentage' => $inquiry->lastBoardPercentage ?? null,
-            'competitionExam' => $inquiry->competitionExam ?? 'No',
+    //         // Scholarship Eligibility
+    //         'isRepeater' => $inquiry->isRepeater ?? 'No',
+    //         'scholarshipTest' => $inquiry->scholarshipTest ?? 'No',
+    //         'lastBoardPercentage' => $inquiry->lastBoardPercentage ?? null,
+    //         'competitionExam' => $inquiry->competitionExam ?? 'No',
             
-            // Batch Details
-            'batchName' => $inquiry->batchName ?? null,
+    //         // Batch Details
+    //         'batchName' => $inquiry->batchName ?? null,
             
-            // Scholarship & Fees Details
-            'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
-            'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
-            'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
-            'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
-            'discretionary_discount_type' => $inquiry->discretionary_discount_type ?? null,
-            'discretionary_discount_value' => $inquiry->discretionary_discount_value ?? null,
-            'discretionary_discount_reason' => $inquiry->discretionary_discount_reason ?? null,
-            'discount_percentage' => $inquiry->discount_percentage ?? 0,
-            'discounted_fee' => $inquiry->discounted_fee ?? 0,
-            'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
-            'total_fees' => $inquiry->total_fees ?? 0,
-            'gst_amount' => $inquiry->gst_amount ?? 0,
-            'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax ?? 0,
-            'single_installment_amount' => $inquiry->single_installment_amount ?? 0,
-            'installment_1' => $inquiry->installment_1 ?? 0,
-            'installment_2' => $inquiry->installment_2 ?? 0,
-            'installment_3' => $inquiry->installment_3 ?? 0,
-            'fees_calculated_at' => $inquiry->fees_calculated_at ?? null,
+    //         // Scholarship & Fees Details
+    //         'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
+    //         'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
+    //         'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
+    //         'discretionary_discount' => $inquiry->discretionary_discount ?? 'No',
+    //         'discretionary_discount_type' => $inquiry->discretionary_discount_type ?? null,
+    //         'discretionary_discount_value' => $inquiry->discretionary_discount_value ?? null,
+    //         'discretionary_discount_reason' => $inquiry->discretionary_discount_reason ?? null,
+    //         'discount_percentage' => $inquiry->discount_percentage ?? 0,
+    //         'discounted_fee' => $inquiry->discounted_fee ?? 0,
+    //         'fees_breakup' => $inquiry->fees_breakup ?? 'Class room course (with test series & study material)',
+    //         'total_fees' => $inquiry->total_fees ?? 0,
+    //         'gst_amount' => $inquiry->gst_amount ?? 0,
+    //         'total_fees_inclusive_tax' => $inquiry->total_fees_inclusive_tax ?? 0,
+    //         'single_installment_amount' => $inquiry->single_installment_amount ?? 0,
+    //         'installment_1' => $inquiry->installment_1 ?? 0,
+    //         'installment_2' => $inquiry->installment_2 ?? 0,
+    //         'installment_3' => $inquiry->installment_3 ?? 0,
+    //         'fees_calculated_at' => $inquiry->fees_calculated_at ?? null,
             
-            // Metadata
-            'branch' => $inquiry->branch ?? 'Main Branch',
-            'session' => session('current_session', '2025-2026'),
-            'status' => 'pending',
-            'transferred_from_inquiry' => true,
-            'inquiry_id' => (string) $inquiry->_id,
-            'transferred_at' => now(),
-        ];
+    //         // Metadata
+    //         'branch' => $inquiry->branch ?? 'Main Branch',
+    //         'session' => session('current_session', '2025-2026'),
+    //         'status' => 'pending',
+    //         'transferred_from_inquiry' => true,
+    //         'inquiry_id' => (string) $inquiry->_id,
+    //         'transferred_at' => now(),
+    //     ];
 
-        $pendingStudent = Pending::create($pendingData);
+    //     $pendingStudent = Pending::create($pendingData);
 
-        Log::info('✅ Pending student created', [
-            'pending_id' => $pendingStudent->_id,
-            'name' => $pendingStudent->name,
-        ]);
+    //     Log::info('✅ Pending student created', [
+    //         'pending_id' => $pendingStudent->_id,
+    //         'name' => $pendingStudent->name,
+    //     ]);
 
-        // Update inquiry with history
-        $history = $inquiry->history ?? [];
-        $history[] = [
-            'action' => 'Transferred to Pending Students',
-            'user' => auth()->check() ? auth()->user()->name : 'Admin',
-            'description' => 'Student transferred to pending students list for form completion',
-            'timestamp' => now()->toIso8601String(),
-            'changes' => [
-                'status' => [
-                    'from' => $inquiry->status ?? 'new',
-                    'to' => 'transferred'
-                ],
-                'pending_student_id' => (string) $pendingStudent->_id
-            ]
-        ];
+    //     // Update inquiry with history
+    //     $history = $inquiry->history ?? [];
+    //     $history[] = [
+    //         'action' => 'Transferred to Pending Students',
+    //         'user' => auth()->check() ? auth()->user()->name : 'Admin',
+    //         'description' => 'Student transferred to pending students list for form completion',
+    //         'timestamp' => now()->toIso8601String(),
+    //         'changes' => [
+    //             'status' => [
+    //                 'from' => $inquiry->status ?? 'new',
+    //                 'to' => 'transferred'
+    //             ],
+    //             'pending_student_id' => (string) $pendingStudent->_id
+    //         ]
+    //     ];
 
-        $inquiry->update([
-            'status' => 'transferred',
-            'transferred_to_pending' => true,
-            'pending_student_id' => (string) $pendingStudent->_id,
-            'history' => $history
-        ]);
+    //     $inquiry->update([
+    //         'status' => 'transferred',
+    //         'transferred_to_pending' => true,
+    //         'pending_student_id' => (string) $pendingStudent->_id,
+    //         'history' => $history
+    //     ]);
 
-        Log::info('✅ Inquiry updated with transfer status');
+    //     Log::info('✅ Inquiry updated with transfer status');
 
-        return $pendingStudent;
-    }
+    //     return $pendingStudent;
+    // }
 
     /**
      * Display the inquiry management page
@@ -1292,24 +1293,24 @@ class InquiryController extends Controller
     /**
      * Add history entry helper
      */
-    private function addHistory($inquiry, $action, $description, $changes = [])
-    {
-        $history = $inquiry->history ?? [];
+    // private function addHistory($inquiry, $action, $description, $changes = [])
+    // {
+    //     $history = $inquiry->history ?? [];
         
-        $entry = [
-            'action' => $action,
-            'user' => auth()->check() ? auth()->user()->name : 'Admin',
-            'description' => $description,
-            'timestamp' => now()->toIso8601String(),
-            'date' => now()->format('d M Y h:i A'),
-            'changes' => $changes
-        ];
+    //     $entry = [
+    //         'action' => $action,
+    //         'user' => auth()->check() ? auth()->user()->name : 'Admin',
+    //         'description' => $description,
+    //         'timestamp' => now()->toIso8601String(),
+    //         'date' => now()->format('d M Y h:i A'),
+    //         'changes' => $changes
+    //     ];
         
-        // Add to beginning of array (newest first)
-        array_unshift($history, $entry);
+    //     // Add to beginning of array (newest first)
+    //     array_unshift($history, $entry);
         
-        return $history;
-    }
+    //     return $history;
+    // }
 
     /**
      * Store a new inquiry
@@ -1347,41 +1348,48 @@ class InquiryController extends Controller
         }
 
         try {
-            $data = $validator->validated();
-            $data['status'] = 'Pending';
-            
-            // Auto-calculate fees if course provided
-            if (!empty($data['course_name'])) {
-                $feesData = $this->calculateDefaultFees($data['course_name']);
-                $data = array_merge($data, $feesData);
-            }
-            
-            // ✅ Add creation history
-            $data['history'] = [[
-                'action' => 'Created',
-                'user' => auth()->check() ? auth()->user()->name : 'Admin',
-                'description' => "New inquiry created for {$data['student_name']}",
-                'timestamp' => now()->toIso8601String(),
-                'date' => now()->format('d M Y h:i A'),
-                'changes' => []
-            ]];
-            
-            Log::info('Creating inquiry with data:', $data);
-            $inquiry = Inquiry::create($data);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Inquiry created successfully',
-                'data' => $inquiry,
-            ], 201);
-        } catch (\Exception $e) {
-            Log::error('Inquiry Store Error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create inquiry: ' . $e->getMessage(),
-            ], 500);
+        $data = $validator->validated();
+        $data['status'] = 'Pending';
+        
+        // Auto-calculate fees if course provided
+        if (!empty($data['course_name'])) {
+            $feesData = $this->calculateDefaultFees($data['course_name']);
+            $data = array_merge($data, $feesData);
         }
+        
+        // ✅ ADD CREATION HISTORY WITH CORRECT TIMEZONE
+        $now = \Carbon\Carbon::now('Asia/Kolkata'); // Force India timezone
+        
+        $data['history'] = [[
+            'action' => 'Created',
+            'user' => auth()->check() ? auth()->user()->name : 'Admin',
+            'description' => "New inquiry created for {$data['student_name']}",
+            'timestamp' => $now->toIso8601String(),
+            'date' => $now->format('d M Y, h:i A'), // This will show correct IST time
+            'changes' => []
+        ]];
+        
+        Log::info('Creating inquiry with timestamp:', [
+            'timestamp' => $now->toIso8601String(),
+            'formatted_date' => $now->format('d M Y, h:i A')
+        ]);
+        
+        $inquiry = Inquiry::create($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Inquiry created successfully',
+            'data' => $inquiry,
+        ], 201);
+    } catch (\Exception $e) {
+        Log::error('Inquiry Store Error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to create inquiry: ' . $e->getMessage(),
+        ], 500);
     }
+}
+
 
     /**
      * Update inquiry
@@ -1409,12 +1417,10 @@ class InquiryController extends Controller
             'competitionExam' => 'nullable|in:Yes,No',
         ]);
 
-        try {
+         try {
             $inquiry = Inquiry::findOrFail($id);
-            
-            // Store old data for comparison
             $oldData = $inquiry->toArray();
-            
+
             // Map form fields to database fields
             $updateData = [
                 'student_name' => $validatedData['name'],
@@ -1453,26 +1459,27 @@ class InquiryController extends Controller
 
             // ✅ Add update history ONLY if something changed
             if (!empty($changes)) {
+                // ✅ FIX: Use Carbon with timezone
+                $now = Carbon::now('Asia/Kolkata');
+                
                 $history = $this->addHistory(
                     $inquiry,
                     'Updated',
-                    "Inquiry updated - changed: " . implode(', ', $changedFields),
-                    $changes
+                    "Inquiry updated - changed: " . implode(', ', array_keys($changes)),
+                    $changes,
+                    $now // Pass the Carbon instance
                 );
                 
                 $updateData['history'] = $history;
             }
 
             $inquiry->update($updateData);
-
-            Log::info('✅ INQUIRY UPDATED');
             
             return redirect()->route('inquiries.scholarship.show', $id)
                 ->with('success', 'Inquiry updated successfully!');
 
         } catch (\Exception $e) {
             Log::error('ERROR IN UPDATE: ' . $e->getMessage());
-            
             return redirect()->route('inquiries.edit', $id)
                 ->with('error', 'Error updating inquiry: ' . $e->getMessage())
                 ->withInput();
@@ -1582,5 +1589,197 @@ class InquiryController extends Controller
             ], 500);
         }
     }
+
+    
+    /**
+     * ✅ TRANSFER TO PENDING - With complete history tracking
+     */
+    private function transferToPending($inquiry)
+    {
+         Log::info('Transferring inquiry to pending', [
+        'inquiry_id' => $inquiry->_id,
+        'student_name' => $inquiry->student_name,
+    ]);
+
+        // Create pending student record
+        $pendingData = [
+            // Basic Details
+            'name' => $inquiry->student_name,
+            'father' => $inquiry->father_name,
+            'mother' => $inquiry->mother ?? null,
+            'dob' => $inquiry->dob ?? null,
+            'mobileNumber' => $inquiry->father_contact,
+            'fatherWhatsapp' => $inquiry->father_whatsapp ?? null,
+            'motherContact' => $inquiry->motherContact ?? null,
+            'studentContact' => $inquiry->student_contact ?? null,
+            'category' => $inquiry->category ?? 'GENERAL',
+            'gender' => $inquiry->gender ?? null,
+            
+            // Course Details
+            'course_type' => $inquiry->courseType ?? null,
+            'courseType' => $inquiry->courseType ?? null,
+            'courseName' => $inquiry->course_name ?? null,
+            'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
+            'courseContent' => $inquiry->course_content ?? 'Class Room Course',
+            
+            // Scholarship & Fees
+            'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
+            'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
+            'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
+            'discount_percentage' => $inquiry->discount_percentage ?? 0,
+            'total_fees' => $inquiry->total_fees ?? 0,
+            
+            // Metadata
+            'branch' => $inquiry->branch ?? 'Main Branch',
+            'session' => session('current_session', '2025-2026'),
+            'status' => 'pending',
+            'transferred_from_inquiry' => true,
+            'inquiry_id' => (string) $inquiry->_id,
+            'transferred_at' => now(),
+        ];
+
+        // ✅ TRANSFER EXISTING HISTORY FROM INQUIRY
+       
+        // ✅ TRANSFER EXISTING HISTORY FROM INQUIRY
+        $existingHistory = $inquiry->history ?? [];
+        
+        // ✅ FIX: Use Carbon with timezone for transfer entry
+        $now = Carbon::now('Asia/Kolkata');
+        
+        $transferHistoryEntry = [
+            'action' => 'Student Enquiry Transferred',
+            'description' => 'Admin transferred the enquiry to Onboard for student ' . $inquiry->student_name,
+            'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
+            'timestamp' => $now->toIso8601String(),
+            'date' => $now->format('d M Y, h:i A') // ✅ Correct current time
+        ];
+        
+        Log::info('Transfer timestamp:', [
+            'timestamp' => $now->toIso8601String(),
+            'formatted_date' => $now->format('d M Y, h:i A'),
+            'current_time' => Carbon::now()->format('H:i:s')
+        ]);
+        
+        array_unshift($existingHistory, $transferHistoryEntry);
+        $pendingData['history'] = $existingHistory;
+        $pendingData['transferred_at'] = $now;
+
+        $pendingStudent = Pending::create($pendingData);
+
+        // ✅ UPDATE INQUIRY with correct timestamp
+        $inquiryHistory = $inquiry->history ?? [];
+        
+        $inquiryUpdateEntry = [
+            'action' => 'Transferred',
+            'description' => 'Inquiry transferred to pending students list',
+            'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
+            'timestamp' => $now->toIso8601String(),
+            'date' => $now->format('d M Y, h:i A'),
+            'changes' => [
+                'status' => [
+                    'from' => $inquiry->status ?? 'new',
+                    'to' => 'transferred'
+                ],
+                'pending_student_id' => (string) $pendingStudent->_id
+            ]
+        ];
+        
+        array_unshift($inquiryHistory, $inquiryUpdateEntry);
+
+        $inquiry->update([
+            'status' => 'transferred',
+            'transferred_to_pending' => true,
+            'pending_student_id' => (string) $pendingStudent->_id,
+            'history' => $inquiryHistory
+        ]);
+
+        return $pendingStudent;
+    }
+    /**
+     * BULK ONBOARD - Transfer multiple inquiries to pending students
+     */
+    public function bulkOnboard(Request $request)
+    {
+        try {
+            $request->validate([
+                'inquiry_ids' => 'required|array',
+                'inquiry_ids.*' => 'required|string'
+            ]);
+
+            $inquiryIds = $request->inquiry_ids;
+            $inquiries = Inquiry::whereIn('_id', $inquiryIds)->get();
+
+            if ($inquiries->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No valid inquiries found'
+                ], 404);
+            }
+
+            $transferredCount = 0;
+            $errors = [];
+
+            foreach ($inquiries as $inquiry) {
+                try {
+                    // Skip already processed
+                    if (in_array($inquiry->status, ['transferred', 'onboarded', 'converted'])) {
+                        $errors[] = "{$inquiry->student_name} - Already processed";
+                        continue;
+                    }
+
+                    $this->transferToPending($inquiry);
+                    $transferredCount++;
+                    
+                } catch (\Exception $e) {
+                    Log::error("Failed to transfer inquiry {$inquiry->_id}: " . $e->getMessage());
+                    $errors[] = "{$inquiry->student_name} - " . $e->getMessage();
+                }
+            }
+
+            $message = "Successfully transferred {$transferredCount} student(s) to pending list!";
+            if (!empty($errors)) {
+                $message .= " Errors: " . implode(', ', $errors);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'transferred_count' => $transferredCount,
+                'errors' => $errors
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Bulk transfer error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to transfer students: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+      private function addHistory($inquiry, $action, $description, $changes = [], $now = null)
+    {
+        $history = $inquiry->history ?? [];
+        
+        // ✅ FIX: Use provided time or create new Carbon instance
+        if (!$now) {
+            $now = Carbon::now('Asia/Kolkata');
+        }
+        
+        $entry = [
+            'action' => $action,
+            'user' => auth()->check() ? auth()->user()->name : 'Admin',
+            'description' => $description,
+            'timestamp' => $now->toIso8601String(),
+            'date' => $now->format('d M Y, h:i A'), // ✅ Shows correct time like "18 Nov 2025, 12:23 PM"
+            'changes' => $changes
+        ];
+        
+        array_unshift($history, $entry);
+        
+        return $history;
+    }
+
 
 }
