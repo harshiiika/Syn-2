@@ -1706,17 +1706,9 @@ window.History = async function(id) {
                     <div style="color: #555;">
                         ${escapeHtml(item.description || 'Admin updated the enquiry for student.')}
                     </div>
-                    ${item.changes ? `
-                        <div style="margin-top: 10px; padding: 8px; background-color: white; border-radius: 4px; font-size: 0.9em;">
-                            <strong>Changes:</strong>
-                            <ul style="margin: 5px 0 0 20px; padding: 0;">
-                                ${Object.entries(item.changes).map(([key, value]) => `
-                                    <li>${key}: ${escapeHtml(String(value))}</li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                    ` : ''}
-                </div>
+               
+                
+                 </div>
             `;
         });
         

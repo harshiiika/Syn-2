@@ -113,9 +113,12 @@ class SMstudents extends Model
         'paid_fees',
         'paid_amount',         // Alias for paid_fees
         'remaining_fees',
+<<<<<<< HEAD
+=======
         'pending_amount',      // Alias for remaining_fees
         'fee_status',          // CRITICAL: Paid, Pending, 2nd Installment due, etc.
         'fee_installments',    // Number of installments
+>>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
         'paidAmount',
         
         // Documents (Base64 encoded)
@@ -172,6 +175,8 @@ class SMstudents extends Model
         'dob' => 'date',
         'admission_date' => 'datetime',
         'transferred_at' => 'datetime',
+<<<<<<< HEAD
+=======
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'percentage' => 'float',
@@ -192,6 +197,7 @@ class SMstudents extends Model
         'remaining_fees' => 'decimal:2',
         'pending_amount' => 'decimal:2',
         'fee_installments' => 'integer',
+>>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
         'batchStartDate' => 'date',
         'fees_calculated_at' => 'datetime',
         'percentage' => 'float',

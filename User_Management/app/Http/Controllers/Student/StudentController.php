@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Student\Pending;
 use App\Models\Student\Student;
+use App\Models\Student\Onboard;
 use App\Models\Student\Inquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -264,4 +265,83 @@ public function update(Request $request, $id)
         
         return true;
     }
+
+    
+    /**
+     * Transfer student from Pending to Onboard with proper history tracking
+     */
+    public function transferToOnboard(Request $request, $id)
+    {
+        try {
+            Log::info('=== TRANSFER TO ONBOARD START ===', ['pending_id' => $id]);
+            
+            $pendingStudent = Pending::findOrFail($id);
+            
+            // Prepare onboard data
+            $onboardData = $pendingStudent->toArray();
+            unset($onboardData['_id']);
+            
+            // Set onboard metadata
+            $onboardData['status'] = 'onboarded';
+            $onboardData['transferred_from'] = 'pending';
+            $onboardData['onboardedAt'] = now();
+            $onboardData['transferred_at'] = now();
+            $onboardData['transferred_by'] = auth()->user()->email ?? 'Admin';
+            
+            // ✅ BUILD COMPLETE HISTORY - Transfer existing history from inquiry
+            $completeHistory = [];
+            
+            // 1. Get history from pending student (which came from inquiry)
+            if (isset($pendingStudent->history) && is_array($pendingStudent->history)) {
+                $completeHistory = $pendingStudent->history;
+            }
+            
+            // 2. Add "Transferred to Onboard" entry
+            $onboardHistoryEntry = [
+                'action' => 'Student Onboarded',
+                'description' => 'Student successfully onboarded and transferred to onboarding collection',
+                'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
+                'timestamp' => now()->toIso8601String(),
+                'date' => now()->format('d M Y, h:i A')
+            ];
+            
+            // Add to beginning of array (newest first)
+            array_unshift($completeHistory, $onboardHistoryEntry);
+            
+            // Set the complete history
+            $onboardData['history'] = $completeHistory;
+            
+            Log::info('Creating onboard student with complete history', [
+                'student_name' => $pendingStudent->name,
+                'history_count' => count($completeHistory)
+            ]);
+            
+            // Create in onboard collection
+            $onboardStudent = Onboard::create($onboardData);
+            
+            Log::info('✅ Onboard student created', [
+                'onboard_id' => $onboardStudent->_id,
+                'name' => $onboardStudent->name,
+                'history_entries' => count($onboardStudent->history ?? [])
+            ]);
+            
+            // Delete from pending
+            $pendingStudent->delete();
+            
+            Log::info('✅ Transfer to onboard complete');
+            
+            return redirect()->route('student.onboard.onboard')
+                ->with('success', "Student '{$onboardStudent->name}' successfully onboarded!");
+                
+        } catch (\Exception $e) {
+            Log::error('❌ Transfer to onboard failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Failed to onboard student: ' . $e->getMessage());
+        }
+    }
+
 }
