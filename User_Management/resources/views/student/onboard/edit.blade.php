@@ -288,7 +288,8 @@
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Student</a></li>
+                <li><a class="item" href="{{ route(name: 'attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+
               </ul>
             </div>
           </div>
@@ -789,6 +790,7 @@
         </div>
       </div>
 
+      <!-- edit-onboard -->
       <!-- Upload Documents Section -->
       <div class="form-section">
         <h4>Upload Documents</h4>

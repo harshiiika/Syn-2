@@ -23,6 +23,8 @@ use App\Http\Controllers\Student\SmStudentsController;
 use App\Http\Controllers\Student\PaymentController;
 use App\Http\Controllers\Attendance\EmployeeController;
 use App\Http\Controllers\FeesManagementController;
+use App\Http\Controllers\Attendance\StudentAController;
+
 
 
 // -------------------------
@@ -278,11 +280,39 @@ Route::prefix('inquiries')->name('inquiries.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('attendance/employee')->name('attendance.employee.')->group(function () {
+<<<<<<< HEAD
     Route::get('/', [EmployeeController::class, 'index'])->name('index');
     Route::get('/data', [EmployeeController::class, 'getData'])->name('data');
     Route::post('/mark', [EmployeeController::class, 'markAttendance'])->name('mark');
     Route::post('/mark-all', [EmployeeController::class, 'markAllAttendance'])->name('mark.all');
     Route::get('/export', [EmployeeController::class, 'exportAttendance'])->name('export');
+=======
+    
+    // Main index page
+    Route::get('/', [EmployeeController::class, 'index'])
+        ->name('index');
+    
+    // Get attendance data (AJAX)
+    Route::get('/data', [EmployeeController::class, 'getData'])
+        ->name('data');
+    
+    // Mark individual attendance
+    Route::post('/mark', [EmployeeController::class, 'markAttendance'])
+        ->name('mark');
+    
+    // Mark all attendance (bulk)
+    Route::post('/mark-all', [EmployeeController::class, 'markAllAttendance'])
+        ->name('mark.all');
+    
+    // Export attendance (optional - for future)
+    Route::get('/export', [EmployeeController::class, 'exportAttendance'])
+        ->name('export');
+
+       // Monthly Attendance (Simple Table View)
+        Route::get('/monthly', [EmployeeController::class, 'monthly'])->name('monthly');
+        Route::get('/monthly/data', [EmployeeController::class, 'getMonthlyData'])->name('monthly.data');
+        Route::get('/monthly/details', [EmployeeController::class, 'monthlyDetails'])->name('monthly.details');
+>>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
 });
 
 /*
@@ -293,11 +323,110 @@ Route::prefix('attendance/employee')->name('attendance.employee.')->group(functi
 // Main page - accessible at /fees-management
 Route::get('/fees-management', [FeesManagementController::class, 'index'])->name('fees.management.index');
 
+<<<<<<< HEAD
 // AJAX Routes - under /fees prefix
+=======
+// Search Student
+Route::post('/fees-management/search-student', function (\Illuminate\Http\Request $request) {
+    $searchTerm = $request->input('search');
+    
+    // Add your search logic here
+    $students = \DB::table('students')
+        ->where('name', 'LIKE', "%{$searchTerm}%")
+        ->orWhere('roll_no', 'LIKE', "%{$searchTerm}%")
+        ->get();
+    
+    return response()->json([
+        'success' => true,
+        'data' => $students
+    ]);
+})->name('fees.collect.search');
+
+// Search by Status
+Route::post('/fees-management/search-status', function (\Illuminate\Http\Request $request) {
+    $courseId = $request->input('course_id');
+    $batchId = $request->input('batch_id');
+    $feeStatus = $request->input('fee_status');
+    
+    // Add your search logic here
+    $students = [];
+    
+    return response()->json([
+        'success' => true,
+        'data' => $students
+    ]);
+})->name('fees.status.search');
+
+// Filter Transactions
+Route::post('/fees-management/filter-transactions', function (\Illuminate\Http\Request $request) {
+    $fromDate = $request->input('from_date');
+    $toDate = $request->input('to_date');
+    
+    // Add your filter logic here
+    $transactions = [];
+    
+    return response()->json([
+        'success' => true,
+        'data' => $transactions
+    ]);
+})->name('fees.transaction.filter');
+
+// Export Pending Fees
+Route::get('/fees-management/export-pending', function () {
+    return response()->json([
+        'message' => 'Export functionality will be added soon'
+    ]);
+})->name('fees.export');
+
+
+// Fees Management Routes
+>>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
 Route::prefix('fees')->name('fees.')->group(function () {
     Route::post('/collect/search', [FeesManagementController::class, 'searchStudent'])->name('collect.search');
     Route::post('/status/search', [FeesManagementController::class, 'searchByStatus'])->name('status.search');
     Route::post('/transaction/filter', [FeesManagementController::class, 'filterTransactions'])->name('transaction.filter');
     Route::post('/batches-by-course', [FeesManagementController::class, 'getBatchesByCourse'])->name('batches.by.course');
     Route::get('/export', [FeesManagementController::class, 'exportPendingFees'])->name('export');
+<<<<<<< HEAD
+=======
+});
+// Profile Routes
+Route::prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [ProfileController::class, 'index'])->name('index');
+});
+
+
+
+Route::prefix('attendance/student')->name('attendance.student.')->group(function () {
+    
+    // Main index page (Daily Attendance)
+    Route::get('/', [StudentAController::class, 'index'])
+        ->name('index');
+    
+    // Get attendance data (AJAX)
+    Route::get('/data', [StudentAController::class, 'getData'])
+        ->name('data');
+    
+    // Mark individual attendance
+    Route::post('/mark', [StudentAController::class, 'markAttendance'])
+        ->name('mark');
+    
+    // Mark all attendance (bulk)
+    Route::post('/mark-all', [StudentController::class, 'markAllAttendance'])
+        ->name('mark.all');
+    
+    // Monthly Attendance (Simple Table View)
+    Route::get('/monthly', [StudentAController::class, 'monthly'])
+        ->name('monthly');
+    
+    Route::get('/monthly/data', [StudentAController::class, 'getMonthlyData'])
+        ->name('monthly.data');
+    
+    Route::get('/monthly/details', [StudentAController::class, 'monthlyDetails'])
+        ->name('monthly.details');
+    
+    // Export attendance (optional - for future)
+    Route::get('/export', [StudentAController::class, 'exportAttendance'])
+        ->name('export');
+>>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
 });

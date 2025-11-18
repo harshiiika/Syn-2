@@ -113,6 +113,12 @@ class SMstudents extends Model
         'paid_fees',
         'paid_amount',         // Alias for paid_fees
         'remaining_fees',
+<<<<<<< HEAD
+=======
+        'pending_amount',      // Alias for remaining_fees
+        'fee_status',          // CRITICAL: Paid, Pending, 2nd Installment due, etc.
+        'fee_installments',    // Number of installments
+>>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
         'paidAmount',
         
         // Documents (Base64 encoded)
@@ -149,7 +155,7 @@ class SMstudents extends Model
         'session',
         'branch',
 
-        'father_grade',
+    'father_grade',
     'paidAmount',
     'remainingAmount',
     'paymentHistory',
@@ -169,6 +175,29 @@ class SMstudents extends Model
         'dob' => 'date',
         'admission_date' => 'datetime',
         'transferred_at' => 'datetime',
+<<<<<<< HEAD
+=======
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'percentage' => 'float',
+        'last_board_percentage' => 'float',
+        'total_fee_before_discount' => 'decimal:2',
+        'discount_percentage' => 'float',
+        'discount_amount' => 'decimal:2',
+        'discounted_fee' => 'decimal:2',
+        'total_fees' => 'decimal:2',
+        'gst_amount' => 'decimal:2',
+        'total_fees_inclusive_tax' => 'decimal:2',
+        'single_installment_amount' => 'decimal:2',
+        'installment_1' => 'decimal:2',
+        'installment_2' => 'decimal:2',
+        'installment_3' => 'decimal:2',
+        'paid_fees' => 'decimal:2',
+        'paid_amount' => 'decimal:2',
+        'remaining_fees' => 'decimal:2',
+        'pending_amount' => 'decimal:2',
+        'fee_installments' => 'integer',
+>>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
         'batchStartDate' => 'date',
         'fees_calculated_at' => 'datetime',
         'percentage' => 'float',

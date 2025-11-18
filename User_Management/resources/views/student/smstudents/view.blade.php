@@ -602,6 +602,358 @@
 }
 
   </style>
+  <!-- ========== STYLES ========== -->
+<style>
+.detail-section {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.detail-section h5 {
+  color: #e05301;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e05301;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-section h5 i {
+  font-size: 20px;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 15px;
+  color: #333;
+  font-weight: 600;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #e05301;
+}
+
+.info-box {
+  background: #f8f9fa;
+  border-left: 4px solid #e05301;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.info-box-question {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-box-question i {
+  color: #e05301;
+}
+
+.info-box-answer {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+  padding-left: 24px;
+}
+
+/* Documents Styling */
+.documents-container {
+  display: grid;
+  gap: 15px;
+}
+
+.document-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.document-card.has-document {
+  border-color: #28a745;
+  background: #f0fff4;
+}
+
+.document-card.no-document {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.document-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.document-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e05301;
+  color: white;
+  border-radius: 50%;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.document-info {
+  flex: 1;
+}
+
+.document-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.document-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-doc {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-view {
+  background: #e05301;
+  color: white;
+}
+
+.btn-view:hover {
+  background: #c04701;
+  color: white;
+}
+
+.btn-download {
+  background: #28a745;
+  color: white;
+}
+
+.btn-download:hover {
+  background: #218838;
+  color: white;
+}
+
+.document-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.document-status.uploaded {
+  background: #d4edda;
+  color: #155724;
+}
+
+.document-status.not-uploaded {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+@media (max-width: 768px) {
+  .detail-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .document-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+
+<style>
+/* Documents Grid Styling - Matches Onboarding Edit style */
+.documents-grid {
+  display: grid;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.document-item {
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.document-item.has-doc {
+  border-color: #28a745;
+  background: #f8fff9;
+}
+
+.document-item.no-doc {
+  border-color: #dc3545;
+  background: #fff8f8;
+}
+
+.document-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.doc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.doc-icon {
+  font-size: 20px;
+  color: #e05301;
+}
+
+.doc-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.doc-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.doc-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.doc-status.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.doc-status.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.doc-status i {
+  font-size: 16px;
+}
+
+/* View Link - Exactly like Onboarding Edit */
+.doc-link {
+  color: #007bff;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.doc-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.doc-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 5px;
+}
+
+.doc-actions .btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.doc-actions .btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.doc-actions .btn-success:hover {
+  background: #218838;
+}
+
+.doc-actions .btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+.doc-actions .btn-primary:hover {
+  background: #0056b3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .documents-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
 </head>
 
 <body>
@@ -763,7 +1115,8 @@
           <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Student</a></li>
+                <li><a class="item" href="{{ route(name: 'attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+
                 <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Employee</a></li>
               </ul>
             </div>
@@ -848,7 +1201,6 @@
         </div>
 
      <!-- COMPLETE FIXED TAB 1 - Replace your entire Tab 1 section -->
-<!-- File: resources/views/student/smstudents/view.blade.php -->
 
 <div class="tab-content-section active" id="student-detail">
   
@@ -1227,294 +1579,112 @@
   </div>
 
   <!-- ========== VIEW DOCUMENTS ========== -->
-  <div class="detail-section">
-    <h5><i class="fas fa-folder-open"></i> View Documents</h5>
-    
-    @php
-      $documents = [
-        ['field' => 'passport_photo', 'label' => 'Passport Size Photo', 'icon' => 'fa-id-card'],
-        ['field' => 'marksheet', 'label' => 'Marksheet of Last Qualifying Exam', 'icon' => 'fa-file-alt'],
-        ['field' => 'caste_certificate', 'label' => 'Caste Certificate', 'icon' => 'fa-certificate'],
-        ['field' => 'scholarship_proof', 'label' => 'Scholarship Proof Document', 'icon' => 'fa-award'],
-        ['field' => 'secondary_marksheet', 'label' => 'Secondary Board Marksheet', 'icon' => 'fa-graduation-cap'],
-        ['field' => 'senior_secondary_marksheet', 'label' => 'Senior Secondary Board Marksheet', 'icon' => 'fa-graduation-cap'],
-      ];
-    @endphp
-    
-    <div class="documents-container">
-      @foreach($documents as $doc)
-        @php
-          // Get document value from student
-          $docValue = $student->{$doc['field']} ?? null;
-          $hasDocument = !empty($docValue) && $docValue !== 'N/A' && $docValue !== null;
-        @endphp
+ <!-- ========== VIEW DOCUMENTS SECTION - EXACT SAME AS ONBOARDING EDIT ========== -->
+<div class="detail-section">
+  <h5><i class="fas fa-folder-open"></i> View Documents</h5>
+  
+  @php
+    $documents = [
+      ['field' => 'passport_photo', 'label' => 'Passport Size Photo', 'icon' => 'fa-id-card'],
+      ['field' => 'marksheet', 'label' => 'Marksheet of Last Qualifying Exam', 'icon' => 'fa-file-alt'],
+      ['field' => 'caste_certificate', 'label' => 'Caste Certificate (if applicable)', 'icon' => 'fa-certificate'],
+      ['field' => 'scholarship_proof', 'label' => 'Scholarship Proof', 'icon' => 'fa-award'],
+      ['field' => 'secondary_marksheet', 'label' => 'Secondary Board Marksheet', 'icon' => 'fa-graduation-cap'],
+      ['field' => 'senior_secondary_marksheet', 'label' => 'Senior Secondary Board Marksheet', 'icon' => 'fa-graduation-cap'],
+    ];
+  @endphp
+  
+  <div class="documents-grid">
+    @foreach($documents as $doc)
+      @php
+        // Get document value - check all possible field names
+        $docValue = $student->{$doc['field']} ?? null;
         
-        <div class="document-card {{ $hasDocument ? 'has-document' : 'no-document' }}">
-          <div class="document-icon">
-            <i class="fas {{ $doc['icon'] }}"></i>
-          </div>
-          <div class="document-info">
-            <div class="document-title">{{ $doc['label'] }}</div>
-            
-            @if($hasDocument)
-              <div class="document-actions">
+        // Debug log
+        if ($doc['field'] === 'passport_photo') {
+          \Log::info('Document Check:', [
+            'field' => $doc['field'],
+            'value_exists' => !empty($docValue),
+            'value_type' => gettype($docValue),
+            'starts_with_data' => is_string($docValue) && str_starts_with($docValue, 'data:')
+          ]);
+        }
+        
+        $hasDocument = !empty($docValue) && $docValue !== 'N/A' && $docValue !== null;
+      @endphp
+      
+      <div class="document-item {{ $hasDocument ? 'has-doc' : 'no-doc' }}">
+        <div class="doc-header">
+          <i class="fas {{ $doc['icon'] }} doc-icon"></i>
+          <span class="doc-label">{{ $doc['label'] }}</span>
+        </div>
+        
+        <div class="doc-content">
+          @if($hasDocument)
+            {{-- Document exists - show View link like Onboarding Edit --}}
+            <div class="doc-status success">
+              <i class="fas fa-check-circle"></i>
+              <span>Current File: 
                 @if(str_starts_with($docValue, 'data:'))
-                  {{-- Base64 Document --}}
-                  <button type="button" 
-                          class="btn-doc btn-view" 
-                          onclick="viewDocument('{{ $docValue }}', '{{ $doc['label'] }}')"
-                          title="View Document">
-                    <i class="fas fa-eye"></i> View
-                  </button>
+                  {{-- Base64 Document - Open in new tab --}}
                   <a href="{{ $docValue }}" 
-                     download="{{ $doc['label'] }}.{{ str_contains($docValue, 'pdf') ? 'pdf' : 'jpg' }}"
-                     class="btn-doc btn-download"
-                     title="Download Document">
-                    <i class="fas fa-download"></i> Download
+                     target="_blank" 
+                     class="doc-link">
+                    View
+                  </a>
+                @elseif(str_starts_with($docValue, 'storage/'))
+                  {{-- Storage path --}}
+                  <a href="{{ asset($docValue) }}" 
+                     target="_blank" 
+                     class="doc-link">
+                    View
                   </a>
                 @else
-                  {{-- URL Path --}}
-                  <a href="{{ asset($docValue) }}" 
-                     target="_blank"
-                     class="btn-doc btn-view"
-                     title="View Document">
-                    <i class="fas fa-eye"></i> View
-                  </a>
-                  <a href="{{ asset($docValue) }}" 
-                     download
-                     class="btn-doc btn-download"
-                     title="Download Document">
-                    <i class="fas fa-download"></i> Download
+                  {{-- Direct path or URL --}}
+                  <a href="{{ $docValue }}" 
+                     target="_blank" 
+                     class="doc-link">
+                    View
                   </a>
                 @endif
-                <span class="document-status uploaded">
-                  <i class="fas fa-check-circle"></i> Uploaded
-                </span>
-              </div>
-            @else
-              <div class="document-status not-uploaded">
-                <i class="fas fa-times-circle"></i> Not Uploaded
-              </div>
-            @endif
-          </div>
+              </span>
+            </div>
+            
+            {{-- Additional action buttons --}}
+            <div class="doc-actions">
+              @if(str_starts_with($docValue, 'data:'))
+                <a href="{{ $docValue }}" 
+                   download="{{ $doc['label'] }}.{{ str_contains($docValue, 'pdf') ? 'pdf' : 'jpg' }}"
+                   class="btn btn-sm btn-success">
+                  <i class="fas fa-download"></i> Download
+                </a>
+                <button type="button" 
+                        class="btn btn-sm btn-primary"
+                        onclick="viewDocumentModal('{{ $docValue }}', '{{ $doc['label'] }}')">
+                  <i class="fas fa-eye"></i> Preview
+                </button>
+              @else
+                <a href="{{ str_starts_with($docValue, 'storage/') ? asset($docValue) : $docValue }}" 
+                   download
+                   class="btn btn-sm btn-success">
+                  <i class="fas fa-download"></i> Download
+                </a>
+              @endif
+            </div>
+          @else
+            {{-- No document --}}
+            <div class="doc-status error">
+              <i class="fas fa-times-circle"></i>
+              <span>Not Uploaded</span>
+            </div>
+          @endif
         </div>
-      @endforeach
-    </div>
+      </div>
+    @endforeach
   </div>
-
 </div>
 
-<!-- ========== STYLES ========== -->
-<style>
-.detail-section {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.detail-section h5 {
-  color: #e05301;
-  font-weight: 600;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #e05301;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.detail-section h5 i {
-  font-size: 20px;
-}
-
-.detail-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 15px;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.detail-label {
-  font-size: 13px;
-  color: #666;
-  font-weight: 500;
-}
-
-.detail-value {
-  font-size: 15px;
-  color: #333;
-  font-weight: 600;
-  padding: 8px 12px;
-  background: #f8f9fa;
-  border-radius: 4px;
-  border-left: 3px solid #e05301;
-}
-
-.info-box {
-  background: #f8f9fa;
-  border-left: 4px solid #e05301;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-}
-
-.info-box-question {
-  font-size: 14px;
-  color: #555;
-  font-weight: 500;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.info-box-question i {
-  color: #e05301;
-}
-
-.info-box-answer {
-  font-size: 16px;
-  color: #333;
-  font-weight: 600;
-  padding-left: 24px;
-}
-
-/* Documents Styling */
-.documents-container {
-  display: grid;
-  gap: 15px;
-}
-
-.document-card {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.document-card.has-document {
-  border-color: #28a745;
-  background: #f0fff4;
-}
-
-.document-card.no-document {
-  border-color: #dc3545;
-  background: #fff5f5;
-}
-
-.document-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transform: translateY(-2px);
-}
-
-.document-icon {
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e05301;
-  color: white;
-  border-radius: 50%;
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-.document-info {
-  flex: 1;
-}
-
-.document-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.document-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.btn-doc {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.btn-view {
-  background: #e05301;
-  color: white;
-}
-
-.btn-view:hover {
-  background: #c04701;
-  color: white;
-}
-
-.btn-download {
-  background: #28a745;
-  color: white;
-}
-
-.btn-download:hover {
-  background: #218838;
-  color: white;
-}
-
-.document-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.document-status.uploaded {
-  background: #d4edda;
-  color: #155724;
-}
-
-.document-status.not-uploaded {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-@media (max-width: 768px) {
-  .detail-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .document-card {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-</style>
-
+</div>
 
         <!-- TAB 2: Student Attendance -->
         <div class="tab-content-section" id="student-attendance">
@@ -2834,56 +3004,117 @@ function initializeTestSeriesCharts() {
   }
 }
 
-function viewDocument(base64Data, title) {
-  // Create modal or new window to view document
-  const newWindow = window.open('', '_blank');
+</script>
+<script>
+/**
+ * View Document in Modal (for Base64 documents)
+ */
+function viewDocumentModal(base64Data, title) {
+  // Create modal
+  const modal = document.createElement('div');
+  modal.className = 'doc-preview-modal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  `;
+  
+  // Close button
+  const closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '<i class="fas fa-times"></i> Close';
+  closeBtn.style.cssText = `
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  `;
+  closeBtn.onclick = () => document.body.removeChild(modal);
+  
+  // Title
+  const titleEl = document.createElement('div');
+  titleEl.textContent = title;
+  titleEl.style.cssText = `
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+  `;
+  
+  // Content
+  const content = document.createElement('div');
+  content.style.cssText = `
+    max-width: 90%;
+    max-height: 85vh;
+    background: white;
+    border-radius: 8px;
+    overflow: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  `;
   
   if (base64Data.includes('application/pdf')) {
-    // PDF Document
-    newWindow.document.write(`
-      <html>
-        <head>
-          <title>${title}</title>
-          <style>
-            body { margin: 0; }
-            iframe { width: 100vw; height: 100vh; border: none; }
-          </style>
-        </head>
-        <body>
-          <iframe src="${base64Data}"></iframe>
-        </body>
-      </html>
-    `);
+    // PDF
+    const iframe = document.createElement('iframe');
+    iframe.src = base64Data;
+    iframe.style.cssText = `
+      width: 80vw;
+      height: 80vh;
+      border: none;
+    `;
+    content.appendChild(iframe);
   } else {
-    // Image Document
-    newWindow.document.write(`
-      <html>
-        <head>
-          <title>${title}</title>
-          <style>
-            body { 
-              margin: 0; 
-              display: flex; 
-              justify-content: center; 
-              align-items: center;
-              background-color: #f0f0f0;
-              min-height: 100vh;
-            }
-            img { 
-              max-width: 90%; 
-              max-height: 90vh; 
-              box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            }
-          </style>
-        </head>
-        <body>
-          <img src="${base64Data}" alt="${title}">
-        </body>
-      </html>
-    `);
+    // Image
+    const img = document.createElement('img');
+    img.src = base64Data;
+    img.style.cssText = `
+      max-width: 100%;
+      max-height: 80vh;
+      display: block;
+    `;
+    content.appendChild(img);
   }
+  
+  modal.appendChild(closeBtn);
+  modal.appendChild(titleEl);
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+  
+  // Close on background click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+  
+  // Close on ESC key
+  const escHandler = (e) => {
+    if (e.key === 'Escape') {
+      document.body.removeChild(modal);
+      document.removeEventListener('keydown', escHandler);
+    }
+  };
+  document.addEventListener('keydown', escHandler);
 }
-
 </script>
 </body>
 </html>

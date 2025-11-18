@@ -53,8 +53,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 25px;
-    width: 90%;
-
+  width: 90%;
 }
 
 .tab-btn {
@@ -67,9 +66,16 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .tab-btn.active {
+  background: #ed5b00;
+  color: white;
+}
+
+.tab-btn:hover {
   background: #ed5b00;
   color: white;
 }
@@ -79,8 +85,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-bottom: 25px;
-    width: 90%;
-
+  width: 90%;
 }
 
 .stat-card {
@@ -112,8 +117,7 @@
   border-radius: 10px;
   padding: 25px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    width: 90%;
-
+  width: 90%;
 }
 
 .list-header-section {
@@ -249,16 +253,17 @@
   width: 100%;
   border-collapse: collapse;
 }
-/* Add this to your <style> section */
+
 .table-success {
-    background-color: #d4edda !important;
-    transition: background-color 0.3s ease;
+  background-color: #d4edda !important;
+  transition: background-color 0.3s ease;
 }
 
 .table-warning {
-    background-color: #fff3cd !important;
-    transition: background-color 0.3s ease;
+  background-color: #fff3cd !important;
+  transition: background-color 0.3s ease;
 }
+
 .attendance-table thead th {
   background: white;
   color: #ed5b00;
@@ -394,24 +399,26 @@
 <body>
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img" alt="Logo">
+      <img src="{{asset('images/logo.png.jpg')}}" class="img">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
       <div class="session">
         <h5>Session:</h5>
         <select>
-          <option>{{ session('current_session', '2025-2026') }}</option>
+          <option>2024-2025</option>
+          <option>2026</option>
         </select>
       </div>
       <i class="fa-solid fa-bell"></i>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{ route('profile.index') }}"><i class="fa-solid fa-user"></i> Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
+          <li><a class="dropdown-item" href="{{ route('profile.index') }}"><i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
         </ul>
       </div>
     </div>
@@ -419,7 +426,12 @@
 
   <div class="main-container">
     <div class="left" id="sidebar">
- <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="text" id="text">
+        <h6>ADMIN</h6>
+        <p>synthesisbikaner@gmail.com</p>
+      </div>
+
+      <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -529,8 +541,9 @@
           <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Student</a></li>
+                <li><a class="item active" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+                <li><a class="item" href="{{ route(name: 'attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+
               </ul>
             </div>
           </div>
@@ -592,7 +605,7 @@
           </div>
         </div>
       </div>
-        </div>
+    </div>
 
     <div class="right" id="right">
       <div class="attendance-header">
@@ -617,9 +630,10 @@
         </div>
       </div>
 
+      <!-- TAB BUTTONS - DAILY IS ACTIVE, MONTHLY REDIRECTS -->
       <div class="tab-container">
         <button type="button" class="tab-btn active" id="dailyTab">Daily</button>
-        <button type="button" class="tab-btn" id="monthlyTab">Monthly</button>
+        <a href="{{ route('attendance.employee.monthly') }}" class="tab-btn" id="monthlyTab">Monthly</a>
       </div>
 
       <div class="stats-container">
@@ -715,7 +729,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{asset('js/sidebar.js')}}"></script>
+<script src="{{asset('js/emp.js')}}"></script>
 
 <script>
 var currentPage = 1;
@@ -724,7 +738,6 @@ var currentFilters = {
     branch: '',
     role: '',
     date: '',
-    view: 'daily',
     search: ''
 };
 
@@ -748,14 +761,6 @@ $(document).ready(function() {
     $('#branchFilter, #roleFilter, #dateFilter').on('change', function() {
         currentPage = 1;
         updateFilters();
-        loadAttendanceData();
-    });
-    
-    $('#dailyTab, #monthlyTab').on('click', function() {
-        $('.tab-btn').removeClass('active');
-        $(this).addClass('active');
-        currentFilters.view = $(this).attr('id') === 'monthlyTab' ? 'monthly' : 'daily';
-        currentPage = 1;
         loadAttendanceData();
     });
     
@@ -807,7 +812,6 @@ function updateFilters() {
         branch: $('#branchFilter').val() || '',
         role: $('#roleFilter').val() || '',
         date: $('#dateFilter').val() || '',
-        view: $('.tab-btn.active').attr('id') === 'monthlyTab' ? 'monthly' : 'daily',
         search: $('#searchInput').val() || ''
     };
     
@@ -838,7 +842,6 @@ function loadAttendanceData() {
             branch: currentFilters.branch,
             role: currentFilters.role,
             date: currentFilters.date,
-            view: currentFilters.view,
             search: currentFilters.search
         },
         success: function(response) {
@@ -978,7 +981,6 @@ function markAllAttendance(status) {
             var successCount = 0;
             var errorCount = 0;
             var totalCount = checkedIds.length;
-            var processedIds = [];
             
             checkedIds.forEach(function(employeeId, index) {
                 console.log('📝 Marking', (index + 1), '/', totalCount, ':', employeeId);
@@ -997,46 +999,27 @@ function markAllAttendance(status) {
                         
                         if (response.success) {
                             successCount++;
-                            processedIds.push(employeeId);
                             
-                            // MULTIPLE SELECTOR ATTEMPTS - ONE WILL WORK
                             var $row = $('tr[data-employee-id="' + employeeId + '"]');
                             
                             if (!$row.length) {
-                                // Try alternate selector - by checkbox value
                                 $row = $('.employee-checkbox[value="' + employeeId + '"]').closest('tr');
                             }
                             
-                            console.log('🔍 Looking for employee:', employeeId);
-                            console.log('📍 Row found:', $row.length);
-                            
                             if ($row.length > 0) {
-                                // Find the status cell (last td)
                                 var $statusCell = $row.find('td:last-child');
-                                console.log('📍 Status cell found:', $statusCell.length);
-                                console.log('📝 Old HTML:', $statusCell.html());
-                                
-                                // Update status
                                 var newBadge = getStatusBadge(status);
                                 $statusCell.html(newBadge);
-                                console.log('✅ New HTML:', $statusCell.html());
                                 
-                                // Uncheck checkbox
                                 $row.find('.employee-checkbox').prop('checked', false);
                                 
-                                // Visual feedback
                                 $row.addClass('bg-success bg-opacity-10');
                                 setTimeout(function() {
                                     $row.removeClass('bg-success bg-opacity-10');
                                 }, 1500);
-                                
-                                console.log('✅ UI updated successfully for:', employeeId);
-                            } else {
-                                console.warn('⚠️ Row not found for employee:', employeeId);
                             }
                         } else {
                             errorCount++;
-                            console.error('❌ API returned false for:', employeeId);
                         }
                         
                         checkCompletion();
@@ -1044,9 +1027,6 @@ function markAllAttendance(status) {
                     error: function(xhr, textStatus, error) {
                         errorCount++;
                         console.error('❌ AJAX error for:', employeeId);
-                        console.error('Status:', textStatus);
-                        console.error('Error:', error);
-                        console.error('Response:', xhr.responseText);
                         checkCompletion();
                     }
                 });
@@ -1054,22 +1034,15 @@ function markAllAttendance(status) {
             
             function checkCompletion() {
                 var completedCount = successCount + errorCount;
-                console.log('📊 Progress:', completedCount, '/', totalCount);
-                console.log('✅ Success:', successCount, '| ❌ Errors:', errorCount);
                 
                 if (completedCount === totalCount) {
-                    console.log('🏁 All operations complete!');
-                    
-                    // Reset buttons
                     $presentBtn.prop('disabled', false).text('Mark Present');
                     $absentBtn.prop('disabled', false).text('Mark Absent');
                     
-                    // Uncheck all
                     $('#selectAll').prop('checked', false);
                     $('.employee-checkbox').prop('checked', false);
                     updateBulkActionButtons();
                     
-                    // Show result
                     if (errorCount === 0) {
                         Swal.fire({
                             icon: 'success',
@@ -1090,42 +1063,12 @@ function markAllAttendance(status) {
                         });
                     }
                     
-                    // Reload table after showing message
                     setTimeout(function() {
                         loadAttendanceData();
                     }, 500);
                 }
             }
         }
-    });
-}
-
-// Make sure getStatusBadge is working correctly
-function getStatusBadge(status) {
-    console.log('🎨 Creating badge for status:', status);
-    
-    var badge = '';
-    switch(status) {
-        case 'present':
-            badge = '<span class="status-badge status-present">Present</span>';
-            break;
-        case 'absent':
-            badge = '<span class="status-badge status-absent">Absent</span>';
-            break;
-        default:
-            badge = '<span class="status-badge status-not-marked">Not-Marked</span>';
-    }
-    
-    console.log('🎨 Badge HTML:', badge);
-    return badge;
-}
-
-function showError(message) {
-    Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: message,
-        confirmButtonColor: '#dc3545'
     });
 }
 </script>
