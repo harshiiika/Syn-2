@@ -15,6 +15,8 @@ use Carbon\Carbon;
 
 class SmStudentsController extends Controller
 {
+
+    
     /**
      * Display a listing of students
      */
