@@ -280,13 +280,6 @@ Route::prefix('inquiries')->name('inquiries.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('attendance/employee')->name('attendance.employee.')->group(function () {
-<<<<<<< HEAD
-    Route::get('/', [EmployeeController::class, 'index'])->name('index');
-    Route::get('/data', [EmployeeController::class, 'getData'])->name('data');
-    Route::post('/mark', [EmployeeController::class, 'markAttendance'])->name('mark');
-    Route::post('/mark-all', [EmployeeController::class, 'markAllAttendance'])->name('mark.all');
-    Route::get('/export', [EmployeeController::class, 'exportAttendance'])->name('export');
-=======
     
     // Main index page
     Route::get('/', [EmployeeController::class, 'index'])
@@ -312,7 +305,6 @@ Route::prefix('attendance/employee')->name('attendance.employee.')->group(functi
         Route::get('/monthly', [EmployeeController::class, 'monthly'])->name('monthly');
         Route::get('/monthly/data', [EmployeeController::class, 'getMonthlyData'])->name('monthly.data');
         Route::get('/monthly/details', [EmployeeController::class, 'monthlyDetails'])->name('monthly.details');
->>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
 });
 
 /*
@@ -323,9 +315,6 @@ Route::prefix('attendance/employee')->name('attendance.employee.')->group(functi
 // Main page - accessible at /fees-management
 Route::get('/fees-management', [FeesManagementController::class, 'index'])->name('fees.management.index');
 
-<<<<<<< HEAD
-// AJAX Routes - under /fees prefix
-=======
 // Search Student
 Route::post('/fees-management/search-student', function (\Illuminate\Http\Request $request) {
     $searchTerm = $request->input('search');
@@ -380,15 +369,12 @@ Route::get('/fees-management/export-pending', function () {
 
 
 // Fees Management Routes
->>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
 Route::prefix('fees')->name('fees.')->group(function () {
     Route::post('/collect/search', [FeesManagementController::class, 'searchStudent'])->name('collect.search');
     Route::post('/status/search', [FeesManagementController::class, 'searchByStatus'])->name('status.search');
     Route::post('/transaction/filter', [FeesManagementController::class, 'filterTransactions'])->name('transaction.filter');
     Route::post('/batches-by-course', [FeesManagementController::class, 'getBatchesByCourse'])->name('batches.by.course');
     Route::get('/export', [FeesManagementController::class, 'exportPendingFees'])->name('export');
-<<<<<<< HEAD
-=======
 });
 // Profile Routes
 Route::prefix('profile')->name('profile.')->group(function () {
@@ -428,5 +414,4 @@ Route::prefix('attendance/student')->name('attendance.student.')->group(function
     // Export attendance (optional - for future)
     Route::get('/export', [StudentAController::class, 'exportAttendance'])
         ->name('export');
->>>>>>> 27854930d9f3479f82c229485d8811d3d0f24b5f
 });
