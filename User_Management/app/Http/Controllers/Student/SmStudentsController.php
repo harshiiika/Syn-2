@@ -16,7 +16,44 @@ use Carbon\Carbon;
 class SmStudentsController extends Controller
 {
 
+    /**
+ * NEW METHOD: Get all activities for a student
+ */
+private function getStudentActivities($student)
+{
+    $rawData = $student->getAttributes();
+    $activities = [];
     
+    // Get stored activities from database
+    $storedActivities = $rawData['activities'] ?? [];
+    if (is_string($storedActivities)) {
+        $storedActivities = json_decode($storedActivities, true) ?? [];
+    }
+    
+    if (is_array($storedActivities) && !empty($storedActivities)) {
+        foreach ($storedActivities as $activity) {
+            $activities[] = [
+                'title' => $activity['title'] ?? 'Activity',
+                'description' => $activity['description'] ?? 'performed an action',
+                'performed_by' => $activity['performed_by'] ?? 'Admin',
+                'created_at' => isset($activity['created_at']) ? 
+                    \Carbon\Carbon::parse($activity['created_at']) : 
+                    \Carbon\Carbon::now()
+            ];
+        }
+    }
+    
+    // Sort by date (newest first)
+    if (!empty($activities)) {
+        usort($activities, function($a, $b) {
+            $timeA = strtotime($a['created_at']->toDateTimeString() ?? '1970-01-01');
+            $timeB = strtotime($b['created_at']->toDateTimeString() ?? '1970-01-01');
+            return $timeB - $timeA; // DESCENDING order (newest to oldest)
+        });
+    }
+    
+    return $activities;
+}
     /**
      * Display a listing of students
      */
@@ -205,42 +242,41 @@ public function testSeries($id)
     /**
      *   NEW METHOD: Get all activities for a student
      */
-    private function getStudentActivities($student)
-    {
-        $rawData = $student->getAttributes();
-        $activities = [];
+//     private function getStudentActivities($student)
+//     {
+//         $rawData = $student->getAttributes();
+//         $activities = [];
         
-        // Get stored activities from database
-        $storedActivities = $rawData['activities'] ?? [];
-        if (is_string($storedActivities)) {
-            $storedActivities = json_decode($storedActivities, true) ?? [];
-        }
+//         // Get stored activities from database
+//         $storedActivities = $rawData['activities'] ?? [];
+//         if (is_string($storedActivities)) {
+//             $storedActivities = json_decode($storedActivities, true) ?? [];
+//         }
         
-        if (is_array($storedActivities) && !empty($storedActivities)) {
-            foreach ($storedActivities as $activity) {
-                $activities[] = [
-                    'title' => $activity['title'] ?? 'Activity',
-                    'description' => $activity['description'] ?? 'performed an action',
-                    'performed_by' => $activity['performed_by'] ?? 'Admin',
-                    'created_at' => isset($activity['created_at']) ? 
-                        \Carbon\Carbon::parse($activity['created_at']) : 
-                        \Carbon\Carbon::now()
-                ];
-            }
-        }
+//         if (is_array($storedActivities) && !empty($storedActivities)) {
+//             foreach ($storedActivities as $activity) {
+//                 $activities[] = [
+//                     'title' => $activity['title'] ?? 'Activity',
+//                     'description' => $activity['description'] ?? 'performed an action',
+//                     'performed_by' => $activity['performed_by'] ?? 'Admin',
+//                     'created_at' => isset($activity['created_at']) ? 
+//                         \Carbon\Carbon::parse($activity['created_at']) : 
+//                         \Carbon\Carbon::now()
+//                 ];
+//             }
+//         }
         
-        // Sort by date (newest first)
-        // Sort by date (oldest first - so newest appears at top of list)
-usort($uniqueHistory, function($a, $b) {
-    $timeA = strtotime($a['timestamp'] ?? $a['created_at'] ?? '1970-01-01');
-    $timeB = strtotime($b['timestamp'] ?? $b['created_at'] ?? '1970-01-01');
-    return $timeA - $timeB; // ⭐ ASCENDING order (oldest to newest)
-});
+//         // Sort by date (newest first)
+//         // Sort by date (oldest first - so newest appears at top of list)
+// usort($uniqueHistory, function($a, $b) {
+//     $timeA = strtotime($a['timestamp'] ?? $a['created_at'] ?? '1970-01-01');
+//     $timeB = strtotime($b['timestamp'] ?? $b['created_at'] ?? '1970-01-01');
+//     return $timeA - $timeB; // ⭐ ASCENDING order (oldest to newest)
+// });
 
-$uniqueHistory = array_reverse($uniqueHistory);
         
-        return $activities;
-    }
+    //     return $activities;
+    // }
 
     /**
      *   ENHANCED: Create activity log entry
@@ -409,7 +445,7 @@ $uniqueHistory = array_reverse($uniqueHistory);
     }
 
     /**
-     *   ENHANCED: Update student shift with activity logging
+     *  Update student shift with activity logging
      */
     public function updateShift(Request $request, $id)
     {
@@ -471,7 +507,7 @@ $uniqueHistory = array_reverse($uniqueHistory);
     }
 
     /**
-     *   ENHANCED: Update student batch with activity logging
+     *   Update student batch with activity logging
      */
     public function updateBatch(Request $request, $id)
     {
@@ -555,7 +591,7 @@ $uniqueHistory = array_reverse($uniqueHistory);
     }
 
    /**
- *   ENHANCED: Display the specified student with COMPLETE data from all previous stages
+ *   Display the specified student with COMPLETE data from all previous stages
  */
 public function show($id)
 {
@@ -787,8 +823,8 @@ private function parseDateSafely($dateValue)
     
     try {
         if (is_string($dateValue)) {
-            return \Carbon\Carbon::parse($dateValue)->format('d-m-Y');
-        } elseif ($dateValue instanceof \Carbon\Carbon) {
+            return Carbon::parse($dateValue)->format('d-m-Y');
+        } elseif ($dateValue instanceof Carbon) {
             return $dateValue->format('d-m-Y');
         } elseif ($dateValue instanceof \MongoDB\BSON\UTCDateTime) {
             return $dateValue->toDateTime()->format('d-m-Y');
@@ -882,7 +918,7 @@ private function calculateFeeSummary($rawData)
 }
 
 /**
- * ⭐ NEW HELPER: Generate unique payment key to detect duplicates
+ *  Generate unique payment key to detect duplicates
  */
 private function generatePaymentKey($entry)
 {
@@ -897,7 +933,7 @@ private function generatePaymentKey($entry)
 }
 
 /**
- * ⭐ FIXED: Generate truly unique key for history entries
+ * Generate truly unique key for history entries
  */
 private function generateUniqueHistoryKey($entry)
 {
@@ -1209,7 +1245,7 @@ public function getAttribute($key)
 
 
 /**
- * ⭐ ULTIMATE FIX: Get student history with NO DUPLICATES
+ * Get student history with NO DUPLICATES
  */
 public function getHistory($id)
 {
@@ -1339,7 +1375,7 @@ public function getHistory($id)
 }
 
 /**
- * ⭐ NEW: Generate unique signature for each entry
+ * Generate unique signature for each entry
  * This creates a fingerprint based on content, not just metadata
  */
 private function generateEntrySignature($entry)
@@ -1406,7 +1442,7 @@ private function generateEntrySignature($entry)
 }
 
 /**
- * ⭐ Keep normalizeTimestamp - it's working fine
+ * Keep normalizeTimestamp
  */
 private function normalizeTimestamp($entry)
 {
@@ -1438,6 +1474,136 @@ private function normalizeTimestamp($entry)
             'error' => $e->getMessage()
         ]);
         return time();
+    }
+}
+
+/**
+ * ENHANCED: Process fees data safely with all previous data
+ */
+private function processFeesDataSafe(&$safeStudent, $rawData)
+{
+    // Get fees from student object or raw data
+    $rawFees = $safeStudent->fees ?? $rawData['fees'] ?? [];
+    $rawOtherFees = $safeStudent->other_fees ?? $rawData['other_fees'] ?? [];
+    $rawTransactions = $safeStudent->transactions ?? $rawData['transactions'] ?? [];
+    
+    if (is_string($rawFees)) {
+        $rawFees = json_decode($rawFees, true) ?? [];
+    }
+    if (is_string($rawOtherFees)) {
+        $rawOtherFees = json_decode($rawOtherFees, true) ?? [];
+    }
+    if (is_string($rawTransactions)) {
+        $rawTransactions = json_decode($rawTransactions, true) ?? [];
+    }
+    
+    $safeStudent->fees = collect(is_array($rawFees) ? $rawFees : []);
+    $safeStudent->other_fees = collect(is_array($rawOtherFees) ? $rawOtherFees : []);
+    $safeStudent->transactions = collect(is_array($rawTransactions) ? $rawTransactions : []);
+    
+    // Process fees collection
+    if ($safeStudent->fees->isNotEmpty()) {
+        $safeStudent->fees = $safeStudent->fees->map(function ($fee) {
+            if (is_string($fee)) {
+                try {
+                    $fee = json_decode($fee, true);
+                } catch (\Exception $e) {
+                    return null;
+                }
+            }
+            
+            if (!is_array($fee)) {
+                return null;
+            }
+            
+            // Parse dates
+            $fee['due_date'] = $this->parseDateSafely($fee['due_date'] ?? null);
+            $fee['paid_date'] = $this->parseDateSafely($fee['paid_date'] ?? null);
+            
+            // Calculate remaining amount
+            $actualAmount = floatval($fee['actual_amount'] ?? 0);
+            $discountAmount = floatval($fee['discount_amount'] ?? 0);
+            $paidAmount = floatval($fee['paid_amount'] ?? 0);
+            $fee['remaining_amount'] = $actualAmount - $discountAmount - $paidAmount;
+            
+            // Set status
+            if (!isset($fee['status'])) {
+                if ($paidAmount >= ($actualAmount - $discountAmount)) {
+                    $fee['status'] = 'paid';
+                } elseif ($paidAmount > 0) {
+                    $fee['status'] = 'partial';
+                } else {
+                    $fee['status'] = 'pending';
+                }
+            }
+            
+            $fee['status_badge'] = $this->getStatusBadge($fee['status']);
+            
+            return $fee;
+        })->filter();
+    }
+    
+    // Process other_fees collection
+    if ($safeStudent->other_fees->isNotEmpty()) {
+        $safeStudent->other_fees = $safeStudent->other_fees->map(function ($fee) {
+            if (is_string($fee)) {
+                try {
+                    $fee = json_decode($fee, true);
+                } catch (\Exception $e) {
+                    return null;
+                }
+            }
+            
+            if (!is_array($fee)) {
+                return null;
+            }
+            
+            // Parse dates
+            $fee['due_date'] = $this->parseDateSafely($fee['due_date'] ?? null);
+            $fee['paid_date'] = $this->parseDateSafely($fee['paid_date'] ?? null);
+            
+            // Calculate remaining amount
+            $actualAmount = floatval($fee['actual_amount'] ?? 0);
+            $paidAmount = floatval($fee['paid_amount'] ?? 0);
+            $fee['remaining_amount'] = $actualAmount - $paidAmount;
+            
+            // Set status
+            if (!isset($fee['status'])) {
+                if ($paidAmount >= $actualAmount) {
+                    $fee['status'] = 'paid';
+                } elseif ($paidAmount > 0) {
+                    $fee['status'] = 'partial';
+                } else {
+                    $fee['status'] = 'pending';
+                }
+            }
+            
+            $fee['status_badge'] = $this->getStatusBadge($fee['status']);
+            
+            return $fee;
+        })->filter();
+    }
+    
+    // Process transactions collection
+    if ($safeStudent->transactions->isNotEmpty()) {
+        $safeStudent->transactions = $safeStudent->transactions->map(function ($transaction) {
+            if (is_string($transaction)) {
+                try {
+                    $transaction = json_decode($transaction, true);
+                } catch (\Exception $e) {
+                    return null;
+                }
+            }
+            
+            if (!is_array($transaction)) {
+                return null;
+            }
+            
+            // Parse payment date
+            $transaction['payment_date'] = $this->parseDateSafely($transaction['payment_date'] ?? null);
+            
+            return $transaction;
+        })->filter();
     }
 }
 }

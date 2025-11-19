@@ -1593,30 +1593,6 @@
     ];
   @endphp
   
-  {{-- 🔍 DEBUG BOX - Shows what's in database --}}
-  <div style="background: yellow; padding: 20px; margin: 20px 0; border: 3px solid red;">
-    <h4>🔍 DEBUG: Document Fields in MongoDB</h4>
-    <table style="width: 100%; border-collapse: collapse;">
-      <tr style="background: #ddd;">
-        <th style="padding: 8px; border: 1px solid black;">Field Name</th>
-        <th style="padding: 8px; border: 1px solid black;">Exists?</th>
-        <th style="padding: 8px; border: 1px solid black;">Empty?</th>
-        <th style="padding: 8px; border: 1px solid black;">Value Type</th>
-        <th style="padding: 8px; border: 1px solid black;">Starts with data:?</th>
-      </tr>
-      @foreach($documents as $doc)
-        <tr>
-          <td style="padding: 8px; border: 1px solid black;"><strong>{{ $doc['field'] }}</strong></td>
-          <td style="padding: 8px; border: 1px solid black;">{{ isset($student->{$doc['field']}) ? '✅ YES' : '❌ NO' }}</td>
-          <td style="padding: 8px; border: 1px solid black;">{{ empty($student->{$doc['field']}) ? '❌ EMPTY' : '✅ HAS DATA' }}</td>
-          <td style="padding: 8px; border: 1px solid black;">{{ gettype($student->{$doc['field']} ?? null) }}</td>
-          <td style="padding: 8px; border: 1px solid black;">
-            {{ isset($student->{$doc['field']}) && is_string($student->{$doc['field']}) && str_starts_with($student->{$doc['field']}, 'data:') ? '✅ YES' : '❌ NO' }}
-          </td>
-        </tr>
-      @endforeach
-    </table>
-  </div>
   
   <div class="documents-grid">
     @foreach($documents as $doc)

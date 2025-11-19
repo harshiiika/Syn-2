@@ -803,51 +803,55 @@ public function transferToSmStudents($id)
         // Generate roll number
         $rollNo = $this->generateRollNumber();
         
-        //   CREATE SM STUDENTS DATA WITH BOTH FIELD NAME FORMATS
+        // ✅ COMPLETE DATA MAPPING - ALL FIELDS FROM BOTH MODELS
         $smStudentData = [
-            //   PRIMARY FIELDS (snake_case for view)
+            // ========== PRIMARY FIELDS ==========
             'roll_no' => $rollNo,
             'student_name' => $rawData['name'] ?? 'N/A',
+            'name' => $rawData['name'] ?? 'N/A', // Keep both
             'email' => $rawData['email'] ?? null,
             'phone' => $rawData['studentContact'] ?? $rawData['mobileNumber'] ?? null,
             
-            //   PERSONAL DETAILS (both formats)
+            // ========== PERSONAL DETAILS - BOTH FORMATS ==========
             'father_name' => $rawData['father'] ?? 'N/A',
-            'father' => $rawData['father'] ?? 'N/A', // Keep camelCase too
+            'father' => $rawData['father'] ?? 'N/A',
             
             'mother_name' => $rawData['mother'] ?? 'N/A',
-            'mother' => $rawData['mother'] ?? 'N/A', // Keep camelCase too
+            'mother' => $rawData['mother'] ?? 'N/A',
             
             'dob' => $rawData['dob'] ?? null,
             
             'father_contact' => $rawData['mobileNumber'] ?? null,
-            'mobileNumber' => $rawData['mobileNumber'] ?? null, // Keep camelCase too
+            'mobileNumber' => $rawData['mobileNumber'] ?? null,
             
             'father_whatsapp' => $rawData['fatherWhatsapp'] ?? null,
-            'fatherWhatsapp' => $rawData['fatherWhatsapp'] ?? null, // Keep camelCase too
+            'fatherWhatsapp' => $rawData['fatherWhatsapp'] ?? null,
             
             'mother_contact' => $rawData['motherContact'] ?? null,
-            'motherContact' => $rawData['motherContact'] ?? null, // Keep camelCase too
+            'motherContact' => $rawData['motherContact'] ?? null,
             
             'category' => $rawData['category'] ?? null,
             'gender' => $rawData['gender'] ?? null,
             
             'father_occupation' => $rawData['fatherOccupation'] ?? null,
-            'fatherOccupation' => $rawData['fatherOccupation'] ?? null, // Keep camelCase too
+            'fatherOccupation' => $rawData['fatherOccupation'] ?? null,
+            
+            'father_grade' => $rawData['fatherGrade'] ?? null,
+            'fatherGrade' => $rawData['fatherGrade'] ?? null,
             
             'mother_occupation' => $rawData['motherOccupation'] ?? null,
-            'motherOccupation' => $rawData['motherOccupation'] ?? null, // Keep camelCase too
+            'motherOccupation' => $rawData['motherOccupation'] ?? null,
             
-            //   ADDRESS (both formats)
+            // ========== ADDRESS - BOTH FORMATS ==========
             'state' => $rawData['state'] ?? null,
             'city' => $rawData['city'] ?? null,
             
             'pincode' => $rawData['pinCode'] ?? null,
-            'pinCode' => $rawData['pinCode'] ?? null, // Keep camelCase too
+            'pinCode' => $rawData['pinCode'] ?? null,
             
             'address' => $rawData['address'] ?? null,
             
-            //   ADDITIONAL INFO (both formats)
+            // ========== ADDITIONAL INFO - BOTH FORMATS ==========
             'belongs_other_city' => $rawData['belongToOtherCity'] ?? 'No',
             'belongToOtherCity' => $rawData['belongToOtherCity'] ?? 'No',
             
@@ -860,7 +864,7 @@ public function transferToSmStudents($id)
             'specially_abled' => $rawData['speciallyAbled'] ?? 'No',
             'speciallyAbled' => $rawData['speciallyAbled'] ?? 'No',
             
-            //   COURSE DETAILS (both formats)
+            // ========== COURSE DETAILS - BOTH FORMATS ==========
             'course_type' => $rawData['courseType'] ?? $rawData['course_type'] ?? null,
             'courseType' => $rawData['courseType'] ?? $rawData['course_type'] ?? null,
             
@@ -876,7 +880,7 @@ public function transferToSmStudents($id)
             'course_content' => $rawData['courseContent'] ?? null,
             'courseContent' => $rawData['courseContent'] ?? null,
             
-            //   ACADEMIC DETAILS (both formats)
+            // ========== ACADEMIC DETAILS - BOTH FORMATS ==========
             'previous_class' => $rawData['previousClass'] ?? null,
             'previousClass' => $rawData['previousClass'] ?? null,
             
@@ -894,14 +898,14 @@ public function transferToSmStudents($id)
             
             'percentage' => $rawData['percentage'] ?? null,
             
-            //   SCHOLARSHIP (both formats - CRITICAL FIX)
+            // ========== SCHOLARSHIP - ALL 3 FORMATS ==========
             'is_repeater' => $rawData['isRepeater'] ?? 'No',
             'isRepeater' => $rawData['isRepeater'] ?? 'No',
             
             'scholarship_test' => $rawData['scholarshipTest'] ?? 'No',
             'scholarshipTest' => $rawData['scholarshipTest'] ?? 'No',
             
-            // ⭐ BOARD PERCENTAGE - ALL 3 FORMATS TO FIX YOUR ERROR
+            // ⭐ CRITICAL FIX: Board Percentage - ALL 3 FORMATS
             'board_percentage' => $rawData['lastBoardPercentage'] ?? null,
             'last_board_percentage' => $rawData['lastBoardPercentage'] ?? null,
             'lastBoardPercentage' => $rawData['lastBoardPercentage'] ?? null,
@@ -909,14 +913,14 @@ public function transferToSmStudents($id)
             'competition_exam' => $rawData['competitionExam'] ?? 'No',
             'competitionExam' => $rawData['competitionExam'] ?? 'No',
             
-            //   BATCH (both formats)
+            // ========== BATCH - BOTH FORMATS ==========
             'batch_name' => $rawData['batchName'] ?? null,
             'batchName' => $rawData['batchName'] ?? null,
             
             'batch_id' => $rawData['batch_id'] ?? null,
             'course_id' => $rawData['course_id'] ?? null,
             
-            //   FEES & SCHOLARSHIP
+            // ========== FEES & SCHOLARSHIP ==========
             'eligible_for_scholarship' => $rawData['eligible_for_scholarship'] ?? 'No',
             'scholarship_name' => $rawData['scholarship_name'] ?? null,
             'total_fee_before_discount' => $rawData['total_fee_before_discount'] ?? 0,
@@ -934,10 +938,13 @@ public function transferToSmStudents($id)
             'installment_1' => $rawData['installment_1'] ?? 0,
             'installment_2' => $rawData['installment_2'] ?? 0,
             'installment_3' => $rawData['installment_3'] ?? 0,
-            'paid_fees' => 0,
-            'remaining_fees' => $rawData['total_fees_inclusive_tax'] ?? 0,
+            'paid_fees' => $rawData['paid_fees'] ?? $rawData['paidAmount'] ?? 0,
+            'paidAmount' => $rawData['paidAmount'] ?? $rawData['paid_fees'] ?? 0,
+            'remaining_fees' => $rawData['remaining_fees'] ?? $rawData['remainingAmount'] ?? 0,
+            'remainingAmount' => $rawData['remainingAmount'] ?? $rawData['remaining_fees'] ?? 0,
+            'fee_status' => $rawData['fee_status'] ?? 'paid',
             
-            // ⭐ CRITICAL: DOCUMENTS - Copy ALL
+            // ========== CRITICAL: DOCUMENTS - Copy ALL ==========
             'passport_photo' => $rawData['passport_photo'] ?? null,
             'marksheet' => $rawData['marksheet'] ?? null,
             'caste_certificate' => $rawData['caste_certificate'] ?? null,
@@ -945,14 +952,14 @@ public function transferToSmStudents($id)
             'secondary_marksheet' => $rawData['secondary_marksheet'] ?? null,
             'senior_secondary_marksheet' => $rawData['senior_secondary_marksheet'] ?? null,
             
-            //   ARRAYS
+            // ========== ARRAYS ==========
             'fees' => [],
             'other_fees' => [],
             'transactions' => [],
-            'paymentHistory' => [],
-            'history' => $rawData['history'] ?? [],
+            'paymentHistory' => $rawData['paymentHistory'] ?? [],
+            'history' => $rawData['history'] ?? [], // ⭐ TRANSFER COMPLETE HISTORY
             
-            //   ACTIVITY LOG
+            // ========== ACTIVITY LOG ==========
             'activities' => [[
                 'title' => 'Student Enrolled',
                 'description' => 'Student successfully enrolled with Roll No: ' . $rollNo,
@@ -963,7 +970,7 @@ public function transferToSmStudents($id)
                 'ip_address' => request()->ip()
             ]],
             
-            //   STATUS
+            // ========== STATUS ==========
             'status' => 'active',
             'admission_date' => $rawData['admission_date'] ?? now(),
             'transferred_from' => 'pending_fees',
@@ -973,40 +980,42 @@ public function transferToSmStudents($id)
             'updated_by' => auth()->user()->name ?? 'System'
         ];
         
-        // Create SM Student
+        // ✅ Create SM Student
         $smStudent = SMstudents::create($smStudentData);
         
-        // Update Pending Fees status
+        // ✅ Update Pending Fees status (DON'T DELETE - Keep for audit)
         $pendingFees->update([
             'status' => 'completed',
+            'transferred_at' => now(),
             'sm_student_id' => (string)$smStudent->_id
         ]);
         
-        Log::info('Transfer to SM Students successful:', [
+        Log::info('✅ Transfer to SM Students successful:', [
             'sm_student_id' => (string)$smStudent->_id,
             'roll_no' => $rollNo,
             'name' => $smStudentData['student_name'],
             'father_name' => $smStudentData['father_name'],
             'mother_name' => $smStudentData['mother_name'],
+            'board_percentage' => $smStudentData['board_percentage'] ?? 'N/A',
             'documents' => [
                 'passport_photo' => !empty($smStudentData['passport_photo']),
                 'marksheet' => !empty($smStudentData['marksheet']),
                 'caste_certificate' => !empty($smStudentData['caste_certificate'])
-            ]
+            ],
+            'history_entries' => count($smStudentData['history'])
         ]);
         
         return redirect()->route('smstudents.index')
             ->with('success', 'Student enrolled successfully! Roll No: ' . $rollNo);
         
     } catch (\Exception $e) {
-        Log::error('Transfer to SM Students failed:', [
+        Log::error('❌ Transfer to SM Students failed:', [
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString()
         ]);
         return back()->with('error', 'Enrollment failed: ' . $e->getMessage());
     }
 }
-
 
 /**
  * Generate unique roll number
