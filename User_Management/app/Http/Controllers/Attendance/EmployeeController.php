@@ -27,7 +27,7 @@ class EmployeeController extends Controller
             $roles = Role::select('_id', 'name')
                 ->get();
 
-            Log::info('✅ Attendance Index Loaded', [
+            Log::info('  Attendance Index Loaded', [
                 'branches_count' => $branches->count(),
                 'roles_count' => $roles->count()
             ]);
@@ -154,7 +154,7 @@ public function getData(Request $request)
             'not_marked' => $data->where('status', 'not-marked')->count()
         ];
 
-        Log::info('✅ Data retrieved successfully', [
+        Log::info('  Data retrieved successfully', [
             'count' => $data->count(),
             'statistics' => $statistics
         ]);
@@ -246,7 +246,7 @@ public function markAttendance(Request $request)
             ]
         );
 
-        Log::info('✅ Attendance saved', [
+        Log::info('  Attendance saved', [
             'id' => $attendance->_id,
             'employee_id' => $attendance->employee_id,
             'date' => $attendance->date,
@@ -377,7 +377,7 @@ public function markAttendance(Request $request)
                 $marked++;
             }
 
-            Log::info('✅ Bulk attendance marked', ['count' => $marked]);
+            Log::info('  Bulk attendance marked', ['count' => $marked]);
 
             return response()->json([
                 'success' => true,
@@ -409,7 +409,7 @@ public function markAttendance(Request $request)
             $roles = Role::select('_id', 'name')
                 ->get();
 
-            Log::info('✅ Monthly Attendance Page Loaded');
+            Log::info('  Monthly Attendance Page Loaded');
 
             return view('attendance.employee.monthly', compact('branches', 'roles'));
             
@@ -543,7 +543,7 @@ public function markAttendance(Request $request)
                 ];
             });
 
-            Log::info('✅ Monthly summary processed', [
+            Log::info('  Monthly summary processed', [
                 'employee_count' => $data->count(),
                 'working_days' => $totalWorkingDays
             ]);
@@ -643,7 +643,7 @@ public function markAttendance(Request $request)
                 ];
             }
 
-            Log::info('✅ Generated full month calendar', [
+            Log::info('  Generated full month calendar', [
                 'total_days' => count($allDays),
                 'marked_days' => $records->count()
             ]);

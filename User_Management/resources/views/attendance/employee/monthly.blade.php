@@ -866,7 +866,7 @@ function loadMonthlyData() {
             search: currentFilters.search
         },
         success: function(response) {
-            console.log('✅ Data loaded:', response);
+            console.log('  Data loaded:', response);
             
             if (response.success) {
                 updateTable(response.data);
@@ -913,7 +913,7 @@ function updateTable(employees) {
         showEmployeeDetails(employeeId, employeeName);
     });
     
-    console.log('✅ Table updated');
+    console.log('  Table updated');
 }
 
 function showEmployeeDetails(employeeId, employeeName) {
@@ -933,7 +933,7 @@ function showEmployeeDetails(employeeId, employeeName) {
             month: currentFilters.month
         },
         success: function(response) {
-            console.log('✅ Details loaded:', response);
+            console.log('  Details loaded:', response);
             
             if (response.success && response.data.length > 0) {
                 renderDetailsTable(response.data);

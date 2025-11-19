@@ -87,28 +87,81 @@ class PendingFeesController extends Controller
                 ], 404);
             }
             
+            // Get ALL history entries
             $history = $student->history ?? [];
-            $history = array_reverse($history);
             
-            Log::info('History retrieved for student', [
+            // Get payment history for additional details
+            $paymentHistory = $student->paymentHistory ?? [];
+            
+            // Merge and enrich history with payment details
+            $enrichedHistory = [];
+            
+            foreach ($history as $entry) {
+                $enrichedEntry = $entry;
+                
+                // If this is a payment entry, add installment details
+                if (isset($entry['action']) && $entry['action'] === 'Fee Paid') {
+                    // Find matching payment in paymentHistory
+                    foreach ($paymentHistory as $payment) {
+                        $paymentDate = $payment['date'] ?? null;
+                        $entryTimestamp = $entry['timestamp'] ?? $entry['created_at'] ?? null;
+                        
+                        // Match by date/time proximity (within same minute)
+                        if ($paymentDate && $entryTimestamp) {
+                            $paymentTime = strtotime($paymentDate);
+                            $entryTime = strtotime($entryTimestamp);
+                            
+                            if (abs($paymentTime - $entryTime) < 60) {
+                                $enrichedEntry['payment_details'] = [
+                                    'amount' => $payment['amount'] ?? 0,
+                                    'method' => $payment['method'] ?? 'N/A',
+                                    'installment_number' => $payment['installment_number'] ?? null,
+                                    'transaction_id' => $payment['transaction_id'] ?? null,
+                                    'remarks' => $payment['remarks'] ?? null
+                                ];
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                $enrichedHistory[] = $enrichedEntry;
+            }
+            
+            // Sort by date (newest first)
+            usort($enrichedHistory, function($a, $b) {
+                $timeA = strtotime($a['timestamp'] ?? $a['created_at'] ?? '1970-01-01');
+                $timeB = strtotime($b['timestamp'] ?? $b['created_at'] ?? '1970-01-01');
+                return $timeB - $timeA;
+            });
+            
+            Log::info('✅ History retrieved successfully', [
                 'student_id' => $id,
-                'history_count' => count($history)
+                'total_entries' => count($enrichedHistory),
+                'payment_entries' => count(array_filter($enrichedHistory, function($e) {
+                    return isset($e['action']) && $e['action'] === 'Fee Paid';
+                }))
             ]);
             
             return response()->json([
                 'success' => true,
-                'data' => $history
+                'data' => $enrichedHistory,
+                'student_name' => $student->name ?? 'N/A',
+                'total_paid' => $student->paidAmount ?? $student->paid_fees ?? 0,
+                'remaining' => $student->remainingAmount ?? $student->remaining_fees ?? 0
             ]);
             
         } catch (\Exception $e) {
-            Log::error('Get history error: ' . $e->getMessage());
+            Log::error('❌ Get history error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch history: ' . $e->getMessage()
             ], 500);
         }
     }
-
     /**
      * Show edit form
      */
@@ -214,7 +267,7 @@ class PendingFeesController extends Controller
                 'name' => $student->name,
             ]);
 
-            // ✅ FIX: Calculate fees if missing
+            //   FIX: Calculate fees if missing
             $totalFees = floatval($student->total_fees ?? 0);
             $gstAmount = floatval($student->gst_amount ?? 0);
             $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
@@ -293,7 +346,7 @@ class PendingFeesController extends Controller
                 }
             }
 
-            // ✅ VALIDATION: Ensure fees are not zero
+            //   VALIDATION: Ensure fees are not zero
             if ($totalFeesWithGST == 0) {
                 Log::error('Unable to determine fees for student', [
                     'student_id' => $id,
@@ -318,12 +371,12 @@ class PendingFeesController extends Controller
 
             $remainingBalance = max(0, $totalFeesWithGST - $totalPaid);
 
-            // ✅ CALCULATE INSTALLMENTS - 40%, 30%, 30%
+            //   CALCULATE INSTALLMENTS - 40%, 30%, 30%
             $installment1 = round($totalFeesWithGST * 0.40, 2);
             $installment2 = round($totalFeesWithGST * 0.30, 2);
             $installment3 = round($totalFeesWithGST * 0.30, 2);
 
-            // ✅ CALCULATE ADJUSTED INSTALLMENTS based on payments made
+            //   CALCULATE ADJUSTED INSTALLMENTS based on payments made
             $adjustedInstallments = $this->calculateAdjustedInstallments(
                 $totalFeesWithGST,
                 $totalPaid,
@@ -377,7 +430,7 @@ class PendingFeesController extends Controller
     }
 
     /**
-     * ✅ Calculate adjusted installments based on payment history
+     *   Calculate adjusted installments based on payment history
      */
     private function calculateAdjustedInstallments($totalFees, $totalPaid, $paymentHistory)
     {
@@ -449,7 +502,11 @@ class PendingFeesController extends Controller
     /**
      * Process payment and transfer to SMstudents if fully paid
      */
-    public function processPayment(Request $request, $id)
+    /**
+ * Process payment and transfer to SMstudents if fully paid
+ * 📋 NOW TRACKS ALL PAYMENTS IN HISTORY
+ */
+ public function processPayment(Request $request, $id)
     {
         try {
             Log::info('=== PAYMENT PROCESSING STARTED ===', ['id' => $id]);
@@ -491,15 +548,50 @@ class PendingFeesController extends Controller
             if (!is_array($paymentHistory)) {
                 $paymentHistory = [];
             }
-            
             $paymentHistory[] = $paymentRecord;
-            
-            Log::info('Payment Record Created:', [
-                'payment_mode' => $paymentMode,
-                'installment' => $installmentNumber,
-                'amount' => $paymentAmount,
-            ]);
 
+            // 📋 GET EXISTING HISTORY
+            $existingHistory = $student->history ?? [];
+            if (!is_array($existingHistory)) {
+                $existingHistory = [];
+            }
+            
+            $userName = auth()->user()->name ?? 'Admin';
+            $studentName = $student->name;
+
+            // 📋 CREATE DETAILED PAYMENT HISTORY ENTRY
+            $installmentText = $installmentNumber 
+                ? " for Installment #{$installmentNumber}" 
+                : "";
+            
+            $paymentDescription = "{$userName} paid ₹" . number_format($paymentAmount, 2) 
+                . " for {$studentName}{$installmentText} via {$validated['payment_type']}.";
+            
+            if ($validated['transaction_id'] ?? null) {
+                $paymentDescription .= " (Txn: {$validated['transaction_id']})";
+            }
+
+            $paymentHistoryEntry = [
+                'action' => 'Fee Paid',
+                'description' => $paymentDescription,
+                'user' => $userName,
+                'timestamp' => now()->toIso8601String(),
+                'created_at' => now()->toDateTimeString(),
+                'details' => [
+                    'amount' => $paymentAmount,
+                    'payment_method' => $validated['payment_type'],
+                    'payment_mode' => $paymentMode,
+                    'installment_number' => $installmentNumber,
+                    'transaction_id' => $validated['transaction_id'] ?? null,
+                    'other_charges' => $otherCharges,
+                    'remarks' => $validated['remarks'] ?? null
+                ]
+            ];
+            
+            // Add at the beginning of history array
+            array_unshift($existingHistory, $paymentHistoryEntry);
+
+            // Calculate totals
             $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
             
             if ($totalFeesWithGST == 0) {
@@ -513,7 +605,6 @@ class PendingFeesController extends Controller
                 $totalFeesWithGST = $totalFees + $gstAmount;
             }
 
-            // Calculate total paid
             $newPaidAmount = 0;
             foreach ($paymentHistory as $p) {
                 $newPaidAmount += floatval($p['amount'] ?? 0);
@@ -521,163 +612,132 @@ class PendingFeesController extends Controller
             
             $newRemainingBalance = $totalFeesWithGST - $newPaidAmount;
 
-            // This prevents premature transfer due to rounding errors
+            // Check if fully paid
             $isFullyPaid = false;
             if ($newRemainingBalance <= 5 && $newRemainingBalance >= -5) {
                 $newRemainingBalance = 0;
                 $isFullyPaid = true;
             } else {
                 $newRemainingBalance = max(0, $newRemainingBalance);
-                $isFullyPaid = false;
             }
 
-            Log::info('Payment Calculation:', [
-                'total_fees_with_gst' => $totalFeesWithGST,
-                'new_paid_amount' => $newPaidAmount,
-                'new_remaining_balance' => $newRemainingBalance,
-                'is_fully_paid' => $isFullyPaid,
+            Log::info('💰 Payment Calculation:', [
+                'total_fees' => $totalFeesWithGST,
+                'paid_amount' => $newPaidAmount,
+                'remaining' => $newRemainingBalance,
+                'is_fully_paid' => $isFullyPaid
             ]);
 
-           // ✅ CHECK IF FULLY PAID - Only transfer when truly paid
-if ($isFullyPaid && $newRemainingBalance == 0) {
-    Log::info('FEES FULLY PAID - Transferring to SMstudents');
+            // ✅ IF FULLY PAID - Transfer to SMstudents
+            if ($isFullyPaid && $newRemainingBalance == 0) {
+                Log::info('✅ FEES FULLY PAID - Transferring to SMstudents');
 
-    $totalFees = floatval($student->total_fees ?? ($totalFeesWithGST / 1.18));
-    $gstAmount = floatval($student->gst_amount ?? ($totalFeesWithGST - $totalFees));
+                $totalFees = floatval($student->total_fees ?? ($totalFeesWithGST / 1.18));
+                $gstAmount = floatval($student->gst_amount ?? ($totalFeesWithGST - $totalFees));
 
-    // ✅ Create activity log for SMstudents
-    $activities = [];
-    
-    // Add payment completion activity
-    $activities[] = [
-        'title' => 'Fees Payment Completed',
-        'description' => 'paid full fees amount of ₹' . number_format($totalFeesWithGST, 2),
-        'performed_by' => auth()->user()->name ?? 'Admin',
-        'created_at' => now()->toIso8601String(),
-    ];
+                // 📋 ADD COMPLETION HISTORY ENTRY
+                $completionHistoryEntry = [
+                    'action' => 'Fee Paid & Student Onboarding Complete',
+                    'description' => "{$userName} completed the full fee payment for {$studentName} (Total: ₹" . number_format($totalFeesWithGST, 2) . "). Student transferred to Active Students.",
+                    'user' => $userName,
+                    'timestamp' => now()->toIso8601String(),
+                    'created_at' => now()->toDateTimeString(),
+                    'details' => [
+                        'total_amount_paid' => $newPaidAmount,
+                        'payment_installments' => count($paymentHistory),
+                        'transfer_reason' => 'Full fees payment completed'
+                    ]
+                ];
+                
+                array_unshift($existingHistory, $completionHistoryEntry);
 
-    // Add transfer activity
-    $activities[] = [
-        'title' => 'Student Activated',
-        'description' => 'transferred student from pending fees to active students',
-        'performed_by' => auth()->user()->name ?? 'Admin',
-        'created_at' => now()->toIso8601String(),
-    ];
+                // Create activity log for SMstudents
+                $activities = [];
+                
+                // Add payment completion activity
+                $activities[] = [
+                    'title' => 'Fees Payment Completed',
+                    'description' => "paid full fees amount of ₹" . number_format($totalFeesWithGST, 2),
+                    'performed_by' => $userName,
+                    'created_at' => now()->toIso8601String(),
+                ];
 
-    // ✅ COMPLETE FIELD MAPPING - All fields properly mapped
-   $smStudentData = [
-    'roll_no' => $student->roll_no ?? 'SM' . now()->format('ymd') . rand(100, 999),
-    'student_name' => $student->name,
-    'email' => $student->email ?? $student->studentContact ?? ($student->name . '@temp.com'),
-    'phone' => $student->mobileNumber ?? null,
-    'father_name' => $student->father ?? null,
-    'mother_name' => $student->mother ?? null,
-    'dob' => $student->dob ?? null,
-    'father_contact' => $student->mobileNumber ?? null,
-    'father_whatsapp' => $student->fatherWhatsapp ?? null,
-    'mother_contact' => $student->motherContact ?? null,
-    'gender' => $student->gender ?? null,
-    'father_occupation' => $student->fatherOccupation ?? null,
-    'father_caste' => $student->category ?? null,
-    'mother_occupation' => $student->motherOccupation ?? null,
-    'state' => $student->state ?? null,
-    'city' => $student->city ?? null,
-    'pincode' => $student->pinCode ?? null,
-    'address' => $student->address ?? null,
-    'belongs_other_city' => $student->belongToOtherCity ?? 'No',
-    'previous_class' => $student->previousClass ?? null,
-    'academic_medium' => $student->previousMedium ?? $student->medium ?? null,
-    'school_name' => $student->schoolName ?? null,
-    'academic_board' => $student->previousBoard ?? $student->board ?? null,
-    'passing_year' => $student->passingYear ?? null,
-    'percentage' => $student->percentage ?? null,
-    'batch_id' => $student->batch_id ?? null,
-    'batch_name' => $student->batchName ?? null,
-    'course_id' => $student->course_id ?? null,
-    'course_name' => $student->courseName ?? null,
-    'course_content' => $student->courseContent ?? null,
-    'delivery' => $student->deliveryMode ?? 'Offline',
-    'delivery_mode' => $student->deliveryMode ?? 'Offline',
-    'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
-    'scholarship_name' => $student->scholarship_name ?? 'N/A',
-    'total_fee_before_discount' => $student->total_fee_before_discount ?? $totalFees,
-    'discount_percentage' => $student->discount_percentage ?? 0,
-    'discounted_fee' => $student->discounted_fee ?? $totalFees,
-    'total_fees' => $totalFees,
-    'gst_amount' => $gstAmount,
-    'total_fees_inclusive_tax' => $totalFeesWithGST,
-    'fees_breakup' => $student->fees_breakup ?? 'Class room course (with test series & study material)',
-    'paid_fees' => $newPaidAmount,
-    'paidAmount' => $newPaidAmount,
-    'remaining_fees' => 0,
-    'remainingAmount' => 0,
-    'fee_status' => 'paid',
-    'paymentHistory' => $paymentHistory,
-    'last_payment_date' => $validated['payment_date'],
-    'status' => 'active',
-    'transferred_from' => 'pending_fees',
-    'transferred_at' => now(),
-    'activities' => $activities,
-    'created_at' => $student->created_at ?? now(),
-    'updated_at' => now(),
-    
-    //  ADD ALL DOCUMENTS
-    'passport_photo' => $student->passport_photo ?? null,
-    'marksheet' => $student->marksheet ?? null,
-    'caste_certificate' => $student->caste_certificate ?? null,
-    'scholarship_proof' => $student->scholarship_proof ?? null,
-    'secondary_marksheet' => $student->secondary_marksheet ?? null,
-    'senior_secondary_marksheet' => $student->senior_secondary_marksheet ?? null,
-];
+                // Add transfer activity
+                $activities[] = [
+                    'title' => 'Student Activated',
+                    'description' => "transferred student from pending fees to active students",
+                    'performed_by' => $userName,
+                    'created_at' => now()->toIso8601String(),
+                ];
 
-// ✅ ADD THIS LOG RIGHT AFTER THE ARRAY TO VERIFY DOCUMENTS
-Log::info('✅ SM Student data includes documents:', [
-    'passport_photo' => !empty($smStudentData['passport_photo']) ? 'YES' : 'NO',
-    'marksheet' => !empty($smStudentData['marksheet']) ? 'YES' : 'NO',
-    'secondary_marksheet' => !empty($smStudentData['secondary_marksheet']) ? 'YES' : 'NO',
-    'senior_secondary_marksheet' => !empty($smStudentData['senior_secondary_marksheet']) ? 'YES' : 'NO',
-    'caste_certificate' => !empty($smStudentData['caste_certificate']) ? 'YES' : 'NO',
-    'scholarship_proof' => !empty($smStudentData['scholarship_proof']) ? 'YES' : 'NO',
-]);
+                // Complete field mapping
+                $smStudentData = [
+                    'roll_no' => $student->roll_no ?? 'SM' . now()->format('ymd') . rand(100, 999),
+                    'student_name' => $student->name,
+                    'email' => $student->email ?? $student->studentContact ?? ($student->name . '@temp.com'),
+                    'phone' => $student->mobileNumber ?? null,
+                    'father_name' => $student->father ?? null,
+                    'mother_name' => $student->mother ?? null,
+                    'dob' => $student->dob ?? null,
+                    'father_contact' => $student->mobileNumber ?? null,
+                    'father_whatsapp' => $student->fatherWhatsapp ?? null,
+                    'mother_contact' => $student->motherContact ?? null,
+                    'gender' => $student->gender ?? null,
+                    'father_occupation' => $student->fatherOccupation ?? null,
+                    'category' => $student->category ?? null,
+                    'mother_occupation' => $student->motherOccupation ?? null,
+                    'state' => $student->state ?? null,
+                    'city' => $student->city ?? null,
+                    'pincode' => $student->pinCode ?? null,
+                    'address' => $student->address ?? null,
+                    'batch_name' => $student->batchName ?? null,
+                    'course_name' => $student->courseName ?? null,
+                    'delivery_mode' => $student->deliveryMode ?? 'Offline',
+                    'total_fees' => $totalFees,
+                    'gst_amount' => $gstAmount,
+                    'total_fees_inclusive_tax' => $totalFeesWithGST,
+                    'paid_fees' => $newPaidAmount,
+                    'paidAmount' => $newPaidAmount,
+                    'remaining_fees' => 0,
+                    'fee_status' => 'paid',
+                    'paymentHistory' => $paymentHistory,
+                    'last_payment_date' => $validated['payment_date'],
+                    'status' => 'active',
+                    'transferred_from' => 'pending_fees',
+                    'transferred_at' => now(),
+                    'activities' => $activities,
+                    'history' => $existingHistory, // 📋 COMPLETE HISTORY
+                ];
 
-    Log::info('Creating SMstudents record with complete data', [
-        'student_name' => $smStudentData['student_name'],
-        'category' => $smStudentData['category'],
-        'dob' => $smStudentData['dob'],
-        'mother_name' => $smStudentData['mother_name'],
-    ]);
+                Log::info('✅ Creating SMstudents record with complete history', [
+                    'history_count' => count($existingHistory),
+                    'payment_count' => count($paymentHistory)
+                ]);
 
-    $smStudent = SMstudents::create($smStudentData);
+                $smStudent = SMstudents::create($smStudentData);
+                $student->delete();
 
-    Log::info('✅ Student transferred successfully with ALL fields', [
-        'sm_student_id' => $smStudent->_id,
-        'activities_count' => count($activities),
-    ]);
+                return redirect()->route('smstudents.index')
+                    ->with('success', "✅ Payment successful! Student '{$smStudent->student_name}' moved to Active Students. Total Paid: ₹" . number_format($newPaidAmount, 2));
+            }
 
-    $student->delete();
-
-    return redirect()->route('smstudents.index')
-        ->with('success', "Payment successful! Student '{$smStudent->student_name}' moved to Active Students. Total Paid: ₹" . number_format($newPaidAmount, 2));
-}
-
-            // ✅ PARTIAL PAYMENT - Update student record
+            // ✅ PARTIAL PAYMENT - Update with history
             $feeStatus = $newPaidAmount > 0 ? 'partial' : 'pending';
 
             $student->paid_fees = $newPaidAmount;
             $student->paidAmount = $newPaidAmount;
             $student->remaining_fees = $newRemainingBalance;
-            $student->remainingAmount = $newRemainingBalance;
             $student->fee_status = $feeStatus;
             $student->last_payment_date = $validated['payment_date'];
             $student->setAttribute('paymentHistory', $paymentHistory);
+            $student->setAttribute('history', $existingHistory); // 📋 SAVE HISTORY
             $student->save();
-            
-            $student->refresh();
 
-            Log::info('Partial payment recorded', [
-                'paid_this_time' => $paymentAmount,
+            Log::info('✅ Partial payment recorded', [
+                'paid_now' => $paymentAmount,
                 'total_paid' => $newPaidAmount,
                 'remaining' => $newRemainingBalance,
+                'history_entries' => count($existingHistory)
             ]);
 
             $message = "Payment of ₹" . number_format($paymentAmount, 2) . " recorded";
@@ -690,9 +750,9 @@ Log::info('✅ SM Student data includes documents:', [
                 ->with('success', $message);
 
         } catch (\Exception $e) {
-            Log::error('Payment processing failed', [
-                'id' => $id,
+            Log::error('❌ Payment processing failed', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
 
             return redirect()->back()
@@ -700,6 +760,7 @@ Log::info('✅ SM Student data includes documents:', [
                 ->withInput();
         }
     }
+
 
     /**
      * Delete a pending fees student
@@ -742,15 +803,15 @@ public function transferToSmStudents($id)
         // Generate roll number
         $rollNo = $this->generateRollNumber();
         
-        // ✅ CREATE SM STUDENTS DATA WITH BOTH FIELD NAME FORMATS
+        //   CREATE SM STUDENTS DATA WITH BOTH FIELD NAME FORMATS
         $smStudentData = [
-            // ✅ PRIMARY FIELDS (snake_case for view)
+            //   PRIMARY FIELDS (snake_case for view)
             'roll_no' => $rollNo,
             'student_name' => $rawData['name'] ?? 'N/A',
             'email' => $rawData['email'] ?? null,
             'phone' => $rawData['studentContact'] ?? $rawData['mobileNumber'] ?? null,
             
-            // ✅ PERSONAL DETAILS (both formats)
+            //   PERSONAL DETAILS (both formats)
             'father_name' => $rawData['father'] ?? 'N/A',
             'father' => $rawData['father'] ?? 'N/A', // Keep camelCase too
             
@@ -777,7 +838,7 @@ public function transferToSmStudents($id)
             'mother_occupation' => $rawData['motherOccupation'] ?? null,
             'motherOccupation' => $rawData['motherOccupation'] ?? null, // Keep camelCase too
             
-            // ✅ ADDRESS (both formats)
+            //   ADDRESS (both formats)
             'state' => $rawData['state'] ?? null,
             'city' => $rawData['city'] ?? null,
             
@@ -786,7 +847,7 @@ public function transferToSmStudents($id)
             
             'address' => $rawData['address'] ?? null,
             
-            // ✅ ADDITIONAL INFO (both formats)
+            //   ADDITIONAL INFO (both formats)
             'belongs_other_city' => $rawData['belongToOtherCity'] ?? 'No',
             'belongToOtherCity' => $rawData['belongToOtherCity'] ?? 'No',
             
@@ -799,7 +860,7 @@ public function transferToSmStudents($id)
             'specially_abled' => $rawData['speciallyAbled'] ?? 'No',
             'speciallyAbled' => $rawData['speciallyAbled'] ?? 'No',
             
-            // ✅ COURSE DETAILS (both formats)
+            //   COURSE DETAILS (both formats)
             'course_type' => $rawData['courseType'] ?? $rawData['course_type'] ?? null,
             'courseType' => $rawData['courseType'] ?? $rawData['course_type'] ?? null,
             
@@ -815,7 +876,7 @@ public function transferToSmStudents($id)
             'course_content' => $rawData['courseContent'] ?? null,
             'courseContent' => $rawData['courseContent'] ?? null,
             
-            // ✅ ACADEMIC DETAILS (both formats)
+            //   ACADEMIC DETAILS (both formats)
             'previous_class' => $rawData['previousClass'] ?? null,
             'previousClass' => $rawData['previousClass'] ?? null,
             
@@ -833,7 +894,7 @@ public function transferToSmStudents($id)
             
             'percentage' => $rawData['percentage'] ?? null,
             
-            // ✅ SCHOLARSHIP (both formats - CRITICAL FIX)
+            //   SCHOLARSHIP (both formats - CRITICAL FIX)
             'is_repeater' => $rawData['isRepeater'] ?? 'No',
             'isRepeater' => $rawData['isRepeater'] ?? 'No',
             
@@ -848,14 +909,14 @@ public function transferToSmStudents($id)
             'competition_exam' => $rawData['competitionExam'] ?? 'No',
             'competitionExam' => $rawData['competitionExam'] ?? 'No',
             
-            // ✅ BATCH (both formats)
+            //   BATCH (both formats)
             'batch_name' => $rawData['batchName'] ?? null,
             'batchName' => $rawData['batchName'] ?? null,
             
             'batch_id' => $rawData['batch_id'] ?? null,
             'course_id' => $rawData['course_id'] ?? null,
             
-            // ✅ FEES & SCHOLARSHIP
+            //   FEES & SCHOLARSHIP
             'eligible_for_scholarship' => $rawData['eligible_for_scholarship'] ?? 'No',
             'scholarship_name' => $rawData['scholarship_name'] ?? null,
             'total_fee_before_discount' => $rawData['total_fee_before_discount'] ?? 0,
@@ -884,14 +945,14 @@ public function transferToSmStudents($id)
             'secondary_marksheet' => $rawData['secondary_marksheet'] ?? null,
             'senior_secondary_marksheet' => $rawData['senior_secondary_marksheet'] ?? null,
             
-            // ✅ ARRAYS
+            //   ARRAYS
             'fees' => [],
             'other_fees' => [],
             'transactions' => [],
             'paymentHistory' => [],
             'history' => $rawData['history'] ?? [],
             
-            // ✅ ACTIVITY LOG
+            //   ACTIVITY LOG
             'activities' => [[
                 'title' => 'Student Enrolled',
                 'description' => 'Student successfully enrolled with Roll No: ' . $rollNo,
@@ -902,7 +963,7 @@ public function transferToSmStudents($id)
                 'ip_address' => request()->ip()
             ]],
             
-            // ✅ STATUS
+            //   STATUS
             'status' => 'active',
             'admission_date' => $rawData['admission_date'] ?? now(),
             'transferred_from' => 'pending_fees',

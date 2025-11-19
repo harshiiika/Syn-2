@@ -212,7 +212,7 @@ Route::prefix('student/pending')->name('student.student.')->group(function () {
 // ONBOARDED STUDENTS (Complete Forms, Ready for Fees)
 Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
     Route::get('/', [OnboardController::class, 'index'])->name('onboard');
-    Route::get('/{id}', [OnboardController::class, 'show'])->name('show');
+    Route::get('/{id}', [OnboardController::class, 'show'])->name('show'); //   Remove /view
     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
     Route::post('/{id}/transfer', [OnboardController::class, 'transfer'])->name('transfer');
@@ -231,21 +231,32 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
     Route::post('/{id}/pay', [PendingFeesController::class, 'processPayment'])->name('processPayment');
 });
 
-// ACTIVE STUDENTS (SM Students)
-Route::prefix('smstudents')->name('smstudents.')->group(function () {
-    Route::get('/', [SmStudentsController::class, 'index'])->name('index');
-    Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
-    Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
-    Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
-    Route::get('/{id}/testseries', [SmStudentsController::class, 'testSeries'])->name('testseries');
-    Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
-    Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
-    Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
-    Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');
-    Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
-    Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
-    Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
-});
+// ========================================
+// 4. ACTIVE STUDENTS (SM Students)
+// ========================================
+Route::prefix('smstudents')
+    ->name('smstudents.')
+    ->group(function () {
+        // List and export routes
+        Route::get('/', [SmStudentsController::class, 'index'])->name('index');
+        Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
+        
+        // Specific actions - MUST BE BEFORE /{id} route
+        Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
+        Route::get('/{id}/history', [SmStudentsController::class, 'getHistory'])->name('history');
+        Route::get('/{id}/testseries', [SmStudentsController::class, 'testSeries'])->name('testseries');
+        Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
+        
+        // Update & actions
+        Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
+        Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
+        Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');
+        Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
+        Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
+        
+        // Generic view route - MUST BE LAST
+        Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
+    });
 
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])->name('onboard.transfer');
 

@@ -52,13 +52,13 @@ class FeesMasterController extends Controller
             'test_series_only' => 'nullable|numeric|min:0',
         ]);
 
-        // ✅ AUTO-DETECT course_type and class_name from Model's $courseConfigs
+        //   AUTO-DETECT course_type and class_name from Model's $courseConfigs
         $config = FeesMaster::getCourseConfig($validated['course']);
         
         $data = [
             'course' => $validated['course'],
-            'course_type' => $config['course_type'] ?? null,  // ✅ FIX #1
-            'class_name' => $config['class_name'] ?? null,    // ✅ FIX #2
+            'course_type' => $config['course_type'] ?? null,  //   FIX #1
+            'class_name' => $config['class_name'] ?? null,    //   FIX #2
             'gst_percent' => $validated['gst_percentage'],
             'classroom_fee' => $validated['classroom_course'] ?? 0,
             'live_fee' => $validated['live_online_course'] ?? 0,
@@ -197,13 +197,13 @@ public function show($id)
             'test_series_only' => 'nullable|numeric|min:0',
         ]);
 
-        // ✅ AUTO-DETECT course_type and class_name
+        //   AUTO-DETECT course_type and class_name
         $config = FeesMaster::getCourseConfig($validated['course']);
         
         $data = [
             'course' => $validated['course'],
-            'course_type' => $config['course_type'] ?? null,  // ✅ FIX #1
-            'class_name' => $config['class_name'] ?? null,    // ✅ FIX #2
+            'course_type' => $config['course_type'] ?? null,  //   FIX #1
+            'class_name' => $config['class_name'] ?? null,    //   FIX #2
             'gst_percent' => $validated['gst_percentage'],
             'classroom_fee' => $validated['classroom_course'] ?? 0,
             'live_fee' => $validated['live_online_course'] ?? 0,

@@ -9,7 +9,7 @@ function validateLogin(event) {
 
     if (Email === correctEmail && Password === correctPassword) {
         alert("Login successful! Redirecting...");
-        window.location.href = "/emp"; // ✅ Laravel route
+        window.location.href = "/emp"; //   Laravel route
     } else {
         alert("Invalid Credentials");
     }
