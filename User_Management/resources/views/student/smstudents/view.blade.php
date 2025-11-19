@@ -1578,8 +1578,7 @@
     </div>
   </div>
 
-  <!-- ========== VIEW DOCUMENTS ========== -->
- <!-- ========== VIEW DOCUMENTS SECTION - EXACT SAME AS ONBOARDING EDIT ========== -->
+ <!-- ========== VIEW DOCUMENTS ========== -->
 <div class="detail-section">
   <h5><i class="fas fa-folder-open"></i> View Documents</h5>
   
@@ -1594,22 +1593,35 @@
     ];
   @endphp
   
+  {{-- 🔍 DEBUG BOX - Shows what's in database --}}
+  <div style="background: yellow; padding: 20px; margin: 20px 0; border: 3px solid red;">
+    <h4>🔍 DEBUG: Document Fields in MongoDB</h4>
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr style="background: #ddd;">
+        <th style="padding: 8px; border: 1px solid black;">Field Name</th>
+        <th style="padding: 8px; border: 1px solid black;">Exists?</th>
+        <th style="padding: 8px; border: 1px solid black;">Empty?</th>
+        <th style="padding: 8px; border: 1px solid black;">Value Type</th>
+        <th style="padding: 8px; border: 1px solid black;">Starts with data:?</th>
+      </tr>
+      @foreach($documents as $doc)
+        <tr>
+          <td style="padding: 8px; border: 1px solid black;"><strong>{{ $doc['field'] }}</strong></td>
+          <td style="padding: 8px; border: 1px solid black;">{{ isset($student->{$doc['field']}) ? '✅ YES' : '❌ NO' }}</td>
+          <td style="padding: 8px; border: 1px solid black;">{{ empty($student->{$doc['field']}) ? '❌ EMPTY' : '✅ HAS DATA' }}</td>
+          <td style="padding: 8px; border: 1px solid black;">{{ gettype($student->{$doc['field']} ?? null) }}</td>
+          <td style="padding: 8px; border: 1px solid black;">
+            {{ isset($student->{$doc['field']}) && is_string($student->{$doc['field']}) && str_starts_with($student->{$doc['field']}, 'data:') ? '✅ YES' : '❌ NO' }}
+          </td>
+        </tr>
+      @endforeach
+    </table>
+  </div>
+  
   <div class="documents-grid">
     @foreach($documents as $doc)
       @php
-        // Get document value - check all possible field names
         $docValue = $student->{$doc['field']} ?? null;
-        
-        // Debug log
-        if ($doc['field'] === 'passport_photo') {
-          \Log::info('Document Check:', [
-            'field' => $doc['field'],
-            'value_exists' => !empty($docValue),
-            'value_type' => gettype($docValue),
-            'starts_with_data' => is_string($docValue) && str_starts_with($docValue, 'data:')
-          ]);
-        }
-        
         $hasDocument = !empty($docValue) && $docValue !== 'N/A' && $docValue !== null;
       @endphp
       
@@ -1621,51 +1633,24 @@
         
         <div class="doc-content">
           @if($hasDocument)
-            {{-- Document exists - show View link like Onboarding Edit --}}
+            {{-- Document exists --}}
             <div class="doc-status success">
               <i class="fas fa-check-circle"></i>
               <span>Current File: 
                 @if(str_starts_with($docValue, 'data:'))
-                  {{-- Base64 Document - Open in new tab --}}
-                  <a href="{{ $docValue }}" 
-                     target="_blank" 
-                     class="doc-link">
-                    View
-                  </a>
+                  <a href="{{ $docValue }}" target="_blank" class="doc-link">View</a>
                 @elseif(str_starts_with($docValue, 'storage/'))
-                  {{-- Storage path --}}
-                  <a href="{{ asset($docValue) }}" 
-                     target="_blank" 
-                     class="doc-link">
-                    View
-                  </a>
+                  <a href="{{ asset($docValue) }}" target="_blank" class="doc-link">View</a>
                 @else
-                  {{-- Direct path or URL --}}
-                  <a href="{{ $docValue }}" 
-                     target="_blank" 
-                     class="doc-link">
-                    View
-                  </a>
+                  <a href="{{ $docValue }}" target="_blank" class="doc-link">View</a>
                 @endif
               </span>
             </div>
             
-            {{-- Additional action buttons --}}
             <div class="doc-actions">
               @if(str_starts_with($docValue, 'data:'))
                 <a href="{{ $docValue }}" 
                    download="{{ $doc['label'] }}.{{ str_contains($docValue, 'pdf') ? 'pdf' : 'jpg' }}"
-                   class="btn btn-sm btn-success">
-                  <i class="fas fa-download"></i> Download
-                </a>
-                <button type="button" 
-                        class="btn btn-sm btn-primary"
-                        onclick="viewDocumentModal('{{ $docValue }}', '{{ $doc['label'] }}')">
-                  <i class="fas fa-eye"></i> Preview
-                </button>
-              @else
-                <a href="{{ str_starts_with($docValue, 'storage/') ? asset($docValue) : $docValue }}" 
-                   download
                    class="btn btn-sm btn-success">
                   <i class="fas fa-download"></i> Download
                 </a>
