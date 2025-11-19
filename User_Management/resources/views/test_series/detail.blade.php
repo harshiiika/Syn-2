@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Test Series - {{ $testMaster->test_master_id ?? 'Test Master' }}</title>
+  <title>Test Series - {{ $courseName }}</title>
   <link rel="stylesheet" href="{{ asset('css/emp.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -62,8 +62,8 @@
   </div>
 
   <div class="main-container">
-      <!-- Sidebar -->
-     <div class="left" id="sidebar">
+    <!-- Sidebar (same as index) -->
+    <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>Admin</h6>
         <p>synthesisbikaner@gmail.com</p>
@@ -215,8 +215,7 @@
     <div class="accordion-body">
       <ul class="menu" id="dropdown-body">
         <li>
-          <a class="item" href="{{ route('test_master.index') }}">
-            <i class="fa-solid fa-book" id="side-icon"></i>Test Master
+<a class="item" href="{{ route('test_series.index') }}">            <i class="fa-solid fa-book" id="side-icon"></i>Test Master
           </a>
         </li>
       </ul>
@@ -251,9 +250,9 @@
     <div class="right" id="right">
       <div class="top">
         <div class="top-text">
-          <h4><i class="fas fa-list-alt me-2"></i>TEST SERIES - {{ $testMaster->test_master_id ?? 'N/A' }}</h4>
-          <a href="{{ route('test_master.index') }}" class="btn btn-sm btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to Test Master
+          <h4><i class="fas fa-list-alt me-2"></i>TEST SERIES - {{ $courseName }}</h4>
+          <a href="{{ route('test_series.index') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back
           </a>
         </div>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createTestSeriesModal">
@@ -328,7 +327,7 @@
                         </button>
                       </li>
                       <li>
-                        <form method="POST" action="{{ route('test_series.destroy', $seriesId) }}" onsubmit="return confirm('Are you sure you want to delete this test series?')">
+                        <form method="POST" action="{{ route('test_series.destroy', $seriesId) }}" onsubmit="return confirm('Are you sure?')">
                           @csrf
                           @method('DELETE')
                           <button type="submit" class="dropdown-item text-danger">
@@ -364,8 +363,11 @@
   <!-- Create Test Series Modal -->
   <div class="modal fade" id="createTestSeriesModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <form method="POST" action="{{ route('test_series.store', $testMaster->_id) }}" class="modal-content">
+      <form method="POST" action="{{ route('test_series.store') }}" class="modal-content">
         @csrf
+        <input type="hidden" name="course_id" value="{{ is_object($course->_id) ? (string)$course->_id : $course->_id }}">
+        <input type="hidden" name="course_name" value="{{ $courseName }}">
+        
         <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
           <h5 class="modal-title text-white">
             <i class="fas fa-plus-circle me-2"></i>Create Test Series
@@ -394,7 +396,7 @@
               </select>
             </div>
 
-            <!-- Select Subjects (Conditional for Type1) -->
+            <!-- Select Subjects (Conditional) -->
             <div class="col-12 mb-3 conditional-field" id="selectSubjectsField">
               <label class="form-label fw-semibold">Select Subjects <span class="text-danger">*</span></label>
               <div class="d-flex gap-3">
@@ -422,11 +424,8 @@
             <!-- Test Series Name (Only for Type1) -->
             <div class="col-md-6 mb-3 conditional-field" id="testSeriesNameField">
               <label class="form-label fw-semibold">Test Series Name <span class="text-danger">*</span></label>
-              <input type="text" name="test_series_name" id="testSeriesNameInput" class="form-control" placeholder="Enter test series name">
+              <input type="text" name="test_series_name" id="testSeriesNameInput" class="form-control" placeholder="e.g., /IIT/00">
             </div>
-
-            <!-- Additional fields for generated test name (hidden, auto-generated) -->
-            <input type="hidden" name="test_name" id="generatedTestName">
           </div>
         </div>
         <div class="modal-footer bg-light">
@@ -441,7 +440,7 @@
     </div>
   </div>
 
-  <!-- Edit & View Modals -->
+  <!-- View & Edit Modals -->
   @foreach($testSeries as $series)
     @php
       $seriesId = is_object($series->_id) ? (string)$series->_id : $series->_id;
@@ -452,9 +451,7 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
-            <h5 class="modal-title text-white">
-              <i class="fas fa-eye me-2"></i>Test Series Details
-            </h5>
+            <h5 class="modal-title text-white"><i class="fas fa-eye me-2"></i>Test Series Details</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -487,14 +484,6 @@
                 <p>{{ $series->test_count }}</p>
               </div>
               @endif
-              <div class="col-md-6 mb-3">
-                <strong>Created At:</strong>
-                <p>{{ $series->created_at ? $series->created_at->format('d M Y, h:i A') : 'N/A' }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <strong>Updated At:</strong>
-                <p>{{ $series->updated_at ? $series->updated_at->format('d M Y, h:i A') : 'N/A' }}</p>
-              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -511,9 +500,7 @@
           @csrf
           @method('PUT')
           <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
-            <h5 class="modal-title text-white">
-              <i class="fas fa-edit me-2"></i>Edit Test Series
-            </h5>
+            <h5 class="modal-title text-white"><i class="fas fa-edit me-2"></i>Edit Test Series</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body p-4">
@@ -559,8 +546,18 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="{{ asset('js/emp.js') }}"></script>
   <script>
+    // Add this to your detail.blade.php script section
+document.querySelector('#createTestSeriesModal form').addEventListener('submit', function(e) {
+    const testType = document.getElementById('testSeriesType').value;
+    const checkboxes = document.querySelectorAll('input[name="subjects[]"]:checked');
+    
+    if ((testType === 'Type1' || testType === 'Type2') && checkboxes.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one subject');
+        return false;
+    }
+});
     document.addEventListener('DOMContentLoaded', function () {
       // Sidebar toggle
       const toggleBtn = document.getElementById('toggleBtn');
@@ -595,23 +592,15 @@
           const selectedType = this.value;
           
           if (selectedType === 'Type1') {
-            // Show subjects and test series name for Type1
             selectSubjectsField.classList.add('show');
             testSeriesNameField.classList.add('show');
             testSeriesNameInput.required = true;
-            
-            // Make at least one subject required
-            document.querySelectorAll('input[name="subjects[]"]').forEach(cb => {
-              cb.required = false; // We'll validate this separately
-            });
           } else if (selectedType === 'Type2') {
-            // Show only subjects for Type2
             selectSubjectsField.classList.add('show');
             testSeriesNameField.classList.remove('show');
             testSeriesNameInput.required = false;
             testSeriesNameInput.value = '';
           } else {
-            // Hide both for no selection
             selectSubjectsField.classList.remove('show');
             testSeriesNameField.classList.remove('show');
             testSeriesNameInput.required = false;
@@ -619,21 +608,7 @@
         });
       }
 
-      // Auto-generate test name before submit
-      document.querySelector('#createTestSeriesModal form').addEventListener('submit', function(e) {
-        const testType = document.getElementById('testSeriesType').value;
-        const testSeriesName = document.getElementById('testSeriesNameInput').value;
-        const generatedName = document.getElementById('generatedTestName');
-        
-        // Generate the test name based on test master and inputs
-        if (testType === 'Type1' && testSeriesName) {
-          generatedName.value = '{{ $testMaster->test_master_id }}/' + testType + '/' + testSeriesName;
-        } else {
-          generatedName.value = '{{ $testMaster->test_master_id }}/' + testType;
-        }
-      });
-
-      // Table functionality (pagination, search)
+      // Table pagination and search (same as before)
       let currentPage = 1;
       let entriesPerPage = 10;
       let allRows = [];

@@ -1,99 +1,121 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\TestSeries;
 
-use App\Models\TestSeries;
-use App\Models\Course;
+use App\Models\TestSeries\TestSeries;
+use App\Models\Master\Courses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 
 class TestSeriesController extends Controller
 {
-    /**
-     * Display the main Test Series page with grouped test masters
-     */
     public function index()
     {
         try {
-            // Get all test series grouped by test_master_id (course + test type combination)
-            $allTestSeries = TestSeries::with('course')
-                ->orderBy('created_at', 'desc')
-                ->get();
+            Log::info('=== Test Series Index - START ===');
+            
+            // Check if Courses model is accessible
+            $courses = Courses::all();
+            Log::info('Courses Count: ' . $courses->count());
 
-            // Group by test master (course name + test type + subject type)
-            $testMasters = [];
-            foreach ($allTestSeries as $series) {
-                $courseName = $series->course->name ?? 'Unknown';
-                $key = $courseName; // Group by course name
+            $testMasters = $courses->map(function ($course) {
+                $courseId = is_object($course->_id) ? (string)$course->_id : $course->_id;
                 
-                if (!isset($testMasters[$key])) {
-                    $testMasters[$key] = [
-                        'name' => $courseName,
-                        'course_id' => $series->course_id,
-                        'type1_count' => 0,
-                        'type2_count' => 0,
-                        'test_series' => []
-                    ];
-                }
+                Log::info('Processing Course', [
+                    'name' => $course->name,
+                    'id' => $courseId
+                ]);
                 
-                // Count test types
-                if ($series->test_type === 'Type1') {
-                    $testMasters[$key]['type1_count']++;
-                } elseif ($series->test_type === 'Type2') {
-                    $testMasters[$key]['type2_count']++;
-                }
-                
-                $testMasters[$key]['test_series'][] = $series;
+                return [
+                    'name' => $course->name,
+                    'type1_count' => TestSeries::where('course_id', $courseId)
+                        ->where('test_type', 'Type1')
+                        ->count(),
+                    'type2_count' => TestSeries::where('course_id', $courseId)
+                        ->where('test_type', 'Type2')
+                        ->count(),
+                ];
+            });
+
+            Log::info('Test Masters Count: ' . $testMasters->count());
+            Log::info('=== Test Series Index - END ===');
+
+            // Check if view exists
+            if (!view()->exists('test_series.index')) {
+                Log::error('View not found: test_series.index');
+                return response('View test_series.index not found', 404);
             }
 
-            $courses = Course::all();
+            return view('test_series.index', compact('testMasters'));
 
-            return view('test_series.index', compact('testMasters', 'courses'));
-            
         } catch (\Exception $e) {
-            return back()->with('error', 'Error loading test series: ' . $e->getMessage());
+            Log::error('=== Test Series Index ERROR ===');
+            Log::error('Message: ' . $e->getMessage());
+            Log::error('File: ' . $e->getFile());
+            Log::error('Line: ' . $e->getLine());
+            Log::error('Trace: ' . $e->getTraceAsString());
+            
+            // Return error view instead of redirect
+            return response()->view('errors.500', [
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
-    /**
-     * Display test series for a specific course
-     */
     public function show($courseName)
     {
         try {
-            // Decode the course name from URL
+            Log::info('=== Test Series Show - START ===', ['courseName' => $courseName]);
+            
             $courseName = urldecode($courseName);
-            
-            // Get all test series for this course
-            $course = Course::where('name', $courseName)->first();
-            
+            $course = Courses::where('name', $courseName)->first();
+
             if (!$course) {
+                Log::warning('Course not found: ' . $courseName);
                 return redirect()->route('test_series.index')
                     ->with('error', 'Course not found');
             }
 
             $courseId = is_object($course->_id) ? (string)$course->_id : $course->_id;
-            
+            Log::info('Course found', ['id' => $courseId]);
+
             $testSeries = TestSeries::where('course_id', $courseId)
-                ->with('course')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            return view('test_series.detail', compact('course', 'testSeries', 'courseName'));
+            Log::info('Test Series Count: ' . $testSeries->count());
             
+            // Check if view exists
+            if (!view()->exists('test_series.detail')) {
+                Log::error('View not found: test_series.detail');
+                return response('View test_series.detail not found', 404);
+            }
+
+            Log::info('=== Test Series Show - END ===');
+            
+            return view('test_series.detail', compact('course', 'testSeries', 'courseName'));
+
         } catch (\Exception $e) {
+            Log::error('=== Test Series Show ERROR ===');
+            Log::error('Message: ' . $e->getMessage());
+            Log::error('File: ' . $e->getFile());
+            Log::error('Line: ' . $e->getLine());
+            Log::error('Trace: ' . $e->getTraceAsString());
+            
             return redirect()->route('test_series.index')
                 ->with('error', 'Error loading test series: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Store a new test series
-     */
     public function store(Request $request)
     {
         try {
-            // Validate input
+            Log::info('=== Test Series Store - START ===');
+            Log::info('Request Data: ', $request->all());
+            
+            // Base validation rules
             $rules = [
                 'course_id' => 'required|string',
                 'test_type' => 'required|in:Type1,Type2',
@@ -101,31 +123,37 @@ class TestSeriesController extends Controller
                 'test_count' => 'required|integer|min:1',
             ];
 
-            // Conditional validation based on test_type
+            // Conditional validation based on test type
             if ($request->test_type === 'Type1') {
                 $rules['test_series_name'] = 'required|string|max:255';
                 $rules['subjects'] = 'required|array|min:1';
-            } elseif ($request->test_type === 'Type2') {
+            } else {
                 $rules['subjects'] = 'required|array|min:1';
             }
 
             $validated = $request->validate($rules);
+            Log::info('Validation passed');
 
-            // Get course
-            $course = Course::find($validated['course_id']);
+            // Find course
+            $course = Courses::find($validated['course_id']);
             if (!$course) {
-                return back()->with('error', 'Course not found!');
+                Log::error('Course not found with ID: ' . $validated['course_id']);
+                return back()
+                    ->withInput()
+                    ->with('error', 'Course not found!');
             }
 
-            // Generate test_name
             $courseName = $course->name ?? 'Course';
-            if ($request->test_type === 'Type1' && !empty($validated['test_series_name'])) {
-                $testName = $courseName . '/' . $validated['test_type'] . '/' . $validated['test_series_name'];
+            Log::info('Course found: ' . $courseName);
+
+            // Build test name
+            if ($request->test_type === 'Type1') {
+                $testName = $courseName . '/Type1/' . $validated['test_series_name'];
             } else {
-                $testName = $courseName . '/' . $validated['test_type'];
+                $testName = $courseName . '/Type2';
             }
 
-            // Create test series
+            // Prepare data
             $testSeriesData = [
                 'course_id' => $validated['course_id'],
                 'test_name' => $testName,
@@ -133,46 +161,59 @@ class TestSeriesController extends Controller
                 'subject_type' => $validated['subject_type'],
                 'test_count' => $validated['test_count'],
                 'status' => 'Pending',
+                'subjects' => $validated['subjects'],
                 'created_by' => Auth::check() ? Auth::user()->name : 'Admin',
             ];
 
-            // Add subjects if provided
-            if (isset($validated['subjects'])) {
-                $testSeriesData['subjects'] = $validated['subjects'];
-            }
-
-            // Add test_series_name if Type1
-            if ($request->test_type === 'Type1' && isset($validated['test_series_name'])) {
+            // Add test series name for Type1
+            if ($request->test_type === 'Type1') {
                 $testSeriesData['test_series_name'] = $validated['test_series_name'];
             }
 
-            TestSeries::create($testSeriesData);
+            Log::info('Creating test series with data: ', $testSeriesData);
 
-            // Redirect back to the course detail page if courseName is provided
+            // Create test series
+            $testSeries = TestSeries::create($testSeriesData);
+
+            Log::info('Test Series Created Successfully', ['id' => $testSeries->_id]);
+
+            // Redirect back to course detail page
             if ($request->has('course_name')) {
-                return redirect()->route('test_series.show', urlencode($request->course_name))
+                return redirect()
+                    ->route('test_series.show', urlencode($request->course_name))
                     ->with('success', 'Test Series created successfully!');
             }
 
-            return redirect()->route('test_series.index')
+            return redirect()
+                ->route('test_series.index')
                 ->with('success', 'Test Series created successfully!');
-                
+
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
+            Log::error('Validation Error: ', $e->errors());
+            return back()
+                ->withInput()
+                ->withErrors($e->errors())
+                ->with('error', 'Validation failed. Please check the form.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error creating test series: ' . $e->getMessage());
+            Log::error('=== Test Series Store ERROR ===');
+            Log::error('Message: ' . $e->getMessage());
+            Log::error('File: ' . $e->getFile());
+            Log::error('Line: ' . $e->getLine());
+            Log::error('Trace: ' . $e->getTraceAsString());
+            
+            return back()
+                ->withInput()
+                ->with('error', 'Error creating test series: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Update test series
-     */
     public function update(Request $request, $id)
     {
         try {
+            Log::info('=== Test Series Update - START ===', ['id' => $id]);
+            
             $testSeries = TestSeries::findOrFail($id);
 
-            // Validate input
             $validated = $request->validate([
                 'test_name' => 'required|string|max:255',
                 'test_type' => 'required|in:Type1,Type2',
@@ -180,57 +221,41 @@ class TestSeriesController extends Controller
                 'status' => 'nullable|in:Pending,Active,Completed',
             ]);
 
-            // Update test series
-            $updateData = [
+            $testSeries->update([
                 'test_name' => $validated['test_name'],
                 'test_type' => $validated['test_type'],
                 'subject_type' => $validated['subject_type'],
                 'status' => $validated['status'] ?? $testSeries->status,
                 'updated_by' => Auth::check() ? Auth::user()->name : 'Admin',
-            ];
+            ]);
 
-            $testSeries->update($updateData);
+            Log::info('Test Series Updated Successfully');
 
             return back()->with('success', 'Test Series updated successfully!');
-                
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
+
         } catch (\Exception $e) {
+            Log::error('=== Test Series Update ERROR ===');
+            Log::error('Message: ' . $e->getMessage());
             return back()->with('error', 'Error updating test series: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Delete test series
-     */
     public function destroy($id)
     {
         try {
+            Log::info('=== Test Series Destroy - START ===', ['id' => $id]);
+            
             $testSeries = TestSeries::findOrFail($id);
             $testSeries->delete();
 
+            Log::info('Test Series Deleted Successfully');
+
             return back()->with('success', 'Test Series deleted successfully!');
-                
+
         } catch (\Exception $e) {
+            Log::error('=== Test Series Destroy ERROR ===');
+            Log::error('Message: ' . $e->getMessage());
             return back()->with('error', 'Error deleting test series: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Export test series to Excel (optional)
-     */
-    public function export()
-    {
-        try {
-            $testSeries = TestSeries::with('course')
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            // You can implement Excel export here using Laravel Excel package
-            return response()->json($testSeries);
-            
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error exporting test series: ' . $e->getMessage());
         }
     }
 }
