@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\TestSeries;
 
+use App\Models\Master\Courses;
 use MongoDB\Laravel\Eloquent\Model;
 use MongoDB\Laravel\Relations\BelongsTo;
 use Carbon\Carbon;
@@ -75,20 +76,13 @@ class TestSeries extends Model
         });
     }
 
-    /**
-     * Get the test master that owns the test series.
-     */
-    public function testMaster(): BelongsTo
-    {
-        return $this->belongsTo(TestMaster::class, 'test_master_id', '_id');
-    }
 
     /**
      * Get the course that owns the test series.
      */
     public function course(): BelongsTo
     {
-        return $this->belongsTo(Course::class, 'course_id', '_id');
+        return $this->belongsTo(Courses::class, 'course_id', '_id');
     }
 
     /**
@@ -131,14 +125,7 @@ class TestSeries extends Model
         return $query->where('subject_type', $subjectType);
     }
 
-    /**
-     * Scope a query to filter by test master.
-     */
-    public function scopeForTestMaster($query, $testMasterId)
-    {
-        return $query->where('test_master_id', $testMasterId);
-    }
-
+    
     /**
      * Scope a query to filter by course.
      */

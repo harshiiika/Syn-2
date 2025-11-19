@@ -24,7 +24,7 @@ use App\Http\Controllers\Student\PaymentController;
 use App\Http\Controllers\Attendance\EmployeeController;
 use App\Http\Controllers\FeesManagementController;
 use App\Http\Controllers\Attendance\StudentAController;
-use App\Http\Controllers\TestSeriesController;
+use App\Http\Controllers\TestSeries\TestSeriesController;
 
 
 
@@ -431,24 +431,10 @@ Route::prefix('attendance/student')->name('attendance.student.')->group(function
 });
 
 
-// Test Series Routes (Single unified system)
 Route::prefix('test-series')->name('test_series.')->group(function () {
-    // Main page showing all test masters (course cards)
     Route::get('/', [TestSeriesController::class, 'index'])->name('index');
-    
-    // Show test series for a specific course
-    Route::get('/{courseName}', [TestSeriesController::class, 'show'])->name('show');
-    
-    // Create new test series
+    Route::get('/course/{courseName}', [TestSeriesController::class, 'show'])->name('show');
     Route::post('/', [TestSeriesController::class, 'store'])->name('store');
-    
-    // Update test series
     Route::put('/{id}', [TestSeriesController::class, 'update'])->name('update');
-    
-    // Delete test series
     Route::delete('/{id}', [TestSeriesController::class, 'destroy'])->name('destroy');
-    
-    // Export test series (optional)
-    Route::get('/export/all', [TestSeriesController::class, 'export'])->name('export');
-
 });
