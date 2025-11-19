@@ -30,7 +30,7 @@ class ScholarshipController extends Controller
         $perPage = $request->get('per_page', 10);
         $scholarships = $query->paginate($perPage);
 
-        // ✅ Transform each item to ensure all fields exist
+        //   Transform each item to ensure all fields exist
         $transformedData = collect($scholarships->items())->map(function($scholarship) {
             return [
                 'id' => $scholarship->_id ?? $scholarship->id,
@@ -120,10 +120,10 @@ class ScholarshipController extends Controller
     try {
         $data = $validator->validated();
         
-        // ✅ Ensure status is set
+        //   Ensure status is set
         $data['status'] = 'active';
         
-        // ✅ Log what we're about to save
+        //   Log what we're about to save
         Log::info('Creating scholarship with data:', $data);
         
         $scholarship = Scholarship::create($data);
@@ -237,7 +237,7 @@ class ScholarshipController extends Controller
     }
 
     /**
-     * ✅ NEW: Fix existing records with missing data
+     *   NEW: Fix existing records with missing data
      * Run this once to fix old records: GET /master/scholarship/fix-missing-data
      */
     public function fixMissingData()

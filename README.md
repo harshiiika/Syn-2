@@ -3,9 +3,9 @@ SYNTHESIS PROJECT
 
 Work until 10/10/2025
 Integrated User Management, Session Management, and Student Management, where:
-1. Priyanshi - Employee, Batches Assignment, Batches, Branch Assignment ✅ 
-2. Harshika - Session, Courses, Calendar, Student Migrate ✅ 
-3. Tisha - Inquiry, Fees Master, Other fees master ✅ 
+1. Priyanshi - Employee, Batches Assignment, Batches, Branch Assignment   
+2. Harshika - Session, Courses, Calendar, Student Migrate   
+3. Tisha - Inquiry, Fees Master, Other fees master   
 4. Pushed the code; main branch is up to date.
 
 

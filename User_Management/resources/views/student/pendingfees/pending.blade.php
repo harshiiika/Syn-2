@@ -991,7 +991,7 @@ height: 30px;
 
     document.addEventListener('DOMContentLoaded', function() {
       historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
-      console.log('✅ History Modal initialized');
+      console.log('  History Modal initialized');
     });
 
     // Load student history function
@@ -1028,7 +1028,7 @@ height: 30px;
           return response.json();
         })
         .then(json => {
-          console.log('✅ History response:', json);
+          console.log('  History response:', json);
 
           if (!json.success) {
             throw new Error(json.message || 'Failed to load history');

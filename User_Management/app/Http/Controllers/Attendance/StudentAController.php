@@ -31,7 +31,7 @@ class StudentAController extends Controller
             $courses = Courses::select('_id', 'name')
                 ->get();
 
-            Log::info('✅ Student Attendance Index Loaded', [
+            Log::info('  Student Attendance Index Loaded', [
                 'branches_count' => $branches->count(),
                 'batches_count' => $batches->count(),
                 'courses_count' => $courses->count()
@@ -134,7 +134,7 @@ class StudentAController extends Controller
                 'not_marked' => $data->where('status', 'not-marked')->count()
             ];
 
-            Log::info('✅ Student attendance data retrieved', [
+            Log::info('  Student attendance data retrieved', [
                 'count' => $data->count(),
                 'statistics' => $statistics
             ]);
@@ -213,7 +213,7 @@ class StudentAController extends Controller
                 ]
             );
 
-            Log::info('✅ Student attendance saved', [
+            Log::info('  Student attendance saved', [
                 'id' => $attendance->_id,
                 'student_id' => $attendance->student_id,
                 'status' => $attendance->status
@@ -298,7 +298,7 @@ class StudentAController extends Controller
                 $marked++;
             }
 
-            Log::info('✅ Bulk student attendance marked', ['count' => $marked]);
+            Log::info('  Bulk student attendance marked', ['count' => $marked]);
 
             return response()->json([
                 'success' => true,
@@ -333,7 +333,7 @@ class StudentAController extends Controller
             $courses = Courses::select('_id', 'name')
                 ->get();
 
-            Log::info('✅ Monthly Student Attendance Page Loaded');
+            Log::info('  Monthly Student Attendance Page Loaded');
 
             return view('attendance.student.monthly', compact('branches', 'batches', 'courses'));
             

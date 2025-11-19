@@ -216,7 +216,7 @@ Route::prefix('student/pending')->name('student.student.')->group(function () {
 // In web.php
 Route::prefix('student/onboard')->name('student.onboard.')->group(function () {
     Route::get('/', [OnboardController::class, 'index'])->name('onboard');
-    Route::get('/{id}', [OnboardController::class, 'show'])->name('show'); // ✅ Remove /view
+    Route::get('/{id}', [OnboardController::class, 'show'])->name('show'); //   Remove /view
     Route::get('/{id}/edit', [OnboardController::class, 'edit'])->name('edit');
     Route::put('/{id}', [OnboardController::class, 'update'])->name('update');
     Route::post('/{id}/transfer', [OnboardController::class, 'transfer'])->name('transfer');
@@ -254,7 +254,7 @@ Route::prefix('smstudents')
         
         // Specific actions - MUST BE BEFORE /{id} route
         Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
-        Route::get('/{id}/history', [SmStudentsController::class, 'history'])->name('history');
+        Route::get('/{id}/history', [SmStudentsController::class, 'getHistory'])->name('history');
         Route::get('/{id}/testseries', [SmStudentsController::class, 'testSeries'])->name('testseries');
         Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
         

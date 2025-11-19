@@ -542,7 +542,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         if (xhr.status === 422) {
           const errors = xhr.responseJSON.errors;
           for (let field in errors) {
-            $(`#error-${field}`).text(errors[field][0]); // ✅ Corrected
+            $(`#error-${field}`).text(errors[field][0]); //   Corrected
           }
         }
       }

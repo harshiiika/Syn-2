@@ -9,6 +9,49 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+
+    /* Enhanced Timeline Styles */
+.timeline-item {
+  transition: all 0.3s ease;
+}
+
+.timeline-item .card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.timeline-item .card.hover-shadow:hover {
+  transform: translateX(5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Payment Details Card Styling */
+.bg-success-subtle {
+  background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+.bg-warning-subtle {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+/* Badge styling */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* Timeline dots animation */
+.timeline-item .position-absolute {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(13, 110, 253, 0);
+  }
+}
     /* Activity Timeline Styles */
     .activity-timeline {
       max-height: 400px;
@@ -400,13 +443,11 @@
                           <button class="dropdown-item open-shift-modal" data-student-id="{{ $studentId }}">Shift Update</button>
                         </li>
 
-                        <li>
-                          <button class="dropdown-item" type="button"
-                            data-bs-toggle="modal"
-                            data-bs-target="#historyModal{{ $studentId }}">
-                           History
-                          </button>
-                        </li>
+                       <li>
+  <button class="dropdown-item" type="button" onclick="loadStudentHistory('{{ $studentId }}'); return false;">
+    <i class="fas fa-history me-2"></i>History
+  </button>
+</li>
                       @else
                         <li><span class="dropdown-item-text text-muted"><i class="fas fa-info-circle me-2"></i> Student Inactive</span></li>
                       @endif
@@ -587,202 +628,69 @@
 </div>
 
 <!-- History Modal with Dynamic Activity Timeline -->
-<div class="modal fade" id="historyModal{{ $studentId }}" tabindex="-1" aria-labelledby="historyModalLabel{{ $studentId }}" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
-    <div class="modal-content border-0 shadow-lg rounded-3">
-      
-      <!-- Modal Header -->
-      <div class="modal-header text-white" style="background-color: #e15914ff;">
-        <h5 class="modal-title fw-semibold" id="historyModalLabel{{ $studentId }}">
-          <i class="fas fa-history me-2"></i>Student History - {{ $student->student_name ?? $student->name ?? 'N/A' }}
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #e15914ff; color: white;">
+        <h5 class="modal-title" id="historyModalLabel">
+          <i class="fa-solid fa-clock-rotate-left me-2"></i>Activity
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-
-      <!-- Modal Body -->
-      <div class="modal-body p-4">
-        
-        <!-- Student Details Section -->
-        <h6 class="fw-bold mb-3 border-bottom pb-2" style="color: #ff7d3d;">
-          <i class="fas fa-user-circle me-2"></i>Student Details
-        </h6>
-        <div class="row g-3 mb-4">
-          
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Roll No</label>
-            <div class="border rounded p-2 bg-light">{{ $student->roll_no ?? 'N/A' }}</div>
+      <div class="modal-body p-0" id="historyModalBody" style="min-height: 400px; background-color: #ffffff;">
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
           </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Student Name</label>
-            <div class="border rounded p-2 bg-light">{{ $student->student_name ?? $student->name ?? 'N/A' }}</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Email</label>
-            <div class="border rounded p-2 bg-light">{{ $student->email ?? 'N/A' }}</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Phone</label>
-            <div class="border rounded p-2 bg-light">{{ $student->phone ?? $student->mobileNumber ?? 'N/A' }}</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Course Name</label>
-            <div class="border rounded p-2 bg-light">{{ $student->course->name ?? $student->course_name ?? $student->courseName ?? 'N/A' }}</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Batch</label>
-            <div class="border rounded p-2 bg-light">{{ $student->batch->name ?? $student->batch_name ?? $student->batchName ?? 'N/A' }}</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Course Content</label>
-            <div class="border rounded p-2 bg-light">{{ $student->course_content ?? $student->courseContent ?? 'N/A' }}</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Delivery Mode</label>
-            <div class="border rounded p-2 bg-light">{{ $student->delivery ?? $student->delivery_mode ?? $student->deliveryMode ?? 'N/A' }}</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Shift</label>
-            <div class="border rounded p-2 bg-light">
-              @if($student->shift_id && $student->shift)
-                {{ $student->shift->name }}
-              @elseif($student->shift)
-                {{ $student->shift }}
-              @else
-                N/A
-              @endif
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Status</label>
-            <div class="border rounded p-2 bg-light">
-              <span class="badge {{ ($student->status ?? 'active') == 'active' ? 'bg-success' : 'bg-danger' }}">
-                {{ ucfirst($student->status ?? 'active') }}
-              </span>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Created At</label>
-            <div class="border rounded p-2 bg-light">
-              @if(isset($student->created_at))
-                {{ $student->created_at->format('d M Y, h:i A') }}
-              @else
-                N/A
-              @endif
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="fw-semibold text-secondary small">Last Updated</label>
-            <div class="border rounded p-2 bg-light">
-              @if(isset($student->updated_at))
-                {{ $student->updated_at->format('d M Y, h:i A') }}
-              @else
-                N/A
-              @endif
-            </div>
-          </div>
-
+          <p class="mt-2 text-muted">Loading history...</p>
         </div>
-
-        <!-- Activity Timeline Section -->
-        <h6 class="fw-bold mb-3 border-bottom pb-2" style="color: #ff7d3d;">
-          <i class="fas fa-history me-2"></i>Activity Timeline
-        </h6>
-        
-        @if(isset($student->activities) && is_array($student->activities) && count($student->activities) > 0)
-          <div class="activity-timeline">
-            @foreach($student->activities as $activity)
-              <div class="activity-item">
-                <div class="activity-header">
-                  <div>
-                    <p class="activity-title">{{ $activity['title'] ?? 'Activity' }}</p>
-                    <p class="activity-description">
-                      <span class="activity-user">{{ $activity['performed_by'] ?? 'Admin' }}</span> 
-                      {{ $activity['description'] ?? 'performed an action' }}
-                    </p>
-                  </div>
-                  <span class="activity-time">
-                    @if(isset($activity['created_at']))
-                      @php
-                        try {
-                          $activityDate = is_string($activity['created_at']) 
-                            ? \Carbon\Carbon::parse($activity['created_at']) 
-                            : $activity['created_at'];
-                          echo $activityDate->format('d M Y h:i A');
-                        } catch (\Exception $e) {
-                          echo 'N/A';
-                        }
-                      @endphp
-                    @else
-                      N/A
-                    @endif
-                  </span>
-                </div>
-              </div>
-            @endforeach
-          </div>
-        @else
-          <!-- No Activity Found -->
-          <div class="alert alert-info text-center py-4">
-            <i class="fas fa-info-circle fa-2x mb-3"></i>
-            <h6 class="mb-2">No Activity History</h6>
-            <p class="mb-0 text-muted small">No activities have been recorded for this student yet.</p>
-          </div>
-        @endif
-
       </div>
-
-      <!-- Modal Footer -->
       <div class="modal-footer bg-light">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-          <i class="fas fa-times me-2"></i>Close
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i>Close
         </button>
       </div>
-
     </div>
   </div>
 </div>
 
-  @endforeach
+@endforeach
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('js/emp.js') }}"></script>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Sidebar toggle
+document.addEventListener('DOMContentLoaded', function () {
+    // ========================================
+    // SIDEBAR TOGGLE
+    // ========================================
     const toggleBtn = document.getElementById('toggleBtn');
     const sidebar = document.getElementById('sidebar');
     const right = document.getElementById('right');
     const text = document.getElementById('text');
 
     if (toggleBtn && sidebar && right && text) {
-      toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        right.classList.toggle('expanded');
-        text.classList.toggle('hidden');
-      });
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            right.classList.toggle('expanded');
+            text.classList.toggle('hidden');
+        });
     }
 
-    // Auto-hide flash messages
+    // ========================================
+    // AUTO-HIDE FLASH MESSAGES
+    // ========================================
     setTimeout(() => {
-      document.querySelectorAll('.alert').forEach(alert => {
-        alert.classList.remove('show');
-        setTimeout(() => alert.remove(), 150);
-      });
+        document.querySelectorAll('.alert').forEach(alert => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 150);
+        });
     }, 5000);
 
-    // Table functionality
+    // ========================================
+    // TABLE FUNCTIONALITY
+    // ========================================
     let currentPage = 1;
     let entriesPerPage = 10;
     let allRows = [];
@@ -790,217 +698,333 @@
 
     const tableBody = document.getElementById('tableBody');
     if (tableBody) {
-      allRows = Array.from(tableBody.querySelectorAll('tr[data-row="true"]'));
-      filteredRows = [...allRows];
-      updateTable();
+        allRows = Array.from(tableBody.querySelectorAll('tr[data-row="true"]'));
+        filteredRows = [...allRows];
+        updateTable();
     }
 
     document.querySelectorAll('.entries-option').forEach(option => {
-      option.addEventListener('click', function (e) {
-        e.preventDefault();
-        entriesPerPage = parseInt(this.dataset.value);
-        document.getElementById('number').textContent = entriesPerPage;
-        currentPage = 1;
-        updateTable();
-      });
+        option.addEventListener('click', function (e) {
+            e.preventDefault();
+            entriesPerPage = parseInt(this.dataset.value);
+            document.getElementById('number').textContent = entriesPerPage;
+            currentPage = 1;
+            updateTable();
+        });
     });
 
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
-      searchInput.addEventListener('input', function () {
-        const searchTerm = this.value.toLowerCase().trim();
-        filteredRows = searchTerm === ''
-          ? [...allRows]
-          : allRows.filter(row => row.textContent.toLowerCase().includes(searchTerm));
-        currentPage = 1;
-        updateTable();
-      });
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase().trim();
+            filteredRows = searchTerm === ''
+                ? [...allRows]
+                : allRows.filter(row => row.textContent.toLowerCase().includes(searchTerm));
+            currentPage = 1;
+            updateTable();
+        });
     }
 
     function updateTable() {
-      const start = (currentPage - 1) * entriesPerPage;
-      const end = start + entriesPerPage;
-      const pageRows = filteredRows.slice(start, end);
+        const start = (currentPage - 1) * entriesPerPage;
+        const end = start + entriesPerPage;
+        const pageRows = filteredRows.slice(start, end);
 
-      allRows.forEach(row => row.style.display = 'none');
+        allRows.forEach(row => row.style.display = 'none');
 
-      const noResultsRow = document.getElementById('noResultsRow');
-      if (noResultsRow) noResultsRow.style.display = 'none';
+        const noResultsRow = document.getElementById('noResultsRow');
+        if (noResultsRow) noResultsRow.style.display = 'none';
 
-      if (pageRows.length > 0) {
-        pageRows.forEach(row => row.style.display = '');
-      } else {
-        if (noResultsRow) {
-          noResultsRow.style.display = '';
+        if (pageRows.length > 0) {
+            pageRows.forEach(row => row.style.display = '');
         } else {
-          const tempRow = document.createElement('tr');
-          tempRow.innerHTML = '<td colspan="8" class="text-center">No matching students found</td>';
-          tempRow.id = 'tempNoResults';
-          tableBody.appendChild(tempRow);
+            if (noResultsRow) {
+                noResultsRow.style.display = '';
+            }
         }
-      }
 
-      const totalEntries = filteredRows.length;
-      document.getElementById('showingFrom').textContent = totalEntries > 0 ? start + 1 : 0;
-      document.getElementById('showingTo').textContent = Math.min(end, totalEntries);
-      document.getElementById('totalEntries').textContent = totalEntries;
+        const totalEntries = filteredRows.length;
+        const showingFromEl = document.getElementById('showingFrom');
+        const showingToEl = document.getElementById('showingTo');
+        const totalEntriesEl = document.getElementById('totalEntries');
+        
+        if (showingFromEl) showingFromEl.textContent = totalEntries > 0 ? start + 1 : 0;
+        if (showingToEl) showingToEl.textContent = Math.min(end, totalEntries);
+        if (totalEntriesEl) totalEntriesEl.textContent = totalEntries;
 
-      updatePagination();
+        updatePagination();
     }
 
     function updatePagination() {
-      const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
-      const pagination = document.getElementById('pagination');
-      if (!pagination) return;
+        const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
+        const pagination = document.getElementById('pagination');
+        if (!pagination) return;
 
-      pagination.innerHTML = '';
-      if (totalPages === 0) return;
+        pagination.innerHTML = '';
+        if (totalPages === 0) return;
 
-      const prevLi = document.createElement('li');
-      prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-      prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
-      pagination.appendChild(prevLi);
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
+        pagination.appendChild(prevLi);
 
-      const maxVisiblePages = 5;
-      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-      if (endPage - startPage < maxVisiblePages - 1) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-      }
-
-      if (startPage > 1) {
-        pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(1); return false;">1</a></li>`;
-        if (startPage > 2) {
-          pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        if (endPage - startPage < maxVisiblePages - 1) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
         }
-      }
 
-      for (let i = startPage; i <= endPage; i++) {
-        pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a></li>`;
-      }
-
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) {
-          pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        if (startPage > 1) {
+            pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(1); return false;">1</a></li>`;
+            if (startPage > 2) {
+                pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
         }
-        pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a></li>`;
-      }
 
-      const nextLi = document.createElement('li');
-      nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-      nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
-      pagination.appendChild(nextLi);
+        for (let i = startPage; i <= endPage; i++) {
+            pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a></li>`;
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a></li>`;
+        }
+
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
+        pagination.appendChild(nextLi);
     }
 
     window.changePage = function (page) {
-      const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
-      if (page >= 1 && page <= totalPages) {
-        currentPage = page;
-        updateTable();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+        const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            updateTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     };
 
-    // Shift modal setup
+    // ========================================
+    // SHIFT MODAL
+    // ========================================
     document.querySelectorAll('.open-shift-modal').forEach(button => {
-      button.addEventListener('click', function () {
-        const studentId = this.dataset.studentId;
-        const form = document.getElementById('shiftForm');
-        form.action = `/smstudents/${studentId}/update-shift`;
-        $('#shiftModal').modal('show');
-      });
-    });
-
-    // Batch modal setup
-    document.querySelectorAll('.open-batch-modal').forEach(button => {
-  button.addEventListener('click', function () {
-    const studentId = this.dataset.studentId;
-    const modalId = `#batchModal${studentId}`;
-    $(modalId).modal('show');
-  });
-});
-
-
-    // AJAX batch update
-//      document.getElementById('batchForm').addEventListener('submit', function (e) {
-//   e.preventDefault();
-
-//   const studentId = document.getElementById('batchStudentId').value;
-//   const batchId = document.getElementById('batchSelect').value;
-//   const token = document.querySelector('#batchForm input[name="_token"]').value;
-
-//   fetch(`/smstudents/${studentId}/update-batch`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Accept': 'application/json',
-//       'X-CSRF-TOKEN': token
-//     },
-//     body: JSON.stringify({ batch_id: batchId })
-//   })
-//   .then(async response => {
-//     const contentType = response.headers.get('content-type');
-//     if (!contentType || !contentType.includes('application/json')) {
-//       throw new Error('Server returned non-JSON response');
-//     }
-//     const data = await response.json();
-//     if (data.success) {
-//       alert('✅ Batch updated successfully!');
-//       $('#batchModal').modal('hide');
-//     } else {
-//       alert('❌ Failed to update batch: ' + data.message);
-//     }
-//   })
-//   .catch(error => {
-//     console.error('Error:', error);
-//     alert('❌ Something went wrong: ' + error.message);
-//   });
-// });
-//   
-
-//shift modal
-    document.addEventListener('DOMContentLoaded', function () {
-      document.querySelectorAll('.open-shift-modal').forEach(button => {
         button.addEventListener('click', function () {
-          const studentId = this.dataset.studentId;
-          const form = document.getElementById('shiftForm');
-          form.action = `/smstudents/${studentId}/update-shift`;
-          $('#shiftModal').modal('show');
+            const studentId = this.dataset.studentId;
+            const form = document.getElementById('shiftForm');
+            if (form) {
+                form.action = `/smstudents/${studentId}/update-shift`;
+            }
+            const shiftModal = document.getElementById('shiftModal');
+            if (shiftModal) {
+                const bsModal = new bootstrap.Modal(shiftModal);
+                bsModal.show();
+            }
         });
-      });
     });
 
-  const studentId = document.getElementById('batchStudentId').value;
-  const batchId = document.getElementById('batchSelect').value;
-  const token = document.querySelector('#batchForm input[name="_token"]').value;
-
-  fetch(`/smstudents/${studentId}/update-batch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-CSRF-TOKEN': token
-    },
-    body: JSON.stringify({ batch_id: batchId })
-  })
-  .then(async response => {
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Server returned non-JSON response');
-    }
-    const data = await response.json();
-    if (data.success) {
-      alert('✅ Batch updated successfully!');
-      $('#batchModal').modal('hide');
-    } else {
-      alert('❌ Failed to update batch: ' + data.message);
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('❌ Something went wrong: ' + error.message);
-  });
+    // ========================================
+    // BATCH MODAL
+    // ========================================
+    document.querySelectorAll('.open-batch-modal').forEach(button => {
+        button.addEventListener('click', function () {
+            const studentId = this.dataset.studentId;
+            const modalId = `#batchModal${studentId}`;
+            const modalEl = document.querySelector(modalId);
+            if (modalEl) {
+                const bsModal = new bootstrap.Modal(modalEl);
+                bsModal.show();
+            }
+        });
+    });
 });
+
+// ========================================
+// HISTORY MODAL - GLOBAL SCOPE
+// ========================================
+let historyModal;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const historyModalEl = document.getElementById('historyModal');
+    if (historyModalEl) {
+        historyModal = new bootstrap.Modal(historyModalEl);
+        console.log('✅ History Modal initialized');
+    }
+});
+
+// ⭐ GLOBAL FUNCTION - Load Student History
+function loadStudentHistory(studentId) {
+    console.log('📋 Loading history for student:', studentId);
+
+    const historyModalBody = document.getElementById('historyModalBody');
+    if (!historyModalBody) {
+        console.error('❌ historyModalBody element not found');
+        return;
+    }
+
+    // Show loading spinner
+    historyModalBody.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading complete student history...</p>
+        </div>
+    `;
+
+    // Show modal
+    if (historyModal) {
+        historyModal.show();
+    }
+
+    // Fetch history from SMStudents controller
+    fetch(`/smstudents/${studentId}/history`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => {
+            console.log('📡 Response status:', response.status);
+            return response.text().then(text => {
+                console.log('📡 Raw response:', text);
+                try {
+                    const json = JSON.parse(text);
+                    if (!response.ok) {
+                        throw new Error(json.message || `HTTP ${response.status}: Failed to load history`);
+                    }
+                    return json;
+                } catch (e) {
+                    console.error('Failed to parse JSON:', e);
+                    throw new Error(`Server returned invalid JSON. Status: ${response.status}`);
+                }
+            });
+        })
+        .then(json => {
+            console.log('✅ History response:', json);
+
+            if (!json.success) {
+                throw new Error(json.message || 'Failed to load history');
+            }
+
+            const history = json.data || [];
+            const studentName = json.student_name || 'N/A';
+            const rollNo = json.roll_no || 'N/A';
+            const totalPaid = json.total_paid || 0;
+            const remaining = json.remaining || 0;
+            const totalFees = json.total_fees || 0;
+
+            // Update modal title
+            document.getElementById('historyModalLabel').innerHTML = `
+                <i class="fa-solid fa-clock-rotate-left me-2"></i>Activity - ${escapeHtml(studentName)} (${escapeHtml(rollNo)})
+            `;
+
+            // If no history exists
+            if (history.length === 0) {
+                historyModalBody.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fa-solid fa-clock-rotate-left fa-4x mb-3" style="color: #ddd;"></i>
+                        <h5 class="mb-2">No History Available</h5>
+                        <p class="text-muted">Activity will appear here once changes are made to this student</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render history list
+            let historyHtml = `
+               
+                
+                <!-- History List -->
+                <div class="list-group list-group-flush">
+            `;
+
+            history.forEach((item, index) => {
+                const action = item.action || item.title || 'Activity';
+                const description = item.description || 'Activity recorded';
+                const user = item.user || item.performed_by || 'Admin';
+                
+                const date = new Date(item.timestamp || item.created_at || Date.now());
+                const formattedDate = date.toLocaleString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+
+                let paymentDetailsHtml = '';
+                if (action.toLowerCase().includes('fee paid') && item.details) {
+                    const details = item.details;
+                    paymentDetailsHtml = `
+                        <div class="ms-4 mt-2 small text-muted">
+                            <strong>Amount:</strong> ₹${Number(details.amount || 0).toLocaleString('en-IN')} | 
+                            <strong>Method:</strong> ${escapeHtml(details.payment_method || 'N/A').toUpperCase()}
+                            ${details.installment_number ? ` | <strong>Installment:</strong> #${details.installment_number}` : ''}
+                            ${details.transaction_id ? `<br><strong>Transaction ID:</strong> <code class="small">${escapeHtml(details.transaction_id)}</code>` : ''}
+                            ${details.remarks ? `<br><strong>Remarks:</strong> ${escapeHtml(details.remarks)}` : ''}
+                        </div>
+                    `;
+                }
+
+                historyHtml += `
+                    <div class="list-group-item border-0 border-bottom py-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1" style="color: #e15914ff; font-weight: 600;">
+                                    ${escapeHtml(user)}
+                                </h6>
+                                <p class="mb-0 text-dark">
+                                    <strong>${escapeHtml(action)}</strong>
+                                </p>
+                                <p class="mb-0 text-muted small">
+                                    ${escapeHtml(description)}
+                                </p>
+                                ${paymentDetailsHtml}
+                            </div>
+                            <div class="text-end ms-3" style="min-width: 180px;">
+                                <small class="text-muted">
+                                    ${formattedDate}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            historyHtml += '</div>';
+            historyModalBody.innerHTML = historyHtml;
+
+        })
+        .catch(error => {
+            console.error('❌ History error:', error);
+            historyModalBody.innerHTML = `
+                <div class="text-center text-danger py-5">
+                    <i class="fa-solid fa-exclamation-triangle fa-4x mb-3"></i>
+                    <h5 class="mb-2">Failed to Load History</h5>
+                    <p class="text-muted">${escapeHtml(error.message)}</p>
+                    <button class="btn btn-primary mt-3" onclick="loadStudentHistory('${studentId}')">
+                        <i class="fas fa-redo me-2"></i>Retry
+                    </button>
+                    <small class="d-block mt-3 text-muted">Check browser console for details</small>
+                </div>
+            `;
+        });
+}
+
+// ⭐ HELPER FUNCTION - Escape HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 </script>
 </body>
 </html>

@@ -26,7 +26,7 @@ class AssignRollNumbers extends Command
         })->get();
 
         if ($students->isEmpty()) {
-            $this->info('✅ All students already have roll numbers!');
+            $this->info('  All students already have roll numbers!');
             return 0;
         }
 
@@ -63,7 +63,7 @@ class AssignRollNumbers extends Command
                 $assigned++;
                 
                 $this->newLine();
-                $this->line("✅ {$student->student_name}: {$oldRollNo} → {$newRollNo}");
+                $this->line("  {$student->student_name}: {$oldRollNo} → {$newRollNo}");
                 
             } catch (\Exception $e) {
                 $failed++;
@@ -81,7 +81,7 @@ class AssignRollNumbers extends Command
         $this->info('=================================');
         $this->info('📊 SUMMARY:');
         $this->info('=================================');
-        $this->info("✅ Assigned: {$assigned}");
+        $this->info("  Assigned: {$assigned}");
         $this->error("❌ Failed: {$failed}");
         $this->info("📝 Total: {$students->count()}");
         
@@ -90,7 +90,7 @@ class AssignRollNumbers extends Command
             $this->warn('⚠️  This was a DRY RUN. Run without --dry-run to save changes.');
         } else {
             $this->newLine();
-            $this->info('✅ Roll numbers have been assigned and saved!');
+            $this->info('  Roll numbers have been assigned and saved!');
         }
 
         return 0;

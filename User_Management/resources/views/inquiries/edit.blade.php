@@ -160,12 +160,14 @@
   <div class="main-container">
     <!-- Sidebar -->
     <div class="left" id="sidebar">
+
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-      
-      <div class="accordion accordion-flush" id="accordionFlushExample">
+
+      <!-- Left side bar accordian -->
+       <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -178,7 +180,7 @@
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+                <li>><a class="item" href="{{ route(name: 'user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -233,7 +235,7 @@
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
@@ -780,7 +782,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
             if (selectedCourse) {
                 courseSelect.value = selectedCourse;
-                console.log('✅ Pre-filled course name:', selectedCourse);
+                console.log('  Pre-filled course name:', selectedCourse);
             }
         }, 100);
     }
@@ -844,7 +846,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
             if (selectedCourse) {
                 courseSelect.value = selectedCourse;
-                console.log('✅ Pre-filled course name:', selectedCourse);
+                console.log('  Pre-filled course name:', selectedCourse);
             }
         }, 100);
     }
@@ -877,7 +879,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Allow form submission even if course fields are empty
     form.addEventListener('submit', function(e) {
-        console.log('✅ Form submitting - allowing partial data');
+        console.log('  Form submitting - allowing partial data');
         return true;
     });
 });

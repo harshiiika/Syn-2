@@ -10,14 +10,14 @@ class Department extends Model
     protected $connection = 'mongodb';
     protected $collection = 'departments';
 
-    protected $fillable = ['name', 'default_role_id'];  // ✅ Add default_role_id
+    protected $fillable = ['name', 'default_role_id'];  //   Add default_role_id
 
     public function users()
     {
         return $this->hasMany(User::class);
     }
     
-    // ✅ Add relationship to default role
+    //   Add relationship to default role
     public function defaultRole()
     {
         return $this->belongsTo(Role::class, 'default_role_id');

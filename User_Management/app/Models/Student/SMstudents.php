@@ -15,7 +15,7 @@ class SMstudents extends Model
     protected $guarded = [];
     
     protected $fillable = [
-        // ✅ PRIMARY FIELDS (used in view)
+        //   PRIMARY FIELDS (used in view)
         'roll_no',
         'student_name',
         'name',                // Alias for student_name
@@ -62,7 +62,7 @@ class SMstudents extends Model
         'medium',
         'board',
         
-        // ✅ ALTERNATE FIELD NAMES (from Pending table - for compatibility)
+        //   ALTERNATE FIELD NAMES (from Pending table - for compatibility)
         'name',                  // maps to student_name
         'father',                // maps to father_name
         'mother',                // maps to mother_name
@@ -243,7 +243,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get student_name from either 'student_name' or 'name' field
+     *   ACCESSOR: Get student_name from either 'student_name' or 'name' field
      */
     public function getStudentNameAttribute($value)
     {
@@ -251,7 +251,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get father_name from either 'father_name' or 'father' field
+     *   ACCESSOR: Get father_name from either 'father_name' or 'father' field
      */
     public function getFatherNameAttribute($value)
     {
@@ -259,7 +259,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get mother_name from either 'mother_name' or 'mother' field
+     *   ACCESSOR: Get mother_name from either 'mother_name' or 'mother' field
      */
     public function getMotherNameAttribute($value)
     {
@@ -267,7 +267,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get father_contact from either 'father_contact' or 'mobileNumber'
+     *   ACCESSOR: Get father_contact from either 'father_contact' or 'mobileNumber'
      */
     public function getFatherContactAttribute($value)
     {
@@ -275,7 +275,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get father_whatsapp from either field
+     *   ACCESSOR: Get father_whatsapp from either field
      */
     public function getFatherWhatsappAttribute($value)
     {
@@ -283,7 +283,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get mother_contact from either field
+     *   ACCESSOR: Get mother_contact from either field
      */
     public function getMotherContactAttribute($value)
     {
@@ -291,7 +291,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get phone from either 'phone' or 'studentContact'
+     *   ACCESSOR: Get phone from either 'phone' or 'studentContact'
      */
     public function getPhoneAttribute($value)
     {
@@ -299,7 +299,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get pincode
+     *   ACCESSOR: Get pincode
      */
     public function getPincodeAttribute($value)
     {
@@ -307,7 +307,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get course_type
+     *   ACCESSOR: Get course_type
      */
     public function getCourseTypeAttribute($value)
     {
@@ -315,7 +315,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get course_name
+     *   ACCESSOR: Get course_name
      */
     public function getCourseNameAttribute($value)
     {
@@ -323,7 +323,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get delivery_mode
+     *   ACCESSOR: Get delivery_mode
      */
     public function getDeliveryModeAttribute($value)
     {
@@ -331,7 +331,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get academic_medium
+     *   ACCESSOR: Get academic_medium
      */
     public function getAcademicMediumAttribute($value)
     {
@@ -339,7 +339,7 @@ class SMstudents extends Model
     }
     
     /**
-     * ✅ ACCESSOR: Get academic_board
+     *   ACCESSOR: Get academic_board
      */
     public function getAcademicBoardAttribute($value)
     {

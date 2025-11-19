@@ -641,7 +641,7 @@
 
     <script>
     $(document).ready(function() {
-        console.log('✅ Fees Management Page Loaded');
+        console.log('  Fees Management Page Loaded');
 
         // CSRF Token Setup
         $.ajaxSetup({
@@ -662,7 +662,7 @@
             });
         });
 
-        // ✅ LOAD BATCHES WHEN COURSE IS SELECTED (WITH DEBUGGING)
+        //   LOAD BATCHES WHEN COURSE IS SELECTED (WITH DEBUGGING)
         $('#courseSelect').on('change', function() {
             const courseId = $(this).val();
             const $batchSelect = $('#batchSelect');
@@ -681,12 +681,12 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        console.log('✅ AJAX Success - Full Response:', response);
+                        console.log('  AJAX Success - Full Response:', response);
                         
                         let options = '<option value="">Select batch</option>';
                         
                         if (response.success && response.data && response.data.length > 0) {
-                            console.log('✅ Found ' + response.data.length + ' batches');
+                            console.log('  Found ' + response.data.length + ' batches');
                             
                             response.data.forEach(batch => {
                                 console.log('   - Batch:', batch.batch_name, '(ID:', batch.id + ')');
@@ -694,7 +694,7 @@
                             });
                             
                             $batchSelect.html(options).prop('disabled', false);
-                            console.log('✅ Batches loaded successfully');
+                            console.log('  Batches loaded successfully');
                         } else {
                             console.warn('⚠️ No batches found for course:', courseId);
                             options = '<option value="">No batches available</option>';
@@ -797,7 +797,7 @@
                 fee_status: feeStatus
             },
             success: function(response) {
-                console.log('✅ Search results:', response);
+                console.log('  Search results:', response);
                 if (response.success && response.data.length > 0) {
                     renderFeeStatusTable(response.data);
                 } else {

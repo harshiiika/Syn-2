@@ -37,7 +37,7 @@ class RollNumberService
             // Final Roll Number
             $rollNumber = $year . $month . $courseCode . str_pad($sequential, 3, '0', STR_PAD_LEFT);
 
-            Log::info('✅ Roll Number Generated: ' . $rollNumber, [
+            Log::info('  Roll Number Generated: ' . $rollNumber, [
                 'year' => $year,
                 'month' => $month,
                 'course_code' => $courseCode,
@@ -84,14 +84,14 @@ class RollNumberService
 
         // Exact match first
         if (isset($courseMap[$courseLower])) {
-            Log::info("✅ Exact match: '{$courseName}' -> " . $courseMap[$courseLower]);
+            Log::info("  Exact match: '{$courseName}' -> " . $courseMap[$courseLower]);
             return $courseMap[$courseLower];
         }
 
         // Partial match (in case of typos or variations)
         foreach ($courseMap as $keyword => $code) {
             if (str_contains($courseLower, $keyword) || str_contains($keyword, $courseLower)) {
-                Log::info("✅ Partial match: '{$courseName}' -> {$code}");
+                Log::info("  Partial match: '{$courseName}' -> {$code}");
                 return $code;
             }
         }
@@ -99,7 +99,7 @@ class RollNumberService
         // If 11th/12th/class found in name
         if (preg_match('/(\d{1,2})(th|st|nd|rd)?/', $courseLower, $matches)) {
             $classNum = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
-            Log::info("✅ Class extracted: '{$courseName}' -> {$classNum}");
+            Log::info("  Class extracted: '{$courseName}' -> {$classNum}");
             return $classNum;
         }
 

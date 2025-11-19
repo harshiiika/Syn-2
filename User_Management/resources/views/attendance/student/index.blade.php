@@ -820,7 +820,7 @@ function loadAttendanceData() {
             search: currentFilters.search
         },
         success: function(response) {
-            console.log('✅ Data loaded:', response);
+            console.log('  Data loaded:', response);
             
             if (response.success) {
                 updateStatistics(response.statistics);
@@ -870,7 +870,7 @@ function updateTable(students) {
     });
     
     $('.student-checkbox').on('change', updateBulkActionButtons);
-    console.log('✅ Table updated');
+    console.log('  Table updated');
 }
 
 function getStatusBadge(status) {
