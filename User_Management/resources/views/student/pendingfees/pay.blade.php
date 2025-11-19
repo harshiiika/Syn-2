@@ -613,7 +613,7 @@
                 </div>
               </div>
 
-              <input type="hidden" name="installment_number" id="selectedInstallment" value="">
+            <input type="hidden" name="installment_number" id="selectedInstallment" value="">
             </div>
 
             <!-- Custom Amount Section -->
@@ -809,10 +809,11 @@
 
     // Form validation
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
-      const paymentMode = document.querySelector('input[name="payment_mode"]:checked').value;
-      const paymentType = document.querySelector('select[name="payment_type"]').value;
-      const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
-      
+  const paymentMode = document.querySelector('input[name="payment_mode"]:checked').value;
+  const paymentType = document.querySelector('select[name="payment_type"]').value;
+  const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
+  const installmentNumber = document.getElementById('selectedInstallment').value;  // ✅ GET THIS
+  
       if (!paymentType) {
         e.preventDefault();
         alert('Please select a payment type');
@@ -831,14 +832,20 @@
         return false;
       }
       
-      // Validate installment mode
-      if (paymentMode === 'installment' && !selectedInstallmentNum) {
-        e.preventDefault();
-        alert('Please select an installment to pay');
-        return false;
-      }
-      
-      return true;
+       if (paymentMode === 'installment' && !installmentNumber) {  // ✅ CHECK IT
+    e.preventDefault();
+    alert('Please select an installment to pay');
+    return false;
+  }
+  
+  // ✅ ADD THIS: Log for debugging
+  console.log('Submitting payment:', {
+    mode: paymentMode,
+    installment: installmentNumber,
+    amount: paymentAmount
+  });
+  
+  return true;
     });
 
     // Initialize on page load

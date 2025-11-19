@@ -748,7 +748,7 @@ $(document).ready(function() {
     if (!csrfToken) {
         console.error('❌ CSRF token not found!');
     } else {
-        console.log('✅ CSRF token found');
+        console.log('  CSRF token found');
     }
     
     var today = new Date().toISOString().split('T')[0];
@@ -845,7 +845,7 @@ function loadAttendanceData() {
             search: currentFilters.search
         },
         success: function(response) {
-            console.log('✅ Data loaded:', response);
+            console.log('  Data loaded:', response);
             
             if (response.success) {
                 updateStatistics(response.statistics);
@@ -895,7 +895,7 @@ function updateTable(employees) {
     });
     
     $('.employee-checkbox').on('change', updateBulkActionButtons);
-    console.log('✅ Table updated');
+    console.log('  Table updated');
 }
 
 function getStatusBadge(status) {
@@ -970,7 +970,7 @@ function markAllAttendance(status) {
         confirmButtonText: 'Yes, mark as ' + status + '!'
     }).then(function(result) {
         if (result.isConfirmed) {
-            console.log('✅ Confirmed! Marking', checkedIds.length, 'employees');
+            console.log('  Confirmed! Marking', checkedIds.length, 'employees');
             
             var $presentBtn = $('#markPresentBtn');
             var $absentBtn = $('#markAbsentBtn');
@@ -995,7 +995,7 @@ function markAllAttendance(status) {
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
-                        console.log('✅ API Response:', response);
+                        console.log('  API Response:', response);
                         
                         if (response.success) {
                             successCount++;

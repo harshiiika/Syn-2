@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class InquiryController extends Controller
 {
     /**
-     * ✅ SINGLE ONBOARD - Transfer ONE inquiry to pending students
+     *   SINGLE ONBOARD - Transfer ONE inquiry to pending students
      */
     // public function singleOnboard($id)
     // {
@@ -61,7 +61,7 @@ class InquiryController extends Controller
     // }
 
     /**
-     * ✅ BULK ONBOARD - Transfer multiple inquiries to pending students
+     *   BULK ONBOARD - Transfer multiple inquiries to pending students
     //  */
     // public function bulkOnboard(Request $request)
     // {
@@ -125,7 +125,7 @@ class InquiryController extends Controller
     // }
 
     /**
-     * ✅ HELPER METHOD - Transfer inquiry to pending collection
+     *   HELPER METHOD - Transfer inquiry to pending collection
      */
     // private function transferToPending($inquiry)
     // {
@@ -218,7 +218,7 @@ class InquiryController extends Controller
 
     //     $pendingStudent = Pending::create($pendingData);
 
-    //     Log::info('✅ Pending student created', [
+    //     Log::info('  Pending student created', [
     //         'pending_id' => $pendingStudent->_id,
     //         'name' => $pendingStudent->name,
     //     ]);
@@ -246,7 +246,7 @@ class InquiryController extends Controller
     //         'history' => $history
     //     ]);
 
-    //     Log::info('✅ Inquiry updated with transfer status');
+    //     Log::info('  Inquiry updated with transfer status');
 
     //     return $pendingStudent;
     // }
@@ -923,7 +923,7 @@ class InquiryController extends Controller
     //         // Verify the save
     //         $inquiry->refresh();
             
-    //         Log::info('✅ Scholarship data saved successfully', [
+    //         Log::info('  Scholarship data saved successfully', [
     //             'inquiry_id' => $id,
     //             'eligible_for_scholarship' => $inquiry->eligible_for_scholarship,
     //             'scholarship_name' => $inquiry->scholarship_name,
@@ -935,7 +935,7 @@ class InquiryController extends Controller
     //         ]);
             
     //         return redirect()->route('inquiries.fees-batches.show', $id)
-    //             ->with('success', '✅ Scholarship details saved successfully!');
+    //             ->with('success', '  Scholarship details saved successfully!');
                 
     //     } catch (\Exception $e) {
     //         Log::error('=== SCHOLARSHIP UPDATE ERROR ===', [
@@ -1041,7 +1041,7 @@ class InquiryController extends Controller
             $updateData['history'] = $history;
             $inquiry->update($updateData);
             
-            Log::info('✅ Batch details updated successfully');
+            Log::info('  Batch details updated successfully');
             
             return redirect()->route('inquiries.view', $id)
                 ->with('success', 'Batch details updated successfully!');
@@ -1357,7 +1357,7 @@ class InquiryController extends Controller
             $data = array_merge($data, $feesData);
         }
         
-        // ✅ ADD CREATION HISTORY WITH CORRECT TIMEZONE
+        //   ADD CREATION HISTORY WITH CORRECT TIMEZONE
         $now = \Carbon\Carbon::now('Asia/Kolkata'); // Force India timezone
         
         $data['history'] = [[
@@ -1457,9 +1457,9 @@ class InquiryController extends Controller
                 }
             }
 
-            // ✅ Add update history ONLY if something changed
+            //   Add update history ONLY if something changed
             if (!empty($changes)) {
-                // ✅ FIX: Use Carbon with timezone
+                //   FIX: Use Carbon with timezone
                 $now = Carbon::now('Asia/Kolkata');
                 
                 $history = $this->addHistory(
@@ -1509,7 +1509,7 @@ class InquiryController extends Controller
                 'fees_calculated_at' => now(),
             ];
 
-            // ✅ Add scholarship history
+            //   Add scholarship history
             $history = $this->addHistory(
                 $inquiry,
                 'Updated',
@@ -1559,7 +1559,7 @@ class InquiryController extends Controller
             // Transfer to pending
             $pendingStudent = $this->transferToPending($inquiry);
             
-            // ✅ Add transfer history
+            //   Add transfer history
             $history = $this->addHistory(
                 $inquiry,
                 'Transferred',
@@ -1592,7 +1592,7 @@ class InquiryController extends Controller
 
     
     /**
-     * ✅ TRANSFER TO PENDING - With complete history tracking
+     *   TRANSFER TO PENDING - With complete history tracking
      */
     private function transferToPending($inquiry)
     {
@@ -1638,12 +1638,12 @@ class InquiryController extends Controller
             'transferred_at' => now(),
         ];
 
-        // ✅ TRANSFER EXISTING HISTORY FROM INQUIRY
+        //   TRANSFER EXISTING HISTORY FROM INQUIRY
        
-        // ✅ TRANSFER EXISTING HISTORY FROM INQUIRY
+        //   TRANSFER EXISTING HISTORY FROM INQUIRY
         $existingHistory = $inquiry->history ?? [];
         
-        // ✅ FIX: Use Carbon with timezone for transfer entry
+        //   FIX: Use Carbon with timezone for transfer entry
         $now = Carbon::now('Asia/Kolkata');
         
         $transferHistoryEntry = [
@@ -1651,7 +1651,7 @@ class InquiryController extends Controller
             'description' => 'Admin transferred the enquiry to Onboard for student ' . $inquiry->student_name,
             'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
             'timestamp' => $now->toIso8601String(),
-            'date' => $now->format('d M Y, h:i A') // ✅ Correct current time
+            'date' => $now->format('d M Y, h:i A') //   Correct current time
         ];
         
         Log::info('Transfer timestamp:', [
@@ -1666,7 +1666,7 @@ class InquiryController extends Controller
 
         $pendingStudent = Pending::create($pendingData);
 
-        // ✅ UPDATE INQUIRY with correct timestamp
+        //   UPDATE INQUIRY with correct timestamp
         $inquiryHistory = $inquiry->history ?? [];
         
         $inquiryUpdateEntry = [
@@ -1762,7 +1762,7 @@ class InquiryController extends Controller
     {
         $history = $inquiry->history ?? [];
         
-        // ✅ FIX: Use provided time or create new Carbon instance
+        //   FIX: Use provided time or create new Carbon instance
         if (!$now) {
             $now = Carbon::now('Asia/Kolkata');
         }
@@ -1772,7 +1772,7 @@ class InquiryController extends Controller
             'user' => auth()->check() ? auth()->user()->name : 'Admin',
             'description' => $description,
             'timestamp' => $now->toIso8601String(),
-            'date' => $now->format('d M Y, h:i A'), // ✅ Shows correct time like "18 Nov 2025, 12:23 PM"
+            'date' => $now->format('d M Y, h:i A'), //   Shows correct time like "18 Nov 2025, 12:23 PM"
             'changes' => $changes
         ];
         

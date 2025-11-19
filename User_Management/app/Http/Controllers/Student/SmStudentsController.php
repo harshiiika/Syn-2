@@ -16,7 +16,44 @@ use Carbon\Carbon;
 class SmStudentsController extends Controller
 {
 
+    /**
+ * NEW METHOD: Get all activities for a student
+ */
+private function getStudentActivities($student)
+{
+    $rawData = $student->getAttributes();
+    $activities = [];
     
+    // Get stored activities from database
+    $storedActivities = $rawData['activities'] ?? [];
+    if (is_string($storedActivities)) {
+        $storedActivities = json_decode($storedActivities, true) ?? [];
+    }
+    
+    if (is_array($storedActivities) && !empty($storedActivities)) {
+        foreach ($storedActivities as $activity) {
+            $activities[] = [
+                'title' => $activity['title'] ?? 'Activity',
+                'description' => $activity['description'] ?? 'performed an action',
+                'performed_by' => $activity['performed_by'] ?? 'Admin',
+                'created_at' => isset($activity['created_at']) ? 
+                    \Carbon\Carbon::parse($activity['created_at']) : 
+                    \Carbon\Carbon::now()
+            ];
+        }
+    }
+    
+    // Sort by date (newest first)
+    if (!empty($activities)) {
+        usort($activities, function($a, $b) {
+            $timeA = strtotime($a['created_at']->toDateTimeString() ?? '1970-01-01');
+            $timeB = strtotime($b['created_at']->toDateTimeString() ?? '1970-01-01');
+            return $timeB - $timeA; // DESCENDING order (newest to oldest)
+        });
+    }
+    
+    return $activities;
+}
     /**
      * Display a listing of students
      */
@@ -39,7 +76,7 @@ class SmStudentsController extends Controller
         }
     }
 /**
- * ✅ Display the test series for a specific student
+ *   Display the test series for a specific student
  */
 public function testSeries($id)
 {
@@ -203,42 +240,46 @@ public function testSeries($id)
     
 
     /**
-     * ✅ NEW METHOD: Get all activities for a student
+     *   NEW METHOD: Get all activities for a student
      */
-    private function getStudentActivities($student)
-    {
-        $rawData = $student->getAttributes();
-        $activities = [];
+//     private function getStudentActivities($student)
+//     {
+//         $rawData = $student->getAttributes();
+//         $activities = [];
         
-        // Get stored activities from database
-        $storedActivities = $rawData['activities'] ?? [];
-        if (is_string($storedActivities)) {
-            $storedActivities = json_decode($storedActivities, true) ?? [];
-        }
+//         // Get stored activities from database
+//         $storedActivities = $rawData['activities'] ?? [];
+//         if (is_string($storedActivities)) {
+//             $storedActivities = json_decode($storedActivities, true) ?? [];
+//         }
         
-        if (is_array($storedActivities) && !empty($storedActivities)) {
-            foreach ($storedActivities as $activity) {
-                $activities[] = [
-                    'title' => $activity['title'] ?? 'Activity',
-                    'description' => $activity['description'] ?? 'performed an action',
-                    'performed_by' => $activity['performed_by'] ?? 'Admin',
-                    'created_at' => isset($activity['created_at']) ? 
-                        \Carbon\Carbon::parse($activity['created_at']) : 
-                        \Carbon\Carbon::now()
-                ];
-            }
-        }
+//         if (is_array($storedActivities) && !empty($storedActivities)) {
+//             foreach ($storedActivities as $activity) {
+//                 $activities[] = [
+//                     'title' => $activity['title'] ?? 'Activity',
+//                     'description' => $activity['description'] ?? 'performed an action',
+//                     'performed_by' => $activity['performed_by'] ?? 'Admin',
+//                     'created_at' => isset($activity['created_at']) ? 
+//                         \Carbon\Carbon::parse($activity['created_at']) : 
+//                         \Carbon\Carbon::now()
+//                 ];
+//             }
+//         }
         
-        // Sort by date (newest first)
-        usort($activities, function($a, $b) {
-            return $b['created_at']->timestamp - $a['created_at']->timestamp;
-        });
+//         // Sort by date (newest first)
+//         // Sort by date (oldest first - so newest appears at top of list)
+// usort($uniqueHistory, function($a, $b) {
+//     $timeA = strtotime($a['timestamp'] ?? $a['created_at'] ?? '1970-01-01');
+//     $timeB = strtotime($b['timestamp'] ?? $b['created_at'] ?? '1970-01-01');
+//     return $timeA - $timeB; // ⭐ ASCENDING order (oldest to newest)
+// });
+
         
-        return $activities;
-    }
+    //     return $activities;
+    // }
 
     /**
-     * ✅ ENHANCED: Create activity log entry
+     *   ENHANCED: Create activity log entry
      */
     private function createActivityLog($student, $title, $description, $additionalData = [])
     {
@@ -341,7 +382,7 @@ public function testSeries($id)
 
             $student->update($updateData);
             
-            // ✅ LOG ACTIVITY
+            //   LOG ACTIVITY
             if (!empty($changes)) {
                 $this->createActivityLog(
                     $student,
@@ -359,7 +400,7 @@ public function testSeries($id)
     }
 
     /**
-     * ✅ ENHANCED: Update student password with activity logging
+     *   ENHANCED: Update student password with activity logging
      */
     public function updatePassword(Request $request, $id)
     {
@@ -382,7 +423,7 @@ public function testSeries($id)
                 'password' => Hash::make($request->password)
             ]);
             
-            // ✅ LOG ACTIVITY
+            //   LOG ACTIVITY
             $this->createActivityLog(
                 $student,
                 'Password Updated',
@@ -404,7 +445,7 @@ public function testSeries($id)
     }
 
     /**
-     * ✅ ENHANCED: Update student shift with activity logging
+     *  Update student shift with activity logging
      */
     public function updateShift(Request $request, $id)
     {
@@ -436,7 +477,7 @@ public function testSeries($id)
                 'shift_id' => $request->shift_id,
             ]);
             
-            // ✅ LOG ACTIVITY
+            //   LOG ACTIVITY
             $this->createActivityLog(
                 $student,
                 'Shift Updated',
@@ -466,7 +507,7 @@ public function testSeries($id)
     }
 
     /**
-     * ✅ ENHANCED: Update student batch with activity logging
+     *   Update student batch with activity logging
      */
     public function updateBatch(Request $request, $id)
     {
@@ -516,7 +557,7 @@ public function testSeries($id)
             
             $student->update($updateData);
             
-            // ✅ LOG ACTIVITY
+            //   LOG ACTIVITY
             $this->createActivityLog(
                 $student,
                 'Batch Updated',
@@ -550,7 +591,7 @@ public function testSeries($id)
     }
 
    /**
- * ✅ ENHANCED: Display the specified student with COMPLETE data from all previous stages
+ *   Display the specified student with COMPLETE data from all previous stages
  */
 public function show($id)
 {
@@ -772,7 +813,7 @@ public function show($id)
 }
 
 /**
- * ✅ HELPER: Parse date safely from multiple formats
+ *   HELPER: Parse date safely from multiple formats
  */
 private function parseDateSafely($dateValue)
 {
@@ -782,8 +823,8 @@ private function parseDateSafely($dateValue)
     
     try {
         if (is_string($dateValue)) {
-            return \Carbon\Carbon::parse($dateValue)->format('d-m-Y');
-        } elseif ($dateValue instanceof \Carbon\Carbon) {
+            return Carbon::parse($dateValue)->format('d-m-Y');
+        } elseif ($dateValue instanceof Carbon) {
             return $dateValue->format('d-m-Y');
         } elseif ($dateValue instanceof \MongoDB\BSON\UTCDateTime) {
             return $dateValue->toDateTime()->format('d-m-Y');
@@ -796,7 +837,7 @@ private function parseDateSafely($dateValue)
 }
 
 /**
- * ✅ HELPER: Parse percentage safely
+ *   HELPER: Parse percentage safely
  */
 private function parsePercentageSafely($value)
 {
@@ -812,7 +853,7 @@ private function parsePercentageSafely($value)
 }
 
 /**
- * ✅ HELPER: Get document data from multiple possible field names
+ *   HELPER: Get document data from multiple possible field names
  */
 private function getDocumentData($rawData, ...$possibleFields)
 {
@@ -825,7 +866,7 @@ private function getDocumentData($rawData, ...$possibleFields)
 }
 
 /**
- * ✅ HELPER: Calculate complete fee summary
+ *   HELPER: Calculate complete fee summary
  */
 private function calculateFeeSummary($rawData)
 {
@@ -877,8 +918,82 @@ private function calculateFeeSummary($rawData)
 }
 
 /**
- * ✅ HELPER: Get scholarship data
+ *  Generate unique payment key to detect duplicates
  */
+private function generatePaymentKey($entry)
+{
+    $timestamp = $this->normalizeTimestamp($entry);
+    $amount = floatval($entry['amount'] ?? $entry['details']['amount'] ?? 0);
+    $installment = $entry['installment_number'] ?? $entry['details']['installment_number'] ?? 'none';
+    
+    // Round timestamp to nearest hour to catch near-duplicate entries
+    $hourTimestamp = floor($timestamp / 3600) * 3600;
+    
+    return $hourTimestamp . '_' . $amount . '_' . $installment;
+}
+
+/**
+ * Generate truly unique key for history entries
+ */
+private function generateUniqueHistoryKey($entry)
+{
+    $timestamp = $entry['normalized_timestamp'] ?? 0;
+    $action = strtolower(trim($entry['action'] ?? ''));
+    $description = strtolower(trim($entry['description'] ?? ''));
+    
+    // For payment entries, use specific details
+    if (stripos($action, 'fee paid') !== false || stripos($action, 'payment') !== false) {
+        // Extract amount
+        $amount = '0';
+        if (isset($entry['details']['amount'])) {
+            $amount = $entry['details']['amount'];
+        } elseif (isset($entry['amount'])) {
+            $amount = $entry['amount'];
+        } elseif (preg_match('/₹([\d,\.]+)/', $description, $amountMatches)) {
+            $amount = str_replace(',', '', $amountMatches[1]);
+        }
+        
+        // Extract installment number
+        $installment = 'none';
+        if (isset($entry['details']['installment_number'])) {
+            $installment = $entry['details']['installment_number'];
+        } elseif (isset($entry['installment_number'])) {
+            $installment = $entry['installment_number'];
+        } elseif (preg_match('/installment #?(\d+)/i', $description, $installmentMatches)) {
+            $installment = $installmentMatches[1];
+        }
+        
+        // Extract payment method
+        $method = 'unknown';
+        if (isset($entry['details']['payment_method'])) {
+            $method = strtolower($entry['details']['payment_method']);
+        } elseif (isset($entry['payment_method'])) {
+            $method = strtolower($entry['payment_method']);
+        } elseif (isset($entry['method'])) {
+            $method = strtolower($entry['method']);
+        }
+        
+        // Round timestamp to nearest 5 minutes to catch near-duplicates
+        $roundedTime = floor($timestamp / 300) * 300;
+        
+        $key = 'payment_' . $roundedTime . '_' . $amount . '_' . $installment . '_' . $method;
+        \Log::info('Generated payment key', [
+            'key' => $key, 
+            'timestamp' => $timestamp,
+            'amount' => $amount,
+            'installment' => $installment,
+            'method' => $method
+        ]);
+        return $key;
+    }
+    
+    // For other entries, use action + timestamp + first 50 chars of description
+    $roundedTime = floor($timestamp / 60) * 60; // Round to nearest minute
+    $key = $action . '_' . $roundedTime . '_' . substr($description, 0, 50);
+    
+    return md5($key); // Use hash for consistent length
+}
+
 private function getScholarshipData($rawData, $feeSummary)
 {
     return [
@@ -893,79 +1008,10 @@ private function getScholarshipData($rawData, $feeSummary)
     ];
 }
 
-/**
- * ✅ ENHANCED: Process fees data safely with all previous data
- */
-private function processFeesDataSafe(&$safeStudent, $rawData)
-{
-    // Get fees from student object or raw data
-    $rawFees = $safeStudent->fees ?? $rawData['fees'] ?? [];
-    $rawOtherFees = $safeStudent->other_fees ?? $rawData['other_fees'] ?? [];
-    $rawTransactions = $safeStudent->transactions ?? $rawData['transactions'] ?? [];
-    
-    if (is_string($rawFees)) {
-        $rawFees = json_decode($rawFees, true) ?? [];
-    }
-    if (is_string($rawOtherFees)) {
-        $rawOtherFees = json_decode($rawOtherFees, true) ?? [];
-    }
-    if (is_string($rawTransactions)) {
-        $rawTransactions = json_decode($rawTransactions, true) ?? [];
-    }
-    
-    $safeStudent->fees = collect(is_array($rawFees) ? $rawFees : []);
-    $safeStudent->other_fees = collect(is_array($rawOtherFees) ? $rawOtherFees : []);
-    $safeStudent->transactions = collect(is_array($rawTransactions) ? $rawTransactions : []);
-    
-    // Process fees collection
-    if ($safeStudent->fees->isNotEmpty()) {
-        $safeStudent->fees = $safeStudent->fees->map(function ($fee) {
-            if (is_string($fee)) {
-                try {
-                    $fee = json_decode($fee, true);
-                } catch (\Exception $e) {
-                    return null;
-                }
-            }
-            
-            if (!is_array($fee)) {
-                return null;
-            }
-            
-            // Parse dates
-            $fee['due_date'] = $this->parseDateSafely($fee['due_date'] ?? null);
-            $fee['paid_date'] = $this->parseDateSafely($fee['paid_date'] ?? null);
-            
-            // Calculate remaining amount
-            $actualAmount = floatval($fee['actual_amount'] ?? 0);
-            $discountAmount = floatval($fee['discount_amount'] ?? 0);
-            $paidAmount = floatval($fee['paid_amount'] ?? 0);
-            $fee['remaining_amount'] = $actualAmount - $discountAmount - $paidAmount;
-            
-            // Set status
-            if (!isset($fee['status'])) {
-                if ($paidAmount >= ($actualAmount - $discountAmount)) {
-                    $fee['status'] = 'paid';
-                } elseif ($paidAmount > 0) {
-                    $fee['status'] = 'partial';
-                } else {
-                    $fee['status'] = 'pending';
-                }
-            }
-            
-            $fee['status_badge'] = $this->getStatusBadge($fee['status']);
-            
-            return $fee;
-        })->filter();
-    }
-    
-    // Similar processing for other_fees and transactions...
-    // (keeping existing logic from your controller)
-}
 
 
 /**
- * ✅ Helper: Generate unique roll number
+ *   Helper: Generate unique roll number
  */
 private function generateRollNumber()
 {
@@ -1008,7 +1054,7 @@ private function generateRollNumber()
             $student = SMstudents::findOrFail($id);
             $student->update(['status' => 'inactive']);
             
-            // ✅ LOG ACTIVITY
+            //   LOG ACTIVITY
             $this->createActivityLog(
                 $student,
                 'Student Deactivated',
@@ -1098,7 +1144,7 @@ private function generateRollNumber()
     }
 
     /**
-     * ✅ Add a fee payment with activity logging
+     *   Add a fee payment with activity logging
      */
     public function addFee(Request $request, $id)
     {
@@ -1124,7 +1170,7 @@ private function generateRollNumber()
         $student->fees = $fees;
         $student->save();
         
-        // ✅ LOG ACTIVITY
+        //   LOG ACTIVITY
         $this->createActivityLog(
             $student,
             'Fee Entry Added',
@@ -1136,7 +1182,7 @@ private function generateRollNumber()
     }
 
     /**
-     * ✅ Add a transaction with activity logging
+     *   Add a transaction with activity logging
      */
     public function addTransaction(Request $request, $id)
     {
@@ -1157,7 +1203,7 @@ private function generateRollNumber()
         $student->transactions = $transactions;
         $student->save();
         
-        // ✅ LOG ACTIVITY
+        //   LOG ACTIVITY
         $this->createActivityLog(
             $student,
             'Payment Received',
@@ -1193,5 +1239,371 @@ public function getAttribute($key)
     }
     
     return parent::getAttribute($key);
+}
+
+
+
+
+/**
+ * Get student history with NO DUPLICATES
+ */
+public function getHistory($id)
+{
+    try {
+        \Log::info('=== GET HISTORY CALLED (SMStudents) ===', ['id' => $id]);
+        
+        $student = SMstudents::find($id);
+        
+        if (!$student) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Student not found'
+            ], 404);
+        }
+        
+        \Log::info('Student found', ['name' => $student->student_name ?? $student->name]);
+        
+        $rawData = $student->getAttributes();
+        
+        // ⭐ SINGLE SOURCE OF TRUTH
+        $allEntries = [];
+        $seenSignatures = []; // Use unique signatures instead of keys
+        
+        // 1. ⭐ PRIMARY SOURCE: Get from 'history' field FIRST
+        if (isset($rawData['history']) && !empty($rawData['history'])) {
+            $storedHistory = is_string($rawData['history']) 
+                ? json_decode($rawData['history'], true) 
+                : $rawData['history'];
+            
+            if (is_array($storedHistory)) {
+                foreach ($storedHistory as $entry) {
+                    if (!is_array($entry)) continue;
+                    
+                    $entry['normalized_timestamp'] = $this->normalizeTimestamp($entry);
+                    $signature = $this->generateEntrySignature($entry);
+                    
+                    if (!isset($seenSignatures[$signature])) {
+                        $seenSignatures[$signature] = true;
+                        $allEntries[] = $entry;
+                        \Log::info('✅ Added from history', [
+                            'action' => $entry['action'] ?? 'N/A',
+                            'signature' => substr($signature, 0, 50)
+                        ]);
+                    } else {
+                        \Log::info('⏭️ Skipped duplicate from history', [
+                            'action' => $entry['action'] ?? 'N/A'
+                        ]);
+                    }
+                }
+            }
+        }
+        
+        // 2. Get from 'activities' field (only if NOT in history)
+        if (isset($rawData['activities']) && !empty($rawData['activities'])) {
+            $activities = is_string($rawData['activities'])
+                ? json_decode($rawData['activities'], true)
+                : $rawData['activities'];
+            
+            if (is_array($activities)) {
+                foreach ($activities as $activity) {
+                    if (!is_array($activity)) continue;
+                    
+                    $entry = [
+                        'action' => $activity['title'] ?? 'Activity',
+                        'description' => $activity['description'] ?? 'Activity recorded',
+                        'user' => $activity['performed_by'] ?? 'Admin',
+                        'timestamp' => $activity['created_at'] ?? $activity['timestamp'] ?? now()->toIso8601String(),
+                        'created_at' => $activity['created_at'] ?? now()->toDateTimeString(),
+                    ];
+                    
+                    $entry['normalized_timestamp'] = $this->normalizeTimestamp($entry);
+                    $signature = $this->generateEntrySignature($entry);
+                    
+                    if (!isset($seenSignatures[$signature])) {
+                        $seenSignatures[$signature] = true;
+                        $allEntries[] = $entry;
+                        \Log::info('✅ Added from activities', ['action' => $entry['action']]);
+                    } else {
+                        \Log::info('⏭️ Skipped duplicate from activities', ['action' => $entry['action']]);
+                    }
+                }
+            }
+        }
+        
+        // 3. ⭐ DO NOT USE paymentHistory - it's already in history!
+        // The payment entries are added to 'history' when fees are paid,
+        // so we skip paymentHistory completely to avoid duplicates
+        \Log::info('⚠️ Skipping paymentHistory to prevent duplicates');
+        
+        // ⭐ Sort by timestamp (DESCENDING = newest first)
+        usort($allEntries, function($a, $b) {
+            return ($b['normalized_timestamp'] ?? 0) <=> ($a['normalized_timestamp'] ?? 0);
+        });
+        
+        \Log::info('✅ History sorted successfully', [
+            'total_entries' => count($allEntries),
+            'first_entry' => $allEntries[0]['action'] ?? 'N/A',
+            'first_timestamp' => $allEntries[0]['normalized_timestamp'] ?? 'N/A',
+        ]);
+        
+        // Calculate fees summary
+        $totalFees = floatval($rawData['total_fees_inclusive_tax'] ?? 0);
+        $totalPaid = floatval($rawData['paid_fees'] ?? $rawData['paidAmount'] ?? 0);
+        $remaining = max(0, $totalFees - $totalPaid);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $allEntries,
+            'student_name' => $student->student_name ?? $student->name ?? 'N/A',
+            'roll_no' => $student->roll_no ?? 'N/A',
+            'total_paid' => $totalPaid,
+            'remaining' => $remaining,
+            'total_fees' => $totalFees
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('❌ History error: ' . $e->getMessage(), [
+            'line' => $e->getLine(),
+            'student_id' => $id ?? 'unknown'
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Error loading history: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Generate unique signature for each entry
+ * This creates a fingerprint based on content, not just metadata
+ */
+private function generateEntrySignature($entry)
+{
+    $action = strtolower(trim($entry['action'] ?? ''));
+    $description = strtolower(trim($entry['description'] ?? ''));
+    $user = strtolower(trim($entry['user'] ?? $entry['performed_by'] ?? ''));
+    $timestamp = $entry['normalized_timestamp'] ?? $entry['timestamp'] ?? 0;
+    
+    // For payment entries, extract key details
+    if (stripos($action, 'fee') !== false || stripos($action, 'payment') !== false) {
+        // Extract amount from description or details
+        $amount = 0;
+        if (isset($entry['details']['amount'])) {
+            $amount = $entry['details']['amount'];
+        } elseif (preg_match('/₹\s*([\d,]+(?:\.\d{2})?)/', $description, $matches)) {
+            $amount = str_replace(',', '', $matches[1]);
+        }
+        
+        // Extract installment number
+        $installment = 'none';
+        if (isset($entry['details']['installment_number'])) {
+            $installment = $entry['details']['installment_number'];
+        } elseif (preg_match('/installment\s*#?(\d+)/i', $description, $matches)) {
+            $installment = $matches[1];
+        }
+        
+        // Extract method
+        $method = 'unknown';
+        if (isset($entry['details']['payment_method'])) {
+            $method = strtolower($entry['details']['payment_method']);
+        } elseif (preg_match('/via\s+(\w+)/i', $description, $matches)) {
+            $method = strtolower($matches[1]);
+        }
+        
+        // Round timestamp to nearest 10 minutes for payment matching
+        $roundedTime = floor($timestamp / 600) * 600;
+        
+        // Create signature
+        $signature = sprintf(
+            'payment_%s_%s_%s_%s',
+            $roundedTime,
+            $amount,
+            $installment,
+            $method
+        );
+        
+        \Log::info('Payment signature generated', [
+            'signature' => $signature,
+            'amount' => $amount,
+            'installment' => $installment,
+            'method' => $method
+        ]);
+        
+        return md5($signature);
+    }
+    
+    // For non-payment entries
+    // Use first 100 chars of description + action + rounded time
+    $roundedTime = floor($timestamp / 300) * 300; // 5 minute window
+    $signature = $action . '_' . $roundedTime . '_' . substr($description, 0, 100) . '_' . $user;
+    
+    return md5($signature);
+}
+
+/**
+ * Keep normalizeTimestamp
+ */
+private function normalizeTimestamp($entry)
+{
+    $timestamp = $entry['timestamp'] ?? $entry['created_at'] ?? $entry['date'] ?? $entry['payment_date'] ?? null;
+    
+    if (!$timestamp) {
+        return time();
+    }
+    
+    if (is_numeric($timestamp) && $timestamp > 1000000000 && $timestamp < 9999999999) {
+        return intval($timestamp);
+    }
+    
+    try {
+        if ($timestamp instanceof \MongoDB\BSON\UTCDateTime) {
+            return $timestamp->toDateTime()->getTimestamp();
+        }
+        
+        $time = strtotime($timestamp);
+        if ($time !== false && $time > 0) {
+            return $time;
+        }
+        
+        return \Carbon\Carbon::parse($timestamp)->timestamp;
+        
+    } catch (\Exception $e) {
+        \Log::warning('Failed to normalize timestamp', [
+            'timestamp' => $timestamp,
+            'error' => $e->getMessage()
+        ]);
+        return time();
+    }
+}
+
+/**
+ * ENHANCED: Process fees data safely with all previous data
+ */
+private function processFeesDataSafe(&$safeStudent, $rawData)
+{
+    // Get fees from student object or raw data
+    $rawFees = $safeStudent->fees ?? $rawData['fees'] ?? [];
+    $rawOtherFees = $safeStudent->other_fees ?? $rawData['other_fees'] ?? [];
+    $rawTransactions = $safeStudent->transactions ?? $rawData['transactions'] ?? [];
+    
+    if (is_string($rawFees)) {
+        $rawFees = json_decode($rawFees, true) ?? [];
+    }
+    if (is_string($rawOtherFees)) {
+        $rawOtherFees = json_decode($rawOtherFees, true) ?? [];
+    }
+    if (is_string($rawTransactions)) {
+        $rawTransactions = json_decode($rawTransactions, true) ?? [];
+    }
+    
+    $safeStudent->fees = collect(is_array($rawFees) ? $rawFees : []);
+    $safeStudent->other_fees = collect(is_array($rawOtherFees) ? $rawOtherFees : []);
+    $safeStudent->transactions = collect(is_array($rawTransactions) ? $rawTransactions : []);
+    
+    // Process fees collection
+    if ($safeStudent->fees->isNotEmpty()) {
+        $safeStudent->fees = $safeStudent->fees->map(function ($fee) {
+            if (is_string($fee)) {
+                try {
+                    $fee = json_decode($fee, true);
+                } catch (\Exception $e) {
+                    return null;
+                }
+            }
+            
+            if (!is_array($fee)) {
+                return null;
+            }
+            
+            // Parse dates
+            $fee['due_date'] = $this->parseDateSafely($fee['due_date'] ?? null);
+            $fee['paid_date'] = $this->parseDateSafely($fee['paid_date'] ?? null);
+            
+            // Calculate remaining amount
+            $actualAmount = floatval($fee['actual_amount'] ?? 0);
+            $discountAmount = floatval($fee['discount_amount'] ?? 0);
+            $paidAmount = floatval($fee['paid_amount'] ?? 0);
+            $fee['remaining_amount'] = $actualAmount - $discountAmount - $paidAmount;
+            
+            // Set status
+            if (!isset($fee['status'])) {
+                if ($paidAmount >= ($actualAmount - $discountAmount)) {
+                    $fee['status'] = 'paid';
+                } elseif ($paidAmount > 0) {
+                    $fee['status'] = 'partial';
+                } else {
+                    $fee['status'] = 'pending';
+                }
+            }
+            
+            $fee['status_badge'] = $this->getStatusBadge($fee['status']);
+            
+            return $fee;
+        })->filter();
+    }
+    
+    // Process other_fees collection
+    if ($safeStudent->other_fees->isNotEmpty()) {
+        $safeStudent->other_fees = $safeStudent->other_fees->map(function ($fee) {
+            if (is_string($fee)) {
+                try {
+                    $fee = json_decode($fee, true);
+                } catch (\Exception $e) {
+                    return null;
+                }
+            }
+            
+            if (!is_array($fee)) {
+                return null;
+            }
+            
+            // Parse dates
+            $fee['due_date'] = $this->parseDateSafely($fee['due_date'] ?? null);
+            $fee['paid_date'] = $this->parseDateSafely($fee['paid_date'] ?? null);
+            
+            // Calculate remaining amount
+            $actualAmount = floatval($fee['actual_amount'] ?? 0);
+            $paidAmount = floatval($fee['paid_amount'] ?? 0);
+            $fee['remaining_amount'] = $actualAmount - $paidAmount;
+            
+            // Set status
+            if (!isset($fee['status'])) {
+                if ($paidAmount >= $actualAmount) {
+                    $fee['status'] = 'paid';
+                } elseif ($paidAmount > 0) {
+                    $fee['status'] = 'partial';
+                } else {
+                    $fee['status'] = 'pending';
+                }
+            }
+            
+            $fee['status_badge'] = $this->getStatusBadge($fee['status']);
+            
+            return $fee;
+        })->filter();
+    }
+    
+    // Process transactions collection
+    if ($safeStudent->transactions->isNotEmpty()) {
+        $safeStudent->transactions = $safeStudent->transactions->map(function ($transaction) {
+            if (is_string($transaction)) {
+                try {
+                    $transaction = json_decode($transaction, true);
+                } catch (\Exception $e) {
+                    return null;
+                }
+            }
+            
+            if (!is_array($transaction)) {
+                return null;
+            }
+            
+            // Parse payment date
+            $transaction['payment_date'] = $this->parseDateSafely($transaction['payment_date'] ?? null);
+            
+            return $transaction;
+        })->filter();
+    }
 }
 }

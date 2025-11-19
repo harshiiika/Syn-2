@@ -97,7 +97,7 @@ class OnboardController extends Controller
     }
 
     /**
-     * ✅ UPDATE - Track MEANINGFUL changes + Handle file uploads + Preserve existing history
+     *   UPDATE - Track MEANINGFUL changes + Handle file uploads + Preserve existing history
      */
     public function update(Request $request, $id)
     {
@@ -110,7 +110,7 @@ class OnboardController extends Controller
             // Update fields from request
             $updateData = $request->except(['_token', '_method']);
             
-            // ✅ TRACK ONLY MEANINGFUL CHANGES
+            //   TRACK ONLY MEANINGFUL CHANGES
             $meaningfulChanges = [];
             
             // Define fields that matter for history
@@ -146,7 +146,7 @@ class OnboardController extends Controller
                 }
             }
             
-            // ✅ Handle file uploads
+            //   Handle file uploads
             $fileFields = [
                 'passport_photo' => 'documents/passport',
                 'marksheet' => 'documents/marksheet',
@@ -166,10 +166,10 @@ class OnboardController extends Controller
                 }
             }
             
-            // ✅ PRESERVE EXISTING HISTORY (don't overwrite!)
+            //   PRESERVE EXISTING HISTORY (don't overwrite!)
             $existingHistory = $student->history ?? [];
             
-            // ✅ ONLY ADD HISTORY IF SOMETHING MEANINGFUL CHANGED
+            //   ONLY ADD HISTORY IF SOMETHING MEANINGFUL CHANGED
             if (!empty($meaningfulChanges)) {
                 $historyEntry = [
                     'action' => 'Student Details Updated',
@@ -215,74 +215,84 @@ class OnboardController extends Controller
     /**
      * Transfer student from Onboard to Pending Fees
      */
-    public function transfer(Request $request, $id)
-    {
-        try {
-            $student = Onboard::findOrFail($id);
+    /**
+ * Transfer student from Onboard to Pending Fees
+ * 📋 Preserves existing history and adds transfer entry
+ */
+public function transfer(Request $request, $id)
+{
+    try {
+        $student = Onboard::findOrFail($id);
+        
+        Log::info('Starting transfer to pending fees', [
+            'student_id' => $id,
+            'student_name' => $student->name
+        ]);
+        
+        // Prepare data
+        $pendingFeesData = $student->toArray();
+        unset($pendingFeesData['_id']);
+        
+        // Set transfer metadata
+        $pendingFeesData['status'] = 'pending_fees';
+        $pendingFeesData['transferred_from'] = 'onboard';
+        $pendingFeesData['transferred_at'] = now();
+        $pendingFeesData['transferred_by'] = auth()->user()->email ?? 'Admin';
+        
+        // Initialize payment fields
+        $totalFeesInclusive = $pendingFeesData['total_fees_inclusive_tax'] ?? 
+                             ($pendingFeesData['total_fees'] ?? 0);
+        
+        $pendingFeesData['paid_fees'] = 0;
+        $pendingFeesData['remaining_fees'] = $totalFeesInclusive;
+        $pendingFeesData['fee_status'] = 'pending';
+        $pendingFeesData['paymentHistory'] = [];
+        
+        // 📋 PRESERVE EXISTING HISTORY AND ADD TRANSFER ENTRY
+        $existingHistory = $pendingFeesData['history'] ?? [];
+        
+        // Add new transfer entry (similar to your image format)
+        $transferEntry = [
+            'action' => 'Student Transferred to Pay Fees',
+            'description' => 'Admin transferred student ' . $student->name . ' to accounts section.',
+            'user' => auth()->user()->name ?? 'Admin',
+            'timestamp' => now()->toIso8601String(),
+            'created_at' => now()->toDateTimeString()
+        ];
+        
+        // Add at the beginning of history array
+        array_unshift($existingHistory, $transferEntry);
+        $pendingFeesData['history'] = $existingHistory;
+        
+        Log::info('✅ Transfer history entry added', [
+            'history_count' => count($existingHistory)
+        ]);
+        
+        // Create in pending_fees
+        $pendingFeeStudent = PendingFee::create($pendingFeesData);
+        
+        // Delete from onboard
+        $student->delete();
+        
+        Log::info('✅ Transfer to pending fees successful', [
+            'new_id' => $pendingFeeStudent->_id,
+            'student_name' => $pendingFeeStudent->name,
+            'history_count' => count($existingHistory)
+        ]);
+        
+        return redirect()->route('student.onboard.onboard')
+            ->with('success', "Student '{$pendingFeeStudent->name}' transferred to Pending Fees successfully");
             
-            Log::info('Starting transfer to pending fees', [
-                'student_id' => $id,
-                'student_name' => $student->name
-            ]);
-            
-            // Prepare data
-            $pendingFeesData = $student->toArray();
-            unset($pendingFeesData['_id']);
-            
-            // Set transfer metadata
-            $pendingFeesData['status'] = 'pending_fees';
-            $pendingFeesData['transferred_from'] = 'onboard';
-            $pendingFeesData['transferred_at'] = now();
-            $pendingFeesData['transferred_by'] = auth()->user()->email ?? 'Admin';
-            
-            // Initialize payment fields
-            $totalFeesInclusive = $pendingFeesData['total_fees_inclusive_tax'] ?? 
-                                 ($pendingFeesData['total_fees'] ?? 0);
-            
-            $pendingFeesData['paid_fees'] = 0;
-            $pendingFeesData['remaining_fees'] = $totalFeesInclusive;
-            $pendingFeesData['fee_status'] = 'pending';
-            $pendingFeesData['paymentHistory'] = [];
-            
-            // ✅ PRESERVE EXISTING HISTORY AND ADD TRANSFER ENTRY
-            $existingHistory = $pendingFeesData['history'] ?? [];
-            
-            $transferEntry = [
-                'action' => 'Transferred to Pending Fees',
-                'description' => 'Student was transferred from Onboarding to Pending Fees collection',
-                'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
-                'timestamp' => now()->toIso8601String(),
-                'date' => now()->format('d M Y, h:i A')
-            ];
-            
-            array_unshift($existingHistory, $transferEntry);
-            $pendingFeesData['history'] = $existingHistory;
-            
-            // Create in pending_fees
-            $pendingFeeStudent = PendingFee::create($pendingFeesData);
-            
-            // Delete from onboard
-            $student->delete();
-            
-            Log::info('✅ Transfer to pending fees successful', [
-                'new_id' => $pendingFeeStudent->_id,
-                'student_name' => $pendingFeeStudent->name,
-                'history_count' => count($existingHistory)
-            ]);
-            
-            return redirect()->route('student.onboard.onboard')
-                ->with('success', "Student '{$pendingFeeStudent->name}' transferred to Pending Fees successfully");
-                
-        } catch (\Exception $e) {
-            Log::error('Transfer to pending fees failed', [
-                'student_id' => $id,
-                'error' => $e->getMessage()
-            ]);
-            
-            return redirect()->back()
-                ->with('error', 'Failed to transfer student: ' . $e->getMessage());
-        }
+    } catch (\Exception $e) {
+        Log::error('Transfer to pending fees failed', [
+            'student_id' => $id,
+            'error' => $e->getMessage()
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'Failed to transfer student: ' . $e->getMessage());
     }
+}
 
     /**
      * Initialize history for existing students (run once)
@@ -464,7 +474,7 @@ class OnboardController extends Controller
             $onboardData = $pendingStudent->toArray();
             unset($onboardData['_id']);
             
-            // ✅ FIX: Use Carbon with timezone
+            //   FIX: Use Carbon with timezone
             $now = Carbon::now('Asia/Kolkata');
             
             // Set onboard metadata
@@ -474,7 +484,7 @@ class OnboardController extends Controller
             $onboardData['transferred_at'] = $now;
             $onboardData['transferred_by'] = auth()->user()->email ?? 'Admin';
             
-            // ✅ BUILD COMPLETE HISTORY
+            //   BUILD COMPLETE HISTORY
             $completeHistory = [];
             
             // 1. Get history from pending student (which came from inquiry)
@@ -488,7 +498,7 @@ class OnboardController extends Controller
                 'description' => 'Student successfully onboarded and transferred to onboarding collection',
                 'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
                 'timestamp' => $now->toIso8601String(),
-                'date' => $now->format('d M Y, h:i A') // ✅ Shows correct current time
+                'date' => $now->format('d M Y, h:i A') //   Shows correct current time
             ];
             
             Log::info('Onboard timestamp:', [
@@ -508,7 +518,7 @@ class OnboardController extends Controller
             // Create in onboard collection
             $onboardStudent = Onboard::create($onboardData);
             
-            Log::info('✅ Onboard student created', [
+            Log::info('  Onboard student created', [
                 'onboard_id' => $onboardStudent->_id,
                 'name' => $onboardStudent->name,
                 'history_entries' => count($onboardStudent->history ?? [])
@@ -517,7 +527,7 @@ class OnboardController extends Controller
             // Delete from pending
             $pendingStudent->delete();
             
-            Log::info('✅ Transfer to onboard complete');
+            Log::info('  Transfer to onboard complete');
             
             return redirect()->route('student.onboard.onboard')
                 ->with('success', "Student '{$onboardStudent->name}' successfully onboarded!");

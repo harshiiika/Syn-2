@@ -849,7 +849,7 @@ function loadMonthlyData() {
             search: currentFilters.search
         },
         success: function(response) {
-            console.log('✅ Data loaded:', response);
+            console.log('  Data loaded:', response);
             
             if (response.success) {
                 updateTable(response.data);
@@ -896,7 +896,7 @@ function updateTable(students) {
         showStudentDetails(studentId, studentName);
     });
     
-    console.log('✅ Table updated');
+    console.log('  Table updated');
 }
 
 function showStudentDetails(studentId, studentName) {
@@ -916,7 +916,7 @@ function showStudentDetails(studentId, studentName) {
             month: currentFilters.month
         },
         success: function(response) {
-            console.log('✅ Details loaded:', response);
+            console.log('  Details loaded:', response);
             
             if (response.success && response.data.length > 0) {
                 renderDetailsTable(response.data);

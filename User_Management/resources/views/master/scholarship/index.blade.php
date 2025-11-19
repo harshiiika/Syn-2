@@ -484,14 +484,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error('Failed to load');
       const json = await res.json();
       
-      console.log('API Response:', json); // ✅ DEBUG: Log the response
+      console.log('API Response:', json); //   DEBUG: Log the response
       
       if (!json.success) throw new Error(json.message || 'No data');
       
       renderTable(json.data || []);
       renderFooter(json);
     } catch (err) {
-      console.error('Load Error:', err); // ✅ DEBUG: Log errors
+      console.error('Load Error:', err); //   DEBUG: Log errors
       tableBody.innerHTML = '';
       dataMsg.style.display = 'block';
       dataMsg.textContent = 'Failed to load data: ' + err.message;
@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderTable(items) {
     tableBody.innerHTML = '';
     
-    console.log('Items to render:', items); // ✅ DEBUG
+    console.log('Items to render:', items); //   DEBUG
     
     if (!items || !items.length) {
       dataMsg.style.display = 'block';
@@ -517,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = it._id || it.id || '';
       const serialNo = (state.page - 1) * state.per_page + idx + 1;
       
-      // ✅ Ensure all fields have fallback values
+      //   Ensure all fields have fallback values
       const scholarshipName = it.scholarship_name || 'N/A';
       const shortName = it.short_name || 'N/A';
       const type = it.scholarship_type || 'N/A';
@@ -533,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
         category, 
         applicableFor, 
         status 
-      }); // ✅ DEBUG
+      }); //   DEBUG
       
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -636,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const id = e.currentTarget.dataset.id;
     
-    console.log('Viewing scholarship ID:', id); // ✅ DEBUG
+    console.log('Viewing scholarship ID:', id); //   DEBUG
     
     try {
       const res = await fetch(`${ENDPOINT_BASE}/${id}`, { 
@@ -647,13 +647,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const json = await res.json();
       
-      console.log('View response:', json); // ✅ DEBUG
+      console.log('View response:', json); //   DEBUG
       
       if (!json.success) throw new Error(json.message || 'Could not load');
 
       const it = json.data;
       
-      // ✅ Extract values with fallbacks
+      //   Extract values with fallbacks
       const scholarshipName = it.scholarship_name || 'N/A';
       const shortName = it.short_name || 'N/A';
       const type = it.scholarship_type || 'N/A';
@@ -716,7 +716,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const id = e.currentTarget.dataset.id;
     
-    console.log('Editing scholarship ID:', id); // ✅ DEBUG
+    console.log('Editing scholarship ID:', id); //   DEBUG
     
     try {
       const res = await fetch(`${ENDPOINT_BASE}/${id}`, { 
@@ -727,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const json = await res.json();
       
-      console.log('Edit response:', json); // ✅ DEBUG
+      console.log('Edit response:', json); //   DEBUG
       
       if (!json.success) throw new Error(json.message || 'Could not load');
 
@@ -763,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const id = e.currentTarget.dataset.id;
     
-    console.log('Deleting scholarship ID:', id); // ✅ DEBUG
+    console.log('Deleting scholarship ID:', id); //   DEBUG
     
     try {
       const res = await fetch(`${ENDPOINT_BASE}/${id}`, {
@@ -795,7 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentStatus = e.currentTarget.dataset.status;
     const action = currentStatus === 'active' ? 'deactivate' : 'activate';
     
-    console.log('Toggling status for ID:', id, 'Current status:', currentStatus); // ✅ DEBUG
+    console.log('Toggling status for ID:', id, 'Current status:', currentStatus); //   DEBUG
     
     if (!confirm(`Are you sure you want to ${action} this scholarship?`)) return;
     
@@ -841,7 +841,7 @@ $(document).ready(function () {
     const isEdit = scholarshipId ? true : false;
     const url = isEdit ? `/master/scholarship/${scholarshipId}` : '/master/scholarship';
     
-    console.log('Form submit:', { isEdit, scholarshipId, url }); // ✅ DEBUG
+    console.log('Form submit:', { isEdit, scholarshipId, url }); //   DEBUG
     
     // Serialize form data
     let formData = $(this).serialize();
@@ -864,7 +864,7 @@ $(document).ready(function () {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
       },
       success: function (response) {
-        console.log('Save response:', response); // ✅ DEBUG
+        console.log('Save response:', response); //   DEBUG
         
         if (response.success) {
           const message = response.message || (isEdit ? 'Scholarship updated successfully!' : 'Scholarship created successfully!');
@@ -885,7 +885,7 @@ $(document).ready(function () {
         }
       },
       error: function (xhr) {
-        console.error('Save error:', xhr.responseText); // ✅ DEBUG
+        console.error('Save error:', xhr.responseText); //   DEBUG
         
         let errorMsg = 'Failed to save scholarship.';
         

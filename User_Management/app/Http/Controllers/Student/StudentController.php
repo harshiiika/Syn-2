@@ -135,7 +135,7 @@ public function update(Request $request, $id)
             'senior_secondary_marksheet' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
         ]);
 
-        // ✅ CRITICAL FIX: Handle file uploads and preserve existing documents
+        //   CRITICAL FIX: Handle file uploads and preserve existing documents
         $fileFields = [
             'passport_photo',
             'marksheet', 
@@ -156,7 +156,7 @@ public function update(Request $request, $id)
                 $mimeType = $file->getMimeType();
                 $documentData[$field] = "data:{$mimeType};base64,{$base64}";
                 
-                Log::info("✅ New file uploaded: {$field}", [
+                Log::info("  New file uploaded: {$field}", [
                     'mime_type' => $mimeType,
                     'size' => strlen($base64)
                 ]);
@@ -164,7 +164,7 @@ public function update(Request $request, $id)
                 // No new file - preserve existing document if it exists
                 if (!empty($student->$field) && $student->$field !== 'N/A') {
                     $documentData[$field] = $student->$field;
-                    Log::info("✅ Preserved existing document: {$field}");
+                    Log::info("  Preserved existing document: {$field}");
                 }
             }
         }
@@ -172,18 +172,18 @@ public function update(Request $request, $id)
         // Store courseType for compatibility
         $validated['courseType'] = $validated['course_type'];
 
-        Log::info('✅ ALL REQUIRED FIELDS FILLED - MOVING TO ONBOARDED', [
+        Log::info('  ALL REQUIRED FIELDS FILLED - MOVING TO ONBOARDED', [
             'documents_count' => count(array_filter($documentData))
         ]);
 
         try {
-            // ✅ Create in student_onboard collection WITH ALL DOCUMENTS
+            //   Create in student_onboard collection WITH ALL DOCUMENTS
             $onboardData = array_merge($student->toArray(), $validated, $documentData);
             $onboardData['status'] = 'onboarded';
             $onboardData['onboardedAt'] = now();
             unset($onboardData['_id']); // Remove old _id to create new
             
-            Log::info('✅ Onboard data prepared:', [
+            Log::info('  Onboard data prepared:', [
                 'documents' => [
                     'passport_photo' => !empty($onboardData['passport_photo']),
                     'marksheet' => !empty($onboardData['marksheet']),
@@ -199,7 +199,7 @@ public function update(Request $request, $id)
             // Delete from pending
             $student->delete();
             
-            Log::info('✅ Student moved to onboard collection WITH DOCUMENTS:', [
+            Log::info('  Student moved to onboard collection WITH DOCUMENTS:', [
                 'new_id' => $onboardStudent->_id,
                 'name' => $onboardStudent->name,
                 'has_passport_photo' => !empty($onboardStudent->passport_photo),
@@ -288,7 +288,7 @@ public function update(Request $request, $id)
             $onboardData['transferred_at'] = now();
             $onboardData['transferred_by'] = auth()->user()->email ?? 'Admin';
             
-            // ✅ BUILD COMPLETE HISTORY - Transfer existing history from inquiry
+            //   BUILD COMPLETE HISTORY - Transfer existing history from inquiry
             $completeHistory = [];
             
             // 1. Get history from pending student (which came from inquiry)
@@ -319,7 +319,7 @@ public function update(Request $request, $id)
             // Create in onboard collection
             $onboardStudent = Onboard::create($onboardData);
             
-            Log::info('✅ Onboard student created', [
+            Log::info('  Onboard student created', [
                 'onboard_id' => $onboardStudent->_id,
                 'name' => $onboardStudent->name,
                 'history_entries' => count($onboardStudent->history ?? [])
@@ -328,7 +328,7 @@ public function update(Request $request, $id)
             // Delete from pending
             $pendingStudent->delete();
             
-            Log::info('✅ Transfer to onboard complete');
+            Log::info('  Transfer to onboard complete');
             
             return redirect()->route('student.onboard.onboard')
                 ->with('success', "Student '{$onboardStudent->name}' successfully onboarded!");

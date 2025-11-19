@@ -387,8 +387,14 @@
     <!-- Custom JS -->
     <script src="{{asset('js/emp.js')}}"></script>
 
+<<<<<<< HEAD
+    <script>
+    $(document).ready(function() {
+        console.log('  Fees Management Page Loaded');
+=======
   <script>
 const coursesBatchesMapping = {!! json_encode($coursesBatchesMapping ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
+>>>>>>> 81a5416dd22f2d7a657db3dec69857e16a076d7a
 
 $(document).ready(function() {
     console.log('✅ Fees Management Page Loaded');
@@ -409,10 +415,90 @@ $(document).ready(function() {
             document.querySelectorAll('.tab-panel').forEach(function(panel) {
                 panel.classList.remove('active');
             });
+<<<<<<< HEAD
+        });
+
+        //   LOAD BATCHES WHEN COURSE IS SELECTED (WITH DEBUGGING)
+        $('#courseSelect').on('change', function() {
+            const courseId = $(this).val();
+            const $batchSelect = $('#batchSelect');
+            
+            console.log('📚 Course selected:', courseId);
+            
+            if (courseId) {
+                // Show loading state
+                $batchSelect.html('<option value="">Loading batches...</option>').prop('disabled', true);
+                
+                $.ajax({
+                    url: '{{ route("fees.batches.by.course") }}',
+                    method: 'POST',
+                    data: { 
+                        course_id: courseId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        console.log('  AJAX Success - Full Response:', response);
+                        
+                        let options = '<option value="">Select batch</option>';
+                        
+                        if (response.success && response.data && response.data.length > 0) {
+                            console.log('  Found ' + response.data.length + ' batches');
+                            
+                            response.data.forEach(batch => {
+                                console.log('   - Batch:', batch.batch_name, '(ID:', batch.id + ')');
+                                options += `<option value="${batch.id}">${batch.batch_name}</option>`;
+                            });
+                            
+                            $batchSelect.html(options).prop('disabled', false);
+                            console.log('  Batches loaded successfully');
+                        } else {
+                            console.warn('⚠️ No batches found for course:', courseId);
+                            options = '<option value="">No batches available</option>';
+                            $batchSelect.html(options).prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('❌ AJAX Error:', {
+                            status: status,
+                            error: error,
+                            responseText: xhr.responseText,
+                            statusCode: xhr.status
+                        });
+                        
+                        $batchSelect.html('<option value="">Error loading batches</option>').prop('disabled', true);
+                        
+                        // Show user-friendly error
+                        alert('Failed to load batches. Please:\n' +
+                              '1. Check browser console (F12)\n' +
+                              '2. Verify the route exists\n' +
+                              '3. Check Laravel logs');
+                    }
+                });
+            } else {
+                console.log('❌ No course selected, clearing batches');
+                $batchSelect.html('<option value="">Select batch</option>').prop('disabled', true);
+            }
+        });
+
+        // Enter key support for student search
+        $('#studentSearch').keypress(function(e) {
+            if (e.which == 13) {
+                searchStudent();
+            }
+        });
+
+        // Hide error on fee status change
+        $('#feeStatusSelect').on('change', function() {
+            if ($(this).val()) {
+                $('#feeStatusError').hide();
+                $(this).removeClass('error');
+            }
+=======
             
             this.classList.add('active');
             var tabId = this.getAttribute('data-tab');
             document.getElementById(tabId).classList.add('active');
+>>>>>>> 81a5416dd22f2d7a657db3dec69857e16a076d7a
         });
     });
 
@@ -466,6 +552,27 @@ $(document).ready(function() {
         }
     });
 
+<<<<<<< HEAD
+        $.ajax({
+            url: '{{ route("fees.status.search") }}',
+            method: 'POST',
+            data: {
+                course_id: courseId,
+                batch_id: batchId,
+                fee_status: feeStatus
+            },
+            success: function(response) {
+                console.log('  Search results:', response);
+                if (response.success && response.data.length > 0) {
+                    renderFeeStatusTable(response.data);
+                } else {
+                    showNoData('feeStatusResults', 'No students found');
+                }
+            },
+            error: function(xhr) {
+                console.error('❌ Search error:', xhr.responseText);
+                showNoData('feeStatusResults', 'Error loading data');
+=======
     $('#feeStatusSelect').on('change', function() {
         if ($(this).val()) {
             $('#feeStatusError').hide();
@@ -491,6 +598,7 @@ function loadAllStudents() {
                 renderCollectFeesTable(response.data);
             } else {
                 showNoData('collectFeesResults', 'No students found');
+>>>>>>> 81a5416dd22f2d7a657db3dec69857e16a076d7a
             }
         },
         error: function(xhr) {

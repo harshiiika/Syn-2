@@ -87,7 +87,7 @@ class ShiftController extends Controller
         try {
             $shift = Shift::findOrFail($id);
             
-            // ✅ FIXED: Count students using BOTH shift_id and old shift field
+            //   FIXED: Count students using BOTH shift_id and old shift field
             $studentsCount = SMstudents::where(function($query) use ($id, $shift) {
                 $query->where('shift_id', $id)
                       ->orWhere('shift', $shift->name);
@@ -164,7 +164,7 @@ class ShiftController extends Controller
         try {
             $shift = Shift::findOrFail($id);
             
-            // ✅ FIXED: Check students using BOTH shift_id and old shift field
+            //   FIXED: Check students using BOTH shift_id and old shift field
             $studentsCount = SMstudents::where(function($query) use ($id, $shift) {
                 $query->where('shift_id', $id)
                       ->orWhere('shift', $shift->name);
