@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Test Series - {{ $courseName }}</title>
+  <title>Test Series</title>
   <link rel="stylesheet" href="{{ asset('css/emp.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,6 +13,28 @@
     }
     .conditional-field.show {
       display: block;
+    }
+    
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .top-text h4 {
+      margin: 0;
+      color: #333;
+      font-weight: 600;
+    }
+    
+    .btn-success {
+      background-color: #ff6b35 !important;
+      border: none !important;
+    }
+    
+    .btn-success:hover {
+      background-color: #ff5520 !important;
     }
   </style>
 </head>
@@ -62,37 +84,37 @@
   </div>
 
   <div class="main-container">
-    <!-- Sidebar (same as index) -->
+    <!-- Sidebar -->
     <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>Admin</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-    <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
+        <!-- User Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
+              data-bs-target="#flush-collapseOne" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
             </button>
           </h2>
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-           <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-           <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+                <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
         </div>
 
+        <!-- Master -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
+              data-bs-target="#flush-collapseTwo" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i> Master
             </button>
           </h2>
@@ -110,11 +132,11 @@
           </div>
         </div>
 
+        <!-- Session Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
+              data-bs-target="#flush-collapseThree" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
             </button>
           </h2>
@@ -129,31 +151,31 @@
           </div>
         </div>
 
+        <!-- Student Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
+              data-bs-target="#flush-collapseFour" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>
         </div>
 
+        <!-- Fees Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-              id="accordion-button">
+              data-bs-target="#flush-collapseFive" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
             </button>
           </h2>
@@ -166,11 +188,11 @@
           </div>
         </div>
 
+        <!-- Attendance Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-              id="accordion-button">
+              data-bs-target="#flush-collapseSix" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
             </button>
           </h2>
@@ -178,18 +200,17 @@
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="{{ route(name: 'attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
-
+                <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
               </ul>
             </div>
           </div>
         </div>
 
+        <!-- Study Material -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-              id="accordion-button">
+              data-bs-target="#flush-collapseSeven" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
             </button>
           </h2>
@@ -203,31 +224,32 @@
           </div>
         </div>
 
-        <div class="accordion-item">
-  <h2 class="accordion-header">
-    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-      data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-      id="accordion-button">
-      <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-    </button>
-  </h2>
-  <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-    <div class="accordion-body">
-      <ul class="menu" id="dropdown-body">
-        <li>
-<a class="item" href="{{ route('test_series.index') }}">            <i class="fa-solid fa-book" id="side-icon"></i>Test Master
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-
+        <!-- Test Series Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-              id="accordion-button">
+              data-bs-target="#flush-collapseEight" aria-expanded="false" id="accordion-button">
+              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+            </button>
+          </h2>
+          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li>
+                  <a class="item active" href="{{ route('test_series.index') }}">
+                    <i class="fa-solid fa-book" id="side-icon"></i>Test Master
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseNine" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
             </button>
           </h2>
@@ -248,15 +270,13 @@
 
     <!-- Main Content -->
     <div class="right" id="right">
+      <!-- Top Section -->
       <div class="top">
         <div class="top-text">
-          <h4><i class="fas fa-list-alt me-2"></i>TEST SERIES - {{ $courseName }}</h4>
-          <a href="{{ route('test_series.index') }}" class="btn btn-sm btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back
-          </a>
+          <h4>Test Series</h4>
         </div>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createTestSeriesModal">
-          <i class="fas fa-plus me-2"></i>Create Test Series
+          Create Test Series
         </button>
       </div>
 
@@ -300,7 +320,7 @@
               @php
                 $seriesId = is_object($series->_id) ? (string)$series->_id : $series->_id;
               @endphp
-              <tr data-row="true">
+              <tr data-row="true" style="cursor: pointer;" onclick="window.location.href='{{ route('test_series.view', $seriesId) }}'">
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $series->test_name ?? 'N/A' }}</td>
                 <td>{{ $series->test_type ?? 'N/A' }}</td>
@@ -310,20 +330,15 @@
                     {{ $series->status ?? 'Pending' }}
                   </span>
                 </td>
-                <td>
+                <td onclick="event.stopPropagation();">
                   <div class="dropdown">
                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                       <i class="fas fa-ellipsis-v"></i>
                     </button>
                     <ul class="dropdown-menu">
                       <li>
-                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $seriesId }}">
-                          <i class="fas fa-eye me-2"></i>View Details
-                        </button>
-                      </li>
-                      <li>
                         <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $seriesId }}">
-                          <i class="fas fa-edit me-2"></i>Edit
+                          <i class="fas fa-edit me-2"></i>Update Test Series
                         </button>
                       </li>
                       <li>
@@ -350,10 +365,15 @@
         <!-- Pagination Info -->
         <div class="d-flex justify-content-between align-items-center mt-3">
           <div id="paginationInfo">
-            Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count() }}</span> entries
+            Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count()) }}</span> entries
           </div>
           <nav>
-            <ul class="pagination" id="pagination"></ul>
+            <ul class="pagination" id="pagination">
+              <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+              <li class="page-item active" style="background-color: #ff6b35;"><a class="page-link" href="#" style="background-color: #ff6b35; border-color: #ff6b35;">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
           </nav>
         </div>
       </div>
@@ -363,42 +383,36 @@
   <!-- Create Test Series Modal -->
   <div class="modal fade" id="createTestSeriesModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <form method="POST" action="{{ route('test_series.store') }}" class="modal-content">
+      <form method="POST" action="{{ route('test_series.store') }}" class="modal-content" id="createTestForm">
         @csrf
         <input type="hidden" name="course_id" value="{{ is_object($course->_id) ? (string)$course->_id : $course->_id }}">
         <input type="hidden" name="course_name" value="{{ $courseName }}">
         
-        <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
-          <h5 class="modal-title text-white">
-            <i class="fas fa-plus-circle me-2"></i>Create Test Series
-          </h5>
+        <div class="modal-header" style="background-color: #ff6b35;">
+          <h5 class="modal-title text-white">Update Test Series</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
           <div class="row">
             <!-- Test Series Type -->
             <div class="col-md-6 mb-3">
-              <label class="form-label fw-semibold">Test Series Type <span class="text-danger">*</span></label>
+              <label class="form-label">Test Series Type</label>
               <select name="test_type" id="testSeriesType" class="form-select" required>
-                <option value="">-- Select Type --</option>
-                <option value="Type1">Type1</option>
-                <option value="Type2">Type2</option>
+                <option value="">Select</option>
+                <option value="Type1">Type 1</option>
+                <option value="Type2">Type 2</option>
               </select>
             </div>
 
-            <!-- Subject Type -->
-            <div class="col-md-6 mb-3">
-              <label class="form-label fw-semibold">Subject Type <span class="text-danger">*</span></label>
-              <select name="subject_type" class="form-select" required>
-                <option value="">-- Select Subject Type --</option>
-                <option value="Single">Single</option>
-                <option value="Double">Double</option>
-              </select>
+            <!-- Test Series Name (Only for Type1) -->
+            <div class="col-md-6 mb-3 conditional-field" id="testSeriesNameField">
+              <label class="form-label">Test Series Name</label>
+              <input type="text" name="test_series_name" id="testSeriesNameInput" class="form-select" placeholder="IIT JEE Pattern">
             </div>
 
-            <!-- Select Subjects (Conditional) -->
+            <!-- Select Subjects -->
             <div class="col-12 mb-3 conditional-field" id="selectSubjectsField">
-              <label class="form-label fw-semibold">Select Subjects <span class="text-danger">*</span></label>
+              <label class="form-label">Select Subjects</label>
               <div class="d-flex gap-3">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="subjects[]" value="Physics" id="physics">
@@ -415,116 +429,86 @@
               </div>
             </div>
 
-            <!-- No. of Test Counts -->
+            <!-- Subject Type -->
             <div class="col-md-6 mb-3">
-              <label class="form-label fw-semibold">No. of Test Counts <span class="text-danger">*</span></label>
-              <input type="number" name="test_count" class="form-control" min="1" required>
+              <label class="form-label">Subject Type</label>
+              <select name="subject_type" class="form-select" required>
+                <option value="">Select</option>
+                <option value="Single">Single</option>
+                <option value="Double">Double</option>
+              </select>
             </div>
 
-            <!-- Test Series Name (Only for Type1) -->
-            <div class="col-md-6 mb-3 conditional-field" id="testSeriesNameField">
-              <label class="form-label fw-semibold">Test Series Name <span class="text-danger">*</span></label>
-              <input type="text" name="test_series_name" id="testSeriesNameInput" class="form-control" placeholder="e.g., /IIT/00">
+            <!-- Mathematics marks -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Mathematics marks:</label>
+              <input type="number" name="math_marks" class="form-control" value="100">
+            </div>
+
+            <!-- Chemistry marks -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Chemistry marks:</label>
+              <input type="number" name="chemistry_marks" class="form-control" value="100">
+            </div>
+
+            <!-- Physics marks -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Physics marks:</label>
+              <input type="number" name="physics_marks" class="form-control" value="100">
+            </div>
+
+            <!-- No. of Test Counts -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">No. of Test Counts</label>
+              <input type="number" name="test_count" class="form-control" min="1" required>
             </div>
           </div>
         </div>
         <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            <i class="fas fa-times me-2"></i>Cancel
-          </button>
-          <button type="submit" class="btn btn-primary" style="background-color: #fd550dff; border: none;">
-            <i class="fas fa-save me-2"></i>Create Test Series
-          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Create Test Series</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- View & Edit Modals -->
+  <!-- Edit Modals -->
   @foreach($testSeries as $series)
     @php
       $seriesId = is_object($series->_id) ? (string)$series->_id : $series->_id;
     @endphp
 
-    <!-- View Modal -->
-    <div class="modal fade" id="viewModal{{ $seriesId }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
-            <h5 class="modal-title text-white"><i class="fas fa-eye me-2"></i>Test Series Details</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <strong>Test Name:</strong>
-                <p>{{ $series->test_name }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <strong>Test Type:</strong>
-                <p>{{ $series->test_type }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <strong>Subject Type:</strong>
-                <p>{{ $series->subject_type }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <strong>Status:</strong>
-                <p><span class="badge {{ $series->status == 'Active' ? 'bg-success' : 'bg-warning' }}">{{ $series->status }}</span></p>
-              </div>
-              @if(isset($series->subjects))
-              <div class="col-md-6 mb-3">
-                <strong>Subjects:</strong>
-                <p>{{ is_array($series->subjects) ? implode(', ', $series->subjects) : $series->subjects }}</p>
-              </div>
-              @endif
-              @if(isset($series->test_count))
-              <div class="col-md-6 mb-3">
-                <strong>Test Count:</strong>
-                <p>{{ $series->test_count }}</p>
-              </div>
-              @endif
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Edit Modal -->
     <div class="modal fade" id="editModal{{ $seriesId }}" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <form method="POST" action="{{ route('test_series.update', $seriesId) }}" class="modal-content">
           @csrf
           @method('PUT')
-          <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
-            <h5 class="modal-title text-white"><i class="fas fa-edit me-2"></i>Edit Test Series</h5>
+          <div class="modal-header" style="background-color: #ff6b35;">
+            <h5 class="modal-title text-white">Update Test Series</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body p-4">
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Test Name</label>
+                <label class="form-label">Test Name</label>
                 <input type="text" name="test_name" class="form-control" value="{{ $series->test_name }}" required>
               </div>
               <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Test Type</label>
+                <label class="form-label">Test Type</label>
                 <select name="test_type" class="form-select" required>
                   <option value="Type1" {{ $series->test_type == 'Type1' ? 'selected' : '' }}>Type1</option>
                   <option value="Type2" {{ $series->test_type == 'Type2' ? 'selected' : '' }}>Type2</option>
                 </select>
               </div>
               <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Subject Type</label>
+                <label class="form-label">Subject Type</label>
                 <select name="subject_type" class="form-select" required>
                   <option value="Single" {{ $series->subject_type == 'Single' ? 'selected' : '' }}>Single</option>
                   <option value="Double" {{ $series->subject_type == 'Double' ? 'selected' : '' }}>Double</option>
                 </select>
               </div>
               <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Status</label>
+                <label class="form-label">Status</label>
                 <select name="status" class="form-select">
                   <option value="Pending" {{ $series->status == 'Pending' ? 'selected' : '' }}>Pending</option>
                   <option value="Active" {{ $series->status == 'Active' ? 'selected' : '' }}>Active</option>
@@ -535,9 +519,7 @@
           </div>
           <div class="modal-footer bg-light">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary" style="background-color: #fd550dff; border: none;">
-              <i class="fas fa-save me-2"></i>Update
-            </button>
+            <button type="submit" class="btn btn-success">Update Test Series</button>
           </div>
         </form>
       </div>
@@ -547,17 +529,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Add this to your detail.blade.php script section
-document.querySelector('#createTestSeriesModal form').addEventListener('submit', function(e) {
-    const testType = document.getElementById('testSeriesType').value;
-    const checkboxes = document.querySelectorAll('input[name="subjects[]"]:checked');
-    
-    if ((testType === 'Type1' || testType === 'Type2') && checkboxes.length === 0) {
-        e.preventDefault();
-        alert('Please select at least one subject');
-        return false;
-    }
-});
     document.addEventListener('DOMContentLoaded', function () {
       // Sidebar toggle
       const toggleBtn = document.getElementById('toggleBtn');
@@ -593,12 +564,6 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
           
           if (selectedType === 'Type1') {
             selectSubjectsField.classList.add('show');
-            testSeriesNameField.classList.add('show');
-            testSeriesNameInput.required = true;
-          } else if (selectedType === 'Type2') {
-            selectSubjectsField.classList.add('show');
-            testSeriesNameField.classList.remove('show');
-            testSeriesNameInput.required = false;
             testSeriesNameInput.value = '';
           } else {
             selectSubjectsField.classList.remove('show');
@@ -608,7 +573,19 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         });
       }
 
-      // Table pagination and search (same as before)
+      // Form validation
+      document.getElementById('createTestForm').addEventListener('submit', function(e) {
+        const testType = document.getElementById('testSeriesType').value;
+        const checkboxes = document.querySelectorAll('input[name="subjects[]"]:checked');
+        
+        if ((testType === 'Type1' || testType === 'Type2') && checkboxes.length === 0) {
+          e.preventDefault();
+          alert('Please select at least one subject');
+          return false;
+        }
+      });
+
+      // Table pagination and search
       let currentPage = 1;
       let entriesPerPage = 10;
       let allRows = [];
@@ -683,7 +660,8 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         for (let i = 1; i <= Math.min(totalPages, 5); i++) {
           const li = document.createElement('li');
           li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-          li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
+          const activeStyle = i === currentPage ? 'style="background-color: #ff6b35; border-color: #ff6b35;"' : '';
+          li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;" ${activeStyle}>${i}</a>`;
           pagination.appendChild(li);
         }
 

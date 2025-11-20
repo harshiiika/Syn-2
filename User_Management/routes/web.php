@@ -431,10 +431,16 @@ Route::prefix('attendance/student')->name('attendance.student.')->group(function
 });
 
 
+// In routes/web.php
 Route::prefix('test-series')->name('test_series.')->group(function () {
     Route::get('/', [TestSeriesController::class, 'index'])->name('index');
-    Route::get('/course/{courseName}', [TestSeriesController::class, 'show'])->name('show');
+    Route::get('/create', [TestSeriesController::class, 'create'])->name('create');
     Route::post('/', [TestSeriesController::class, 'store'])->name('store');
+    Route::get('/{course}', [TestSeriesController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [TestSeriesController::class, 'edit'])->name('edit');
     Route::put('/{id}', [TestSeriesController::class, 'update'])->name('update');
     Route::delete('/{id}', [TestSeriesController::class, 'destroy'])->name('destroy');
+    
+    // For viewing test details
+    Route::get('/view/{id}', [TestSeriesController::class, 'viewTest'])->name('viewTest');
 });

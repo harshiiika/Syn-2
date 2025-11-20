@@ -258,4 +258,25 @@ class TestSeriesController extends Controller
             return back()->with('error', 'Error deleting test series: ' . $e->getMessage());
         }
     }
+
+    /**
+ * View individual test with students
+ */
+public function viewTest($id)
+{
+    try {
+        $testSeries = TestSeries::findOrFail($id);
+        
+        // Get students enrolled in this test
+        // You'll need to adjust this based on your student enrollment model
+        $students = []; // Replace with actual student query
+        
+        return view('test_series.view_test', compact('testSeries', 'students'));
+        
+    } catch (\Exception $e) {
+        Log::error('Test Series View Error: ' . $e->getMessage());
+        return redirect()->route('test_series.index')
+            ->with('error', 'Error loading test: ' . $e->getMessage());
+    }
+}
 }
