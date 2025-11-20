@@ -25,6 +25,8 @@ use App\Http\Controllers\Attendance\EmployeeController;
 use App\Http\Controllers\FeesManagementController;
 use App\Http\Controllers\Attendance\StudentAController;
 use App\Http\Controllers\TestSeries\TestSeriesController;
+use App\Http\Controllers\study_material\Unitscontroller;
+use App\Http\Controllers\study_material\DispatchController;
 
 
 
@@ -433,14 +435,100 @@ Route::prefix('attendance/student')->name('attendance.student.')->group(function
 
 // In routes/web.php
 Route::prefix('test-series')->name('test_series.')->group(function () {
+    // Main index page (Test Master - Image 1)
     Route::get('/', [TestSeriesController::class, 'index'])->name('index');
+
     Route::get('/create', [TestSeriesController::class, 'create'])->name('create');
     Route::post('/', [TestSeriesController::class, 'store'])->name('store');
     Route::get('/{course}', [TestSeriesController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [TestSeriesController::class, 'edit'])->name('edit');
+
+    
+    // Course specific test series page (Image 2)
+    Route::get('/course/{courseName}', [TestSeriesController::class, 'show'])->name('show');
+    
+    // Create new test series (Image 3 modal)
+    Route::post('/', [TestSeriesController::class, 'store'])->name('store');
+    
+    // Get test data for edit modal (Image 4)
+    Route::get('/{id}/edit', [TestSeriesController::class, 'edit'])->name('edit');
+    
+    // Update test series (Image 4 modal submit)
+
     Route::put('/{id}', [TestSeriesController::class, 'update'])->name('update');
+    
+    // View enrolled students (Image 5)
+    Route::get('/{id}/students', [TestSeriesController::class, 'viewStudents'])->name('view_students');
+    
+    // Delete test series
     Route::delete('/{id}', [TestSeriesController::class, 'destroy'])->name('destroy');
     
     // For viewing test details
     Route::get('/view/{id}', [TestSeriesController::class, 'viewTest'])->name('viewTest');
+    // AJAX endpoint - Get course subjects
+    Route::get('/course/{courseId}/subjects', [TestSeriesController::class, 'getCourseSubjects'])->name('course_subjects');
+});
+
+// // Study Material - Units Routes
+// Route::prefix('study_material')->group(function () {
+//     Route::get('/units', [Unitscontroller::class, 'index'])->name('units.index');
+//     Route::get('/units/get-data', [Unitscontroller::class, 'getData'])->name('units.getData');
+//     Route::get('/units/get-courses', [Unitscontroller::class, 'getCourses'])->name('units.getCourses');
+//     Route::get('/units/get-subjects', [Unitscontroller::class, 'getSubjectsByCourse'])->name('units.getSubjects');
+//     Route::post('/units', [Unitscontroller::class, 'store'])->name('units.store');
+//     Route::get('/units/{id}', [Unitscontroller::class, 'show'])->name('units.show');
+//     Route::put('/units/{id}', [Unitscontroller::class, 'update'])->name('units.update');
+//     Route::delete('/units/{id}', [Unitscontroller::class, 'destroy'])->name('units.destroy');
+// });
+
+/*
+|--------------------------------------------------------------------------
+| Units Routes - FINAL WORKING VERSION
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::prefix('study_material')->group(function () {
+    Route::get('/units/get-data', [Unitscontroller::class, 'getData'])->name('units.getData');
+    Route::get('/units', [Unitscontroller::class, 'index'])->name('units.index');
+    Route::post('/units/store', [Unitscontroller::class, 'store'])->name('units.store');
+    Route::get('/units/{id}', [Unitscontroller::class, 'show'])->name('units.show');
+    Route::post('/units/edit/{id}', [Unitscontroller::class, 'update'])->name('units.update');
+    Route::delete('/units/{id}', [Unitscontroller::class, 'destroy'])->name('units.destroy');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Study Material - Dispatch Routes
+|--------------------------------------------------------------------------
+|
+|
+|
+*/
+// Dispatch Study Material Routes
+Route::prefix('study_material/dispatch')->name('study_material.dispatch.')->group(function () {
+    
+    // Main dispatch page
+    Route::get('/', [DispatchController::class, 'index'])->name('index');
+    
+    // Get batches by course
+    Route::post('/get-batches', [DispatchController::class, 'getBatches'])->name('get-batches');
+    
+    // Get students by course and batch
+    Route::post('/get-students', [DispatchController::class, 'getStudents'])->name('get-students');
+    
+    // Dispatch material to students
+    Route::post('/dispatch-material', [DispatchController::class, 'dispatchMaterial'])->name('dispatch-material');
+    
+    // Get dispatch history (NEW ROUTE)
+    Route::get('/get-history', [DispatchController::class, 'getDispatchHistory'])->name('get-history');
+    
+    // Delete dispatch record (NEW ROUTE)
+    Route::delete('/{id}', [DispatchController::class, 'destroy'])->name('destroy');
+    
+    // Bulk delete (NEW ROUTE)
+    Route::post('/bulk-delete', [DispatchController::class, 'bulkDelete'])->name('bulk-delete');
+    
 });

@@ -275,8 +275,8 @@
         <div class="top-text">
           <h4>Test Series</h4>
         </div>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createTestSeriesModal">
-          Create Test Series
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createTestSeriesModal" style="background-color: #ff6607ff; border-color: #ff6607ff;">
+      Create Test Series
         </button>
       </div>
 
@@ -316,50 +316,46 @@
             </tr>
           </thead>
           <tbody id="tableBody">
-            @forelse($testSeries as $index => $series)
-              @php
-                $seriesId = is_object($series->_id) ? (string)$series->_id : $series->_id;
-              @endphp
-              <tr data-row="true" style="cursor: pointer;" onclick="window.location.href='{{ route('test_series.view', $seriesId) }}'">
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $series->test_name ?? 'N/A' }}</td>
-                <td>{{ $series->test_type ?? 'N/A' }}</td>
-                <td>{{ $series->subject_type ?? 'N/A' }}</td>
-                <td>
-                  <span class="badge {{ $series->status == 'Active' ? 'bg-success' : ($series->status == 'Completed' ? 'bg-primary' : 'bg-warning') }}">
-                    {{ $series->status ?? 'Pending' }}
-                  </span>
-                </td>
-                <td onclick="event.stopPropagation();">
-                  <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $seriesId }}">
-                          <i class="fas fa-edit me-2"></i>Update Test Series
-                        </button>
-                      </li>
-                      <li>
-                        <form method="POST" action="{{ route('test_series.destroy', $seriesId) }}" onsubmit="return confirm('Are you sure?')">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="dropdown-item text-danger">
-                            <i class="fas fa-trash me-2"></i>Delete
-                          </button>
-                        </form>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            @empty
-              <tr id="noResultsRow">
-                <td colspan="6" class="text-center">No test series found</td>
-              </tr>
-            @endforelse
-          </tbody>
+  @forelse($testSeries as $index => $series)
+    @php
+      $seriesId = is_object($series->_id) ? (string)$series->_id : $series->_id;
+    @endphp
+    <tr data-row="true">
+      <td>{{ $index + 1 }}</td>
+      <td>{{ $series->test_name ?? 'N/A' }}</td>
+      <td>{{ $series->test_type ?? 'N/A' }}</td>
+      <td>{{ $series->subject_type ?? 'N/A' }}</td>
+      <td>
+        <span class="badge {{ $series->status == 'Active' ? 'bg-success' : ($series->status == 'Completed' ? 'bg-primary' : 'bg-warning') }}">
+          {{ $series->status ?? 'Pending' }}
+        </span>
+      </td>
+      <td>
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{{ route('test_series.view_students', $seriesId) }}">
+                View Details
+              </a>
+            </li>
+            <!-- Edit - Opens modal -->
+            <li>
+              <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $seriesId }}">
+               Edit
+              </button>
+          </ul>
+        </div>
+      </td>
+    </tr>
+  @empty
+    <tr id="noResultsRow">
+      <td colspan="6" class="text-center">No test series found</td>
+    </tr>
+  @endforelse
+</tbody>
         </table>
 
         <!-- Pagination Info -->
@@ -381,154 +377,259 @@
   </div>
 
   <!-- Create Test Series Modal -->
-  <div class="modal fade" id="createTestSeriesModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="createTestSeriesModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form method="POST" action="{{ route('test_series.store') }}" class="modal-content" id="createTestForm">
+      @csrf
+      <input type="hidden" name="course_id" value="{{ is_object($course->_id) ? (string)$course->_id : $course->_id }}">
+      <input type="hidden" name="course_name" value="{{ $courseName }}">
+      
+      <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
+        <h5 class="modal-title text-white">
+          <i class="fas fa-plus-circle me-2"></i>Create Test Series
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <!-- Test Series Type -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Test Series Type <span class="text-danger">*</span></label>
+            <select name="test_type" id="testSeriesType" class="form-select" required>
+              <option value="">-- Select Type --</option>
+              <option value="Type1">Type1</option>
+              <option value="Type2">Type2</option>
+            </select>
+          </div>
+
+          <!-- Subject Type -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Subject Type <span class="text-danger">*</span></label>
+            <select name="subject_type" class="form-select" required>
+              <option value="">-- Select Subject Type --</option>
+              <option value="Single">Single</option>
+              <option value="Double">Double</option>
+            </select>
+          </div>
+
+          <!-- Select Subjects - DYNAMICALLY LOADED FROM COURSE -->
+          <div class="col-12 mb-3 conditional-field" id="selectSubjectsField">
+            <label class="form-label fw-semibold">Select Subjects <span class="text-danger">*</span></label>
+            <div id="subjectsCheckboxContainer" class="d-flex flex-wrap gap-3">
+              @if(isset($course->subjects) && is_array($course->subjects))
+                @foreach($course->subjects as $subject)
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="subjects[]" 
+                           value="{{ $subject }}" id="subject_{{ str_replace(' ', '_', $subject) }}">
+                    <label class="form-check-label" for="subject_{{ str_replace(' ', '_', $subject) }}">
+                      {{ $subject }}
+                    </label>
+                  </div>
+                @endforeach
+              @else
+                <div class="alert alert-warning">No subjects found for this course. Please add subjects in the Courses section first.</div>
+              @endif
+            </div>
+          </div>
+
+          <!-- No. of Test Counts -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">No. of Test Counts <span class="text-danger">*</span></label>
+            <input type="number" name="test_count" class="form-control" min="1" required>
+          </div>
+
+          <!-- Test Series Name (Only for Type1) -->
+          <div class="col-md-6 mb-3 conditional-field" id="testSeriesNameField">
+            <label class="form-label fw-semibold">Test Series Name <span class="text-danger">*</span></label>
+            <input type="text" name="test_series_name" id="testSeriesNameInput" class="form-control" placeholder="e.g., Neet Pattern">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-2"></i>Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" style="background-color: #fd550dff; border: none;">
+          <i class="fas fa-save me-2"></i>Create Test Series
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  <!-- View & Edit Modals -->
+  @foreach($testSeries as $series)
+  @php
+    $seriesId = is_object($series->_id) ? (string)$series->_id : $series->_id;
+    $seriesSubjects = is_array($series->subjects) ? $series->subjects : (isset($series->subjects) ? [$series->subjects] : []);
+  @endphp
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal{{ $seriesId }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <form method="POST" action="{{ route('test_series.store') }}" class="modal-content" id="createTestForm">
+      <form method="POST" action="{{ route('test_series.update', $seriesId) }}" class="modal-content">
         @csrf
-        <input type="hidden" name="course_id" value="{{ is_object($course->_id) ? (string)$course->_id : $course->_id }}">
-        <input type="hidden" name="course_name" value="{{ $courseName }}">
-        
-        <div class="modal-header" style="background-color: #ff6b35;">
-          <h5 class="modal-title text-white">Update Test Series</h5>
+        @method('PUT')
+        <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
+          <h5 class="modal-title text-white"><i class="fas fa-edit me-2"></i>Update Test Series</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
           <div class="row">
-            <!-- Test Series Type -->
+            <!-- Test Series Type (Read-only) -->
             <div class="col-md-6 mb-3">
-              <label class="form-label">Test Series Type</label>
-              <select name="test_type" id="testSeriesType" class="form-select" required>
-                <option value="">Select</option>
-                <option value="Type1">Type 1</option>
-                <option value="Type2">Type 2</option>
-              </select>
+              <label class="form-label fw-semibold">Test Series Type</label>
+              <input type="text" class="form-control" value="{{ $series->test_type }}" readonly>
             </div>
 
-            <!-- Test Series Name (Only for Type1) -->
-            <div class="col-md-6 mb-3 conditional-field" id="testSeriesNameField">
-              <label class="form-label">Test Series Name</label>
-              <input type="text" name="test_series_name" id="testSeriesNameInput" class="form-select" placeholder="IIT JEE Pattern">
+            <!-- Test Series Name (if Type1) -->
+            @if($series->test_type === 'Type1')
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">Test Series Name</label>
+              <input type="text" name="test_series_name" class="form-control" 
+                     value="{{ $series->test_series_name ?? '' }}">
             </div>
+            @endif
 
-            <!-- Select Subjects -->
-            <div class="col-12 mb-3 conditional-field" id="selectSubjectsField">
-              <label class="form-label">Select Subjects</label>
-              <div class="d-flex gap-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="subjects[]" value="Physics" id="physics">
-                  <label class="form-check-label" for="physics">Physics</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="subjects[]" value="Chemistry" id="chemistry">
-                  <label class="form-check-label" for="chemistry">Chemistry</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="subjects[]" value="Mathematics" id="mathematics">
-                  <label class="form-check-label" for="mathematics">Mathematics</label>
-                </div>
+            <!-- Select Subjects with Marks -->
+            <div class="col-12 mb-3">
+              <label class="form-label fw-semibold">Select Subjects</label>
+              <div class="mb-2">
+                @if(isset($course->subjects) && is_array($course->subjects))
+                  @foreach($course->subjects as $subject)
+                    <div class="form-check">
+                      <input class="form-check-input edit-subject-checkbox" type="checkbox" 
+                             name="subjects[]" value="{{ $subject }}" 
+                             id="edit_{{ $seriesId }}_{{ str_replace(' ', '_', $subject) }}"
+                             {{ in_array($subject, $seriesSubjects) ? 'checked' : '' }}
+                             data-series-id="{{ $seriesId }}">
+                      <label class="form-check-label" for="edit_{{ $seriesId }}_{{ str_replace(' ', '_', $subject) }}">
+                        {{ $subject }}
+                      </label>
+                    </div>
+                  @endforeach
+                @endif
               </div>
+            </div>
+
+            <!-- Subject Marks -->
+            <div class="col-12 mb-3" id="subjectMarksDiv{{ $seriesId }}">
+              <h6 class="fw-semibold mb-3">Subject Marks</h6>
+              @foreach($seriesSubjects as $subject)
+                @php
+                  $marks = isset($series->subject_marks) && is_array($series->subject_marks) 
+                         ? ($series->subject_marks[$subject] ?? '') 
+                         : '';
+                @endphp
+                <div class="mb-2 subject-mark-field" data-subject="{{ $subject }}">
+                  <label class="form-label">{{ $subject }} marks:</label>
+                  <input type="number" name="subject_marks[{{ $subject }}]" 
+                         class="form-control" value="{{ $marks }}" min="0" placeholder="Enter marks">
+                </div>
+              @endforeach
             </div>
 
             <!-- Subject Type -->
             <div class="col-md-6 mb-3">
-              <label class="form-label">Subject Type</label>
-              <select name="subject_type" class="form-select" required>
-                <option value="">Select</option>
-                <option value="Single">Single</option>
-                <option value="Double">Double</option>
+              <label class="form-label fw-semibold">Subject Type</label>
+              <select name="subject_type" class="form-select">
+                <option value="Single" {{ $series->subject_type == 'Single' ? 'selected' : '' }}>Single</option>
+                <option value="Double" {{ $series->subject_type == 'Double' ? 'selected' : '' }}>Double</option>
               </select>
             </div>
 
-            <!-- Mathematics marks -->
+            <!-- Status -->
             <div class="col-md-6 mb-3">
-              <label class="form-label">Mathematics marks:</label>
-              <input type="number" name="math_marks" class="form-control" value="100">
-            </div>
-
-            <!-- Chemistry marks -->
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Chemistry marks:</label>
-              <input type="number" name="chemistry_marks" class="form-control" value="100">
-            </div>
-
-            <!-- Physics marks -->
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Physics marks:</label>
-              <input type="number" name="physics_marks" class="form-control" value="100">
-            </div>
-
-            <!-- No. of Test Counts -->
-            <div class="col-md-6 mb-3">
-              <label class="form-label">No. of Test Counts</label>
-              <input type="number" name="test_count" class="form-control" min="1" required>
+              <label class="form-label fw-semibold">Status</label>
+              <select name="status" class="form-select">
+                <option value="Pending" {{ $series->status == 'Pending' ? 'selected' : '' }}>Pending</option>
+                <option value="Active" {{ $series->status == 'Active' ? 'selected' : '' }}>Active</option>
+                <option value="Completed" {{ $series->status == 'Completed' ? 'selected' : '' }}>Completed</option>
+              </select>
             </div>
           </div>
         </div>
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-success">Create Test Series</button>
+          <button type="submit" class="btn btn-primary" style="background-color: #fd550dff; border: none;">
+            <i class="fas fa-save me-2"></i>Update
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Edit Modals -->
-  @foreach($testSeries as $series)
-    @php
-      $seriesId = is_object($series->_id) ? (string)$series->_id : $series->_id;
-    @endphp
-
-    <div class="modal fade" id="editModal{{ $seriesId }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <form method="POST" action="{{ route('test_series.update', $seriesId) }}" class="modal-content">
-          @csrf
-          @method('PUT')
-          <div class="modal-header" style="background-color: #ff6b35;">
-            <h5 class="modal-title text-white">Update Test Series</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body p-4">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Test Name</label>
-                <input type="text" name="test_name" class="form-control" value="{{ $series->test_name }}" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Test Type</label>
-                <select name="test_type" class="form-select" required>
-                  <option value="Type1" {{ $series->test_type == 'Type1' ? 'selected' : '' }}>Type1</option>
-                  <option value="Type2" {{ $series->test_type == 'Type2' ? 'selected' : '' }}>Type2</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Subject Type</label>
-                <select name="subject_type" class="form-select" required>
-                  <option value="Single" {{ $series->subject_type == 'Single' ? 'selected' : '' }}>Single</option>
-                  <option value="Double" {{ $series->subject_type == 'Double' ? 'selected' : '' }}>Double</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Status</label>
-                <select name="status" class="form-select">
-                  <option value="Pending" {{ $series->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                  <option value="Active" {{ $series->status == 'Active' ? 'selected' : '' }}>Active</option>
-                  <option value="Completed" {{ $series->status == 'Completed' ? 'selected' : '' }}>Completed</option>
-                </select>
-              </div>
+  <!-- View Modal (Updated with Link to Students Page) -->
+  <div class="modal fade" id="viewModal{{ $seriesId }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" style="background: linear-gradient(135deg, #fd550dff 0%, #ff7d3d 100%);">
+          <h5 class="modal-title text-white"><i class="fas fa-eye me-2"></i>Test Series Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <strong>Test Name:</strong>
+              <p>{{ $series->test_name }}</p>
             </div>
+            <div class="col-md-6 mb-3">
+              <strong>Test Type:</strong>
+              <p>{{ $series->test_type }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <strong>Subject Type:</strong>
+              <p>{{ $series->subject_type }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <strong>Status:</strong>
+              <p><span class="badge {{ $series->status == 'Active' ? 'bg-success' : 'bg-warning' }}">{{ $series->status }}</span></p>
+            </div>
+            @if(!empty($seriesSubjects))
+            <div class="col-md-6 mb-3">
+              <strong>Subjects:</strong>
+              <p>{{ implode(', ', $seriesSubjects) }}</p>
+            </div>
+            @endif
+            @if(isset($series->test_count))
+            <div class="col-md-6 mb-3">
+              <strong>Test Count:</strong>
+              <p>{{ $series->test_count }}</p>
+            </div>
+            @endif
+            @if(isset($series->students_count))
+            <div class="col-12 mb-3">
+              <strong>Enrolled Students:</strong>
+              <p>{{ $series->students_count }} students</p>
+            </div>
+            @endif
           </div>
-          <div class="modal-footer bg-light">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-success">Update Test Series</button>
-          </div>
-        </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="{{ route('test_series.view_students', $seriesId) }}" class="btn btn-primary" style="background-color: #fd550dff; border: none;">
+            <i class="fas fa-users me-2"></i>View Enrolled Students
+          </a>
+        </div>
       </div>
     </div>
-  @endforeach
+  </div>
+@endforeach
+
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+document.querySelector('#createTestSeriesModal form').addEventListener('submit', function(e) {
+    const testType = document.getElementById('testSeriesType').value;
+    const checkboxes = document.querySelectorAll('input[name="subjects[]"]:checked');
+    
+    if ((testType === 'Type1' || testType === 'Type2') && checkboxes.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one subject');
+        return false;
+    }
+});
     document.addEventListener('DOMContentLoaded', function () {
       // Sidebar toggle
       const toggleBtn = document.getElementById('toggleBtn');
@@ -680,6 +781,88 @@
         }
       };
     });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+  console.log('Test Series Detail Page JS loaded');
+
+  // ===== CREATE MODAL LOGIC =====
+  const testSeriesType = document.getElementById('testSeriesType');
+  const selectSubjectsField = document.getElementById('selectSubjectsField');
+  const testSeriesNameField = document.getElementById('testSeriesNameField');
+  const testSeriesNameInput = document.getElementById('testSeriesNameInput');
+  const createTestForm = document.getElementById('createTestForm');
+
+  // Show/hide fields based on test type
+  if (testSeriesType) {
+    testSeriesType.addEventListener('change', function() {
+      const selectedType = this.value;
+      
+      if (selectedType === 'Type1') {
+        selectSubjectsField.classList.add('show');
+        testSeriesNameField.classList.add('show');
+        testSeriesNameInput.required = true;
+      } else if (selectedType === 'Type2') {
+        selectSubjectsField.classList.add('show');
+        testSeriesNameField.classList.remove('show');
+        testSeriesNameInput.required = false;
+        testSeriesNameInput.value = '';
+      } else {
+        selectSubjectsField.classList.remove('show');
+        testSeriesNameField.classList.remove('show');
+        testSeriesNameInput.required = false;
+      }
+    });
+  }
+
+  // Form validation before submit
+  if (createTestForm) {
+    createTestForm.addEventListener('submit', function(e) {
+      const testType = document.getElementById('testSeriesType').value;
+      const checkboxes = document.querySelectorAll('input[name="subjects[]"]:checked');
+      
+      if ((testType === 'Type1' || testType === 'Type2') && checkboxes.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one subject');
+        return false;
+      }
+    });
+  }
+
+  // ===== EDIT MODAL LOGIC =====
+  // Handle subject checkboxes in edit modal to show/hide mark fields
+  document.querySelectorAll('.edit-subject-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      const seriesId = this.dataset.seriesId;
+      const subject = this.value;
+      const marksDiv = document.getElementById('subjectMarksDiv' + seriesId);
+      
+      if (!marksDiv) return;
+      
+      if (this.checked) {
+        // Add marks field if checkbox is checked
+        const existingField = marksDiv.querySelector(`[data-subject="${subject}"]`);
+        if (!existingField) {
+          const markField = document.createElement('div');
+          markField.className = 'mb-2 subject-mark-field';
+          markField.setAttribute('data-subject', subject);
+          markField.innerHTML = `
+            <label class="form-label">${subject} marks:</label>
+            <input type="number" name="subject_marks[${subject}]" 
+                   class="form-control" min="0" placeholder="Enter marks">
+          `;
+          marksDiv.appendChild(markField);
+        }
+      } else {
+        // Remove marks field if checkbox is unchecked
+        const fieldToRemove = marksDiv.querySelector(`[data-subject="${subject}"]`);
+        if (fieldToRemove) {
+          fieldToRemove.remove();
+        }
+      }
+    });
+  });
+});
   </script>
 </body>
 </html>

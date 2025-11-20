@@ -293,8 +293,12 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
-              </ul>
+                <li>
+    <a href="{{ route('test_series.index') }}">
+        <i class="icon-class"></i> 
+        <span>Test Master</span>
+    </a>
+</li>              </ul>
             </div>
           </div>
         </div>
@@ -383,63 +387,72 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <th scope="col" id="one">Action</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Modal fillables where roles are assigned according to dept automatically -->
-
-            @forelse($batches as $index => $batch)
-              <tr>
-                <td>{{ $batches->firstItem() + $index }}</td>
-                <td>{{ $batch->batch_id ?? '—' }}</td>
-                <td>{{ $batch->class ?? '—' }}</td>
-                <td>{{ $batch->course ?? '—' }}</td>
-                <td>{{ $batch->course_type ?? '—' }}</td>
-                <td>{{ $batch->medium ?? '—' }}</td>
-                <td>{{ $batch->mode ?? '—' }}</td>
-                <td>{{ $batch->shift ?? '—' }}</td>
-                <td>
-                  <span class="badge {{ $batch->status === 'Inactive' ? 'bg-danger' : 'bg-success' }}">
-                    {{ $batch->status ?? 'Active' }}
-                  </span>
-                </td>
-                <td>
-                  <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary" type="button" id="dropdownMenu{{ $loop->index }}"
-                      data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownMenu{{ $loop->index }}"
-                      style="position: absolute;">
-                      <li>
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                          data-bs-target="#viewBatchModal{{ $batch->_id }}">
-                          View Details
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                          data-bs-target="#editBatchModal{{ $batch->_id }}">
-                          Edit Details
-                        </a>
-                      </li>
-                      <li>
-                        <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" class="d-inline">
-                          @csrf
-                          <button type="submit"
-                            class="dropdown-item {{ ($batch->status ?? 'Active') === 'Active' ? 'text-danger' : 'text-success' }}">
-                            {{ ($batch->status ?? 'Active') === 'Active' ? 'Deactivate' : 'Reactivate' }}
-                          </button>
-                        </form>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="10" class="text-center">No batches found.</td>
-              </tr>
-            @endforelse
-          </tbody>
+<tbody>
+  @forelse($batches as $index => $batch)
+    <tr>
+      <td>{{ $batches->firstItem() + $index }}</td>
+      <td>{{ $batch->batch_id ?? '—' }}</td>
+      <td>{{ $batch->class ?? '—' }}</td>
+      
+      <!-- FIXED: Display course name properly -->
+      <td>
+        @if(!empty($batch->course))
+          {{ $batch->course }}
+        @elseif($batch->courseRelation)
+          {{ $batch->courseRelation->course_name ?? '—' }}
+        @else
+          —
+        @endif
+      </td>
+      
+      <td>{{ $batch->course_type ?? '—' }}</td>
+      <td>{{ $batch->mode ?? $batch->delivery_mode ?? '—' }}</td>
+      <td>{{ $batch->medium ?? '—' }}</td>
+      <td>{{ $batch->shift ?? '—' }}</td>
+      <td>
+        <span class="badge {{ $batch->status === 'Inactive' ? 'bg-danger' : 'bg-success' }}">
+          {{ $batch->status ?? 'Active' }}
+        </span>
+      </td>
+      <td>
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary" type="button" 
+                  id="dropdownMenu{{ $loop->index }}"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow" 
+              aria-labelledby="dropdownMenu{{ $loop->index }}">
+            <li>
+              <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                 data-bs-target="#viewBatchModal{{ $batch->_id }}">
+                View Details
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                 data-bs-target="#editBatchModal{{ $batch->_id }}">
+                Edit Details
+              </a>
+            </li>
+            <li>
+              <form method="POST" action="{{ route('batches.toggleStatus', ['id' => $batch->_id]) }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item {{ $batch->status === 'Active' ? 'text-danger' : 'text-success' }}">
+                  {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+  @empty
+    <tr>
+      <td colspan="10" class="text-center">No batches found.</td>
+    </tr>
+  @endforelse
+</tbody>
         </table>
 
         <!-- Here options modals are present. -->
