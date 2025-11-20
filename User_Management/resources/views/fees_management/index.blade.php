@@ -118,7 +118,7 @@
                         <div class="accordion-body">
                             <ul class="menu" id="dropdown-body">
                                 <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-<li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+                                <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
                                 <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
                                 <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
                                 <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
@@ -195,7 +195,8 @@
                     <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
                             <ul class="menu" id="dropdown-body">
-                                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i>Mark Attendance</a></li>
+                                <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+                                <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
                             </ul>
                         </div>
                     </div>
@@ -205,7 +206,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven" id="accordion-button">
-                            <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material Collection
+                            <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
                         </button>
                     </h2>
                     <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -228,7 +229,7 @@
                     <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
                             <ul class="menu" id="dropdown-body">
-                                <li><a class="item" href="#"><i class="fa-solid fa-file-lines" id="side-icon"></i>Test Master</a></li>
+                                <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-file-lines" id="side-icon"></i>Test Master</a></li>
                             </ul>
                         </div>
                     </div>
@@ -283,75 +284,60 @@
                     </div>
 
                     <div id="collectFeesResults">
-                        <table class="results-table">
-                            <thead>
-                                <tr>
-                                    <th>Serial No.</th>
-                                    <th>Roll No.</th>
-                                    <th>Student Name</th>
-                                    <th>Father Name</th>
-                                    <th>Course Content</th>
-                                    <th>Course Name</th>
-                                    <th>Delivery Mode</th>
-                                    <th>Fees Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Results will be populated here -->
-                            </tbody>
-                        </table>
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <p>Enter a name or roll number to search</p>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Fee Status Tab -->
-    <!-- Tab 2: Fee Status -->
-<div id="status" class="tab-panel">
-    <div class="search-area">
-        <div class="filter-group">
-            <select id="courseSelect" class="dropdown-filter">
-                <option value="">Select Course</option>
-                <option value="intensity_12th_iit">Intensity 12th IIT</option>
-                <option value="plumule_9th">Plumule 9th</option>
-                <option value="radicle_8th">Radicle 8th</option>
-                <option value="anthesis_11th_neet">Anthesis 11th NEET</option>
-                <option value="dynamic_target_neet">Dynamic Target NEET</option>
-                <option value="thurst_target_iit">Thurst Target IIT</option>
-                <option value="seedling_10th">Seedling 10th</option>
-                <option value="nucleus_7th">Nucleus 7th</option>
-                <option value="momentum_12th_neet">Momentum 12th NEET</option>
-                <option value="impulse_11th_iit">Impulse 11th IIT</option>
-                <option value="atom_6th">Atom 6th</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <select id="batchSelect" class="dropdown-filter" disabled>
-                <option value="">Select batch</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <select id="feeStatusSelect" class="dropdown-filter">
-                <option value="">Select Fee Status</option>
-                <option value="All">All</option>
-                <option value="Paid">Paid</option>
-                <option value="2nd Installment due">2nd Installment due</option>
-                <option value="3rd Installment due">3rd Installment due</option>
-                <option value="Pending">Pending</option>
-            </select>
-            <span id="feeStatusError" class="error-message" style="display: none;">Status Is Required</span>
-        </div>
-        <button class="btn-search" onclick="searchByStatus()">
-            <i class="fas fa-search"></i> Search
-        </button>
-    </div>
+                <div id="status" class="tab-panel">
+                    <div class="search-area">
+                        <div class="filter-group">
+                            <select id="courseSelect" class="dropdown-filter">
+                                <option value="">Select Course</option>
+                                <option value="intensity_12th_iit">Intensity 12th IIT</option>
+                                <option value="plumule_9th">Plumule 9th</option>
+                                <option value="radicle_8th">Radicle 8th</option>
+                                <option value="anthesis_11th_neet">Anthesis 11th NEET</option>
+                                <option value="dynamic_target_neet">Dynamic Target NEET</option>
+                                <option value="thurst_target_iit">Thurst Target IIT</option>
+                                <option value="seedling_10th">Seedling 10th</option>
+                                <option value="nucleus_7th">Nucleus 7th</option>
+                                <option value="momentum_12th_neet">Momentum 12th NEET</option>
+                                <option value="impulse_11th_iit">Impulse 11th IIT</option>
+                                <option value="atom_6th">Atom 6th</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select id="batchSelect" class="dropdown-filter" disabled>
+                                <option value="">Select batch</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select id="feeStatusSelect" class="dropdown-filter">
+                                <option value="">Select Fee Status</option>
+                                <option value="All">All</option>
+                                <option value="Paid">Paid</option>
+                                <option value="2nd Installment due">2nd Installment due</option>
+                                <option value="3rd Installment due">3rd Installment due</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                            <span id="feeStatusError" class="error-message" style="display: none;">Status Is Required</span>
+                        </div>
+                        <button class="btn-search" onclick="searchByStatus()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
 
-    <div id="feeStatusResults">
-        <div class="empty-state">
-            <i class="fas fa-filter"></i>
-            <p>Select filters and search to view fee status</p>
-        </div>
-    </div>
-</div>
+                    <div id="feeStatusResults">
+                        <div class="empty-state">
+                            <i class="fas fa-filter"></i>
+                            <p>Select filters and search to view fee status</p>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Daily Transaction Tab -->
                 <div id="transaction" class="tab-panel">
@@ -372,7 +358,7 @@
                     <div id="transactionResults">
                         <div class="empty-state">
                             <i class="fas fa-receipt"></i>
-                            <p>No transactions found</p>
+                            <p>Select date range to view transactions</p>
                         </div>
                     </div>
                 </div>
@@ -387,423 +373,344 @@
     <!-- Custom JS -->
     <script src="{{asset('js/emp.js')}}"></script>
 
-<<<<<<< HEAD
     <script>
-    $(document).ready(function() {
-        console.log('  Fees Management Page Loaded');
-=======
-  <script>
-const coursesBatchesMapping = {!! json_encode($coursesBatchesMapping ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
->>>>>>> 81a5416dd22f2d7a657db3dec69857e16a076d7a
+        // Courses-Batches Mapping from Backend
+        const coursesBatchesMapping = {!! json_encode($coursesBatchesMapping ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
 
-$(document).ready(function() {
-    console.log('✅ Fees Management Page Loaded');
-    console.log('📦 Courses-Batches Mapping:', coursesBatchesMapping);
+        $(document).ready(function() {
+            console.log('✅ Fees Management Page Loaded');
+            console.log('📦 Courses-Batches Mapping:', coursesBatchesMapping);
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    // Tab Switching
-    document.querySelectorAll('.tab-btn').forEach(function(button) {
-        button.addEventListener('click', function() {
-            document.querySelectorAll('.tab-btn').forEach(function(btn) {
-                btn.classList.remove('active');
+            // Setup CSRF Token for AJAX
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
-            document.querySelectorAll('.tab-panel').forEach(function(panel) {
-                panel.classList.remove('active');
-            });
-<<<<<<< HEAD
-        });
 
-        //   LOAD BATCHES WHEN COURSE IS SELECTED (WITH DEBUGGING)
-        $('#courseSelect').on('change', function() {
-            const courseId = $(this).val();
-            const $batchSelect = $('#batchSelect');
-            
-            console.log('📚 Course selected:', courseId);
-            
-            if (courseId) {
-                // Show loading state
-                $batchSelect.html('<option value="">Loading batches...</option>').prop('disabled', true);
-                
-                $.ajax({
-                    url: '{{ route("fees.batches.by.course") }}',
-                    method: 'POST',
-                    data: { 
-                        course_id: courseId,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        console.log('  AJAX Success - Full Response:', response);
-                        
-                        let options = '<option value="">Select batch</option>';
-                        
-                        if (response.success && response.data && response.data.length > 0) {
-                            console.log('  Found ' + response.data.length + ' batches');
-                            
-                            response.data.forEach(batch => {
-                                console.log('   - Batch:', batch.batch_name, '(ID:', batch.id + ')');
-                                options += `<option value="${batch.id}">${batch.batch_name}</option>`;
-                            });
-                            
-                            $batchSelect.html(options).prop('disabled', false);
-                            console.log('  Batches loaded successfully');
-                        } else {
-                            console.warn('⚠️ No batches found for course:', courseId);
-                            options = '<option value="">No batches available</option>';
-                            $batchSelect.html(options).prop('disabled', true);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('❌ AJAX Error:', {
-                            status: status,
-                            error: error,
-                            responseText: xhr.responseText,
-                            statusCode: xhr.status
-                        });
-                        
-                        $batchSelect.html('<option value="">Error loading batches</option>').prop('disabled', true);
-                        
-                        // Show user-friendly error
-                        alert('Failed to load batches. Please:\n' +
-                              '1. Check browser console (F12)\n' +
-                              '2. Verify the route exists\n' +
-                              '3. Check Laravel logs');
-                    }
+            // Tab Switching Logic
+            document.querySelectorAll('.tab-btn').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Remove active from all tabs
+                    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+                    
+                    // Add active to clicked tab
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
                 });
-            } else {
-                console.log('❌ No course selected, clearing batches');
-                $batchSelect.html('<option value="">Select batch</option>').prop('disabled', true);
-            }
+            });
+
+            // ✅ INSTANT BATCH LOADING (Client-side)
+            $('#courseSelect').on('change', function() {
+                const courseId = $(this).val();
+                const $batchSelect = $('#batchSelect');
+                
+                console.log('📚 Course selected:', courseId);
+                
+                if (courseId && coursesBatchesMapping[courseId]) {
+                    const batches = coursesBatchesMapping[courseId];
+                    console.log('✅ Found batches:', batches);
+                    
+                    let options = '<option value="">Select batch</option>';
+                    
+                    batches.forEach(batch => {
+                        options += `<option value="${batch.id}">${batch.name} (${batch.mode})</option>`;
+                    });
+                    
+                    $batchSelect.html(options).prop('disabled', false);
+                } else if (courseId) {
+                    $batchSelect.html('<option value="">No batches available</option>').prop('disabled', true);
+                } else {
+                    $batchSelect.html('<option value="">Select batch</option>').prop('disabled', true);
+                }
+            });
+
+            // Real-time Search Input
+            $('#studentSearch').on('input', function() {
+                const searchTerm = $(this).val().trim();
+                
+                if (searchTerm.length >= 2) {
+                    searchStudent();
+                } else if (searchTerm.length === 0) {
+                    $('#collectFeesResults').html(
+                        '<div class="empty-state">' +
+                        '<i class="fas fa-search"></i>' +
+                        '<p>Enter a name or roll number to search</p>' +
+                        '</div>'
+                    );
+                }
+            });
+
+            // Enter Key Support
+            $('#studentSearch').keypress(function(e) {
+                if (e.which === 13) {
+                    searchStudent();
+                }
+            });
+
+            // Hide error on fee status change
+            $('#feeStatusSelect').on('change', function() {
+                if ($(this).val()) {
+                    $('#feeStatusError').hide();
+                    $(this).removeClass('error');
+                }
+            });
+
+            // Load all students on page load
+            loadAllStudents();
         });
 
-        // Enter key support for student search
-        $('#studentSearch').keypress(function(e) {
-            if (e.which == 13) {
-                searchStudent();
-            }
-        });
-
-        // Hide error on fee status change
-        $('#feeStatusSelect').on('change', function() {
-            if ($(this).val()) {
-                $('#feeStatusError').hide();
-                $(this).removeClass('error');
-            }
-=======
+        // ✅ LOAD ALL STUDENTS ON PAGE LOAD
+        function loadAllStudents() {
+            showLoading('collectFeesResults');
             
-            this.classList.add('active');
-            var tabId = this.getAttribute('data-tab');
-            document.getElementById(tabId).classList.add('active');
->>>>>>> 81a5416dd22f2d7a657db3dec69857e16a076d7a
-        });
-    });
-
-    // ✅ INSTANT BATCH LOADING
-    $('#courseSelect').on('change', function() {
-        var courseId = $(this).val();
-        var $batchSelect = $('#batchSelect');
-        
-        console.log('📚 Course selected:', courseId);
-        
-        if (courseId && coursesBatchesMapping[courseId]) {
-            var batches = coursesBatchesMapping[courseId];
-            console.log('✅ Found batches:', batches);
-            
-            var options = '<option value="">Select batch</option>';
-            
-            for (var i = 0; i < batches.length; i++) {
-                var batch = batches[i];
-                options += '<option value="' + batch.id + '">' + batch.name + ' (' + batch.mode + ')</option>';
-            }
-            
-            $batchSelect.html(options).prop('disabled', false);
-        } else if (courseId) {
-            $batchSelect.html('<option value="">No batches available</option>').prop('disabled', true);
-        } else {
-            $batchSelect.html('<option value="">Select batch</option>').prop('disabled', true);
+            $.ajax({
+                url: '{{ route("fees.collect.search") }}',
+                method: 'POST',
+                data: { search: '' },
+                success: function(response) {
+                    console.log('📊 Initial load:', response);
+                    if (response.success && response.data && response.data.length > 0) {
+                        renderCollectFeesTable(response.data);
+                    } else {
+                        showNoData('collectFeesResults', 'No students found');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('❌ Error loading students:', xhr);
+                    showNoData('collectFeesResults', 'Error loading data');
+                }
+            });
         }
-    });
 
-    // ✅ REAL-TIME SEARCH INPUT
-    $('#studentSearch').on('input', function() {
-        var searchTerm = $(this).val().trim();
-        
-        if (searchTerm.length >= 2) {
-            searchStudent();
-        } else if (searchTerm.length === 0) {
-            // Clear results when search is empty
-            $('#collectFeesResults').html(
-                '<div class="empty-state">' +
-                '<i class="fas fa-search"></i>' +
-                '<p>Enter a name or roll number to search</p>' +
+        // ✅ SEARCH STUDENTS
+        function searchStudent() {
+            const searchTerm = $('#studentSearch').val().trim();
+            
+            showLoading('collectFeesResults');
+
+            $.ajax({
+                url: '{{ route("fees.collect.search") }}',
+                method: 'POST',
+                data: { search: searchTerm },
+                success: function(response) {
+                    console.log('🔍 Search results:', response);
+                    if (response.success && response.data && response.data.length > 0) {
+                        renderCollectFeesTable(response.data);
+                    } else {
+                        showNoData('collectFeesResults', 'No students found matching "' + searchTerm + '"');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('❌ Search error:', xhr);
+                    showNoData('collectFeesResults', 'Error searching students');
+                }
+            });
+        }
+
+        // ✅ SEARCH BY STATUS
+        function searchByStatus() {
+            const courseId = $('#courseSelect').val();
+            const batchId = $('#batchSelect').val();
+            const feeStatus = $('#feeStatusSelect').val();
+
+            // Clear previous errors
+            $('#feeStatusError').hide();
+            $('#feeStatusSelect').removeClass('error');
+
+            // Validate fee status is selected
+            if (!feeStatus) {
+                $('#feeStatusError').show();
+                $('#feeStatusSelect').addClass('error');
+                return;
+            }
+
+            showLoading('feeStatusResults');
+
+            $.ajax({
+                url: '{{ route("fees.status.search") }}',
+                method: 'POST',
+                data: {
+                    course_id: courseId,
+                    batch_id: batchId,
+                    fee_status: feeStatus
+                },
+                success: function(response) {
+                    console.log('📊 Status search results:', response);
+                    if (response.success && response.data && response.data.length > 0) {
+                        renderFeeStatusTable(response.data);
+                    } else {
+                        showNoData('feeStatusResults', 'No students found with selected criteria');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('❌ Status search error:', xhr);
+                    showNoData('feeStatusResults', 'Error loading data');
+                }
+            });
+        }
+
+        // ✅ FILTER TRANSACTIONS
+        function filterTransactions() {
+            const fromDate = $('#fromDate').val();
+            const toDate = $('#toDate').val();
+
+            if (!fromDate || !toDate) {
+                alert('Please select both From and To dates');
+                return;
+            }
+
+            showLoading('transactionResults');
+
+            $.ajax({
+                url: '{{ route("fees.transaction.filter") }}',
+                method: 'POST',
+                data: {
+                    from_date: fromDate,
+                    to_date: toDate
+                },
+                success: function(response) {
+                    console.log('📅 Transaction results:', response);
+                    if (response.success && response.data && response.data.length > 0) {
+                        renderTransactionTable(response.data);
+                    } else {
+                        showNoData('transactionResults', 'No transactions found for selected dates');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('❌ Transaction filter error:', xhr);
+                    showNoData('transactionResults', 'Error loading transactions');
+                }
+            });
+        }
+
+        // ✅ RENDER COLLECT FEES TABLE
+        function renderCollectFeesTable(data) {
+            let html = '<table class="results-table"><thead><tr>';
+            html += '<th>Serial No.</th><th>Roll No.</th><th>Student Name</th><th>Father Name</th>';
+            html += '<th>Course Content</th><th>Course Name</th><th>Delivery Mode</th>';
+            html += '<th>Fees Status</th><th>Action</th>';
+            html += '</tr></thead><tbody>';
+
+            data.forEach((student, index) => {
+                // Fee status badge color
+                let statusClass = '';
+                if (student.fee_status === 'Paid') statusClass = 'text-success';
+                else if (student.fee_status === 'Pending') statusClass = 'text-danger';
+                else statusClass = 'text-warning';
+                
+                html += '<tr>';
+                html += `<td>${index + 1}</td>`;
+                html += `<td>${student.roll_no || '-'}</td>`;
+                html += `<td>${student.name || '-'}</td>`;
+                html += `<td>${student.father_name || '-'}</td>`;
+                html += `<td>${student.course_content || '-'}</td>`;
+                html += `<td>${student.course_name || '-'}</td>`;
+                html += `<td>${student.delivery_mode || '-'}</td>`;
+                html += `<td><span class="${statusClass} fw-bold">${student.fee_status || 'Pending'}</span></td>`;
+                html += `<td><button class="action-btn" onclick="collectFee('${student.id}', '${student.roll_no}')">Collect</button></td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            html += `<div style="padding: 10px; text-align: left; color: #666;">Showing ${data.length} entries</div>`;
+            $('#collectFeesResults').html(html);
+        }
+
+        // ✅ RENDER FEE STATUS TABLE
+        function renderFeeStatusTable(data) {
+            let html = '<table class="results-table"><thead><tr>';
+            html += '<th>Serial No.</th><th>Roll No.</th><th>Student Name</th><th>Father Name</th>';
+            html += '<th>Course Content</th><th>Course Name</th><th>Delivery Mode</th>';
+            html += '<th>Fees Status</th><th>Action</th>';
+            html += '</tr></thead><tbody>';
+
+            data.forEach((student, index) => {
+                let statusClass = '';
+                if (student.fee_status === 'Paid') statusClass = 'text-success';
+                else if (student.fee_status === 'Pending') statusClass = 'text-danger';
+                else statusClass = 'text-warning';
+
+                html += '<tr>';
+                html += `<td>${index + 1}</td>`;
+                html += `<td>${student.roll_no || '-'}</td>`;
+                html += `<td>${student.name || '-'}</td>`;
+                html += `<td>${student.father_name || '-'}</td>`;
+                html += `<td>${student.course_content || '-'}</td>`;
+                html += `<td>${student.course_name || '-'}</td>`;
+                html += `<td>${student.delivery_mode || '-'}</td>`;
+                html += `<td><span class="${statusClass} fw-bold">${student.fee_status || 'Pending'}</span></td>`;
+                html += `<td><button class="action-btn" onclick="viewDetails('${student.id}')">View</button></td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            html += `<div style="padding: 10px; text-align: left; color: #666;">Showing ${data.length} entries</div>`;
+            $('#feeStatusResults').html(html);
+        }
+
+        // ✅ RENDER TRANSACTION TABLE
+        function renderTransactionTable(data) {
+            let html = '<table class="results-table"><thead><tr>';
+            html += '<th>Serial No.</th><th>Student Name</th><th>Student Roll no.</th>';
+            html += '<th>Course</th><th>Session</th><th>Amount</th>';
+            html += '<th>Payment type</th><th>Transaction Number</th>';
+            html += '</tr></thead><tbody>';
+
+            data.forEach((transaction, index) => {
+                html += '<tr>';
+                html += `<td>${index + 1}</td>`;
+                html += `<td>${transaction.student_name || '-'}</td>`;
+                html += `<td>${transaction.student_roll_no || '-'}</td>`;
+                html += `<td>${transaction.course || '-'}</td>`;
+                html += `<td>${transaction.session || '-'}</td>`;
+                html += `<td>₹${transaction.amount || '0'}</td>`;
+                html += `<td>${transaction.payment_type || '-'}</td>`;
+                html += `<td>${transaction.transaction_number || '-'}</td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            html += `<div style="padding: 10px; text-align: left; color: #666;">Showing ${data.length} transactions</div>`;
+            $('#transactionResults').html(html);
+        }
+
+        // ✅ UTILITY FUNCTIONS
+        function showLoading(elementId) {
+            $(`#${elementId}`).html(
+                '<div class="loading-state">' +
+                '<div class="spinner"></div>' +
+                '<p>Loading...</p>' +
                 '</div>'
             );
         }
-    });
 
-    // Enter key trigger
-    $('#studentSearch').keypress(function(e) {
-        if (e.which == 13) {
-            searchStudent();
+        function showNoData(elementId, message) {
+            $(`#${elementId}`).html(
+                '<div class="empty-state">' +
+                '<i class="fas fa-info-circle"></i>' +
+                `<p>${message}</p>` +
+                '</div>'
+            );
         }
-    });
 
-<<<<<<< HEAD
-        $.ajax({
-            url: '{{ route("fees.status.search") }}',
-            method: 'POST',
-            data: {
-                course_id: courseId,
-                batch_id: batchId,
-                fee_status: feeStatus
-            },
-            success: function(response) {
-                console.log('  Search results:', response);
-                if (response.success && response.data.length > 0) {
-                    renderFeeStatusTable(response.data);
-                } else {
-                    showNoData('feeStatusResults', 'No students found');
-                }
-            },
-            error: function(xhr) {
-                console.error('❌ Search error:', xhr.responseText);
-                showNoData('feeStatusResults', 'Error loading data');
-=======
-    $('#feeStatusSelect').on('change', function() {
-        if ($(this).val()) {
-            $('#feeStatusError').hide();
-            $(this).removeClass('error');
+        function exportPendingFees() {
+            window.location.href = '{{ route("fees.export") }}';
         }
-    });
 
-    // Load all students on page load
-    loadAllStudents();
-});
-
-// ✅ LOAD ALL STUDENTS ON PAGE LOAD
-function loadAllStudents() {
-    showLoading('collectFeesResults');
-    
-    $.ajax({
-        url: '{{ route("fees.collect.search") }}',
-        method: 'POST',
-        data: { search: '' },
-        success: function(response) {
-            console.log('📊 Initial load:', response);
-            if (response.success && response.data.length > 0) {
-                renderCollectFeesTable(response.data);
-            } else {
-                showNoData('collectFeesResults', 'No students found');
->>>>>>> 81a5416dd22f2d7a657db3dec69857e16a076d7a
-            }
-        },
-        error: function(xhr) {
-            console.error('❌ Error:', xhr);
-            showNoData('collectFeesResults', 'Error loading data');
+        function collectFee(studentId, rollNo) {
+            alert(`Collect fee functionality for Student ID: ${studentId}\nRoll No: ${rollNo}`);
+            // TODO: Implement actual fee collection - redirect to payment page
+            // window.location.href = '/fees/collect/' + studentId;
         }
-    });
-}
 
-// ✅ SEARCH STUDENTS
-function searchStudent() {
-    var searchTerm = $('#studentSearch').val().trim();
-    
-    showLoading('collectFeesResults');
-
-    $.ajax({
-        url: '{{ route("fees.collect.search") }}',
-        method: 'POST',
-        data: { search: searchTerm },
-        success: function(response) {
-            console.log('🔍 Search results:', response);
-            if (response.success && response.data.length > 0) {
-                renderCollectFeesTable(response.data);
-            } else {
-                showNoData('collectFeesResults', 'No students found matching "' + searchTerm + '"');
-            }
-        },
-        error: function(xhr) {
-            console.error('❌ Search error:', xhr);
-            showNoData('collectFeesResults', 'Error loading data');
+        function viewDetails(studentId) {
+            alert(`View details for Student ID: ${studentId}`);
+            // TODO: Implement view details - open modal or redirect
+            // window.location.href = '/students/' + studentId;
         }
-    });
-}
-
-function searchByStatus() {
-    var courseId = $('#courseSelect').val();
-    var batchId = $('#batchSelect').val();
-    var feeStatus = $('#feeStatusSelect').val();
-
-    $('#feeStatusError').hide();
-    $('#feeStatusSelect').removeClass('error');
-
-    if (!feeStatus) {
-        $('#feeStatusError').show();
-        $('#feeStatusSelect').addClass('error');
-        return;
-    }
-
-    showLoading('feeStatusResults');
-
-    $.ajax({
-        url: '{{ route("fees.status.search") }}',
-        method: 'POST',
-        data: {
-            course_id: courseId,
-            batch_id: batchId,
-            fee_status: feeStatus
-        },
-        success: function(response) {
-            if (response.success && response.data.length > 0) {
-                renderFeeStatusTable(response.data);
-            } else {
-                showNoData('feeStatusResults', 'No students found');
-            }
-        },
-        error: function(xhr) {
-            showNoData('feeStatusResults', 'Error loading data');
-        }
-    });
-}
-
-function filterTransactions() {
-    var fromDate = $('#fromDate').val();
-    var toDate = $('#toDate').val();
-
-    showLoading('transactionResults');
-
-    $.ajax({
-        url: '{{ route("fees.transaction.filter") }}',
-        method: 'POST',
-        data: {
-            from_date: fromDate,
-            to_date: toDate
-        },
-        success: function(response) {
-            if (response.success && response.data.length > 0) {
-                renderTransactionTable(response.data);
-            } else {
-                showNoData('transactionResults', 'No transactions found');
-            }
-        },
-        error: function() {
-            showNoData('transactionResults', 'Error loading data');
-        }
-    });
-}
-
-// ✅ RENDER COLLECT FEES TABLE
-function renderCollectFeesTable(data) {
-    var html = '<table class="results-table"><thead><tr>';
-    html += '<th>Serial No.</th><th>Roll No.</th><th>Student Name</th><th>Father Name</th>';
-    html += '<th>Course Content</th><th>Course Name</th><th>Delivery Mode</th>';
-    html += '<th>Fees Status</th><th>Action</th>';
-    html += '</tr></thead><tbody>';
-
-    for (var i = 0; i < data.length; i++) {
-        var student = data[i];
-        
-        // Fee status badge color
-        var statusClass = '';
-        if (student.fee_status === 'Paid') statusClass = 'text-success';
-        else if (student.fee_status === 'Pending') statusClass = 'text-danger';
-        else statusClass = 'text-warning';
-        
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        html += '<td>' + (student.roll_no || '-') + '</td>';
-        html += '<td>' + (student.name || '-') + '</td>';
-        html += '<td>' + (student.father_name || '-') + '</td>';
-        html += '<td>' + (student.course_content || '-') + '</td>';
-        html += '<td>' + (student.course_name || '-') + '</td>';
-        html += '<td>' + (student.delivery_mode || '-') + '</td>';
-        html += '<td><span class="' + statusClass + ' fw-bold">' + (student.fee_status || 'Pending') + '</span></td>';
-        html += '<td><button class="action-btn" onclick="collectFee(\'' + student.id + '\', \'' + student.roll_no + '\')">Collect</button></td>';
-        html += '</tr>';
-    }
-
-    html += '</tbody></table>';
-    html += '<div style="padding: 10px; text-align: left; color: #666;">Showing ' + data.length + ' entries</div>';
-    $('#collectFeesResults').html(html);
-}
-
-function renderFeeStatusTable(data) {
-    var html = '<table class="results-table"><thead><tr>';
-    html += '<th>Serial No.</th><th>Roll No.</th><th>Student Name</th><th>Father Name</th>';
-    html += '<th>Course Content</th><th>Course Name</th><th>Delivery Mode</th>';
-    html += '<th>Fees Status</th><th>Action</th>';
-    html += '</tr></thead><tbody>';
-
-    for (var i = 0; i < data.length; i++) {
-        var student = data[i];
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        html += '<td>' + (student.roll_no || '-') + '</td>';
-        html += '<td>' + (student.name || '-') + '</td>';
-        html += '<td>' + (student.father_name || '-') + '</td>';
-        html += '<td>' + (student.course_content || '-') + '</td>';
-        html += '<td>' + (student.course_name || '-') + '</td>';
-        html += '<td>' + (student.delivery_mode || '-') + '</td>';
-        html += '<td>' + (student.fee_status || 'Pending') + '</td>';
-        html += '<td><button class="action-btn" onclick="viewDetails(\'' + student.id + '\')">View</button></td>';
-        html += '</tr>';
-    }
-
-    html += '</tbody></table>';
-    $('#feeStatusResults').html(html);
-}
-
-function renderTransactionTable(data) {
-    var html = '<table class="results-table"><thead><tr>';
-    html += '<th>Serial No.</th><th>Student Name</th><th>Student Roll no.</th>';
-    html += '<th>Course</th><th>Session</th><th>Amount</th>';
-    html += '<th>Payment type</th><th>Transaction Number</th>';
-    html += '</tr></thead><tbody>';
-
-    for (var i = 0; i < data.length; i++) {
-        var transaction = data[i];
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        html += '<td>' + (transaction.student_name || '-') + '</td>';
-        html += '<td>' + (transaction.student_roll_no || '-') + '</td>';
-        html += '<td>' + (transaction.course || '-') + '</td>';
-        html += '<td>' + (transaction.session || '-') + '</td>';
-        html += '<td>' + (transaction.amount || '-') + '</td>';
-        html += '<td>' + (transaction.payment_type || '-') + '</td>';
-        html += '<td>' + (transaction.transaction_number || '-') + '</td>';
-        html += '</tr>';
-    }
-
-    html += '</tbody></table>';
-    $('#transactionResults').html(html);
-}
-
-function showLoading(elementId) {
-    $('#' + elementId).html('<div class="loading-state"><div class="spinner"></div><p>Loading...</p></div>');
-}
-
-function showNoData(elementId, message) {
-    $('#' + elementId).html('<div class="empty-state"><i class="fas fa-info-circle"></i><p>' + message + '</p></div>');
-}
-
-function exportPendingFees() {
-    window.location.href = '{{ route("fees.export") }}';
-}
-
-function collectFee(studentId, rollNo) {
-    alert('Collect fee functionality for Student ID: ' + studentId + '\nRoll No: ' + rollNo);
-    // TODO: Implement actual fee collection logic
-    // You can redirect to a payment page or open a modal
-}
-
-function viewDetails(studentId) {
-    alert('View details for Student ID: ' + studentId);
-    // TODO: Implement view details
-}
-</script>
+    </script>
 </body>
 </html>
