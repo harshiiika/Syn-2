@@ -166,6 +166,18 @@ class SMstudents extends Model
     'scholarship_proof',
     'secondary_marksheet',
     'senior_secondary_marksheet',
+         'roll_no', 'student_name', 'name', 'email', 'phone', 'shift_id',
+        'father_name', 'mother_name', 'dob', 'father_contact', 'father_whatsapp',
+        'mother_contact', 'category', 'gender', 'father_occupation', 'mother_occupation',
+        'state', 'city', 'pincode', 'address', 'belongs_other_city',
+        'economic_weaker_section', 'army_police_background', 'specially_abled',
+        'previous_class', 'academic_medium', 'school_name', 'academic_board',
+        'passing_year', 'percentage', 'is_repeater', 'scholarship_test',
+        'last_board_percentage', 'competition_exam', 'batch_id', 'batch_name',
+        'course_id', 'course_name', 'course_type', 'delivery_mode', 'course_content',
+        'medium', 'board', 'status', 'admission_date', 'session', 'branch',
+        'fees', 'other_fees', 'transactions', 'paymentHistory', 'activities', 'history',
+   
 ];
     
     protected $casts = [
@@ -219,6 +231,7 @@ class SMstudents extends Model
         'fees_breakup' => 'array',
         'history' => 'array',
         'documents' => 'array',
+        
     ];
 
     /**
@@ -344,5 +357,123 @@ class SMstudents extends Model
     public function getAcademicBoardAttribute($value)
     {
         return $value ?? $this->attributes['previousBoard'] ?? 'N/A';
+    }
+
+     protected static function boot()
+    {
+        parent::boot();
+
+        // BEFORE SAVE: Set the correct collection
+        static::creating(function ($student) {
+            $student->setCollectionByCourse();
+        });
+
+        // AFTER COURSE UPDATE: Move to new collection if course changed
+        static::updating(function ($student) {
+            if ($student->isDirty('course_id') || $student->isDirty('course_name')) {
+                $student->moveToCorrectCollection();
+            }
+        });
+    }
+
+    /**
+     * ⭐ SET COLLECTION DYNAMICALLY BASED ON COURSE
+     */
+    public function setCollectionByCourse()
+    {
+        $courseName = $this->course_name ?? $this->course->course_name ?? null;
+        
+        if ($courseName) {
+            $this->collection = $this->generateCollectionName($courseName);
+            \Log::info('Collection set dynamically', [
+                'course' => $courseName,
+                'collection' => $this->collection
+            ]);
+        }
+    }
+
+    /**
+     * ⭐ GENERATE COLLECTION NAME FROM COURSE NAME
+     * Example: "Thrust Target IIT" → "students_thrust_target_iit"
+     */
+    private function generateCollectionName($courseName)
+    {
+        $slug = Str::slug($courseName, '_');
+        return 'students_' . strtolower($slug);
+    }
+
+    /**
+     * ⭐ MOVE STUDENT TO NEW COLLECTION (when course changes)
+     */
+    public function moveToCorrectCollection()
+    {
+        $oldCollection = $this->getTable();
+        $this->setCollectionByCourse();
+        $newCollection = $this->getTable();
+
+        if ($oldCollection !== $newCollection) {
+            \Log::info('Moving student to new collection', [
+                'student_id' => $this->_id,
+                'from' => $oldCollection,
+                'to' => $newCollection
+            ]);
+
+            // Copy to new collection
+            $newStudent = $this->replicate();
+            $newStudent->setTable($newCollection);
+            $newStudent->save();
+
+            // Delete from old collection
+            $oldModel = new static;
+            $oldModel->setTable($oldCollection);
+            $oldModel->where('_id', $this->_id)->delete();
+
+            return $newStudent;
+        }
+
+        return $this;
+    }
+
+    /**
+     * ⭐ STATIC METHOD: Get all students of a specific course
+     */
+    public static function byCourse($courseNameOrId)
+    {
+        if (strlen($courseNameOrId) === 24) {
+            // It's an ID
+            $course = Courses::find($courseNameOrId);
+            $courseName = $course->course_name ?? null;
+        } else {
+            $courseName = $courseNameOrId;
+        }
+
+        if (!$courseName) {
+            return collect([]);
+        }
+
+        $instance = new static;
+        $collectionName = $instance->generateCollectionName($courseName);
+        $instance->setTable($collectionName);
+
+        return $instance->newQuery();
+    }
+
+    /**
+     * ⭐ STATIC METHOD: Get all course-based collections
+     */
+    public static function getAllCourseCollections()
+    {
+        $db = \DB::connection('mongodb')->getMongoDB();
+        $collections = $db->listCollections();
+        
+        $studentCollections = [];
+        foreach ($collections as $collection) {
+            $name = $collection->getName();
+            if (str_starts_with($name, 'students_')) {
+                $studentCollections[] = $name;
+            }
+        }
+        
+        return $studentCollections;
     }
 }

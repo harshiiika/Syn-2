@@ -432,9 +432,27 @@ Route::prefix('attendance/student')->name('attendance.student.')->group(function
 
 
 Route::prefix('test-series')->name('test_series.')->group(function () {
+    // Main index page (Test Master - Image 1)
     Route::get('/', [TestSeriesController::class, 'index'])->name('index');
+    
+    // Course specific test series page (Image 2)
     Route::get('/course/{courseName}', [TestSeriesController::class, 'show'])->name('show');
+    
+    // Create new test series (Image 3 modal)
     Route::post('/', [TestSeriesController::class, 'store'])->name('store');
+    
+    // Get test data for edit modal (Image 4)
+    Route::get('/{id}/edit', [TestSeriesController::class, 'edit'])->name('edit');
+    
+    // Update test series (Image 4 modal submit)
     Route::put('/{id}', [TestSeriesController::class, 'update'])->name('update');
+    
+    // View enrolled students (Image 5)
+    Route::get('/{id}/students', [TestSeriesController::class, 'viewStudents'])->name('view_students');
+    
+    // Delete test series
     Route::delete('/{id}', [TestSeriesController::class, 'destroy'])->name('destroy');
+    
+    // AJAX endpoint - Get course subjects
+    Route::get('/course/{courseId}/subjects', [TestSeriesController::class, 'getCourseSubjects'])->name('course_subjects');
 });

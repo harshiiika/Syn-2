@@ -11,25 +11,25 @@ class Batch extends Model
     protected $collection = 'batches';
 
     protected $fillable = [
-        'batch_id',            // Batch code
-        'name',                // Batch name (for fees management)
-        'class',               // Class Name
-        'course',              // Course name (string)
+        'batch_id',
+        'name',
+        'class',
+        'course',              // Direct course name string
         'course_id',           // Reference to courses collection
         'course_type',     
-        'medium',              // Medium (English/Hindi)
-        'mode',                // Delivery Mode (Offline/Online/Hybrid)
-        'delivery_mode',       // Alias for mode
-        'shift',               // Shift (Morning/Evening)
-        'branch_name',         // Branch Name
-        'branch_id',           // Reference to branches
-        'start_date',          // Start Date
+        'medium',
+        'mode',
+        'delivery_mode',
+        'shift',
+        'branch_name',
+        'branch_id',
+        'start_date',
         'end_date',
-        'installment_date_2',  // Installment Date 2
-        'installment_date_3',  // Installment Date 3
+        'installment_date_2',
+        'installment_date_3',
         'timing',
         'capacity',
-        'status',              // Status (Active/Inactive)
+        'status',
         'created_by',
         'updated_by'
     ];
@@ -49,7 +49,7 @@ class Batch extends Model
     /**
      * Relationship: Batch belongs to a Course
      */
-    public function course()
+    public function courseRelation()
     {
         return $this->belongsTo(Courses::class, 'course_id', '_id');
     }
@@ -113,4 +113,7 @@ class Batch extends Model
         $this->attributes['mode'] = $value;
         $this->attributes['delivery_mode'] = $value;
     }
+
+    // REMOVED THE PROBLEMATIC getCourseNameAttribute() METHOD
+    // REMOVED THE getCourseTypeAttribute() METHOD
 }

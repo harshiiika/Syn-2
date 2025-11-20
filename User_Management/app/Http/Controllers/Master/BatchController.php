@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Models\Master\Batch;
+use App\Models\Master\Courses;
 use App\Models\User\BatchAssignment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+
 
 
 class BatchController extends Controller
@@ -35,90 +37,146 @@ class BatchController extends Controller
     /**
      * Display all batches with pagination and search
      */
+  /**
+     * Display batch assignments with full course information
+     */
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
         $search = $request->get('search');
 
+        // Query the BATCH table (master.batches), not batch_assignments
         $query = Batch::query();
 
-        // Apply search filter if search term exists
+        // Apply search filters
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('batch_id', 'like', '%' . $search . '%')
                   ->orWhere('course', 'like', '%' . $search . '%')
                   ->orWhere('class', 'like', '%' . $search . '%')
-                  ->orWhere('course_type', 'like', '%' . $search . '%')
-                  ->orWhere('medium', 'like', '%' . $search . '%')
-                  ->orWhere('mode', 'like', '%' . $search . '%')
-                  ->orWhere('shift', 'like', '%' . $search . '%');
+                  ->orWhere('course_type', 'like', '%' . $search . '%');
             });
         }
 
-        // Paginate results
-        $batches = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        // Get paginated results with course data
+        $batches = $query->orderBy('created_at', 'desc')
+                        ->paginate($perPage);
 
-        // Preserve query parameters in pagination links
+        // Preserve query parameters
         $batches->appends($request->except('page'));
 
+        // Debug log
+        Log::info('Batch Assignment Page - Total batches: ' . $batches->total());
+        
         return view('master.batch.index', compact('batches'));
     }
 
     /**
-     * Store a new batch with automatic field population
+     * Assign employees to a batch
      */
-    public function store(Request $request)
+    public function assignEmployee(Request $request, $batchId)
     {
-        $validator = Validator::make($request->all(), [
-            'batch_id' => 'required|string|unique:batches,batch_id',
-            'course' => 'required|string',
-            'medium' => 'required|string',
-            'mode' => 'required|string',
-            'shift' => 'required|string',
-            'branch_name' => 'required|string',
-            'start_date' => 'required|date',
-            'installment_date_2' => 'nullable|date',
-            'installment_date_3' => 'nullable|date',
-            'status' => 'nullable|in:Active,Inactive'
+        $request->validate([
+            'employee_id' => 'required|exists:users,_id',
+            'role' => 'required|string'
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $courseMapping = $this->getCourseMapping();
-        $selectedCourse = $request->course;
-
-        $classData = $courseMapping[$selectedCourse] ?? [
-            'class' => 'Unknown',
-            'course_type' => 'Regular'
-        ];
-
-        $batch = Batch::create([
-            'batch_id' => $request->batch_id,
-            'course' => $selectedCourse,
-            'class' => $classData['class'],
-            'course_type' => $classData['course_type'],
-            'medium' => $request->medium,
-            'mode' => $request->mode,
-            'shift' => $request->shift,
-            'branch_name' => $request->branch_name,
-            'start_date' => $request->start_date,
-            'installment_date_2' => $request->installment_date_2,
-            'installment_date_3' => $request->installment_date_3,
-            'status' => $request->status ?? 'Active'
-        ]);
+        $batch = Batch::findOrFail($batchId);
 
         BatchAssignment::create([
             'batch_id' => $batch->batch_id,
+            'employee_id' => $request->employee_id,
+            'role' => $request->role,
             'start_date' => $batch->start_date,
-            'username' => null,
             'shift' => $batch->shift,
             'status' => 'Active'
         ]);
 
-        return redirect()->route('batches.index')->with('success', 'Batch created successfully!');
+        return redirect()->back()->with('success', 'Employee assigned to batch successfully!');
     }
+
+
+    /**
+     * Store a new batch with automatic field population
+     */
+public function store(Request $request)
+{
+    // Debug logging - FIXED
+    Log::info('=== BATCH STORE DEBUG ===');
+    Log::info('Request All:', ['data' => $request->all()]);
+    Log::info('Course Value:', ['course' => $request->course]);
+    Log::info('Course Input:', ['input' => $request->input('course')]);
+
+    $validator = Validator::make($request->all(), [
+        'batch_id' => 'required|string|unique:batches,batch_id',
+        'course' => 'required|string',
+        'medium' => 'required|string',
+        'mode' => 'required|string',
+        'shift' => 'required|string',
+        'branch_name' => 'required|string',
+        'start_date' => 'required|date',
+        'installment_date_2' => 'nullable|date',
+        'installment_date_3' => 'nullable|date',
+        'status' => 'nullable|in:Active,Inactive'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    $courseMapping = $this->getCourseMapping();
+    $selectedCourse = $request->course;
+
+    $classData = $courseMapping[$selectedCourse] ?? [
+        'class' => 'Unknown',
+        'course_type' => 'Regular'
+    ];
+
+    $courseRecord = Courses::where('course_name', $selectedCourse)->first();
+
+    $batch = Batch::create([
+        'batch_id' => $request->batch_id,
+        'name' => $request->batch_id,
+        'course' => $selectedCourse,
+        'course_id' => $courseRecord?->_id,
+        'class' => $classData['class'],
+        'course_type' => $classData['course_type'],
+        'medium' => $request->medium,
+        'mode' => $request->mode,
+        'delivery_mode' => $request->mode,
+        'shift' => $request->shift,
+        'branch_name' => $request->branch_name,
+        'start_date' => $request->start_date,
+        'installment_date_2' => $request->installment_date_2,
+        'installment_date_3' => $request->installment_date_3,
+        'status' => $request->status ?? 'Active'
+    ]);
+
+    BatchAssignment::create([
+        'batch_id' => $batch->batch_id,
+        'start_date' => $batch->start_date,
+        'username' => null,
+        'shift' => $batch->shift,
+        'status' => 'Active'
+    ]);
+
+    // Debug after creation - FIXED
+    Log::info('Batch Created:', [
+        'id' => $batch->_id,
+        'batch_id' => $batch->batch_id,
+        'course_from_model' => $batch->course,
+        'raw_attributes' => $batch->getAttributes(),
+        'selected_course' => $selectedCourse
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Batch created successfully!'
+    ]);
+}
 
     /**
      * Update batch details
