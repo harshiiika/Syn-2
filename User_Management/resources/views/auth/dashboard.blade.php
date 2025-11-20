@@ -204,7 +204,11 @@
           <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+                <li>
+                <a class="item" href="{{ route('units.index') }}">
+                    <i class="fa-solid fa-book" id="side-icon"></i>Units
+                </a>
+                </li>
                 <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
               </ul>
             </div>
