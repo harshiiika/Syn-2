@@ -8,10 +8,12 @@ use App\Models\Student\SMstudents;
 use App\Models\Master\Batch;
 use App\Models\Master\Courses;
 use App\Models\Student\Shift; 
+use App\Models\TestSeries\TestSeries; 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class SmStudentsController extends Controller
 {
@@ -37,8 +39,8 @@ private function getStudentActivities($student)
                 'description' => $activity['description'] ?? 'performed an action',
                 'performed_by' => $activity['performed_by'] ?? 'Admin',
                 'created_at' => isset($activity['created_at']) ? 
-                    \Carbon\Carbon::parse($activity['created_at']) : 
-                    \Carbon\Carbon::now()
+                    Carbon::parse($activity['created_at']) : 
+                    Carbon::now()
             ];
         }
     }
@@ -238,45 +240,6 @@ public function testSeries($id)
     }
 }
     
-
-    /**
-     *   NEW METHOD: Get all activities for a student
-     */
-//     private function getStudentActivities($student)
-//     {
-//         $rawData = $student->getAttributes();
-//         $activities = [];
-        
-//         // Get stored activities from database
-//         $storedActivities = $rawData['activities'] ?? [];
-//         if (is_string($storedActivities)) {
-//             $storedActivities = json_decode($storedActivities, true) ?? [];
-//         }
-        
-//         if (is_array($storedActivities) && !empty($storedActivities)) {
-//             foreach ($storedActivities as $activity) {
-//                 $activities[] = [
-//                     'title' => $activity['title'] ?? 'Activity',
-//                     'description' => $activity['description'] ?? 'performed an action',
-//                     'performed_by' => $activity['performed_by'] ?? 'Admin',
-//                     'created_at' => isset($activity['created_at']) ? 
-//                         \Carbon\Carbon::parse($activity['created_at']) : 
-//                         \Carbon\Carbon::now()
-//                 ];
-//             }
-//         }
-        
-//         // Sort by date (newest first)
-//         // Sort by date (oldest first - so newest appears at top of list)
-// usort($uniqueHistory, function($a, $b) {
-//     $timeA = strtotime($a['timestamp'] ?? $a['created_at'] ?? '1970-01-01');
-//     $timeB = strtotime($b['timestamp'] ?? $b['created_at'] ?? '1970-01-01');
-//     return $timeA - $timeB; // ⭐ ASCENDING order (oldest to newest)
-// });
-
-        
-    //     return $activities;
-    // }
 
     /**
      *   ENHANCED: Create activity log entry
@@ -1242,6 +1205,93 @@ public function getAttribute($key)
 }
 
 
+  public function store(Request $request)
+    {
+        try {
+            Log::info('=== Test Series Store - START ===', $request->all());
+            
+            $rules = [
+                'course_id' => 'required|string',
+                'test_type' => 'required|in:Type1,Type2',
+                'subject_type' => 'required|in:Single,Double',
+                'test_count' => 'required|integer|min:1',
+                'subjects' => 'required|array|min:1',
+            ];
+
+            if ($request->test_type === 'Type1') {
+                $rules['test_series_name'] = 'required|string|max:255';
+            }
+
+            $validated = $request->validate($rules);
+
+            $course = Courses::find($validated['course_id']);
+            if (!$course) {
+                return back()->withInput()
+                    ->with('error', 'Course not found!');
+            }
+
+            // ⭐ FIX: Always get the course name properly
+            $courseName = $course->course_name ?? $course->name;
+            
+            Log::info('Course details', [
+                'course_id' => $validated['course_id'],
+                'course_name' => $courseName
+            ]);
+            
+            // Get next test number for this course
+            $lastTest = TestSeries::where('course_id', $validated['course_id'])
+                ->where('test_type', $validated['test_type'])
+                ->orderBy('test_number', 'desc')
+                ->first();
+            
+            $testNumber = ($lastTest ? $lastTest->test_number : 0) + 1;
+
+            // Build test name
+            if ($request->test_type === 'Type1') {
+                $testName = $courseName . '/Type1/' . $validated['test_series_name'] . '/' . str_pad($testNumber, 3, '0', STR_PAD_LEFT);
+            } else {
+                $testName = $courseName . '/Type2/' . str_pad($testNumber, 3, '0', STR_PAD_LEFT);
+            }
+
+            // Get students enrolled in this course
+            $students = SMstudents::where('course_id', $validated['course_id'])
+                ->where('status', 'active')
+                ->pluck('_id')
+                ->toArray();
+
+            $testSeriesData = [
+                'course_id' => $validated['course_id'],
+                'course_name' => $courseName, // ⭐ FIX: Always set course_name
+                'test_name' => $testName,
+                'test_type' => $validated['test_type'],
+                'subject_type' => $validated['subject_type'],
+                'test_count' => $validated['test_count'],
+                'test_number' => $testNumber,
+                'status' => 'Pending',
+                'subjects' => $validated['subjects'],
+                'students_enrolled' => $students,
+                'students_count' => count($students),
+                'created_by' => Auth::check() ? Auth::user()->name : 'Admin',
+            ];
+
+            if ($request->test_type === 'Type1') {
+                $testSeriesData['test_series_name'] = $validated['test_series_name'];
+            }
+
+            $testSeries = TestSeries::create($testSeriesData);
+
+            Log::info('Test Series Created Successfully', ['id' => $testSeries->_id]);
+
+            return redirect()
+                ->route('test_series.show', urlencode($courseName))
+                ->with('success', 'Test Series created successfully!');
+
+        } catch (\Exception $e) {
+            Log::error('Test Series Store ERROR: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
 
 
 /**

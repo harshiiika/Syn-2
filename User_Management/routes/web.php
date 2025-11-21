@@ -357,12 +357,40 @@ Route::prefix('attendance/student')->name('attendance.student.')->group(function
 });
 
 
+// In routes/web.php
 Route::prefix('test-series')->name('test_series.')->group(function () {
+    // Main index page (Test Master - Image 1)
     Route::get('/', [TestSeriesController::class, 'index'])->name('index');
-    Route::get('/course/{courseName}', [TestSeriesController::class, 'show'])->name('show');
+
+    Route::get('/create', [TestSeriesController::class, 'create'])->name('create');
     Route::post('/', [TestSeriesController::class, 'store'])->name('store');
+    Route::get('/{course}', [TestSeriesController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [TestSeriesController::class, 'edit'])->name('edit');
+
+    
+    // Course specific test series page (Image 2)
+    Route::get('/course/{courseName}', [TestSeriesController::class, 'show'])->name('show');
+    
+    // Create new test series (Image 3 modal)
+    Route::post('/', [TestSeriesController::class, 'store'])->name('store');
+    
+    // Get test data for edit modal (Image 4)
+    Route::get('/{id}/edit', [TestSeriesController::class, 'edit'])->name('edit');
+    
+    // Update test series (Image 4 modal submit)
+
     Route::put('/{id}', [TestSeriesController::class, 'update'])->name('update');
+    
+    // View enrolled students (Image 5)
+    Route::get('/{id}/students', [TestSeriesController::class, 'viewStudents'])->name('view_students');
+    
+    // Delete test series
     Route::delete('/{id}', [TestSeriesController::class, 'destroy'])->name('destroy');
+    
+    // For viewing test details
+    Route::get('/view/{id}', [TestSeriesController::class, 'viewTest'])->name('viewTest');
+    // AJAX endpoint - Get course subjects
+    Route::get('/course/{courseId}/subjects', [TestSeriesController::class, 'getCourseSubjects'])->name('course_subjects');
 });
 
 // // Study Material - Units Routes
@@ -382,7 +410,6 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
 | Units Routes - FINAL WORKING VERSION
 |--------------------------------------------------------------------------
 |
-| CRITICAL: The order matters! Specific routes MUST come before {id} routes
 |
 */
 
