@@ -321,82 +321,6 @@ Route::prefix('attendance/employee')->name('attendance.employee.')->group(functi
         Route::get('/monthly/details', [EmployeeController::class, 'monthlyDetails'])->name('monthly.details');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Fees Management Routes
-|--------------------------------------------------------------------------
-*/
-// Main page - accessible at /fees-management
-Route::get('/fees-management', [FeesManagementController::class, 'index'])->name('fees.management.index');
-
-// Search Student
-Route::post('/fees-management/search-student', function (\Illuminate\Http\Request $request) {
-    $searchTerm = $request->input('search');
-    
-    // Add your search logic here
-    $students = \DB::table('students')
-        ->where('name', 'LIKE', "%{$searchTerm}%")
-        ->orWhere('roll_no', 'LIKE', "%{$searchTerm}%")
-        ->get();
-    
-    return response()->json([
-        'success' => true,
-        'data' => $students
-    ]);
-})->name('fees.collect.search');
-
-// Search by Status
-Route::post('/fees-management/search-status', function (\Illuminate\Http\Request $request) {
-    $courseId = $request->input('course_id');
-    $batchId = $request->input('batch_id');
-    $feeStatus = $request->input('fee_status');
-    
-    // Add your search logic here
-    $students = [];
-    
-    return response()->json([
-        'success' => true,
-        'data' => $students
-    ]);
-})->name('fees.status.search');
-
-// Filter Transactions
-Route::post('/fees-management/filter-transactions', function (\Illuminate\Http\Request $request) {
-    $fromDate = $request->input('from_date');
-    $toDate = $request->input('to_date');
-    
-    // Add your filter logic here
-    $transactions = [];
-    
-    return response()->json([
-        'success' => true,
-        'data' => $transactions
-    ]);
-})->name('fees.transaction.filter');
-
-// Export Pending Fees
-Route::get('/fees-management/export-pending', function () {
-    return response()->json([
-        'message' => 'Export functionality will be added soon'
-    ]);
-})->name('fees.export');
-
-
-// Fees Management Routes
-Route::prefix('fees')->name('fees.')->group(function () {
-    Route::post('/collect/search', [FeesManagementController::class, 'searchStudent'])->name('collect.search');
-    Route::post('/status/search', [FeesManagementController::class, 'searchByStatus'])->name('status.search');
-    Route::post('/transaction/filter', [FeesManagementController::class, 'filterTransactions'])->name('transaction.filter');
-    Route::post('/batches-by-course', [FeesManagementController::class, 'getBatchesByCourse'])->name('batches.by.course');
-    Route::get('/export', [FeesManagementController::class, 'exportPendingFees'])->name('export');
-
-
-});
-// Profile Routes
-Route::prefix('profile')->name('profile.')->group(function () {
-    Route::get('/', [ProfileController::class, 'index'])->name('index');
-});
-
 
 
 Route::prefix('attendance/student')->name('attendance.student.')->group(function () {
@@ -504,4 +428,28 @@ Route::prefix('study_material/dispatch')->name('study_material.dispatch.')->grou
     // Bulk delete (NEW ROUTE)
     Route::post('/bulk-delete', [DispatchController::class, 'bulkDelete'])->name('bulk-delete');
     
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Fees Management Routes
+|--------------------------------------------------------------------------
+*/
+// Add these routes to your existing web.php file
+Route::prefix('fees-management')->name('fees.')->group(function () {
+    // Main page
+    Route::get('/', [FeesManagementController::class, 'index'])->name('management.index');
+    
+    // Search and filter routes
+    Route::post('/search-student', [FeesManagementController::class, 'searchStudent'])->name('collect.search');
+    Route::post('/search-status', [FeesManagementController::class, 'searchByStatus'])->name('status.search');
+    Route::post('/filter-transactions', [FeesManagementController::class, 'filterTransactions'])->name('transaction.filter');
+    Route::get('/export-pending', [FeesManagementController::class, 'exportPendingFees'])->name('export');
+    
+    // Dynamic modal data routes
+    Route::get('/student-details/{id}', [FeesManagementController::class, 'getStudentDetails'])->name('student.details');
+    Route::get('/installment-history/{id}', [FeesManagementController::class, 'getInstallmentHistory'])->name('installment.history');
+    Route::get('/other-charges/{id}', [FeesManagementController::class, 'getOtherCharges'])->name('other.charges');
+    Route::get('/transaction-history/{id}', [FeesManagementController::class, 'getTransactionHistory'])->name('transaction.history');
 });
