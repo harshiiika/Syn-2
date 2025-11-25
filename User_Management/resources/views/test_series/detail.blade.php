@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Test Series - {{ $courseName }}</title>
+  <title>Test Series</title>
   <link rel="stylesheet" href="{{ asset('css/emp.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,6 +13,28 @@
     }
     .conditional-field.show {
       display: block;
+    }
+    
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .top-text h4 {
+      margin: 0;
+      color: #333;
+      font-weight: 600;
+    }
+    
+    .btn-success {
+      background-color: #ff6b35 !important;
+      border: none !important;
+    }
+    
+    .btn-success:hover {
+      background-color: #ff5520 !important;
     }
   </style>
 </head>
@@ -62,37 +84,37 @@
   </div>
 
   <div class="main-container">
-    <!-- Sidebar (same as index) -->
+    <!-- Sidebar -->
     <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>Admin</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-    <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
+        <!-- User Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
+              data-bs-target="#flush-collapseOne" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
             </button>
           </h2>
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-           <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-           <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+                <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
         </div>
 
+        <!-- Master -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
+              data-bs-target="#flush-collapseTwo" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i> Master
             </button>
           </h2>
@@ -110,11 +132,11 @@
           </div>
         </div>
 
+        <!-- Session Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
+              data-bs-target="#flush-collapseThree" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
             </button>
           </h2>
@@ -129,31 +151,31 @@
           </div>
         </div>
 
+        <!-- Student Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
+              data-bs-target="#flush-collapseFour" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
             </button>
           </h2>
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
               </ul>
             </div>
           </div>
         </div>
 
+        <!-- Fees Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-              id="accordion-button">
+              data-bs-target="#flush-collapseFive" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
             </button>
           </h2>
@@ -166,11 +188,11 @@
           </div>
         </div>
 
+        <!-- Attendance Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-              id="accordion-button">
+              data-bs-target="#flush-collapseSix" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
             </button>
           </h2>
@@ -178,18 +200,17 @@
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
                 <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="{{ route(name: 'attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
-
+                <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
               </ul>
             </div>
           </div>
         </div>
 
+        <!-- Study Material -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-              id="accordion-button">
+              data-bs-target="#flush-collapseSeven" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
             </button>
           </h2>
@@ -203,31 +224,32 @@
           </div>
         </div>
 
-        <div class="accordion-item">
-  <h2 class="accordion-header">
-    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-      data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-      id="accordion-button">
-      <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-    </button>
-  </h2>
-  <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-    <div class="accordion-body">
-      <ul class="menu" id="dropdown-body">
-        <li>
-<a class="item" href="{{ route('test_series.index') }}">            <i class="fa-solid fa-book" id="side-icon"></i>Test Master
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-
+        <!-- Test Series Management -->
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-              id="accordion-button">
+              data-bs-target="#flush-collapseEight" aria-expanded="false" id="accordion-button">
+              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+            </button>
+          </h2>
+          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li>
+                  <a class="item active" href="{{ route('test_series.index') }}">
+                    <i class="fa-solid fa-book" id="side-icon"></i>Test Master
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseNine" aria-expanded="false" id="accordion-button">
               <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
             </button>
           </h2>
@@ -248,9 +270,14 @@
 
     <!-- Main Content -->
     <div class="right" id="right">
+      <!-- Top Section -->
       <div class="top">
         <div class="top-text">
+<<<<<<< HEAD
           <h4>TEST SERIES - {{ $courseName }}</h4>
+=======
+          <h4>Test Series</h4>
+>>>>>>> 25ebacb57ae821fb9249969068d766e6e5144c4e
         </div>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createTestSeriesModal" style="background-color: #ff6607ff; border-color: #ff6607ff;">
       Create Test Series
@@ -338,10 +365,15 @@
         <!-- Pagination Info -->
         <div class="d-flex justify-content-between align-items-center mt-3">
           <div id="paginationInfo">
-            Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count() }}</span> entries
+            Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count()) }}</span> entries
           </div>
           <nav>
-            <ul class="pagination" id="pagination"></ul>
+            <ul class="pagination" id="pagination">
+              <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+              <li class="page-item active" style="background-color: #ff6b35;"><a class="page-link" href="#" style="background-color: #ff6b35; border-color: #ff6b35;">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
           </nav>
         </div>
       </div>
@@ -638,12 +670,6 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
           
           if (selectedType === 'Type1') {
             selectSubjectsField.classList.add('show');
-            testSeriesNameField.classList.add('show');
-            testSeriesNameInput.required = true;
-          } else if (selectedType === 'Type2') {
-            selectSubjectsField.classList.add('show');
-            testSeriesNameField.classList.remove('show');
-            testSeriesNameInput.required = false;
             testSeriesNameInput.value = '';
           } else {
             selectSubjectsField.classList.remove('show');
@@ -653,7 +679,19 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         });
       }
 
-      // Table pagination and search (same as before)
+      // Form validation
+      document.getElementById('createTestForm').addEventListener('submit', function(e) {
+        const testType = document.getElementById('testSeriesType').value;
+        const checkboxes = document.querySelectorAll('input[name="subjects[]"]:checked');
+        
+        if ((testType === 'Type1' || testType === 'Type2') && checkboxes.length === 0) {
+          e.preventDefault();
+          alert('Please select at least one subject');
+          return false;
+        }
+      });
+
+      // Table pagination and search
       let currentPage = 1;
       let entriesPerPage = 10;
       let allRows = [];
@@ -728,7 +766,8 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         for (let i = 1; i <= Math.min(totalPages, 5); i++) {
           const li = document.createElement('li');
           li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-          li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
+          const activeStyle = i === currentPage ? 'style="background-color: #ff6b35; border-color: #ff6b35;"' : '';
+          li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;" ${activeStyle}>${i}</a>`;
           pagination.appendChild(li);
         }
 

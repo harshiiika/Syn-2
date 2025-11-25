@@ -320,82 +320,6 @@ Route::prefix('attendance/employee')->name('attendance.employee.')->group(functi
         Route::get('/monthly/details', [EmployeeController::class, 'monthlyDetails'])->name('monthly.details');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Fees Management Routes
-|--------------------------------------------------------------------------
-*/
-// Main page - accessible at /fees-management
-Route::get('/fees-management', [FeesManagementController::class, 'index'])->name('fees.management.index');
-
-// Search Student
-Route::post('/fees-management/search-student', function (\Illuminate\Http\Request $request) {
-    $searchTerm = $request->input('search');
-    
-    // Add your search logic here
-    $students = \DB::table('students')
-        ->where('name', 'LIKE', "%{$searchTerm}%")
-        ->orWhere('roll_no', 'LIKE', "%{$searchTerm}%")
-        ->get();
-    
-    return response()->json([
-        'success' => true,
-        'data' => $students
-    ]);
-})->name('fees.collect.search');
-
-// Search by Status
-Route::post('/fees-management/search-status', function (\Illuminate\Http\Request $request) {
-    $courseId = $request->input('course_id');
-    $batchId = $request->input('batch_id');
-    $feeStatus = $request->input('fee_status');
-    
-    // Add your search logic here
-    $students = [];
-    
-    return response()->json([
-        'success' => true,
-        'data' => $students
-    ]);
-})->name('fees.status.search');
-
-// Filter Transactions
-Route::post('/fees-management/filter-transactions', function (\Illuminate\Http\Request $request) {
-    $fromDate = $request->input('from_date');
-    $toDate = $request->input('to_date');
-    
-    // Add your filter logic here
-    $transactions = [];
-    
-    return response()->json([
-        'success' => true,
-        'data' => $transactions
-    ]);
-})->name('fees.transaction.filter');
-
-// Export Pending Fees
-Route::get('/fees-management/export-pending', function () {
-    return response()->json([
-        'message' => 'Export functionality will be added soon'
-    ]);
-})->name('fees.export');
-
-
-// Fees Management Routes
-Route::prefix('fees')->name('fees.')->group(function () {
-    Route::post('/collect/search', [FeesManagementController::class, 'searchStudent'])->name('collect.search');
-    Route::post('/status/search', [FeesManagementController::class, 'searchByStatus'])->name('status.search');
-    Route::post('/transaction/filter', [FeesManagementController::class, 'filterTransactions'])->name('transaction.filter');
-    Route::post('/batches-by-course', [FeesManagementController::class, 'getBatchesByCourse'])->name('batches.by.course');
-    Route::get('/export', [FeesManagementController::class, 'exportPendingFees'])->name('export');
-
-
-});
-// Profile Routes
-Route::prefix('profile')->name('profile.')->group(function () {
-    Route::get('/', [ProfileController::class, 'index'])->name('index');
-});
-
 
 
 Route::prefix('attendance/student')->name('attendance.student.')->group(function () {
@@ -432,9 +356,16 @@ Route::prefix('attendance/student')->name('attendance.student.')->group(function
 });
 
 
+// In routes/web.php
 Route::prefix('test-series')->name('test_series.')->group(function () {
     // Main index page (Test Master - Image 1)
     Route::get('/', [TestSeriesController::class, 'index'])->name('index');
+
+    Route::get('/create', [TestSeriesController::class, 'create'])->name('create');
+    Route::post('/', [TestSeriesController::class, 'store'])->name('store');
+    Route::get('/{course}', [TestSeriesController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [TestSeriesController::class, 'edit'])->name('edit');
+
     
     // Course specific test series page (Image 2)
     Route::get('/course/{courseName}', [TestSeriesController::class, 'show'])->name('show');
@@ -446,6 +377,7 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
     Route::get('/{id}/edit', [TestSeriesController::class, 'edit'])->name('edit');
     
     // Update test series (Image 4 modal submit)
+
     Route::put('/{id}', [TestSeriesController::class, 'update'])->name('update');
     
     // View enrolled students (Image 5)
@@ -454,6 +386,8 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
     // Delete test series
     Route::delete('/{id}', [TestSeriesController::class, 'destroy'])->name('destroy');
     
+    // For viewing test details
+    Route::get('/view/{id}', [TestSeriesController::class, 'viewTest'])->name('viewTest');
     // AJAX endpoint - Get course subjects
     Route::get('/course/{courseId}/subjects', [TestSeriesController::class, 'getCourseSubjects'])->name('course_subjects');
     
@@ -479,22 +413,15 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
     });
     
 
-// // Study Material - Units Routes
-// Route::prefix('study_material')->group(function () {
-//     Route::get('/units', [Unitscontroller::class, 'index'])->name('units.index');
-//     Route::get('/units/get-data', [Unitscontroller::class, 'getData'])->name('units.getData');
-//     Route::get('/units/get-courses', [Unitscontroller::class, 'getCourses'])->name('units.getCourses');
-//     Route::get('/units/get-subjects', [Unitscontroller::class, 'getSubjectsByCourse'])->name('units.getSubjects');
-//     Route::post('/units', [Unitscontroller::class, 'store'])->name('units.store');
-//     Route::get('/units/{id}', [Unitscontroller::class, 'show'])->name('units.show');
-//     Route::put('/units/{id}', [Unitscontroller::class, 'update'])->name('units.update');
-//     Route::delete('/units/{id}', [Unitscontroller::class, 'destroy'])->name('units.destroy');
-// });
-
 /*
 |--------------------------------------------------------------------------
 | Units Routes
 |--------------------------------------------------------------------------
+<<<<<<< HEAD
+=======
+|
+|
+>>>>>>> 25ebacb57ae821fb9249969068d766e6e5144c4e
 */
 
 Route::prefix('study_material')->group(function () {
@@ -565,3 +492,29 @@ Route::prefix('reports')->name('reports.')->group(function () {
 
 Route::get('/reports/attendance/student/rolls', [AttendanceReportController::class, 'getRollsByBatch'])
     ->name('reports.attendance.student.rolls');
+Route::prefix('study_material/dispatch')->group(function () {
+    Route::get('/', [DispatchController::class, 'index']);
+    Route::get('/get-batches', [DispatchController::class, 'getBatches']);
+    Route::get('/get-students', [DispatchController::class, 'getStudents']);
+    Route::post('/dispatch-material', [DispatchController::class, 'dispatchMaterial']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Fees Management Routes - COMPLETE VERSION
+|--------------------------------------------------------------------------
+*/
+Route::prefix('fees-management')->group(function () {
+    Route::get('/', [FeesManagementController::class, 'index'])->name('fees.management.index');
+    Route::post('collect-fees/search', [FeesManagementController::class, 'searchStudent'])->name('fees.collect.search');
+    Route::post('status/search', [FeesManagementController::class, 'searchByStatus'])->name('fees.status.search');
+    Route::post('transactions/filter', [FeesManagementController::class, 'filterTransactions'])->name('fees.transaction.filter');
+    Route::get('student-details/{id}', [FeesManagementController::class, 'getStudentDetails']);
+    Route::get('installment-history/{id}', [FeesManagementController::class, 'getInstallmentHistory']);
+    Route::get('other-charges/{id}', [FeesManagementController::class, 'getOtherCharges']);
+    Route::get('transaction-history/{id}', [FeesManagementController::class, 'getTransactionHistory']);
+    Route::post('add-other-charges', [FeesManagementController::class, 'addOtherCharges']);
+    Route::post('process-refund', [FeesManagementController::class, 'processRefund']);
+    Route::post('apply-scholarship', [FeesManagementController::class, 'applyScholarship']);
+    Route::get('export-pending-fees', [FeesManagementController::class, 'exportPendingFees'])->name('fees.export');
+});
