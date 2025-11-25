@@ -364,19 +364,22 @@
       <div class="whole">
         <!-- Controls -->
         <div class="dd">
-          <div class="line">
-            <h6>Show Entries:</h6>
+           <div class="line">
+            <h6>Show Enteries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">10</button>
+            aria-expanded="false">
+            {{ request('per_page', 10) }}
+          </button>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item entries-option" href="#" data-value="10">10</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="25">25</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="50">50</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="100">100</a></li>
+                <li><a class="dropdown-item">10</a></li>
+                <li><a class="dropdown-item">25</a></li>
+                <li><a class="dropdown-item">50</a></li>
+                <li><a class="dropdown-item">100</a></li>
               </ul>
             </div>
           </div>
+          
           <div class="search">
             <h4 class="search-text">Search</h4>
             <input type="search" placeholder="" class="search-holder" id="searchInput">
@@ -453,7 +456,7 @@
 
                        <li>
   <button class="dropdown-item" type="button" onclick="loadStudentHistory('{{ $studentId }}'); return false;">
-    <i class="fas fa-history me-2"></i>History
+    History
   </button>
 </li>
                       @else

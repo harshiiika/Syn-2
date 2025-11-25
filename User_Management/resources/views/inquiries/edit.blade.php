@@ -361,29 +361,6 @@
          
         </div>
 
-        <!-- Success Message -->
-        @if(session('success'))
-          <div class="alert alert-success">
-            <i class="fa-solid fa-check-circle"></i>
-            <span>{{ session('success') }}</span>
-          </div>
-        @endif
-
-        <!-- Error Messages -->
-        @if($errors->any())
-          <div class="alert alert-danger">
-            <i class="fa-solid fa-exclamation-circle"></i>
-            <div>
-              <strong>Please fix the following errors:</strong>
-              <ul style="margin: 10px 0 0 20px;">
-                @foreach($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                @endforeach
-              </ul>
-            </div>
-          </div>
-        @endif
-
 <form id="editStudentForm" method="POST" action="{{ route('inquiries.update', $inquiry->_id) }}">
   @csrf
   @method('PUT')
@@ -750,7 +727,74 @@
       </div>
     </div>
   </div>
+<!-- Academic Details Section -->
+  <div class="form-section">
+    <h4>Academic Details</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Previous Class</label>
+        <select name="previousClass" class="form-select">
+          <option value="">Select Class</option>
+          @php
+            $prevClassValue = old('previousClass', $inquiry->previousClass ?? '');
+          @endphp
+          <option value="8th" {{ $prevClassValue == '8th' ? 'selected' : '' }}>8th</option>
+          <option value="9th" {{ $prevClassValue == '9th' ? 'selected' : '' }}>9th</option>
+          <option value="10th" {{ $prevClassValue == '10th' ? 'selected' : '' }}>10th</option>
+          <option value="11th" {{ $prevClassValue == '11th' ? 'selected' : '' }}>11th</option>
+          <option value="12th" {{ $prevClassValue == '12th' ? 'selected' : '' }}>12th</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Previous Medium</label>
+        <select name="previousMedium" class="form-select">
+          <option value="">Select Medium</option>
+          @php
+            $prevMediumValue = old('previousMedium', $inquiry->previousMedium ?? '');
+          @endphp
+          <option value="English" {{ $prevMediumValue == 'English' ? 'selected' : '' }}>English</option>
+          <option value="Hindi" {{ $prevMediumValue == 'Hindi' ? 'selected' : '' }}>Hindi</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>School Name</label>
+        <input type="text" name="schoolName" class="form-control" 
+               value="{{ old('schoolName', $inquiry->schoolName ?? '') }}"
+               placeholder="Enter school name">
+      </div>
+      
+      <div class="form-group">
+        <label>Previous Board</label>
+        <select name="previousBoard" class="form-select">
+          <option value="">Select Board</option>
+          @php
+            $prevBoardValue = old('previousBoard', $inquiry->previousBoard ?? '');
+          @endphp
+          <option value="CBSE" {{ $prevBoardValue == 'CBSE' ? 'selected' : '' }}>CBSE</option>
+          <option value="RBSE" {{ $prevBoardValue == 'RBSE' ? 'selected' : '' }}>RBSE</option>
+          <option value="ICSE" {{ $prevBoardValue == 'ICSE' ? 'selected' : '' }}>ICSE</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Passing Year</label>
+        <input type="number" name="passingYear" class="form-control" 
+               value="{{ old('passingYear', $inquiry->passingYear ?? '') }}" 
+               min="2000" max="2030" placeholder="e.g., 2024">
+      </div>
+      
+      <div class="form-group">
+        <label>Percentage</label>
+        <input type="number" name="percentage" class="form-control" 
+               value="{{ old('percentage', $inquiry->percentage ?? '') }}" 
+               min="0" max="100" step="0.01" placeholder="e.g., 85.5">
+      </div>
+    </div>
+  </div>
 
+  
   <!-- Save Button -->
   <div class="sticky-footer">
     <button type="submit" class="btn-save" id="saveBtn">

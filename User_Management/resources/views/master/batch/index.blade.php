@@ -570,12 +570,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                       <select class="form-select" name="branch_name" required>
                         <option value="Bikaner" {{ ($batch->branch_name ?? '') == 'Bikaner' ? 'selected' : '' }}>Bikaner
                         </option>
-                        <option value="Jaipur" {{ ($batch->branch_name ?? '') == 'Jaipur' ? 'selected' : '' }}>Jaipur
-                        </option>
-                        <option value="Jodhpur" {{ ($batch->branch_name ?? '') == 'Jodhpur' ? 'selected' : '' }}>Jodhpur
-                        </option>
-                        <option value="Kota" {{ ($batch->branch_name ?? '') == 'Kota' ? 'selected' : '' }}>Kota</option>
-                      </select>
                     </div>
 
                     <!-- Start Date -->

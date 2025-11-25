@@ -219,6 +219,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- Student Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -239,6 +240,27 @@
       </div>
     </div>
   </div>
+=======
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+            </button>
+          </h2>
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+>>>>>>> ab196188d8af41bd610a34fe44c9927895c3534d
 
   <!-- Fees Management -->
   <div class="accordion-item">
@@ -258,6 +280,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- Attendance Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -295,6 +318,25 @@
       </div>
     </div>
   </div>
+=======
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+              id="accordion-button">
+              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+            </button>
+          </h2>
+          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="{{ route(name: 'attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+                <li><a class="item" href="{{ route(name: 'attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+>>>>>>> ab196188d8af41bd610a34fe44c9927895c3534d
 
   <!-- Test Series Management -->
   <div class="accordion-item">
@@ -314,6 +356,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- Reports -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -336,6 +379,50 @@
     </div>
   </div>
 </div>
+=======
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+              id="accordion-button">
+              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+            </button>
+          </h2>
+          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li>
+    <a href="{{ route('test_series.index') }}">
+        <i class="icon-class"></i> 
+        <span>Test Master</span>
+    </a>
+</li>              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+              id="accordion-button">
+              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+            </button>
+          </h2>
+          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+>>>>>>> ab196188d8af41bd610a34fe44c9927895c3534d
     </div>
 
 
@@ -423,8 +510,9 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset(path: 'js/emp.js') }}"></script>
+
   <script>
-    // Add this to your detail.blade.php script section
 document.querySelector('#createTestSeriesModal form').addEventListener('submit', function(e) {
     const testType = document.getElementById('testSeriesType').value;
     const checkboxes = document.querySelectorAll('input[name="subjects[]"]:checked');

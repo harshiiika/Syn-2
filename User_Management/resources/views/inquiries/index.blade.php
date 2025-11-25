@@ -1044,7 +1044,6 @@
                             <select class="form-select" id="branch_name">
                                 <option value="">Select Branch</option>
                                 <option value="Bikaner">Bikaner</option>
-                                <option value="Jaipur">Jaipur</option>
                             </select>
                         </div>
                         <div class="row">
@@ -1424,8 +1423,7 @@ function renderTable(data) {
                             <i class="fa-solid fa-ellipsis-vertical"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/inquiries/${id}">View</a></li>
-                            <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
+                            <li><a class="dropdown-item" href="/inquiries/${id}/view">View</a></li>                            <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
                             <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
                             <li><a class="dropdown-item" href="#" onclick="History('${id}'); return false;">History</a></li>
                         </ul>

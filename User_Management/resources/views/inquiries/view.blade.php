@@ -375,8 +375,7 @@
 
             <div class="form-group">
               <label>Father Occupation</label>
-              <input type="text" class="form-control" value="{{ $inquiry->fatherOccupation ?? 'N/A' }}" readonly>
-            </div>
+<input type="text" class="form-control" value="{{ $inquiry->fatherOccupation ?? '' }}" readonly placeholder="Not provided">            </div>
 
             <div class="form-group">
               <label>Father's Grade</label>

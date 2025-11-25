@@ -525,17 +525,8 @@
               <input type="text" class="form-control" value="{{ $feesData['discretionary_discount'] ?? 'No' }}" readonly>
             </div>
 
-            <!-- <div class="form-group">
-              <label>Discount Percentage</label>
-              <input type="text" class="form-control" value="{{ $feesData['discount_percentage'] ?? 0 }}%" readonly>
-            </div>
-
-            <div class="form-group">
-              <label>Discounted Fee</label>
-              <input type="text" class="form-control" value="₹{{ number_format($feesData['discounted_fee'] ?? 0) }}" readonly>
-            </div>
           </div>
-        </div> -->
+        </div> 
 
         <!--Fees and Available Batches Details Section -->
         <div class="view-section">

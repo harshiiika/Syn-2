@@ -14,24 +14,27 @@ class PendingFeesController extends Controller
      * Display all students with pending fees
      */
     public function index()
-    {
-        try {
-            $pendingFees = PendingFee::orderBy('created_at', 'desc')->get();
+{
+    try {
+        // Only show students that haven't been transferred
+        $pendingFees = PendingFee::where('status', '!=', 'completed')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-            Log::info('Fetching pending fees students:', [
-                'count' => $pendingFees->count(),
-            ]);
+        Log::info('Fetching pending fees students:', [
+            'count' => $pendingFees->count(),
+        ]);
 
-            return view('student.pendingfees.pending', [
-                'pendingFees' => $pendingFees,
-                'totalCount' => $pendingFees->count(),
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error loading pending fees students: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Failed to load students');
-        }
+        return view('student.pendingfees.pending', [
+            'pendingFees' => $pendingFees,
+            'totalCount' => $pendingFees->count(),
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Error loading pending fees students: ' . $e->getMessage());
+        return redirect()->back()
+            ->with('error', 'Failed to load students');
     }
+}
 
     /**
      * Display student details (read-only view)
@@ -502,11 +505,8 @@ class PendingFeesController extends Controller
     /**
      * Process payment and transfer to SMstudents if fully paid
      */
-    /**
- * Process payment and transfer to SMstudents if fully paid
- * 📋 NOW TRACKS ALL PAYMENTS IN HISTORY
- */
- public function processPayment(Request $request, $id)
+
+  public function processPayment(Request $request, $id)
     {
         try {
             Log::info('=== PAYMENT PROCESSING STARTED ===', ['id' => $id]);
@@ -523,34 +523,30 @@ class PendingFeesController extends Controller
             ]);
 
             $student = PendingFee::findOrFail($id);
-
             $paymentAmount = floatval($validated['payment_amount']);
-            $otherCharges = floatval($validated['other_charges'] ?? 0);
-            $paymentMode = $validated['payment_mode'];
-            $installmentNumber = $validated['installment_number'] ?? null;
-
+            
             // Create payment record
             $paymentRecord = [
                 'date' => $validated['payment_date'],
                 'amount' => $paymentAmount,
                 'method' => $validated['payment_type'],
-                'payment_mode' => $paymentMode,
-                'installment_number' => $installmentNumber,
+                'payment_mode' => $validated['payment_mode'],
+                'installment_number' => $validated['installment_number'] ?? null,
                 'transaction_id' => $validated['transaction_id'] ?? null,
                 'remarks' => $validated['remarks'] ?? null,
-                'other_charges' => $otherCharges,
+                'other_charges' => floatval($validated['other_charges'] ?? 0),
                 'recorded_at' => now()->toDateTimeString(),
                 'recorded_by' => auth()->user()->name ?? 'Admin',
             ];
 
-            // Get existing payment history
+            // Update payment history
             $paymentHistory = $student->paymentHistory ?? [];
             if (!is_array($paymentHistory)) {
                 $paymentHistory = [];
             }
             $paymentHistory[] = $paymentRecord;
 
-            // 📋 GET EXISTING HISTORY
+            // Update history log
             $existingHistory = $student->history ?? [];
             if (!is_array($existingHistory)) {
                 $existingHistory = [];
@@ -558,143 +554,100 @@ class PendingFeesController extends Controller
             
             $userName = auth()->user()->name ?? 'Admin';
             $studentName = $student->name;
-
-            // 📋 CREATE DETAILED PAYMENT HISTORY ENTRY
-            $installmentText = $installmentNumber 
-                ? " for Installment #{$installmentNumber}" 
-                : "";
             
-            $paymentDescription = "{$userName} paid ₹" . number_format($paymentAmount, 2) 
-                . " for {$studentName}{$installmentText} via {$validated['payment_type']}.";
-            
-            if ($validated['transaction_id'] ?? null) {
-                $paymentDescription .= " (Txn: {$validated['transaction_id']})";
-            }
-
             $paymentHistoryEntry = [
                 'action' => 'Fee Paid',
-                'description' => $paymentDescription,
+                'description' => "{$userName} paid ₹" . number_format($paymentAmount, 2) . " for {$studentName} via {$validated['payment_type']}.",
                 'user' => $userName,
                 'timestamp' => now()->toIso8601String(),
                 'created_at' => now()->toDateTimeString(),
                 'details' => [
                     'amount' => $paymentAmount,
                     'payment_method' => $validated['payment_type'],
-                    'payment_mode' => $paymentMode,
-                    'installment_number' => $installmentNumber,
+                    'payment_mode' => $validated['payment_mode'],
+                    'installment_number' => $validated['installment_number'] ?? null,
                     'transaction_id' => $validated['transaction_id'] ?? null,
-                    'other_charges' => $otherCharges,
-                    'remarks' => $validated['remarks'] ?? null
                 ]
             ];
             
-            // Add at the beginning of history array
             array_unshift($existingHistory, $paymentHistoryEntry);
 
             // Calculate totals
             $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
-            
-            if ($totalFeesWithGST == 0) {
-                $totalFees = floatval($student->total_fees ?? 0);
-                $gstAmount = floatval($student->gst_amount ?? 0);
-                
-                if ($gstAmount == 0 && $totalFees > 0) {
-                    $gstAmount = $totalFees * 0.18;
-                }
-                
-                $totalFeesWithGST = $totalFees + $gstAmount;
-            }
-
             $newPaidAmount = 0;
             foreach ($paymentHistory as $p) {
                 $newPaidAmount += floatval($p['amount'] ?? 0);
             }
             
-            $newRemainingBalance = $totalFeesWithGST - $newPaidAmount;
+            $newRemainingBalance = max(0, $totalFeesWithGST - $newPaidAmount);
+            $isFullyPaid = $newRemainingBalance <= 5;
 
-            // Check if fully paid
-            $isFullyPaid = false;
-            if ($newRemainingBalance <= 5 && $newRemainingBalance >= -5) {
-                $newRemainingBalance = 0;
-                $isFullyPaid = true;
-            } else {
-                $newRemainingBalance = max(0, $newRemainingBalance);
-            }
+            // ✅ IF FULLY PAID - Transfer to BOTH collections
+            if ($isFullyPaid) {
+                Log::info('✅ FEES FULLY PAID - Transferring to BOTH collections');
 
-            Log::info('💰 Payment Calculation:', [
-                'total_fees' => $totalFeesWithGST,
-                'paid_amount' => $newPaidAmount,
-                'remaining' => $newRemainingBalance,
-                'is_fully_paid' => $isFullyPaid
-            ]);
-
-            // ✅ IF FULLY PAID - Transfer to SMstudents
-            if ($isFullyPaid && $newRemainingBalance == 0) {
-                Log::info('✅ FEES FULLY PAID - Transferring to SMstudents');
-
-                $totalFees = floatval($student->total_fees ?? ($totalFeesWithGST / 1.18));
-                $gstAmount = floatval($student->gst_amount ?? ($totalFeesWithGST - $totalFees));
-
-                // 📋 ADD COMPLETION HISTORY ENTRY
+                // Add completion history
                 $completionHistoryEntry = [
                     'action' => 'Fee Paid & Student Onboarding Complete',
-                    'description' => "{$userName} completed the full fee payment for {$studentName} (Total: ₹" . number_format($totalFeesWithGST, 2) . "). Student transferred to Active Students.",
+                    'description' => "{$userName} completed the full fee payment for {$studentName}. Student transferred to Active Students.",
                     'user' => $userName,
                     'timestamp' => now()->toIso8601String(),
                     'created_at' => now()->toDateTimeString(),
                     'details' => [
                         'total_amount_paid' => $newPaidAmount,
-                        'payment_installments' => count($paymentHistory),
-                        'transfer_reason' => 'Full fees payment completed'
+                        'payment_installments' => count($paymentHistory)
                     ]
                 ];
                 
                 array_unshift($existingHistory, $completionHistoryEntry);
 
-                // Create activity log for SMstudents
-                $activities = [];
-                
-                // Add payment completion activity
-                $activities[] = [
-                    'title' => 'Fees Payment Completed',
-                    'description' => "paid full fees amount of ₹" . number_format($totalFeesWithGST, 2),
-                    'performed_by' => $userName,
-                    'created_at' => now()->toIso8601String(),
+                // Create activities
+                $activities = [
+                    [
+                        'title' => 'Fees Payment Completed',
+                        'description' => "paid full fees amount of ₹" . number_format($totalFeesWithGST, 2),
+                        'performed_by' => $userName,
+                        'created_at' => now()->toIso8601String(),
+                    ],
+                    [
+                        'title' => 'Student Activated',
+                        'description' => "transferred student from pending fees to active students",
+                        'performed_by' => $userName,
+                        'created_at' => now()->toIso8601String(),
+                    ]
                 ];
 
-                // Add transfer activity
-                $activities[] = [
-                    'title' => 'Student Activated',
-                    'description' => "transferred student from pending fees to active students",
-                    'performed_by' => $userName,
-                    'created_at' => now()->toIso8601String(),
-                ];
-
-                // Complete field mapping
+                // Prepare complete student data
                 $smStudentData = [
-                    'roll_no' => $student->roll_no ?? 'SM' . now()->format('ymd') . rand(100, 999),
+                    'roll_no' => $this->generateRollNumber(),
                     'student_name' => $student->name,
-                    'email' => $student->email ?? $student->studentContact ?? ($student->name . '@temp.com'),
+                    'name' => $student->name,
+                    'email' => $student->email ?? ($student->name . '@temp.com'),
                     'phone' => $student->mobileNumber ?? null,
                     'father_name' => $student->father ?? null,
+                    'father' => $student->father ?? null,
                     'mother_name' => $student->mother ?? null,
+                    'mother' => $student->mother ?? null,
                     'dob' => $student->dob ?? null,
                     'father_contact' => $student->mobileNumber ?? null,
+                    'mobileNumber' => $student->mobileNumber ?? null,
                     'father_whatsapp' => $student->fatherWhatsapp ?? null,
                     'mother_contact' => $student->motherContact ?? null,
+                    'category' => $student->category ?? null,
                     'gender' => $student->gender ?? null,
                     'father_occupation' => $student->fatherOccupation ?? null,
-                    'category' => $student->category ?? null,
                     'mother_occupation' => $student->motherOccupation ?? null,
                     'state' => $student->state ?? null,
                     'city' => $student->city ?? null,
                     'pincode' => $student->pinCode ?? null,
                     'address' => $student->address ?? null,
                     'batch_name' => $student->batchName ?? null,
+                    'batch_id' => $student->batch_id ?? null,
+                    'course_id' => $student->course_id ?? null,
                     'course_name' => $student->courseName ?? null,
                     'delivery_mode' => $student->deliveryMode ?? 'Offline',
-                    'total_fees' => $totalFees,
-                    'gst_amount' => $gstAmount,
+                    'total_fees' => floatval($student->total_fees ?? 0),
+                    'gst_amount' => floatval($student->gst_amount ?? 0),
                     'total_fees_inclusive_tax' => $totalFeesWithGST,
                     'paid_fees' => $newPaidAmount,
                     'paidAmount' => $newPaidAmount,
@@ -706,48 +659,85 @@ class PendingFeesController extends Controller
                     'transferred_from' => 'pending_fees',
                     'transferred_at' => now(),
                     'activities' => $activities,
-                    'history' => $existingHistory, // 📋 COMPLETE HISTORY
+                    'history' => $existingHistory,
+                    'admission_date' => now(),
+                    
+                    // Transfer all other fields
+                    'course_type' => $student->courseType ?? null,
+                    'delivery' => $student->deliveryMode ?? null,
+                    'medium' => $student->medium ?? null,
+                    'board' => $student->board ?? null,
+                    'course_content' => $student->courseContent ?? null,
+                    'previous_class' => $student->previousClass ?? null,
+                    'academic_medium' => $student->previousMedium ?? null,
+                    'school_name' => $student->schoolName ?? null,
+                    'academic_board' => $student->previousBoard ?? null,
+                    'passing_year' => $student->passingYear ?? null,
+                    'percentage' => $student->percentage ?? null,
+                    'is_repeater' => $student->isRepeater ?? 'No',
+                    'scholarship_test' => $student->scholarshipTest ?? 'No',
+                    'board_percentage' => $student->lastBoardPercentage ?? null,
+                    'last_board_percentage' => $student->lastBoardPercentage ?? null,
+                    'competition_exam' => $student->competitionExam ?? 'No',
+                    
+                    // Scholarship data
+                    'eligible_for_scholarship' => $student->eligible_for_scholarship ?? 'No',
+                    'scholarship_name' => $student->scholarship_name ?? null,
+                    'discount_percentage' => floatval($student->discount_percentage ?? 0),
+                    
+                    // Documents
+                    'passport_photo' => $student->passport_photo ?? null,
+                    'marksheet' => $student->marksheet ?? null,
+                    'caste_certificate' => $student->caste_certificate ?? null,
+                    'scholarship_proof' => $student->scholarship_proof ?? null,
+                    'secondary_marksheet' => $student->secondary_marksheet ?? null,
+                    'senior_secondary_marksheet' => $student->senior_secondary_marksheet ?? null,
                 ];
 
-                Log::info('✅ Creating SMstudents record with complete history', [
-                    'history_count' => count($existingHistory),
-                    'payment_count' => count($paymentHistory)
-                ]);
+                // ⭐ SAVE TO BOTH COLLECTIONS
+                try {
+                    $result = SMstudents::createInBothCollections($smStudentData);
+                    
+                    Log::info('✅ Student saved to BOTH collections successfully', [
+                        'main_student_id' => $result['main_student']->_id,
+                        'course_student_id' => $result['course_student']->_id,
+                        'course_collection' => $result['course_collection'],
+                        'roll_no' => $result['main_student']->roll_no
+                    ]);
+                    
+                    // Mark pending fee as completed (don't delete for audit)
+                    $student->update([
+                        'status' => 'completed',
+                        'transferred_at' => now(),
+                        'sm_student_id' => (string)$result['main_student']->_id
+                    ]);
 
-                $smStudent = SMstudents::create($smStudentData);
-                $student->delete();
-
-                return redirect()->route('smstudents.index')
-                    ->with('success', "✅ Payment successful! Student '{$smStudent->student_name}' moved to Active Students. Total Paid: ₹" . number_format($newPaidAmount, 2));
+                    return redirect()->route('smstudents.index')
+                        ->with('success', "✅ Payment successful! Student '{$result['main_student']->student_name}' enrolled and saved to BOTH main collection and course collection ({$result['course_collection']}). Total Paid: ₹" . number_format($newPaidAmount, 2));
+                        
+                } catch (\Exception $e) {
+                    Log::error('❌ Failed to save to both collections', [
+                        'error' => $e->getMessage()
+                    ]);
+                    
+                    return redirect()->back()
+                        ->with('error', 'Payment processed but enrollment failed: ' . $e->getMessage())
+                        ->withInput();
+                }
             }
 
-            // ✅ PARTIAL PAYMENT - Update with history
-            $feeStatus = $newPaidAmount > 0 ? 'partial' : 'pending';
-
+            // ✅ PARTIAL PAYMENT - Update pending fees
             $student->paid_fees = $newPaidAmount;
             $student->paidAmount = $newPaidAmount;
             $student->remaining_fees = $newRemainingBalance;
-            $student->fee_status = $feeStatus;
+            $student->fee_status = $newPaidAmount > 0 ? 'partial' : 'pending';
             $student->last_payment_date = $validated['payment_date'];
             $student->setAttribute('paymentHistory', $paymentHistory);
-            $student->setAttribute('history', $existingHistory); // 📋 SAVE HISTORY
+            $student->setAttribute('history', $existingHistory);
             $student->save();
 
-            Log::info('✅ Partial payment recorded', [
-                'paid_now' => $paymentAmount,
-                'total_paid' => $newPaidAmount,
-                'remaining' => $newRemainingBalance,
-                'history_entries' => count($existingHistory)
-            ]);
-
-            $message = "Payment of ₹" . number_format($paymentAmount, 2) . " recorded";
-            if ($installmentNumber) {
-                $message .= " (Installment #{$installmentNumber})";
-            }
-            $message .= "! Total Paid: ₹" . number_format($newPaidAmount, 2) . " | Remaining: ₹" . number_format($newRemainingBalance, 2);
-
             return redirect()->route('student.pendingfees.pending')
-                ->with('success', $message);
+                ->with('success', "Payment of ₹" . number_format($paymentAmount, 2) . " recorded! Remaining: ₹" . number_format($newRemainingBalance, 2));
 
         } catch (\Exception $e) {
             Log::error('❌ Payment processing failed', [

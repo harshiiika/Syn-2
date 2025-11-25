@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Pay Fees - Enhanced</title>
+  <title>Pay Fees</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{{asset('css/emp.css')}}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -532,10 +532,6 @@
 
             <!-- Installment Cards -->
             <div id="installmentCards" style="display: none;">
-              <div class="alert-custom">
-                <i class="fas fa-info-circle"></i> <strong>Select an installment to pay:</strong>
-                <p class="mb-0 mt-2 small">Original plan: 40%, 30%, 30%. You can pay any amount, and the remaining will adjust to future installments.</p>
-              </div>
 
               <!-- Installment 1 (40%) -->
               <div class="installment-card {{ $adjustedInstallments['installment_1']['status'] }} selectable" 

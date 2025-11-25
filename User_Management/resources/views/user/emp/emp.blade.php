@@ -887,7 +887,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 
 <!-- Your custom JS (must come after jQuery + Bootstrap) -->
-<script src="{{ asset('js/emp.js') }}"></script>
+<script src="{{ asset(path: 'js/emp.js') }}"></script>
 
 <!-- Enhanced JavaScript for Password Update and upload modal -->
 <script>

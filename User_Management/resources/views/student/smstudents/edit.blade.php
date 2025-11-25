@@ -480,9 +480,6 @@
                 <select name="city" class="form-select">
                   <option value="">Select City</option>
                   <option value="Bikaner" {{ ($student->city ?? '') == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
-                  <option value="Jaipur" {{ ($student->city ?? '') == 'Jaipur' ? 'selected' : '' }}>Jaipur</option>
-                  <option value="Jodhpur" {{ ($student->city ?? '') == 'Jodhpur' ? 'selected' : '' }}>Jodhpur</option>
-                  <!-- Add more cities as needed -->
                 </select>
               </div>
             </div>

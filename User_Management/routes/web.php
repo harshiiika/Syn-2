@@ -27,6 +27,7 @@ use App\Http\Controllers\Attendance\StudentAController;
 use App\Http\Controllers\TestSeries\TestSeriesController;
 use App\Http\Controllers\study_material\Unitscontroller;
 use App\Http\Controllers\study_material\DispatchController;
+use App\Http\Controllers\Reports\AttendanceReportController;
 
 
 
@@ -236,29 +237,27 @@ Route::prefix('student/pendingfees')->name('student.pendingfees.')->group(functi
 // ========================================
 // 4. ACTIVE STUDENTS (SM Students)
 // ========================================
-Route::prefix('smstudents')
-    ->name('smstudents.')
-    ->group(function () {
-        // List and export routes
-        Route::get('/', [SmStudentsController::class, 'index'])->name('index');
-        Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
-        
-        // Specific actions - MUST BE BEFORE /{id} route
-        Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
-        Route::get('/{id}/history', [SmStudentsController::class, 'getHistory'])->name('history');
-        Route::get('/{id}/testseries', [SmStudentsController::class, 'testSeries'])->name('testseries');
-        Route::get('/{id}/debug', [SmStudentsController::class, 'debug'])->name('debug');
-        
-        // Update & actions
-        Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
-        Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
-        Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');
-        Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
-        Route::post('/{id}/deactivate', [SmStudentsController::class, 'deactivate'])->name('deactivate');
-        
-        // Generic view route - MUST BE LAST
-        Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
-    });
+
+// Student Management Routes with Course Collection Support
+Route::prefix('smstudents')->name('smstudents.')->group(function () {
+    Route::get('/export', [SmStudentsController::class, 'export'])->name('export');
+
+    Route::get('/', [SmStudentsController::class, 'index'])->name('index');
+    Route::get('/course/{courseName}', [SmStudentsController::class, 'showByCourse'])->name('byCourse');
+    Route::get('/statistics', [SmStudentsController::class, 'getCourseStatistics'])->name('statistics');
+    Route::get('/collections', [SmStudentsController::class, 'listCourseCollections'])->name('collections');
+    Route::get('/{id}', [SmStudentsController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [SmStudentsController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [SmStudentsController::class, 'update'])->name('update');
+    Route::post('/{id}/update-password', [SmStudentsController::class, 'updatePassword'])->name('updatePassword');
+    Route::post('/{id}/update-shift', [SmStudentsController::class, 'updateShift'])->name('updateShift');
+    Route::post('/{id}/update-batch', [SmStudentsController::class, 'updateBatch'])->name('updateBatch');
+    Route::get('/{id}/history', [SmStudentsController::class, 'getHistory'])->name('history');
+Route::get('/student/{id}/attendance', [SmStudentsController::class, 'studentAttendance'])
+    ->name('smstudents.attendance');
+    Route::get('/{id}/attendance/data', [SmStudentsController::class, 'getStudentAttendanceData'])
+        ->name('attendance.data');
+});
 
 Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStudents'])->name('onboard.transfer');
 
@@ -391,26 +390,38 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
     Route::get('/view/{id}', [TestSeriesController::class, 'viewTest'])->name('viewTest');
     // AJAX endpoint - Get course subjects
     Route::get('/course/{courseId}/subjects', [TestSeriesController::class, 'getCourseSubjects'])->name('course_subjects');
-});
+    
+    // Syllabus Management Routes
+    Route::post('/{id}/upload-syllabus', [TestSeriesController::class, 'uploadSyllabus'])->name('upload_syllabus');
+    Route::get('/{id}/download-syllabus', [TestSeriesController::class, 'downloadSyllabus'])->name('download_syllabus');
+    Route::delete('/{id}/delete-syllabus', [TestSeriesController::class, 'deleteSyllabus'])->name('delete_syllabus');
+    
+    // Result Management Routes
+    Route::post('/upload-result/{id}', [TestSeriesController::class, 'uploadResult'])->name('upload_result');
+    Route::post('/lock-result/{id}', [TestSeriesController::class, 'lockResult'])->name('lock_result');
+    Route::get('/generate-template/{id}', [TestSeriesController::class, 'generateResultTemplate'])->name('generate_template');
 
-// // Study Material - Units Routes
-// Route::prefix('study_material')->group(function () {
-//     Route::get('/units', [Unitscontroller::class, 'index'])->name('units.index');
-//     Route::get('/units/get-data', [Unitscontroller::class, 'getData'])->name('units.getData');
-//     Route::get('/units/get-courses', [Unitscontroller::class, 'getCourses'])->name('units.getCourses');
-//     Route::get('/units/get-subjects', [Unitscontroller::class, 'getSubjectsByCourse'])->name('units.getSubjects');
-//     Route::post('/units', [Unitscontroller::class, 'store'])->name('units.store');
-//     Route::get('/units/{id}', [Unitscontroller::class, 'show'])->name('units.show');
-//     Route::put('/units/{id}', [Unitscontroller::class, 'update'])->name('units.update');
-//     Route::delete('/units/{id}', [Unitscontroller::class, 'destroy'])->name('units.destroy');
-// });
+    Route::post('/{testSeriesId}/tests', [TestSeriesController::class, 'storeTest'])->name('store_test');
+    Route::put('/tests/{testId}', [TestSeriesController::class, 'updateTest'])->name('update_test');
+    Route::delete('/tests/{testId}', [TestSeriesController::class, 'destroy_test'])->name('destroy_test');
+    
+    Route::get('/course/{courseId}/batches', [TestSeriesController::class, 'getCourseBatches'])
+        ->name('course_batches');
+
+     Route::post('/{testSeriesId}/tests/multiple', [TestSeriesController::class, 'storeMultipleTests'])
+        ->name('store_multiple_tests');
+    });
+    
 
 /*
 |--------------------------------------------------------------------------
-| Units Routes - FINAL WORKING VERSION
+| Units Routes
 |--------------------------------------------------------------------------
+<<<<<<< HEAD
+=======
 |
 |
+>>>>>>> 25ebacb57ae821fb9249969068d766e6e5144c4e
 */
 
 Route::prefix('study_material')->group(function () {
@@ -427,9 +438,6 @@ Route::prefix('study_material')->group(function () {
 |--------------------------------------------------------------------------
 | Study Material - Dispatch Routes
 |--------------------------------------------------------------------------
-|
-|
-|
 */
 // Dispatch Study Material Routes
 Route::prefix('study_material/dispatch')->name('study_material.dispatch.')->group(function () {
@@ -458,25 +466,55 @@ Route::prefix('study_material/dispatch')->name('study_material.dispatch.')->grou
 });
 
 
+Route::prefix('reports')->name('reports.')->group(function () {
+    // Walk-in Reports
+    Route::get('/walkin', [App\Http\Controllers\Reports\WalkinController::class, 'index'])
+        ->name('walkin.index');
+    
+    Route::get('/walkin/export', [App\Http\Controllers\Reports\WalkinController::class, 'export'])
+        ->name('walkin.export');
+
+    // Attendance Reports - Student
+    Route::prefix('attendance')->name('attendance.')->group(function () {
+        Route::get('/student', [App\Http\Controllers\Reports\AttendanceReportController::class, 'studentIndex'])
+            ->name('student.index');
+        
+        Route::get('/student/data', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getStudentData'])
+            ->name('student.data');
+        
+        Route::get('/student/batches', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getBatchesByCourse'])
+            ->name('student.batches');
+        
+        Route::get('/student/rolls', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getRollsByBatch'])
+            ->name('student.rolls');
+    });
+});
+
+Route::get('/reports/attendance/student/rolls', [AttendanceReportController::class, 'getRollsByBatch'])
+    ->name('reports.attendance.student.rolls');
+Route::prefix('study_material/dispatch')->group(function () {
+    Route::get('/', [DispatchController::class, 'index']);
+    Route::get('/get-batches', [DispatchController::class, 'getBatches']);
+    Route::get('/get-students', [DispatchController::class, 'getStudents']);
+    Route::post('/dispatch-material', [DispatchController::class, 'dispatchMaterial']);
+});
+
 /*
 |--------------------------------------------------------------------------
-| Fees Management Routes
+| Fees Management Routes - COMPLETE VERSION
 |--------------------------------------------------------------------------
 */
-// Add these routes to your existing web.php file
-Route::prefix('fees-management')->name('fees.')->group(function () {
-    // Main page
-    Route::get('/', [FeesManagementController::class, 'index'])->name('management.index');
-    
-    // Search and filter routes
-    Route::post('/search-student', [FeesManagementController::class, 'searchStudent'])->name('collect.search');
-    Route::post('/search-status', [FeesManagementController::class, 'searchByStatus'])->name('status.search');
-    Route::post('/filter-transactions', [FeesManagementController::class, 'filterTransactions'])->name('transaction.filter');
-    Route::get('/export-pending', [FeesManagementController::class, 'exportPendingFees'])->name('export');
-    
-    // Dynamic modal data routes
-    Route::get('/student-details/{id}', [FeesManagementController::class, 'getStudentDetails'])->name('student.details');
-    Route::get('/installment-history/{id}', [FeesManagementController::class, 'getInstallmentHistory'])->name('installment.history');
-    Route::get('/other-charges/{id}', [FeesManagementController::class, 'getOtherCharges'])->name('other.charges');
-    Route::get('/transaction-history/{id}', [FeesManagementController::class, 'getTransactionHistory'])->name('transaction.history');
+Route::prefix('fees-management')->group(function () {
+    Route::get('/', [FeesManagementController::class, 'index'])->name('fees.management.index');
+    Route::post('collect-fees/search', [FeesManagementController::class, 'searchStudent'])->name('fees.collect.search');
+    Route::post('status/search', [FeesManagementController::class, 'searchByStatus'])->name('fees.status.search');
+    Route::post('transactions/filter', [FeesManagementController::class, 'filterTransactions'])->name('fees.transaction.filter');
+    Route::get('student-details/{id}', [FeesManagementController::class, 'getStudentDetails']);
+    Route::get('installment-history/{id}', [FeesManagementController::class, 'getInstallmentHistory']);
+    Route::get('other-charges/{id}', [FeesManagementController::class, 'getOtherCharges']);
+    Route::get('transaction-history/{id}', [FeesManagementController::class, 'getTransactionHistory']);
+    Route::post('add-other-charges', [FeesManagementController::class, 'addOtherCharges']);
+    Route::post('process-refund', [FeesManagementController::class, 'processRefund']);
+    Route::post('apply-scholarship', [FeesManagementController::class, 'applyScholarship']);
+    Route::get('export-pending-fees', [FeesManagementController::class, 'exportPendingFees'])->name('fees.export');
 });
