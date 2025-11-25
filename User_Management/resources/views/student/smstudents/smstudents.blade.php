@@ -168,7 +168,7 @@
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-    <div class="accordion accordion-flush" id="accordionFlushExample">
+  <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -180,8 +180,10 @@
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-           <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-           <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i>
+                    Employee</a></li>
+                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
+                      id="side-icon"></i> Batches Assignment</a></li>
               </ul>
             </div>
           </div>
@@ -239,7 +241,7 @@
           <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
                 <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
                 <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
@@ -276,9 +278,8 @@
           <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+                <li><a class="item" href="{{ route(name: 'attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
                 <li><a class="item" href="{{ route(name: 'attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
-
               </ul>
             </div>
           </div>
@@ -313,8 +314,12 @@
           <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i cl  ass="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
-              </ul>
+                <li>
+    <a href="{{ route('test_series.index') }}">
+        <i class="icon-class"></i> 
+        <span>Test Master</span>
+    </a>
+</li>              </ul>
             </div>
           </div>
         </div>
@@ -330,8 +335,8 @@
           <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -356,19 +361,22 @@
       <div class="whole">
         <!-- Controls -->
         <div class="dd">
-          <div class="line">
-            <h6>Show Entries:</h6>
+           <div class="line">
+            <h6>Show Enteries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">10</button>
+            aria-expanded="false">
+            {{ request('per_page', 10) }}
+          </button>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item entries-option" href="#" data-value="10">10</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="25">25</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="50">50</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="100">100</a></li>
+                <li><a class="dropdown-item">10</a></li>
+                <li><a class="dropdown-item">25</a></li>
+                <li><a class="dropdown-item">50</a></li>
+                <li><a class="dropdown-item">100</a></li>
               </ul>
             </div>
           </div>
+          
           <div class="search">
             <h4 class="search-text">Search</h4>
             <input type="search" placeholder="" class="search-holder" id="searchInput">
@@ -445,7 +453,7 @@
 
                        <li>
   <button class="dropdown-item" type="button" onclick="loadStudentHistory('{{ $studentId }}'); return false;">
-    <i class="fas fa-history me-2"></i>History
+    History
   </button>
 </li>
                       @else

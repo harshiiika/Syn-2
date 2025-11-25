@@ -604,7 +604,6 @@ height: 30px;
     border-radius: 20px;
     font-size: 14px;
     font-weight: 500;
-    transition: all 0.2s ease;
 }
 
 .subject-tag:hover {

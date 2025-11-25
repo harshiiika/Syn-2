@@ -234,8 +234,8 @@
           <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -250,10 +250,7 @@
     <div class="right" id="right">
       <div class="top">
         <div class="top-text">
-          <h4><i class="fas fa-list-alt me-2"></i>TEST SERIES - {{ $courseName }}</h4>
-          <a href="{{ route('test_series.index') }}" class="btn btn-sm btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back
-          </a>
+          <h4>TEST SERIES - {{ $courseName }}</h4>
         </div>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createTestSeriesModal" style="background-color: #ff6607ff; border-color: #ff6607ff;">
       Create Test Series
@@ -594,6 +591,7 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset(path: 'js/emp.js') }}"></script>
   <script>
 document.querySelector('#createTestSeriesModal form').addEventListener('submit', function(e) {
     const testType = document.getElementById('testSeriesType').value;
@@ -749,8 +747,6 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         }
       };
     });
-
-
     document.addEventListener('DOMContentLoaded', function() {
   console.log('Test Series Detail Page JS loaded');
 

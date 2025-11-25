@@ -82,22 +82,117 @@ class OnboardController extends Controller
     /**
      * Show the form for editing onboarded student
      */
-    public function edit($id)
+   public function edit($id)
+{
+    try {
+        $student = Onboard::findOrFail($id);
+        
+        // 🔍 DEBUG: Log ALL student course-related fields
+        Log::info('=== STUDENT COURSE DEBUG ===', [
+            'student_id' => $id,
+            'courseName' => $student->courseName ?? 'NOT SET',
+            'course' => $student->course ?? 'NOT SET',
+            'course_name' => $student->course_name ?? 'NOT SET',
+            'course_id' => $student->course_id ?? 'NOT SET',
+        ]);
+        
+        // Try multiple field names to get the course
+        $studentCourseName = $student->courseName 
+                          ?? $student->course_name 
+                          ?? $student->course 
+                          ?? null;
+        
+        Log::info('Selected course name for filtering', [
+            'course_name' => $studentCourseName
+        ]);
+        
+        // Get ALL active batches first for debugging
+        $allBatches = Batch::where('status', 'Active')
+            ->orderBy('batch_id', 'asc')
+            ->get(['batch_id', 'course', 'name']);
+        
+        Log::info('=== ALL ACTIVE BATCHES ===', [
+            'total_count' => $allBatches->count(),
+            'sample_batches' => $allBatches->take(3)->map(function($b) {
+                return [
+                    'batch_id' => $b->batch_id,
+                    'course' => $b->course ?? 'NO COURSE SET'
+                ];
+            })->toArray()
+        ]);
+        
+        // Filter batches by student's course
+        if ($studentCourseName) {
+            $batches = Batch::where('status', 'Active')
+                ->where('course', $studentCourseName)
+                ->orderBy('batch_id', 'asc')
+                ->get();
+            
+            Log::info('=== FILTERED BATCHES ===', [
+                'filter_course' => $studentCourseName,
+                'filtered_count' => $batches->count(),
+                'filtered_batch_codes' => $batches->pluck('batch_id')->toArray()
+            ]);
+        } else {
+            $batches = $allBatches;
+            Log::warning('⚠️ Student course not found, showing all active batches');
+        }
+        
+        $courses = Courses::all();
+        
+        return view('student.onboard.edit', compact('student', 'batches', 'courses'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error loading onboard edit form: ' . $e->getMessage());
+        return back()->with('error', 'Failed to load student data');
+    }
+}
+
+    /**
+     * AJAX endpoint to get batches filtered by course
+     * Call this when course is changed in the frontend
+     */
+    public function getBatchesByCourse(Request $request)
     {
         try {
-            $student = Onboard::findOrFail($id);
-            $batches = Batch::where('status', 'Active')->get();
-            $courses = Courses::all();
+            $courseName = $request->input('course');
             
-            return view('student.onboard.edit', compact('student', 'batches', 'courses'));
+            if (empty($courseName)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Course name is required'
+                ], 400);
+            }
+            
+            $batches = Batch::where('status', 'Active')
+                ->where('course', $courseName)
+                ->orderBy('batch_id', 'asc')
+                ->get(['_id', 'batch_id', 'name', 'shift', 'mode', 'start_date']);
+            
+            Log::info('Batches fetched by course', [
+                'course' => $courseName,
+                'batch_count' => $batches->count()
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'batches' => $batches
+            ]);
+            
         } catch (\Exception $e) {
-            Log::error('Error loading onboard edit form: ' . $e->getMessage());
-            return back()->with('error', 'Failed to load student data');
+            Log::error('Error fetching batches by course', [
+                'error' => $e->getMessage()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch batches: ' . $e->getMessage()
+            ], 500);
         }
     }
 
     /**
-     *   UPDATE - Track MEANINGFUL changes + Handle file uploads + Preserve existing history
+     * Track MEANINGFUL changes + Handle file uploads + Preserve existing history
      */
     public function update(Request $request, $id)
     {
@@ -110,10 +205,43 @@ class OnboardController extends Controller
             // Update fields from request
             $updateData = $request->except(['_token', '_method']);
             
-            //   TRACK ONLY MEANINGFUL CHANGES
+            // 🔥 CRITICAL FIX: Ensure batch_id is properly set
+            if (!empty($updateData['batchName'])) {
+                $batch = Batch::where('name', $updateData['batchName'])
+                    ->orWhere('batch_id', $updateData['batchName'])
+                    ->first();
+                
+                if ($batch) {
+                    $updateData['batch_id'] = (string)$batch->_id;
+                    $updateData['batch'] = $batch->batch_id ?? $batch->name;
+                    
+                    Log::info('✅ Batch data set during update', [
+                        'batch_id' => $updateData['batch_id'],
+                        'batch_name' => $updateData['batch']
+                    ]);
+                }
+            }
+            
+            // 🔥 CRITICAL FIX: Ensure course_id is properly set
+            if (!empty($updateData['courseName'])) {
+                $course = Courses::where('name', $updateData['courseName'])
+                    ->orWhere('course_name', $updateData['courseName'])
+                    ->first();
+                
+                if ($course) {
+                    $updateData['course_id'] = (string)$course->_id;
+                    $updateData['course'] = $course->name ?? $course->course_name;
+                    
+                    Log::info('✅ Course data set during update', [
+                        'course_id' => $updateData['course_id'],
+                        'course_name' => $updateData['course']
+                    ]);
+                }
+            }
+            
+            // Track meaningful changes
             $meaningfulChanges = [];
             
-            // Define fields that matter for history
             $importantFields = [
                 'name' => 'Student Name',
                 'father' => 'Father Name',
@@ -137,7 +265,6 @@ class OnboardController extends Controller
                 $oldValue = $originalData[$field] ?? null;
                 $newValue = $updateData[$field] ?? null;
                 
-                // Only track if value actually changed AND is not empty
                 if ($oldValue != $newValue && !is_null($newValue) && $newValue !== '') {
                     $meaningfulChanges[$label] = [
                         'from' => $oldValue ?? 'Not Set',
@@ -146,7 +273,7 @@ class OnboardController extends Controller
                 }
             }
             
-            //   Handle file uploads
+            // Handle file uploads
             $fileFields = [
                 'passport_photo' => 'documents/passport',
                 'marksheet' => 'documents/marksheet',
@@ -166,10 +293,9 @@ class OnboardController extends Controller
                 }
             }
             
-            //   PRESERVE EXISTING HISTORY (don't overwrite!)
+            // Preserve existing history
             $existingHistory = $student->history ?? [];
             
-            //   ONLY ADD HISTORY IF SOMETHING MEANINGFUL CHANGED
             if (!empty($meaningfulChanges)) {
                 $historyEntry = [
                     'action' => 'Student Details Updated',
@@ -180,24 +306,13 @@ class OnboardController extends Controller
                     'date' => now()->format('d M Y, h:i A')
                 ];
                 
-                // Add new entry at the beginning
                 array_unshift($existingHistory, $historyEntry);
                 
-                // Limit history to last 50 entries
                 if (count($existingHistory) > 50) {
                     $existingHistory = array_slice($existingHistory, 0, 50);
                 }
                 
                 $updateData['history'] = $existingHistory;
-                
-                Log::info('Adding history entry', [
-                    'student_id' => $id,
-                    'changes_count' => count($meaningfulChanges),
-                    'total_history' => count($existingHistory)
-                ]);
-            } else {
-                // No meaningful changes - just update data without new history
-                Log::info('No meaningful changes detected, skipping history entry');
             }
             
             // Update the student
@@ -214,85 +329,157 @@ class OnboardController extends Controller
 
     /**
      * Transfer student from Onboard to Pending Fees
+     * Preserves existing history and adds transfer entry
      */
-    /**
- * Transfer student from Onboard to Pending Fees
- * 📋 Preserves existing history and adds transfer entry
- */
-public function transfer(Request $request, $id)
-{
-    try {
-        $student = Onboard::findOrFail($id);
-        
-        Log::info('Starting transfer to pending fees', [
-            'student_id' => $id,
-            'student_name' => $student->name
-        ]);
-        
-        // Prepare data
-        $pendingFeesData = $student->toArray();
-        unset($pendingFeesData['_id']);
-        
-        // Set transfer metadata
-        $pendingFeesData['status'] = 'pending_fees';
-        $pendingFeesData['transferred_from'] = 'onboard';
-        $pendingFeesData['transferred_at'] = now();
-        $pendingFeesData['transferred_by'] = auth()->user()->email ?? 'Admin';
-        
-        // Initialize payment fields
-        $totalFeesInclusive = $pendingFeesData['total_fees_inclusive_tax'] ?? 
-                             ($pendingFeesData['total_fees'] ?? 0);
-        
-        $pendingFeesData['paid_fees'] = 0;
-        $pendingFeesData['remaining_fees'] = $totalFeesInclusive;
-        $pendingFeesData['fee_status'] = 'pending';
-        $pendingFeesData['paymentHistory'] = [];
-        
-        // 📋 PRESERVE EXISTING HISTORY AND ADD TRANSFER ENTRY
-        $existingHistory = $pendingFeesData['history'] ?? [];
-        
-        // Add new transfer entry (similar to your image format)
-        $transferEntry = [
-            'action' => 'Student Transferred to Pay Fees',
-            'description' => 'Admin transferred student ' . $student->name . ' to accounts section.',
-            'user' => auth()->user()->name ?? 'Admin',
-            'timestamp' => now()->toIso8601String(),
-            'created_at' => now()->toDateTimeString()
-        ];
-        
-        // Add at the beginning of history array
-        array_unshift($existingHistory, $transferEntry);
-        $pendingFeesData['history'] = $existingHistory;
-        
-        Log::info('✅ Transfer history entry added', [
-            'history_count' => count($existingHistory)
-        ]);
-        
-        // Create in pending_fees
-        $pendingFeeStudent = PendingFee::create($pendingFeesData);
-        
-        // Delete from onboard
-        $student->delete();
-        
-        Log::info('✅ Transfer to pending fees successful', [
-            'new_id' => $pendingFeeStudent->_id,
-            'student_name' => $pendingFeeStudent->name,
-            'history_count' => count($existingHistory)
-        ]);
-        
-        return redirect()->route('student.onboard.onboard')
-            ->with('success', "Student '{$pendingFeeStudent->name}' transferred to Pending Fees successfully");
+    public function transfer(Request $request, $id)
+    {
+        try {
+            $student = Onboard::findOrFail($id);
             
-    } catch (\Exception $e) {
-        Log::error('Transfer to pending fees failed', [
-            'student_id' => $id,
-            'error' => $e->getMessage()
-        ]);
-        
-        return redirect()->back()
-            ->with('error', 'Failed to transfer student: ' . $e->getMessage());
+            Log::info('Starting transfer to pending fees', [
+                'student_id' => $id,
+                'student_name' => $student->name
+            ]);
+            
+            // Prepare data
+            $pendingFeesData = $student->toArray();
+            unset($pendingFeesData['_id']);
+            
+            // Set transfer metadata
+            $pendingFeesData['status'] = 'pending_fees';
+            $pendingFeesData['transferred_from'] = 'onboard';
+            $pendingFeesData['transferred_at'] = now();
+            $pendingFeesData['transferred_by'] = auth()->user()->email ?? 'Admin';
+            
+            // Initialize payment fields
+            $totalFeesInclusive = $pendingFeesData['total_fees_inclusive_tax'] ?? 
+                                 ($pendingFeesData['total_fees'] ?? 0);
+            
+            $pendingFeesData['paid_fees'] = 0;
+            $pendingFeesData['remaining_fees'] = $totalFeesInclusive;
+            $pendingFeesData['fee_status'] = 'pending';
+            $pendingFeesData['paymentHistory'] = [];
+            
+            // Preserve existing history and add transfer entry
+            $existingHistory = $pendingFeesData['history'] ?? [];
+            
+            $transferEntry = [
+                'action' => 'Student Transferred to Pay Fees',
+                'description' => 'Admin transferred student ' . $student->name . ' to accounts section.',
+                'user' => auth()->user()->name ?? 'Admin',
+                'timestamp' => now()->toIso8601String(),
+                'created_at' => now()->toDateTimeString()
+            ];
+            
+            array_unshift($existingHistory, $transferEntry);
+            $pendingFeesData['history'] = $existingHistory;
+            
+            // Create in pending_fees
+            $pendingFeeStudent = PendingFee::create($pendingFeesData);
+            
+            // Delete from onboard
+            $student->delete();
+            
+            Log::info('✅ Transfer to pending fees successful', [
+                'new_id' => $pendingFeeStudent->_id,
+                'student_name' => $pendingFeeStudent->name
+            ]);
+            
+            return redirect()->route('student.onboard.onboard')
+                ->with('success', "Student '{$pendingFeeStudent->name}' transferred to Pending Fees successfully");
+                
+        } catch (\Exception $e) {
+            Log::error('Transfer to pending fees failed', [
+                'student_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Failed to transfer student: ' . $e->getMessage());
+        }
     }
-}
+
+    /**
+     * Transfer student from Pending to Onboard
+     */
+    public function transferToOnboard(Request $request, $id)
+    {
+        try {
+            Log::info('=== TRANSFER TO ONBOARD START ===', ['pending_id' => $id]);
+            
+            $pendingStudent = Student::findOrFail($id);
+            
+            // Prepare onboard data
+            $onboardData = $pendingStudent->toArray();
+            unset($onboardData['_id']);
+            
+            $now = Carbon::now('Asia/Kolkata');
+            
+            // Fix missing batch_id
+            if (empty($onboardData['batch_id'])) {
+                if (!empty($onboardData['batchName']) || !empty($onboardData['batch'])) {
+                    $batchName = $onboardData['batchName'] ?? $onboardData['batch'];
+                    $batch = Batch::where('name', $batchName)
+                        ->orWhere('batch_id', $batchName)
+                        ->first();
+                    
+                    if ($batch) {
+                        $onboardData['batch_id'] = (string)$batch->_id;
+                        $onboardData['batch'] = $batch->batch_id ?? $batch->name;
+                    }
+                }
+            }
+            
+            // Fix missing course_id
+            if (empty($onboardData['course_id'])) {
+                if (!empty($onboardData['courseName']) || !empty($onboardData['course'])) {
+                    $courseName = $onboardData['courseName'] ?? $onboardData['course'];
+                    $course = Courses::where('name', $courseName)
+                        ->orWhere('course_name', $courseName)
+                        ->first();
+                    
+                    if ($course) {
+                        $onboardData['course_id'] = (string)$course->_id;
+                        $onboardData['course'] = $course->name ?? $course->course_name;
+                    }
+                }
+            }
+            
+            $onboardData['status'] = 'onboarded';
+            $onboardData['transferred_from'] = 'pending';
+            $onboardData['onboardedAt'] = $now;
+            $onboardData['transferred_at'] = $now;
+            $onboardData['transferred_by'] = auth()->user()->email ?? 'Admin';
+            
+            // Build history
+            $completeHistory = $pendingStudent->history ?? [];
+            
+            $onboardHistoryEntry = [
+                'action' => 'Student Onboarded',
+                'description' => 'Student successfully onboarded and transferred to onboarding collection',
+                'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
+                'timestamp' => $now->toIso8601String(),
+                'date' => $now->format('d M Y, h:i A')
+            ];
+            
+            array_unshift($completeHistory, $onboardHistoryEntry);
+            $onboardData['history'] = $completeHistory;
+            
+            $onboardStudent = Onboard::create($onboardData);
+            $pendingStudent->delete();
+            
+            return redirect()->route('student.onboard.onboard')
+                ->with('success', "Student '{$onboardStudent->name}' successfully onboarded!");
+                
+        } catch (\Exception $e) {
+            Log::error('❌ Transfer to onboard failed', [
+                'error' => $e->getMessage()
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Failed to onboard student: ' . $e->getMessage());
+        }
+    }
 
     /**
      * Initialize history for existing students (run once)
@@ -304,7 +491,6 @@ public function transfer(Request $request, $id)
             $count = 0;
             
             foreach ($students as $student) {
-                // Only add initial history if it doesn't exist
                 if (!isset($student->history) || empty($student->history)) {
                     $initialHistory = [
                         [
@@ -336,7 +522,7 @@ public function transfer(Request $request, $id)
     }
 
     /**
-     * Check scholarship eligibility with Scholarship model integration
+     * Check scholarship eligibility
      */
     private function checkScholarshipEligibility($student)
     {
@@ -346,7 +532,6 @@ public function transfer(Request $request, $id)
             'discountPercent' => 0
         ];
 
-        // 1. Check if already has scholarship assigned
         if (in_array(strtolower($student->eligible_for_scholarship ?? ''), ['yes', 'true', '1'])) {
             $result['eligible'] = true;
             $result['reason'] = $student->scholarship_name ?? 'Scholarship Applied';
@@ -354,11 +539,9 @@ public function transfer(Request $request, $id)
             return $result;
         }
 
-        // 2. Get student's course and category
         $courseName = $student->course_name ?? $student->courseName ?? $student->course->name ?? null;
         $category = $student->category ?? 'General';
 
-        // 3. Check Scholarship Test
         if (in_array(strtolower($student->scholarshipTest ?? $student->scholarship_test ?? ''), ['yes'])) {
             $testPercentage = floatval($student->scholarship_percentage ?? 0);
             
@@ -373,7 +556,6 @@ public function transfer(Request $request, $id)
             }
         }
 
-        // 4. Check Board Exam Percentage
         if (!empty($student->percentage) || !empty($student->board_percentage)) {
             $boardPercent = floatval($student->percentage ?? $student->board_percentage ?? 0);
             
@@ -385,31 +567,6 @@ public function transfer(Request $request, $id)
                     'reason' => $scholarship->scholarship_name ?? 'Board Exam Merit',
                     'discountPercent' => floatval($scholarship->discount_percentage)
                 ];
-            }
-        }
-
-        // 5. Check Special Categories
-        $specialCategories = [
-            'economicWeakerSection' => Scholarship::APPLICABLE_EWS,
-            'economic_weaker_section' => Scholarship::APPLICABLE_EWS,
-            'armyPoliceBackground' => Scholarship::APPLICABLE_DEFENCE,
-            'army_police_background' => Scholarship::APPLICABLE_DEFENCE,
-            'speciallyAbled' => Scholarship::APPLICABLE_PWD,
-            'specially_abled' => Scholarship::APPLICABLE_PWD
-        ];
-
-        foreach ($specialCategories as $field => $applicableFor) {
-            if (in_array(strtolower($student->$field ?? ''), ['yes'])) {
-                $scholarships = Scholarship::getApplicableScholarships($category, $applicableFor, $courseName);
-                
-                if ($scholarships->isNotEmpty()) {
-                    $scholarship = $scholarships->first();
-                    return [
-                        'eligible' => true,
-                        'reason' => $scholarship->scholarship_name,
-                        'discountPercent' => floatval($scholarship->discount_percentage)
-                    ];
-                }
             }
         }
 
@@ -431,10 +588,8 @@ public function transfer(Request $request, $id)
                 ], 404);
             }
             
-            // Get history array, newest first
             $history = $student->history ?? [];
             
-            // If no history, return empty array
             if (empty($history)) {
                 return response()->json([
                     'success' => true,
@@ -442,7 +597,6 @@ public function transfer(Request $request, $id)
                 ]);
             }
             
-            // Sort by timestamp (newest first)
             usort($history, function($a, $b) {
                 $timeA = strtotime($a['timestamp'] ?? '');
                 $timeB = strtotime($b['timestamp'] ?? '');
@@ -462,85 +616,4 @@ public function transfer(Request $request, $id)
             ], 500);
         }
     }
-
-     public function transferToOnboard(Request $request, $id)
-    {
-        try {
-            Log::info('=== TRANSFER TO ONBOARD START ===', ['pending_id' => $id]);
-            
-            $pendingStudent = Student::findOrFail($id);
-            
-            // Prepare onboard data
-            $onboardData = $pendingStudent->toArray();
-            unset($onboardData['_id']);
-            
-            //   FIX: Use Carbon with timezone
-            $now = Carbon::now('Asia/Kolkata');
-            
-            // Set onboard metadata
-            $onboardData['status'] = 'onboarded';
-            $onboardData['transferred_from'] = 'pending';
-            $onboardData['onboardedAt'] = $now;
-            $onboardData['transferred_at'] = $now;
-            $onboardData['transferred_by'] = auth()->user()->email ?? 'Admin';
-            
-            //   BUILD COMPLETE HISTORY
-            $completeHistory = [];
-            
-            // 1. Get history from pending student (which came from inquiry)
-            if (isset($pendingStudent->history) && is_array($pendingStudent->history)) {
-                $completeHistory = $pendingStudent->history;
-            }
-            
-            // 2. Add "Transferred to Onboard" entry with CORRECT timestamp
-            $onboardHistoryEntry = [
-                'action' => 'Student Onboarded',
-                'description' => 'Student successfully onboarded and transferred to onboarding collection',
-                'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
-                'timestamp' => $now->toIso8601String(),
-                'date' => $now->format('d M Y, h:i A') //   Shows correct current time
-            ];
-            
-            Log::info('Onboard timestamp:', [
-                'timestamp' => $now->toIso8601String(),
-                'formatted_date' => $now->format('d M Y, h:i A'),
-                'current_time' => Carbon::now()->format('H:i:s')
-            ]);
-            
-            array_unshift($completeHistory, $onboardHistoryEntry);
-            $onboardData['history'] = $completeHistory;
-            
-            Log::info('Creating onboard student with complete history', [
-                'student_name' => $pendingStudent->name,
-                'history_count' => count($completeHistory)
-            ]);
-            
-            // Create in onboard collection
-            $onboardStudent = Onboard::create($onboardData);
-            
-            Log::info('  Onboard student created', [
-                'onboard_id' => $onboardStudent->_id,
-                'name' => $onboardStudent->name,
-                'history_entries' => count($onboardStudent->history ?? [])
-            ]);
-            
-            // Delete from pending
-            $pendingStudent->delete();
-            
-            Log::info('  Transfer to onboard complete');
-            
-            return redirect()->route('student.onboard.onboard')
-                ->with('success', "Student '{$onboardStudent->name}' successfully onboarded!");
-                
-        } catch (\Exception $e) {
-            Log::error('❌ Transfer to onboard failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            return redirect()->back()
-                ->with('error', 'Failed to onboard student: ' . $e->getMessage());
-        }
-    }
-
 }

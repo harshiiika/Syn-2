@@ -314,7 +314,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a>
                 </li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
@@ -584,12 +584,6 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                       <select class="form-select" name="branch_name" required>
                         <option value="Bikaner" {{ ($batch->branch_name ?? '') == 'Bikaner' ? 'selected' : '' }}>Bikaner
                         </option>
-                        <option value="Jaipur" {{ ($batch->branch_name ?? '') == 'Jaipur' ? 'selected' : '' }}>Jaipur
-                        </option>
-                        <option value="Jodhpur" {{ ($batch->branch_name ?? '') == 'Jodhpur' ? 'selected' : '' }}>Jodhpur
-                        </option>
-                        <option value="Kota" {{ ($batch->branch_name ?? '') == 'Kota' ? 'selected' : '' }}>Kota</option>
-                      </select>
                     </div>
 
                     <!-- Start Date -->

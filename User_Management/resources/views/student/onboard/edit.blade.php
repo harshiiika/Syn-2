@@ -345,8 +345,8 @@
           <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -866,6 +866,42 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/session.js') }}"></script>
   <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const courseSelect = document.querySelector('select[name="courseName"]');
+    const batchSelect = document.querySelector('select[name="batchName"]');
+    
+    if (courseSelect && batchSelect) {
+        courseSelect.addEventListener('change', function() {
+            const courseName = this.value;
+            
+            // Clear current batches
+            batchSelect.innerHTML = '<option value="">Loading...</option>';
+            
+            // Fetch filtered batches
+            fetch(`/student/onboard/batches-by-course?course=${encodeURIComponent(courseName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        batchSelect.innerHTML = '<option value="">Select Batch</option>';
+                        
+                        data.batches.forEach(batch => {
+                            const option = document.createElement('option');
+                            option.value = batch.batch_id;
+                            option.textContent = `${batch.batch_id} (${batch.shift} - ${batch.mode})`;
+                            batchSelect.appendChild(option);
+                        });
+                    } else {
+                        batchSelect.innerHTML = '<option value="">No batches available</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading batches:', error);
+                    batchSelect.innerHTML = '<option value="">Error loading batches</option>';
+                });
+        });
+    }
+});
+
     // Sidebar toggle
     const toggleBtn = document.getElementById('toggleBtn');
     const sidebar = document.getElementById('sidebar');
