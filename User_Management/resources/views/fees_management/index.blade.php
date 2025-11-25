@@ -11,19 +11,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F5F5F5; }
-        
-        /* Header */
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 12px 20px; 
-            background: white; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.08); 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-        }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
         .header .logo { display: flex; align-items: center; gap: 0; }
         .header .logo img { height: 40px; }
         .header .pfp { display: flex; align-items: center; gap: 15px; }
@@ -31,115 +19,29 @@
         .header .session strong { color: #333; font-weight: 500; }
         .header select { padding: 5px 10px; border: 1px solid #DDD; border-radius: 4px; font-size: 13px; }
         .header i.fa-bell { font-size: 20px; color: #E66A2C; cursor: pointer; }
-        
-        /* Main Container */
         .main-container { display: flex; min-height: calc(100vh - 64px); }
-        
-        /* Sidebar */
-        .left { 
-            width: 220px; 
-            background: white; 
-            box-shadow: 1px 0 3px rgba(0,0,0,0.06); 
-            overflow-y: auto; 
-            height: calc(100vh - 64px); 
-        }
-        .left .text { 
-            padding: 20px 15px; 
-            border-bottom: 1px solid #E8E8E8; 
-            background: white; 
-        }
-        .left .text h6 { 
-            color: #333; 
-            font-weight: 600; 
-            margin-bottom: 4px; 
-            font-size: 14px; 
-        }
-        .left .text p { 
-            font-size: 12px; 
-            color: #777; 
-            margin: 0; 
-        }
-        
-        /* Accordion */
+        .left { width: 220px; background: white; box-shadow: 1px 0 3px rgba(0,0,0,0.06); overflow-y: auto; height: calc(100vh - 64px); }
+        .left .text { padding: 20px 15px; border-bottom: 1px solid #E8E8E8; background: white; }
+        .left .text h6 { color: #333; font-weight: 600; margin-bottom: 4px; font-size: 14px; }
+        .left .text p { font-size: 12px; color: #777; margin: 0; }
         .accordion { border: none !important; }
         .accordion-item { border: none !important; background: white; }
-        .accordion-button { 
-            background: white !important; 
-            border: none !important; 
-            color: #555 !important; 
-            padding: 12px 15px !important; 
-            font-size: 14px !important; 
-            font-weight: 400 !important; 
-            box-shadow: none !important; 
-            border-left: 3px solid transparent !important; 
-        }
-        .accordion-button:not(.collapsed) { 
-            background: white !important; 
-            color: #E66A2C !important; 
-            border-left-color: #E66A2C !important; 
-            font-weight: 500 !important; 
-        }
+        .accordion-button { background: white !important; border: none !important; color: #555 !important; padding: 12px 15px !important; font-size: 14px !important; font-weight: 400 !important; box-shadow: none !important; border-left: 3px solid transparent !important; }
+        .accordion-button:not(.collapsed) { background: white !important; color: #E66A2C !important; border-left-color: #E66A2C !important; font-weight: 500 !important; }
         .accordion-button:focus { box-shadow: none !important; }
         .accordion-button:hover { background: #FAFAFA !important; }
-        .accordion-button::after { 
-            width: 0.7rem; 
-            height: 0.7rem; 
-            background-size: 0.7rem;
-            margin-left: auto;
-        }
-        .accordion-button i { 
-            margin-right: 10px; 
-            width: 18px; 
-            font-size: 14px; 
-            color: #666;
-        }
-        .accordion-button:not(.collapsed) i {
-            color: #E66A2C;
-        }
-        .accordion-body { 
-            padding: 0 !important; 
-            background: #FAFAFA; 
-        }
-        
-        /* Menu items */
-        .menu { 
-            list-style: none; 
-            margin: 0; 
-            padding: 0; 
-        }
-        .menu .item { 
-            display: flex; 
-            align-items: center; 
-            padding: 10px 15px 10px 40px; 
-            color: #666; 
-            text-decoration: none; 
-            transition: all 0.2s; 
-            font-size: 13px; 
-            border-left: 3px solid transparent; 
-            background: white; 
-        }
-        .menu .item:hover { 
-            background: #F5F5F5; 
-            color: #E66A2C; 
-        }
-        .item.active { 
-            background: #FFF5F0; 
-            color: #E66A2C; 
-            border-left-color: #E66A2C; 
-            font-weight: 500; 
-        }
-        .menu .item i { 
-            margin-right: 10px; 
-            width: 16px; 
-            font-size: 13px; 
-        }
-        
-        /* Main Content */
+        .accordion-button::after { width: 0.7rem; height: 0.7rem; background-size: 0.7rem; margin-left: auto; }
+        .accordion-button i { margin-right: 10px; width: 18px; font-size: 14px; color: #666; }
+        .accordion-button:not(.collapsed) i { color: #E66A2C; }
+        .accordion-body { padding: 0 !important; background: #FAFAFA; }
+        .menu { list-style: none; margin: 0; padding: 0; }
+        .menu .item { display: flex; align-items: center; padding: 10px 15px 10px 40px; color: #666; text-decoration: none; transition: all 0.2s; font-size: 13px; border-left: 3px solid transparent; background: white; }
+        .menu .item:hover { background: #F5F5F5; color: #E66A2C; }
+        .item.active { background: #FFF5F0; color: #E66A2C; border-left-color: #E66A2C; font-weight: 500; }
+        .menu .item i { margin-right: 10px; width: 16px; font-size: 13px; }
         .right { flex: 1; background: #F5F5F5; overflow-y: auto; height: calc(100vh - 64px); }
         .page-header { padding: 20px; background: #F5F5F5; }
         .page-title { font-size: 26px; color: #E66A2C; font-weight: 700; margin: 0; }
-        
-        /* Tabs */
         .tabs-wrapper { background: white; margin: 0 20px 20px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; position: relative; }
         .btn-export { padding: 10px 20px; background: #28A745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 13px; position: absolute; right: 20px; top: 15px; z-index: 10; transition: all 0.3s; }
         .btn-export:hover { background: #218838; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
@@ -149,8 +51,6 @@
         .tab-btn.active { background: #E66A2C; color: white; border-bottom-color: #D85A1C; }
         .tab-panel { padding: 25px; display: none; }
         .tab-panel.active { display: block; }
-        
-        /* Search Area */
         .search-area { margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%); padding: 18px; border-radius: 8px; border: 1px solid #DEE2E6; }
         .search-input { flex: 1; min-width: 300px; padding: 11px 15px; border: 2px solid #DDD; border-radius: 6px; font-size: 14px; transition: all 0.3s; }
         .search-input:focus { outline: none; border-color: #E66A2C; box-shadow: 0 0 0 3px rgba(230, 106, 44, 0.1); }
@@ -160,8 +60,6 @@
         .btn-search:hover { background: #D85A1C; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230, 106, 44, 0.3); }
         .btn-reset { padding: 11px 30px; background: #6C757D; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s; }
         .btn-reset:hover { background: #5A6268; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3); }
-        
-        /* Action Menu - FIXED POSITIONING */
         .action-menu-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; padding: 8px 12px; position: relative; border-radius: 4px; transition: all 0.3s; }
         .action-menu-btn:hover { background: #F0F0F0; color: #E66A2C; }
         .action-dropdown { position: absolute; right: 0; top: 100%; background: white; border: 1px solid #DDD; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 150px; z-index: 9999; display: none; margin-top: 2px; }
@@ -171,16 +69,12 @@
         .action-dropdown-item:hover { background: #FFF5F0; color: #E66A2C; }
         .action-dropdown-item:last-child { border-bottom: none; }
         .action-dropdown-item i { margin-right: 8px; width: 14px; font-size: 13px; }
-        
-        /* States */
         .empty-state { text-align: center; padding: 60px 20px; color: #999; }
         .empty-state i { font-size: 48px; color: #CCC; margin-bottom: 15px; display: block; }
         .empty-state p { margin: 0; font-size: 15px; font-weight: 500; }
         .loading-state { text-align: center; padding: 60px 20px; }
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #E66A2C; border-radius: 50%; width: 50px; height: 50px; animation: spin 0.8s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* DataTables - CLEAN SIMPLE STYLE */
         .dataTables_wrapper { padding: 0; }
         table.dataTable { width: 100% !important; border-collapse: collapse; background: white; }
         table.dataTable thead th { background: #E66A2C; color: white; font-weight: 600; padding: 12px; font-size: 13px; text-align: left; border: none; }
@@ -194,13 +88,9 @@
         .dataTables_filter input { border: 2px solid #DDD; border-radius: 4px; padding: 8px 12px; font-size: 14px; margin-left: 10px; transition: all 0.3s; }
         .dataTables_filter input:focus { outline: none; border-color: #E66A2C; }
         .dataTables_length select { border: 2px solid #DDD; border-radius: 4px; padding: 8px 12px; font-weight: 500; }
-        
-        /* Status Badges - SIMPLE TEXT ONLY */
         .status-paid { color: #28A745; font-weight: 600; background: white; padding: 4px 8px; font-size: 12px; }
         .status-pending { color: #DC3545; font-weight: 600; background: white; padding: 4px 8px; font-size: 12px; }
         .status-installment { color: #FFC107; font-weight: 600; background: white; padding: 4px 8px; font-size: 12px; }
-        
-        /* Modal Styles */
         .fees-details-container { background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 20px; }
         .fees-header { background: white; padding: 20px; border-bottom: 1px solid #E5E5E5; }
         .fees-header h2 { color: #E66A2C; font-size: 24px; font-weight: 600; margin: 0; }
@@ -233,8 +123,8 @@
         .modal-body-custom { padding: 25px; }
         .form-group-custom { margin-bottom: 20px; }
         .form-group-custom label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
-        .form-group-custom input, .form-group-custom select { width: 100%; padding: 10px 15px; border: 1px solid #DDD; border-radius: 4px; font-size: 14px; }
-        .form-group-custom input:focus, .form-group-custom select:focus { outline: none; border-color: #E66A2C; box-shadow: 0 0 0 3px rgba(230, 106, 44, 0.1); }
+        .form-group-custom input, .form-group-custom select, .form-group-custom textarea { width: 100%; padding: 10px 15px; border: 1px solid #DDD; border-radius: 4px; font-size: 14px; }
+        .form-group-custom input:focus, .form-group-custom select:focus, .form-group-custom textarea:focus { outline: none; border-color: #E66A2C; box-shadow: 0 0 0 3px rgba(230, 106, 44, 0.1); }
         .btn-add-more { padding: 8px 20px; background: #6C757D; color: white; border: none; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 10px; }
         .btn-add-more:hover { background: #5A6268; }
         .modal-footer-custom { padding: 20px; border-top: 1px solid #E5E5E5; display: flex; justify-content: flex-end; gap: 10px; }
@@ -248,10 +138,16 @@
         .installment-box { text-align: center; padding: 15px; background: #F8F9FA; border-radius: 8px; }
         .installment-box label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
         .installment-box input { width: 100%; padding: 8px; border: 1px solid #DDD; border-radius: 4px; text-align: center; }
+        .history-summary { background: #F8F9FA; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
+        .history-summary h5 { color: #E66A2C; font-size: 16px; font-weight: 600; margin-bottom: 15px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .summary-card { background: white; padding: 15px; border-radius: 6px; text-align: center; border: 1px solid #E5E5E5; }
+        .summary-card .label { font-size: 12px; color: #666; margin-bottom: 5px; }
+        .summary-card .value { font-size: 20px; font-weight: 600; color: #E66A2C; }
+        .history-table-wrapper { margin-top: 20px; }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="header">
         <div class="logo">
             <img src="{{asset('images/logo.png.jpg')}}" alt="Synthesis">
@@ -279,7 +175,6 @@
     </div>
 
     <div class="main-container">
-        <!-- Sidebar -->
         <div class="left">
             <div class="text">
                 <h6>Admin</h6>
@@ -287,7 +182,6 @@
             </div>
 
             <div class="accordion accordion-flush" id="sidebarAccordion">
-                <!-- User Management -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#userMgmt">
@@ -303,8 +197,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Master -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#master">
@@ -324,8 +216,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Session Management -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#session">
@@ -342,8 +232,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Student Management -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#student">
@@ -361,8 +249,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Fees Management (ACTIVE) -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#fees">
@@ -377,8 +263,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Attendance Management -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#attendance">
@@ -394,8 +278,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Study Material -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#studyMaterial">
@@ -411,8 +293,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Test Series Management -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testSeries">
@@ -427,8 +307,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Reports -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reports">
@@ -450,7 +328,6 @@
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="right">
             <div class="page-header">
                 <h2 class="page-title">Fees Management</h2>
@@ -467,7 +344,6 @@
                     <button class="tab-btn" data-tab="transaction">Daily Transaction</button>
                 </div>
 
-                <!-- Collect Fees Tab -->
                 <div id="collect" class="tab-panel active">
                     <div class="search-area">
                         <input type="text" id="collectSearchInput" class="search-input" placeholder="Search by name or roll number">
@@ -486,7 +362,6 @@
                     </div>
                 </div>
 
-                <!-- Fee Status Tab -->
                 <div id="status" class="tab-panel">
                     <div class="search-area">
                         <select id="courseSelect" class="dropdown-filter">
@@ -516,7 +391,6 @@
                     </div>
                 </div>
 
-                <!-- Daily Transaction Tab -->
                 <div id="transaction" class="tab-panel">
                     <div class="search-area">
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -542,7 +416,6 @@
         </div>
     </div>
 
-    <!-- View Details Modal -->
     <div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl" style="max-width: 90%;">
             <div class="modal-content" style="border: none; border-radius: 8px;">
@@ -614,7 +487,7 @@
 
                     <div style="padding: 20px;">
                         <div id="view-tab" class="detail-tab-content">
-                            <h5 style="color: #E66A2C; font-weight: 600; margin-bottom: 20px;">Payment Details</h5>
+                            <h5 style="color: #E66A2C; font-weight: 600; margin-bottom: 20px;">Current Payment Details</h5>
                             <table class="payment-table">
                                 <thead>
                                     <tr>
@@ -624,21 +497,63 @@
                                         <th>Due Date</th>
                                         <th>Payment Date</th>
                                         <th>Status</th>
+                                        <th>Single Installment</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="viewDetailsTableBody">
                                     <tr>
-                                        <td>Loading...</td>
-                                        <td colspan="6"></td>
+                                        <td colspan="8" style="text-align: center;">Loading...</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <div id="installment-tab" class="detail-tab-content" style="display: none;">
-                            <h5 style="color: #E66A2C;">Installment History</h5>
-                            <p>No installment history available.</p>
+                            <div class="history-summary">
+                                <h5>Payment History Summary</h5>
+                                <div class="summary-grid">
+                                    <div class="summary-card">
+                                        <div class="label">Total Installments</div>
+                                        <div class="value" id="hist-total-installments">0</div>
+                                    </div>
+                                    <div class="summary-card">
+                                        <div class="label">Paid Amount</div>
+                                        <div class="value" id="hist-paid-amount">₹0</div>
+                                    </div>
+                                    <div class="summary-card">
+                                        <div class="label">Pending Amount</div>
+                                        <div class="value" id="hist-pending-amount">₹0</div>
+                                    </div>
+                                    <div class="summary-card">
+                                        <div class="label">Last Payment Date</div>
+                                        <div class="value" id="hist-last-payment" style="font-size: 14px;">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="history-table-wrapper">
+                                <h5 style="color: #E66A2C; font-weight: 600; margin-bottom: 15px;">Complete Payment History</h5>
+                                <table class="payment-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Installment</th>
+                                            <th>Amount</th>
+                                            <th>Payment Date</th>
+                                            <th>Payment Type</th>
+                                            <th>Transaction ID</th>
+                                            <th>Status</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="installmentHistoryTableBody">
+                                        <tr>
+                                            <td colspan="8" style="text-align: center;">No payment history available</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         <div id="other-tab" class="detail-tab-content" style="display: none;">
@@ -656,7 +571,6 @@
         </div>
     </div>
 
-    <!-- Add Other Charges Modal -->
     <div class="modal fade" id="addOtherChargesModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -710,7 +624,6 @@
         </div>
     </div>
 
-    <!-- Refund Modal -->
     <div class="modal fade" id="refundModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -743,7 +656,6 @@
         </div>
     </div>
 
-    <!-- Scholarship Modal -->
     <div class="modal fade" id="scholarshipModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -805,8 +717,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-
-   <script>
+    <script>
     const coursesBatchesMapping = {!! json_encode($coursesBatchesMapping ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
     let collectFeesTable, feeStatusTable, transactionTable;
     let currentTableData = [];
@@ -815,19 +726,14 @@
 
     $(document).ready(function() {
         $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
-
         $('.tab-btn').click(function() {
             const tabName = $(this).data('tab');
             $('.tab-btn').removeClass('active');
             $('.tab-panel').removeClass('active');
             $(this).addClass('active');
             $('#' + tabName).addClass('active');
-            
-            if (tabName === 'transaction' && !transactionsLoaded) {
-                loadAllTransactions();
-            }
+            if (tabName === 'transaction' && !transactionsLoaded) loadAllTransactions();
         });
-
         $('#courseSelect').change(function() {
             const courseId = $(this).val();
             const $batch = $('#batchSelect');
@@ -839,42 +745,15 @@
                 $batch.html('<option value="">Select batch</option>').prop('disabled', true);
             }
         });
-
         $('#collectSearchInput').keypress(e => { if (e.which === 13) performCollectSearch(); });
-        
         const today = new Date(), firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
         $('#fromDate').val(formatDate(firstDay));
         $('#toDate').val(formatDate(today));
-
         $(document).click(function(e) {
-            if (!$(e.target).closest('.btn-refund').length) {
-                $('.refund-dropdown').removeClass('show');
-            }
-            if (!$(e.target).closest('.action-menu-btn').length) {
-                $('.action-dropdown').removeClass('show');
-            }
+            if (!$(e.target).closest('.btn-refund').length) $('.refund-dropdown').removeClass('show');
+            if (!$(e.target).closest('.action-menu-btn').length) $('.action-dropdown').removeClass('show');
         });
     });
-
-    function loadAllTransactions() {
-        const from = $('#fromDate').val();
-        const to = $('#toDate').val();
-        $('#transactionResults').html('<div class="loading-state"><div class="spinner"></div><p>Loading transactions...</p></div>');
-        
-        $.post('{{ route("fees.transaction.filter") }}', { 
-            from_date: from, 
-            to_date: to
-        }, function(response) {
-            if (response.success && response.data && response.data.length) {
-                renderTransactions(response.data);
-                transactionsLoaded = true;
-            } else {
-                $('#transactionResults').html('<div class="empty-state"><i class="fas fa-info-circle"></i><p>No transactions found</p></div>');
-            }
-        }).fail(function() {
-            $('#transactionResults').html('<div class="empty-state"><i class="fas fa-times-circle"></i><p>Error loading transactions</p></div>');
-        });
-    }
 
     function formatDate(d) {
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -884,7 +763,6 @@
         const term = $('#collectSearchInput').val().trim();
         if (!term) return alert('Please enter search term');
         $('#collectFeesResults').html('<div class="loading-state"><div class="spinner"></div><p>Searching...</p></div>');
-        
         $.post('{{ route("fees.collect.search") }}', { search: term }, function(r) {
             if (r.success && r.data && r.data.length) {
                 currentTableData = r.data;
@@ -903,31 +781,59 @@
     function searchByStatus() {
         const status = $('#feeStatusSelect').val();
         if (!status) return alert('Please select a fee status');
+        console.log('🔍 Search:', $('#courseSelect').val(), $('#batchSelect').val(), status);
         $('#feeStatusResults').html('<div class="loading-state"><div class="spinner"></div><p>Loading...</p></div>');
-        
         $.post('{{ route("fees.status.search") }}', {
             course_id: $('#courseSelect').val(),
             batch_id: $('#batchSelect').val(),
             fee_status: status
         }, r => {
+            console.log('📊 Response:', r);
             if (r.success && r.data && r.data.length) {
+                console.log('✅ Rendering', r.data.length, 'students');
                 currentTableData = r.data;
                 renderTable('status', r.data);
             } else {
+                console.log('❌ No data');
                 $('#feeStatusResults').html('<div class="empty-state"><i class="fas fa-info-circle"></i><p>No students found</p></div>');
             }
         }).fail(() => $('#feeStatusResults').html('<div class="empty-state"><i class="fas fa-times-circle"></i><p>Error loading data</p></div>'));
     }
 
-    function filterTransactions() {
+    function renderTable(type, data) {
+        console.log('🎨 Rendering', type, 'table with', data.length, 'rows');
+        if (type === 'collect' && collectFeesTable) { collectFeesTable.destroy(); collectFeesTable = null; }
+        if (type === 'status' && feeStatusTable) { feeStatusTable.destroy(); feeStatusTable = null; }
+        let html = '<table id="'+type+'Table" class="table table-striped w-100"><thead><tr>';
+        html += '<th>#</th><th>Roll No</th><th>Student Name</th><th>Father Name</th>';
+        html += '<th>Course Content</th><th>Course Name</th><th>Delivery Mode</th>';
+        html += '<th>Fee Status</th><th>Action</th></tr></thead><tbody>';
+        data.forEach((s, i) => {
+            const stat = s.fee_status && s.fee_status.toLowerCase() === 'paid' ? 'status-paid' : 'status-pending';
+            html += `<tr><td><strong>${i+1}</strong></td><td>${s.roll_no || 'N/A'}</td><td><strong>${s.name || 'N/A'}</strong></td>`;
+            html += `<td>${s.father_name || 'N/A'}</td><td>${s.course_content || 'N/A'}</td><td>${s.course_name || 'N/A'}</td>`;
+            html += `<td>${s.delivery_mode || 'N/A'}</td><td><span class="${stat}">${s.fee_status || 'Pending'}</span></td>`;
+            html += `<td style="position: relative;"><button class="action-menu-btn" onclick="toggleMenu(event,'${type}-${s.id}')">`;
+            html += `<i class="fas fa-ellipsis-v"></i></button><div class="action-dropdown" id="menu-${type}-${s.id}">`;
+            html += `<div class="action-dropdown-item" onclick="viewDetails('${s.id}')"><i class="fas fa-eye"></i> View Details</div></div></td></tr>`;
+        });
+        html += '</tbody></table>';
+        const targetDiv = type === 'collect' ? '#collectFeesResults' : '#feeStatusResults';
+        $(targetDiv).html(html);
+        try {
+            const table = $(`#${type}Table`).DataTable({ pageLength: 10, order: [[0, 'asc']], destroy: true });
+            if (type === 'collect') collectFeesTable = table;
+            else feeStatusTable = table;
+            console.log('✅ Table rendered successfully');
+        } catch(e) {
+            console.error('❌ DataTable error:', e);
+        }
+    }
+
+    function loadAllTransactions() {
         const from = $('#fromDate').val(), to = $('#toDate').val();
-        if (!from || !to) return alert('Please select both dates');
         $('#transactionResults').html('<div class="loading-state"><div class="spinner"></div><p>Loading...</p></div>');
-        
-        $.post('{{ route("fees.transaction.filter") }}', { 
-            from_date: from, 
-            to_date: to 
-        }, r => {
+        $.post('{{ route("fees.transaction.filter") }}', { from_date: from, to_date: to }, function(r) {
             if (r.success && r.data && r.data.length) {
                 renderTransactions(r.data);
                 transactionsLoaded = true;
@@ -937,36 +843,18 @@
         }).fail(() => $('#transactionResults').html('<div class="empty-state"><i class="fas fa-times-circle"></i><p>Error loading</p></div>'));
     }
 
-    function renderTable(type, data) {
-        if (type === 'collect' && collectFeesTable) collectFeesTable.destroy();
-        if (type === 'status' && feeStatusTable) feeStatusTable.destroy();
-        
-        let html = '<table id="'+type+'Table" class="table w-100"><thead><tr>';
-        html += '<th>#</th><th>Roll No</th><th>Student Name</th><th>Father Name</th><th>Course Content</th><th>Course Name</th><th>Delivery Mode</th><th>Fee Status</th><th>Action</th>';
-        html += '</tr></thead><tbody>';
-        
-        data.forEach((s, i) => {
-            const stat = s.fee_status && s.fee_status.toLowerCase() === 'paid' ? 'status-paid' : 'status-pending';
-            html += `<tr>`;
-            html += `<td><strong>${i+1}</strong></td>`;
-            html += `<td>${s.roll_no || 'N/A'}</td>`;
-            html += `<td><strong>${s.name || 'N/A'}</strong></td>`;
-            html += `<td>${s.father_name || 'N/A'}</td>`;
-            html += `<td>${s.course_content || 'N/A'}</td>`;
-            html += `<td>${s.course_name || 'N/A'}</td>`;
-            html += `<td>${s.delivery_mode || 'N/A'}</td>`;
-            html += `<td><span class="${stat}">${s.fee_status || 'Pending'}</span></td>`;
-            html += `<td style="position: relative;"><button class="action-menu-btn" onclick="toggleMenu(event,'${type}-${s.id}')"><i class="fas fa-ellipsis-v"></i></button>`;
-            html += `<div class="action-dropdown" id="menu-${type}-${s.id}"><div class="action-dropdown-item" onclick="viewDetails('${s.id}')"><i class="fas fa-eye"></i> View Details</div></div></td>`;
-            html += `</tr>`;
-        });
-        
-        html += '</tbody></table>';
-        $(`#${type === 'collect' ? 'collectFeesResults' : 'feeStatusResults'}`).html(html);
-        
-        const table = $(`#${type}Table`).DataTable({ pageLength: 10, order: [[0, 'asc']] });
-        if (type === 'collect') collectFeesTable = table;
-        else feeStatusTable = table;
+    function filterTransactions() {
+        const from = $('#fromDate').val(), to = $('#toDate').val();
+        if (!from || !to) return alert('Please select both dates');
+        $('#transactionResults').html('<div class="loading-state"><div class="spinner"></div><p>Loading...</p></div>');
+        $.post('{{ route("fees.transaction.filter") }}', { from_date: from, to_date: to }, r => {
+            if (r.success && r.data && r.data.length) {
+                renderTransactions(r.data);
+                transactionsLoaded = true;
+            } else {
+                $('#transactionResults').html('<div class="empty-state"><i class="fas fa-info-circle"></i><p>No transactions found</p></div>');
+            }
+        }).fail(() => $('#transactionResults').html('<div class="empty-state"><i class="fas fa-times-circle"></i><p>Error loading</p></div>'));
     }
 
     function renderTransactions(data) {
@@ -975,14 +863,9 @@
         html += '<th>#</th><th>Student Name</th><th>Roll No</th><th>Course</th><th>Session</th><th>Amount</th><th>Payment Type</th><th>Transaction #</th>';
         html += '</tr></thead><tbody>';
         data.forEach((t, i) => {
-            html += `<tr><td><strong>${i+1}</strong></td>`;
-            html += `<td>${t.student_name || 'N/A'}</td>`;
-            html += `<td>${t.student_roll_no || t.roll_no || 'N/A'}</td>`;
-            html += `<td>${t.course || 'N/A'}</td>`;
-            html += `<td>${t.session || '2025-2026'}</td>`;
-            html += `<td><strong>₹${t.amount || 0}</strong></td>`;
-            html += `<td>${t.payment_type || 'Cash'}</td>`;
-            html += `<td>${t.transaction_number || t.transaction_id || 'N/A'}</td></tr>`;
+            html += `<tr><td><strong>${i+1}</strong></td><td>${t.student_name || 'N/A'}</td><td>${t.student_roll_no || t.roll_no || 'N/A'}</td>`;
+            html += `<td>${t.course || 'N/A'}</td><td>${t.session || '2025-2026'}</td><td><strong>₹${t.amount || 0}</strong></td>`;
+            html += `<td>${t.payment_type || 'Cash'}</td><td>${t.transaction_number || t.transaction_id || 'N/A'}</td></tr>`;
         });
         html += '</tbody></table>';
         $('#transactionResults').html(html);
@@ -1000,35 +883,31 @@
         $.ajax({
             url: `/fees-management/student-details/${id}`,
             method: 'GET',
-            success: function(response) {
-                if (response.success && response.data) {
-                    const data = response.data;
-                    $('#modal-student-name').text(data.student_name || '-');
-                    $('#modal-father-name').text(data.father_name || '-');
-                    $('#modal-course-type').text(data.course_type || 'Pre-Medical');
-                    $('#modal-course-name').text(data.course_name || '-');
-                    $('#modal-course-content').text(data.course_content || '-');
-                    $('#modal-batch-name').text(data.batch_name || 'D2');
-                    $('#modal-batch-start').text(data.batch_start_date || '2025-04-14');
-                    $('#modal-delivery-mode').text(data.delivery_mode || '-');
-                    $('#scholarship-total-paid').text(data.paid_fees || '0');
-                    $('#scholarship-eligible').text(data.scholarship_eligible || 'No');
-                    $('#scholarship-discretionary').text(data.discretionary_discount || 'No');
-                    $('#scholarship-discount-percent').text(data.discount_percent || '0');
-                    
-                    if (data.installments) {
-                        $('.installment-box:eq(0) input').val(data.installments[0] || '0');
-                        $('.installment-box:eq(1) input').val(data.installments[1] || '0');
-                        $('.installment-box:eq(2) input').val(data.installments[2] || '0');
+            success: function(r) {
+                if (r.success && r.data) {
+                    const d = r.data;
+                    $('#modal-student-name').text(d.student_name || '-');
+                    $('#modal-father-name').text(d.father_name || '-');
+                    $('#modal-course-type').text(d.course_type || 'Pre-Medical');
+                    $('#modal-course-name').text(d.course_name || '-');
+                    $('#modal-course-content').text(d.course_content || '-');
+                    $('#modal-batch-name').text(d.batch_name || 'D2');
+                    $('#modal-batch-start').text(d.batch_start_date || '2025-04-14');
+                    $('#modal-delivery-mode').text(d.delivery_mode || '-');
+                    $('#scholarship-total-paid').text(d.paid_fees || '0');
+                    $('#scholarship-eligible').text(d.scholarship_eligible || 'No');
+                    $('#scholarship-discretionary').text(d.discretionary_discount || 'No');
+                    $('#scholarship-discount-percent').text(d.discount_percent || '0');
+                    if (d.installments) {
+                        $('.installment-box:eq(0) input').val(d.installments[0] || '0');
+                        $('.installment-box:eq(1) input').val(d.installments[1] || '0');
+                        $('.installment-box:eq(2) input').val(d.installments[2] || '0');
                     }
-                    
-                    loadInstallmentHistory(id);
+                    loadViewDetails(id);
                     $('#viewDetailsModal').modal('show');
                 }
             },
-            error: function() {
-                alert('Error loading student details');
-            }
+            error: () => alert('Error loading student details')
         });
     }
 
@@ -1036,57 +915,72 @@
         $('.detail-tab-content').hide();
         $('.detail-nav-btn').removeClass('active');
         $('#' + tabName + '-tab').show();
-        $('.detail-nav-btn').each(function() {
-            if ($(this).attr('onclick').includes(tabName)) {
-                $(this).addClass('active');
-            }
-        });
-        
+        $('.detail-nav-btn').each(function() { if ($(this).attr('onclick').includes(tabName)) $(this).addClass('active'); });
         if (currentStudentId) {
-            switch(tabName) {
-                case 'view':
-                case 'installment':
-                    loadInstallmentHistory(currentStudentId);
-                    break;
-                case 'other':
-                    loadOtherCharges(currentStudentId);
-                    break;
-                case 'transaction':
-                    loadTransactionHistory(currentStudentId);
-                    break;
-            }
+            if (tabName === 'view') loadViewDetails(currentStudentId);
+            else if (tabName === 'installment') loadInstallmentHistory(currentStudentId);
+            else if (tabName === 'other') loadOtherCharges(currentStudentId);
+            else if (tabName === 'transaction') loadTransactionHistory(currentStudentId);
         }
+    }
+
+    function loadViewDetails(studentId) {
+        $.ajax({
+            url: `/fees-management/installment-history/${studentId}`,
+            method: 'GET',
+            success: function(r) {
+                if (r.success && r.data && r.data.length > 0) {
+                    let html = '';
+                    r.data.forEach(function(inst) {
+                        const statusClass = inst.status === 'Paid' ? 'paid' : 'due';
+                        html += `<tr><td>${inst.installment_no}</td><td>₹${inst.actual_amount}</td><td>₹${inst.paid_amount}</td>`;
+                        html += `<td>${inst.due_date || '-'}</td><td>${inst.payment_date || '-'}</td>`;
+                        html += `<td><span class="status-badge ${statusClass}">${inst.status}</span></td>`;
+                        html += `<td>${inst.single_installment || 'No'}</td><td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #666;"></i></td></tr>`;
+                    });
+                    $('#viewDetailsTableBody').html(html);
+                } else {
+                    $('#viewDetailsTableBody').html('<tr><td colspan="8" style="text-align: center;">No payment details available</td></tr>');
+                }
+            },
+            error: () => $('#viewDetailsTableBody').html('<tr><td colspan="8" style="text-align: center; color: #DC3545;">Error loading payment details</td></tr>')
+        });
     }
 
     function loadInstallmentHistory(studentId) {
         $.ajax({
             url: `/fees-management/installment-history/${studentId}`,
             method: 'GET',
-            success: function(response) {
-                if (response.success && response.data) {
-                    let html = `<h5 style="color: #E66A2C; font-weight: 600; margin-bottom: 20px;">Payment Details</h5>
-                        <table class="payment-table"><thead><tr>
-                            <th>Installment</th><th>Actual Amount</th><th>Paid Amount</th><th>Due Date</th>
-                            <th>Payment Date</th><th>Status</th><th>Single Installment</th><th>Action</th>
-                        </tr></thead><tbody>`;
-                    
-                    response.data.forEach(function(inst) {
-                        const statusClass = inst.status === 'Paid' ? 'paid' : 'due';
-                        html += `<tr>
-                            <td>${inst.installment_no}</td>
-                            <td>${inst.actual_amount}</td>
-                            <td>${inst.paid_amount}</td>
-                            <td>${inst.due_date || '-'}</td>
-                            <td>${inst.payment_date || '-'}</td>
-                            <td><span class="status-badge ${statusClass}">${inst.status}</span></td>
-                            <td>${inst.single_installment || 'No'}</td>
-                            <td><i class="fas fa-ellipsis-v" style="cursor: pointer;"></i></td>
-                        </tr>`;
+            success: function(r) {
+                if (r.success && r.data && r.data.length > 0) {
+                    let totalInstallments = r.data.length, totalPaid = 0, totalPending = 0, lastPaymentDate = '-';
+                    r.data.forEach(function(inst) {
+                        totalPaid += parseFloat(inst.paid_amount) || 0;
+                        if (inst.status === 'Paid' && inst.payment_date && inst.payment_date !== '-') lastPaymentDate = inst.payment_date;
+                        else totalPending += parseFloat(inst.actual_amount) || 0;
                     });
-                    html += '</tbody></table>';
-                    $('#view-tab').html(html);
-                    $('#installment-tab').html(html);
+                    $('#hist-total-installments').text(totalInstallments);
+                    $('#hist-paid-amount').text('₹' + totalPaid.toLocaleString());
+                    $('#hist-pending-amount').text('₹' + totalPending.toLocaleString());
+                    $('#hist-last-payment').text(lastPaymentDate);
+                    let html = '';
+                    r.data.forEach(function(inst, index) {
+                        const statusClass = inst.status === 'Paid' ? 'paid' : 'due';
+                        html += `<tr><td><strong>${index + 1}</strong></td><td>${inst.installment_no}</td><td><strong>₹${inst.paid_amount || inst.actual_amount}</strong></td>`;
+                        html += `<td>${inst.payment_date || '-'}</td><td>${inst.payment_type || 'Cash'}</td><td>${inst.transaction_id || '-'}</td>`;
+                        html += `<td><span class="status-badge ${statusClass}">${inst.status}</span></td><td>${inst.remarks || '-'}</td></tr>`;
+                    });
+                    $('#installmentHistoryTableBody').html(html);
+                } else {
+                    $('#hist-total-installments, #hist-paid-amount, #hist-pending-amount').text('0');
+                    $('#hist-last-payment').text('-');
+                    $('#installmentHistoryTableBody').html('<tr><td colspan="8" style="text-align: center;">No payment history available</td></tr>');
                 }
+            },
+            error: function() {
+                $('#hist-total-installments, #hist-paid-amount, #hist-pending-amount').text('0');
+                $('#hist-last-payment').text('-');
+                $('#installmentHistoryTableBody').html('<tr><td colspan="8" style="text-align: center; color: #DC3545;">Error loading payment history</td></tr>');
             }
         });
     }
@@ -1095,19 +989,20 @@
         $.ajax({
             url: `/fees-management/other-charges/${studentId}`,
             method: 'GET',
-            success: function(response) {
+            success: function(r) {
                 let html = '<h5 style="color: #E66A2C; margin-bottom: 20px;">Other Charge History</h5>';
-                if (response.success && response.data && response.data.length > 0) {
+                if (r.success && r.data && r.data.length > 0) {
                     html += '<table class="payment-table"><thead><tr><th>S.No.</th><th>Payment Date</th><th>Fee Type</th><th>Amount</th></tr></thead><tbody>';
-                    response.data.forEach(function(charge, index) {
-                        html += `<tr><td>${index + 1}</td><td>${charge.payment_date}</td><td>${charge.fee_type}</td><td>${charge.amount}</td></tr>`;
+                    r.data.forEach(function(charge, index) {
+                        html += `<tr><td>${index + 1}</td><td>${charge.payment_date}</td><td>${charge.fee_type}</td><td>₹${charge.amount}</td></tr>`;
                     });
                     html += '</tbody></table>';
                 } else {
-                    html += '<p style="text-align: center; margin: 40px 0;">No data available</p>';
+                    html += '<p style="text-align: center; margin: 40px 0; color: #999;">No other charges found</p>';
                 }
                 $('#other-tab').html(html);
-            }
+            },
+            error: () => $('#other-tab').html('<h5 style="color: #E66A2C;">Other Charge History</h5><p style="text-align: center; margin: 40px 0; color: #DC3545;">Error loading data</p>')
         });
     }
 
@@ -1115,19 +1010,20 @@
         $.ajax({
             url: `/fees-management/transaction-history/${studentId}`,
             method: 'GET',
-            success: function(response) {
+            success: function(r) {
                 let html = '<h5 style="color: #E66A2C; margin-bottom: 20px;">Transaction History</h5>';
-                if (response.success && response.data && response.data.length > 0) {
+                if (r.success && r.data && r.data.length > 0) {
                     html += '<table class="payment-table"><thead><tr><th>S.No.</th><th>Transaction Id</th><th>Transaction Type</th><th>Payment Date</th><th>Amount</th></tr></thead><tbody>';
-                    response.data.forEach(function(transaction) {
-                        html += `<tr><td>${transaction.sr_no}</td><td>${transaction.transaction_id}</td><td>${transaction.transaction_type}</td><td>${transaction.payment_date}</td><td>${transaction.amount}</td></tr>`;
+                    r.data.forEach(function(t) {
+                        html += `<tr><td>${t.sr_no}</td><td>${t.transaction_id}</td><td>${t.transaction_type}</td><td>${t.payment_date}</td><td>₹${t.amount}</td></tr>`;
                     });
                     html += '</tbody></table>';
                 } else {
-                    html += '<p style="text-align: center; margin: 40px 0;">No data available</p>';
+                    html += '<p style="text-align: center; margin: 40px 0; color: #999;">No transactions found</p>';
                 }
                 $('#transaction-tab').html(html);
-            }
+            },
+            error: () => $('#transaction-tab').html('<h5 style="color: #E66A2C;">Transaction History</h5><p style="text-align: center; margin: 40px 0; color: #DC3545;">Error loading data</p>')
         });
     }
 
@@ -1152,7 +1048,7 @@
     }
 
     function addMoreOtherFees() {
-        alert('Add more functionality');
+        alert('Add more functionality to be implemented');
     }
 
     function submitOtherFees() {
@@ -1165,9 +1061,8 @@
             amount: $('#otherFeesAmount').val()
         };
         if (!data.payment_date || !data.payment_type || !data.fee_type || !data.amount) return alert('Please fill all fields');
-        
-        $.post('/fees-management/add-other-charges', data, function(response) {
-            if (response.success) {
+        $.post('/fees-management/add-other-charges', data, function(r) {
+            if (r.success) {
                 alert('Other charges added successfully');
                 $('#addOtherChargesModal').modal('hide');
                 if ($('#other-tab').is(':visible')) loadOtherCharges(currentStudentId);
@@ -1183,9 +1078,8 @@
             discount_percentage: $('#discountPercentage').val()
         };
         if (!data.refund_type || !data.discount_percentage) return alert('Please fill all fields');
-        
-        $.post('/fees-management/process-refund', data, function(response) {
-            if (response.success) {
+        $.post('/fees-management/process-refund', data, function(r) {
+            if (r.success) {
                 alert('Refund processed successfully');
                 $('#refundModal').modal('hide');
                 viewDetails(currentStudentId);
@@ -1201,9 +1095,8 @@
             reason: $('#scholarshipReason').val()
         };
         if (!data.discount_percentage || !data.reason) return alert('Please fill all fields');
-        
-        $.post('/fees-management/apply-scholarship', data, function(response) {
-            if (response.success) {
+        $.post('/fees-management/apply-scholarship', data, function(r) {
+            if (r.success) {
                 alert('Scholarship discount applied successfully');
                 $('#scholarshipModal').modal('hide');
                 viewDetails(currentStudentId);
@@ -1215,7 +1108,10 @@
         window.location.href = '{{ route("fees.export") }}';
     }
 
-    $(document).click(() => $('.action-dropdown').removeClass('show'));
-</script>
+    $(document).click(() => {
+        $('.action-dropdown').removeClass('show');
+        $('.refund-dropdown').removeClass('show');
+    });
+    </script>
 </body>
 </html>

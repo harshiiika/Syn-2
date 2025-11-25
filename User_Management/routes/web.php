@@ -393,18 +393,6 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
     Route::get('/course/{courseId}/subjects', [TestSeriesController::class, 'getCourseSubjects'])->name('course_subjects');
 });
 
-// // Study Material - Units Routes
-// Route::prefix('study_material')->group(function () {
-//     Route::get('/units', [Unitscontroller::class, 'index'])->name('units.index');
-//     Route::get('/units/get-data', [Unitscontroller::class, 'getData'])->name('units.getData');
-//     Route::get('/units/get-courses', [Unitscontroller::class, 'getCourses'])->name('units.getCourses');
-//     Route::get('/units/get-subjects', [Unitscontroller::class, 'getSubjectsByCourse'])->name('units.getSubjects');
-//     Route::post('/units', [Unitscontroller::class, 'store'])->name('units.store');
-//     Route::get('/units/{id}', [Unitscontroller::class, 'show'])->name('units.show');
-//     Route::put('/units/{id}', [Unitscontroller::class, 'update'])->name('units.update');
-//     Route::delete('/units/{id}', [Unitscontroller::class, 'destroy'])->name('units.destroy');
-// });
-
 /*
 |--------------------------------------------------------------------------
 | Units Routes - FINAL WORKING VERSION
@@ -427,56 +415,30 @@ Route::prefix('study_material')->group(function () {
 |--------------------------------------------------------------------------
 | Study Material - Dispatch Routes
 |--------------------------------------------------------------------------
-|
-|
-|
 */
-// Dispatch Study Material Routes
-Route::prefix('study_material/dispatch')->name('study_material.dispatch.')->group(function () {
-    
-    // Main dispatch page
-    Route::get('/', [DispatchController::class, 'index'])->name('index');
-    
-    // Get batches by course
-    Route::post('/get-batches', [DispatchController::class, 'getBatches'])->name('get-batches');
-    
-    // Get students by course and batch
-    Route::post('/get-students', [DispatchController::class, 'getStudents'])->name('get-students');
-    
-    // Dispatch material to students
-    Route::post('/dispatch-material', [DispatchController::class, 'dispatchMaterial'])->name('dispatch-material');
-    
-    // Get dispatch history (NEW ROUTE)
-    Route::get('/get-history', [DispatchController::class, 'getDispatchHistory'])->name('get-history');
-    
-    // Delete dispatch record (NEW ROUTE)
-    Route::delete('/{id}', [DispatchController::class, 'destroy'])->name('destroy');
-    
-    // Bulk delete (NEW ROUTE)
-    Route::post('/bulk-delete', [DispatchController::class, 'bulkDelete'])->name('bulk-delete');
-    
+Route::prefix('study_material/dispatch')->group(function () {
+    Route::get('/', [DispatchController::class, 'index']);
+    Route::get('/get-batches', [DispatchController::class, 'getBatches']);
+    Route::get('/get-students', [DispatchController::class, 'getStudents']);
+    Route::post('/dispatch-material', [DispatchController::class, 'dispatchMaterial']);
 });
-
 
 /*
 |--------------------------------------------------------------------------
-| Fees Management Routes
+| Fees Management Routes - COMPLETE VERSION
 |--------------------------------------------------------------------------
 */
-// Add these routes to your existing web.php file
-Route::prefix('fees-management')->name('fees.')->group(function () {
-    // Main page
-    Route::get('/', [FeesManagementController::class, 'index'])->name('management.index');
-    
-    // Search and filter routes
-    Route::post('/search-student', [FeesManagementController::class, 'searchStudent'])->name('collect.search');
-    Route::post('/search-status', [FeesManagementController::class, 'searchByStatus'])->name('status.search');
-    Route::post('/filter-transactions', [FeesManagementController::class, 'filterTransactions'])->name('transaction.filter');
-    Route::get('/export-pending', [FeesManagementController::class, 'exportPendingFees'])->name('export');
-    
-    // Dynamic modal data routes
-    Route::get('/student-details/{id}', [FeesManagementController::class, 'getStudentDetails'])->name('student.details');
-    Route::get('/installment-history/{id}', [FeesManagementController::class, 'getInstallmentHistory'])->name('installment.history');
-    Route::get('/other-charges/{id}', [FeesManagementController::class, 'getOtherCharges'])->name('other.charges');
-    Route::get('/transaction-history/{id}', [FeesManagementController::class, 'getTransactionHistory'])->name('transaction.history');
+Route::prefix('fees-management')->group(function () {
+    Route::get('/', [FeesManagementController::class, 'index'])->name('fees.management.index');
+    Route::post('collect-fees/search', [FeesManagementController::class, 'searchStudent'])->name('fees.collect.search');
+    Route::post('status/search', [FeesManagementController::class, 'searchByStatus'])->name('fees.status.search');
+    Route::post('transactions/filter', [FeesManagementController::class, 'filterTransactions'])->name('fees.transaction.filter');
+    Route::get('student-details/{id}', [FeesManagementController::class, 'getStudentDetails']);
+    Route::get('installment-history/{id}', [FeesManagementController::class, 'getInstallmentHistory']);
+    Route::get('other-charges/{id}', [FeesManagementController::class, 'getOtherCharges']);
+    Route::get('transaction-history/{id}', [FeesManagementController::class, 'getTransactionHistory']);
+    Route::post('add-other-charges', [FeesManagementController::class, 'addOtherCharges']);
+    Route::post('process-refund', [FeesManagementController::class, 'processRefund']);
+    Route::post('apply-scholarship', [FeesManagementController::class, 'applyScholarship']);
+    Route::get('export-pending-fees', [FeesManagementController::class, 'exportPendingFees'])->name('fees.export');
 });
