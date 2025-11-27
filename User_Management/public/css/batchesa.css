@@ -149,7 +149,14 @@
     color: #000;
     cursor: pointer;
 }
+tbody tr {
+    position: relative;
+}
 
+tbody td {
+    position: relative;
+    overflow: visible;
+}
 .menu li {
     list-style: none;
     cursor: pointer;
@@ -159,17 +166,30 @@
     display: flex;
     justify-content: flex-start;
 }
+.btn-sm.btn-outline-secondary {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border: 1px solid #dee2e6;
+    background-color: #fff;
+    color: #6c757d;
+}
 
+.btn-sm.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
 .right {
     height: 90vh;
     width: 80%;
     display: flex;
     align-items: center;
     flex-direction: column;
-    overflow-y: scroll;
+    overflow-y: auto;
+    overflow-x: visible; /* Allow horizontal overflow for dropdowns */
     background-color: #e7e7e7;
 }
-.whole{
+
+.whole {
     margin: 5px;
     padding: 20px;
     gap: 25px; 
@@ -179,7 +199,9 @@
     flex-direction: column;
     background-color: #ffffff;
     border: 1px solid #d6d6d6;
+    overflow: visible !important; /* Allow dropdowns to overflow */
 }
+
 .right h1 {
     color: rgb(190, 51, 0);
     margin: 10px;
@@ -189,9 +211,10 @@
     border: none;
 }
 
-#table{
+#table {
     font-size: 12px;
-    flex-direction: column;  
+    flex-direction: column;
+    overflow: visible !important;
 }
 
 .top {
@@ -307,6 +330,10 @@
 }
 #serial{
     margin-left: 15px;
+}
+.dropdown-menu {
+    z-index: 1050 !important;
+    position: absolute !important;
 }
 .dropdown-item {
     height: 20px;

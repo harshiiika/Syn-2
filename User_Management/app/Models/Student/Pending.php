@@ -6,76 +6,75 @@ use MongoDB\Laravel\Eloquent\Model;
 
 class Pending extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'students';
+     protected $connection = 'mongodb';
+    protected $collection = 'student_pending';
     
     public $timestamps = true;
-    
-    // Allow mass assignment for ALL fields
     protected $guarded = [];
     
     protected $fillable = [
         // Basic Details
-        'name', 
-        'father', 
-        'mother', 
-        'dob', 
-        'mobileNumber', 
-        'fatherWhatsapp', 
-        'motherContact', 
+        'name',
+        'father',
+        'mother',
+        'dob',
+        'mobileNumber',
+        'fatherWhatsapp',
+        'motherContact',
         'studentContact',
-        'category', 
-        'gender', 
-        'fatherOccupation', 
-        'fatherGrade', 
+        'category',
+        'gender',
+        
+        // 🔥 CRITICAL: Parent occupation details
+        'fatherOccupation',
+        'fatherGrade',
         'motherOccupation',
         
         // Address Details
-        'state', 
-        'city', 
-        'pinCode', 
-        'address', 
-        'belongToOtherCity', 
+        'state',
+        'city',
+        'pinCode',
+        'address',
+        'belongToOtherCity',
         'economicWeakerSection',
-        'armyPoliceBackground', 
-        'speciallyAbled', 
+        'armyPoliceBackground',
+        'speciallyAbled',
         
         // Course Details
         'course_type',
-        'courseType', 
-        'courseName', 
+        'courseType',
+        'courseName',
         'deliveryMode',
-        'medium', 
-        'board', 
-        'courseContent', 
+        'delivery_mode',
+        'courseContent',
+        'course_content',
         
-        // Academic Details
-        'previousClass', 
-        'previousMedium', 
+        // 🔥 CRITICAL: Medium and Board
+        'medium',
+        'board',
+        
+        // 🔥 CRITICAL: Academic Details
+        'previousClass',
+        'previousMedium',
         'schoolName',
-        'previousBoard', 
-        'passingYear', 
-        'percentage', 
+        'previousBoard',
+        'passingYear',
+        'percentage',
         
-        // Scholarship Eligibility
-        'isRepeater', 
-        'scholarshipTest', 
+        // 🔥 CRITICAL: Scholarship Eligibility
+        'isRepeater',
+        'scholarshipTest',
         'lastBoardPercentage',
-        'competitionExam', 
+        'competitionExam',
         
         // Batch Details
         'batchName',
-        'batchStartDate',
+        'batch',
+        'batch_id',
+        'course_id',
+        'course',
         
-        // Metadata
-        'email',
-        'alternateNumber',
-        'branch',
-        'session',
-        'status',
-        'admission_date',
-        
-        // ✅ SCHOLARSHIP & FEES DETAILS
+        // Scholarship & Fees Details
         'eligible_for_scholarship',
         'scholarship_name',
         'total_fee_before_discount',
@@ -95,24 +94,30 @@ class Pending extends Model
         'installment_3',
         'fees_calculated_at',
         
-        // Fee tracking fields
-        'paid_fees',
-        'remaining_fees',
-        'fee_status',
-        'totalFees',
-        'paidAmount',
-        'remainingAmount',
-        'paymentHistory',
+        // Metadata
+        'branch',
+        'session',
+        'status',
+        'transferred_from_inquiry',
+        'inquiry_id',
+        'transferred_at',
+        'created_by',
+        'updated_by',
+        'history',
+        
+        // Additional fields for pending students
+        'email',
+        'alternateNumber',
+        'admission_date',
     ];
-    
+
     protected $casts = [
         'dob' => 'date',
-        'batchStartDate' => 'date',
-        'admission_date' => 'datetime',
         'percentage' => 'float',
         'lastBoardPercentage' => 'float',
         'total_fee_before_discount' => 'float',
         'discount_percentage' => 'float',
+        'discretionary_discount_value' => 'float',
         'discounted_fee' => 'float',
         'total_fees' => 'float',
         'gst_amount' => 'float',
@@ -121,26 +126,21 @@ class Pending extends Model
         'installment_1' => 'float',
         'installment_2' => 'float',
         'installment_3' => 'float',
-        'paid_fees' => 'float',
-        'remaining_fees' => 'float',
         'fees_calculated_at' => 'datetime',
-        'totalFees' => 'float',
-        'paidAmount' => 'float',
-        'remainingAmount' => 'float',
-        'paymentHistory' => 'array',
+        'transferred_at' => 'datetime',
+        'admission_date' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'history' => 'array',
     ];
     
-    // Add this to help with debugging
-    protected static function boot()
+    public function batch()
     {
-        parent::boot();
-        
-        static::updating(function ($model) {
-            \Log::info('Pending model updating event fired for: ' . $model->name);
-        });
-        
-        static::updated(function ($model) {
-            \Log::info('Pending model updated event fired for: ' . $model->name);
-        });
+        return $this->belongsTo(\App\Models\Master\Batch::class, 'batch_id', '_id');
+    }
+    
+    public function course()
+    {
+        return $this->belongsTo(\App\Models\Master\Courses::class, 'course_id', '_id');
     }
 }

@@ -50,8 +50,8 @@ class BranchControllerTest extends TestCase
     public function test_can_create_new_branch()
     {
         $branchData = [
-            'name' => 'Jodhpur Branch',
-            'city' => 'Jodhpur',
+            'name' => 'Bikaner Branch',
+            'city' => 'Bikaner',
         ];
 
         $response = $this->post(route('branches.add'), $branchData);
@@ -60,8 +60,8 @@ class BranchControllerTest extends TestCase
         $response->assertSessionHas('success', 'Branch added successfully!');
 
         $this->assertTrue(
-            Branch::where('name', 'Jodhpur Branch')
-                ->where('city', 'Jodhpur')
+            Branch::where('name', 'Bikaner Branch')
+                ->where('city', 'Bikaner')
                 ->where('status', 'Active')
                 ->exists()
         );
@@ -72,7 +72,7 @@ class BranchControllerTest extends TestCase
      */
     public function test_branch_creation_requires_name()
     {
-        $response = $this->post(route('branches.add'), ['city' => 'Jodhpur']);
+        $response = $this->post(route('branches.add'), ['city' => 'Bikaner']);
         $response->assertSessionHasErrors(['name']);
     }
 
@@ -81,7 +81,7 @@ class BranchControllerTest extends TestCase
      */
     public function test_branch_creation_requires_city()
     {
-        $response = $this->post(route('branches.add'), ['name' => 'Jodhpur Branch']);
+        $response = $this->post(route('branches.add'), ['name' => 'Bikaner Branch']);
         $response->assertSessionHasErrors(['city']);
     }
 
@@ -92,7 +92,7 @@ class BranchControllerTest extends TestCase
     {
         $response = $this->post(route('branches.add'), [
             'name' => str_repeat('a', 256),
-            'city' => 'Jodhpur',
+            'city' => 'Bikaner',
         ]);
         $response->assertSessionHasErrors(['name']);
     }

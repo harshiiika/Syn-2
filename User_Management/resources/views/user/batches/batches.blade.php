@@ -68,7 +68,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Batches Assignment</title>
+  <title>Batches</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{{asset('css/batchesa.css')}}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -97,7 +97,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="{{ route('profile.index') }}"> <i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
@@ -113,217 +113,186 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
 
       <!-- left side bar accordian from bootstrap -->
-      <div class="accordion accordion-flush" id="accordionFlushExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management </button>
-          </h2>
-          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <!-- <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
-                      id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="/user management/batches a/batchesa.html"><i class="fa-solid fa-user-group"
-                      id="side-icon"></i> Batches
-                    Assignment</a></li> -->
-                <li>
-                  <a class="item" href="{{ route('user.emp.emp') }}">
-                    <i class="fa-solid fa-user" id="side-icon"></i> Employee
-                  </a>
-                </li>
-                <li>
-                  <a class="item" href="{{ route('user.batches.batches') }}">
-                    <i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i> Master </button>
-          </h2>
-          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
-                      id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i
-                      class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
-                    Batches</a></li>
-                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
-                      id="side-icon"></i> Scholarship</a>
-                </li>
-                <li><a class="item" href="{{ route('fees.index') }}">
-                    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
-                      id="side-icon"></i> Other Fees Master</a>
-                </li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
-                      id="side-icon"></i> Branch
-                    Management</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-            </button>
-          </h2>
-          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
-                      id="side-icon"></i> Session</a></li>
-                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
-                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i> Student Migrate</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-
-            </button>
-          </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry
-                    Management</a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}">
-                    <i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
-                </li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Pending Fees
-                    Students</a></li>
-                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Students</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-              id="accordion-button">
-              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-            </button>
-          </h2>
-          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Collection</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-              id="accordion-button">
-              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Managment
-            </button>
-          </h2>
-          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Student</a></li>
-                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Employee</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-              id="accordion-button">
-              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-            </button>
-          </h2>
-          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon">
-                    </i>Units</a></li>
-                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Dispatch Material</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-              id="accordion-button">
-              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Managment
-            </button>
-          </h2>
-          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test
-                    Master</i></a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-              id="accordion-button">
-              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports</i>
-            </button>
-          </h2>
-          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon">
-                    </i>Walk In</a></li>
-                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Attendance</a>
-                </li>
-                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
-                    Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
-                    History</a></li>
-                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
-                      id="side-icon"></i>Onboard History</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+     <div class="accordion accordion-flush" id="accordionFlushExample">
+  <!-- User Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+        </ul>
       </div>
+    </div>
+  </div>
+
+  <!-- Master -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+      </button>
+    </h2>
+    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fees Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+        id="accordion-button">
+        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+      </button>
+    </h2>
+    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+        id="accordion-button">
+        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+      </button>
+    </h2>
+    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Material -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+        id="accordion-button">
+        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+      </button>
+    </h2>
+    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="{{ route('study_material.dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Series Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+        id="accordion-button">
+        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+      </button>
+    </h2>
+    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+        id="accordion-button">
+        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+      </button>
+    </h2>
+    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <!-- right side content -->
@@ -341,14 +310,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
       <div class="whole">
         <div class="dd">
-          <div class="line">
+             <div class="line">
             <h6>Show Enteries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                10
-              </button>
-              <!-- dd for no of pg entries to be displaed on 1 page (not functional yet) -->
+            aria-expanded="false">
+            {{ request('per_page', 10) }}
+          </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item">10</a></li>
                 <li><a class="dropdown-item">25</a></li>
@@ -357,85 +325,159 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               </ul>
             </div>
           </div>
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
+          
+<div class="search">
+  <form method="GET" action="{{ route('user.batches.batches') }}" id="searchForm">
+    <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+    <input type="search" 
+           name="search" 
+           placeholder="Search" 
+           class="search-holder" 
+           value="{{ request('search') }}"
+           id="searchInput">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </form>
+</div>
         </div>
         <!-- Table starts here -->
 
         <table class="table table-hover" id="table">
-          <thead>
-            <tr>
-              <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Batch Code</th>
-              <th scope="col" id="one">Start Date</th>
-              <th scope="col" id="one">Username</th>
-              <th scope="col" id="one">Shift</th>
-              <th scope="col" id="one">Status</th>
-              <th scope="col" id="one">Action</th>
-            </tr>
-          </thead>
-          <tbody>
+  <thead>
+    <tr>
+      <th scope="col" id="one">Serial No.</th>
+      <th scope="col" id="one">Batch Code</th>
+      <th scope="col" id="one">Start Date</th>
+      <th scope="col" id="one">Username</th>
+      <th scope="col" id="one">Shift</th>
+      <th scope="col" id="one">Status</th>
+      <th scope="col" id="one">Action</th>
+    </tr>
+  </thead>
+  <tbody>
 
 
 
             <!-- Table fillables are present here -->
 
-            @foreach($batches as $index => $batch)
-              <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $batch->batch_id ?? '—' }}</td>
-                <td>{{ $batch->start_date }}</td>
-                <td>{{ $batch->username }}</td>
-                <td>{{ $batch->shift ?? '—' }}</td>
-                <td>
-                  <span class="badge {{ $batch->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-                    {{ $batch->status ?? 'Active' }}
-                  </span>
-                </td>
-                <td>
-                  <div class="dropdown">
-                    
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-                      data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="fas fa-ellipsis-v"></i>
-    </button>
-                    <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-                      <li>
-                        <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}">
-                          @csrf
-                          <button type="submit" class="dropdown-item">
-                            {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
-                          </button>
-                        </form>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            @endforeach
-
-          </tbody>
-        </table>
-      </div>
-      <div class="footer">
-        <div class="left-footer">
-          <p>Showing 1 to 1 of 1 Enteries</p>
+            @forelse($batches as $index => $batch)
+    <tr>
+      <td>{{ $batches->firstItem() + $index }}</td>
+      <td>{{ $batch->batch_id ?? '—' }}</td>
+      <td>{{ $batch->start_date }}</td>
+      <td>{{ $batch->username ?? '—' }}</td>
+      <td>{{ $batch->shift ?? '—' }}</td>
+      <td>
+        <span class="badge {{ $batch->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
+          {{ $batch->status ?? 'Active' }}
+        </span>
+      </td>
+      <td>
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary" type="button" 
+                  id="dropdownMenu{{ $loop->index }}" 
+                  data-bs-toggle="dropdown" 
+                  aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" 
+              aria-labelledby="dropdownMenu{{ $loop->index }}">
+            <li>
+              <form method="POST" action="{{ route('batches.toggleStatus', $batch->_id) }}" style="display: inline;">
+                @csrf
+                <button type="submit" class="dropdown-item">
+                  {{ $batch->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                </button>
+              </form>
+            </li>
+          </ul>
         </div>
-        <div class="right-footer">
+      </td>
+    </tr>
+  @empty
+    <tr>
+      <td colspan="7" class="text-center">No batch assignments found.</td>
+    </tr>
+  @endforelse
+  </tbody>
+</table>
 
-          <!-- Pagination Not functional yet-->
-          <nav aria-label="Page navigation example" id="bottom">
-            <ul class="pagination" id="pagination">
-              <li class="page-item"><a class="page-link" href id="pg1">Previous</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg2">1</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
-            </ul>
-          </nav>
-        </div>
       </div>
+<div class="footer">
+  <div class="left-footer">
+    <p>Showing {{ $batches->firstItem() ?? 0 }} to {{ $batches->lastItem() ?? 0 }} of {{ $batches->total() }} entries
+      @if(request('search'))
+        <span class="text-muted">(filtered from {{ \App\Models\User\BatchAssignment::count() }} total entries)</span>
+      @endif
+    </p>
+  </div>
+  <div class="right-footer">
+    <nav aria-label="Page navigation example" id="bottom">
+      <ul class="pagination" id="pagination">
+        {{-- Previous Page Link --}}
+        @if ($batches->onFirstPage())
+          <li class="page-item disabled">
+            <span class="page-link" id="pg1">Previous</span>
+          </li>
+        @else
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $batches->previousPageUrl() }}" 
+               id="pg1">Previous</a>
+          </li>
+        @endif
+
+        {{-- Pagination Elements --}}
+        @php
+          $start = max($batches->currentPage() - 2, 1);
+          $end = min($start + 4, $batches->lastPage());
+          $start = max($end - 4, 1);
+        @endphp
+
+        @if($start > 1)
+          <li class="page-item">
+            <a class="page-link" href="{{ $batches->url(1) }}">1</a>
+          </li>
+          @if($start > 2)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+        @endif
+
+        @for ($i = $start; $i <= $end; $i++)
+          <li class="page-item {{ $batches->currentPage() == $i ? 'active' : '' }}">
+            <a class="page-link" 
+               href="{{ $batches->url($i) }}">{{ $i }}</a>
+          </li>
+        @endfor
+
+        @if($end < $batches->lastPage())
+          @if($end < $batches->lastPage() - 1)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+          <li class="page-item">
+            <a class="page-link" href="{{ $batches->url($batches->lastPage()) }}">{{ $batches->lastPage() }}</a>
+          </li>
+        @endif
+
+        {{-- Next Page Link --}}
+        @if ($batches->hasMorePages())
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $batches->nextPageUrl() }}" 
+               id="pg4">Next</a>
+          </li>
+        @else
+          <li class="page-item disabled">
+            <span class="page-link" id="pg4">Next</span>
+          </li>
+        @endif
+      </ul>
+    </nav>
+  </div>
+</div>
     </div>
   </div>
   </div>
@@ -497,8 +539,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-  // Ajax for dynamic user addition without page reload
-  $('form[action="{{ route('batches.assign') }}"]').on('submit', function (e) {
+ $(document).ready(function() {
+  // Ajax for dynamic batch assignment without page reload
+  $('#assignBatchForm').on('submit', function (e) {
     e.preventDefault();
 
     $.ajax({
@@ -507,53 +550,76 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       data: $(this).serialize(),
       success: function (response) {
         if (response.status === 'success') {
+          // Close modal
           $('#assignBatchModal').modal('hide');
-          $('form[action="{{ route('batches.assign') }}"]')[0].reset();
+          
+          // Reset form
+          $('#assignBatchForm')[0].reset();
 
-          // Append new batch to table
-          $('#table tbody').append(`
-                    <tr>
-                        <td>${$('#table tbody tr').length + 1}</td>
-                        <td>${response.batch.batch_id}</td>
-                        <td>${response.batch.start_date}</td>
-                        <td>${response.batch.username}</td>
-                        <td>${response.batch.shift}</td>
-                        <td>
-                            <span class="badge ${response.batch.status === 'Deactivated' ? 'bg-danger' : 'bg-success'}">
-                                ${response.batch.status}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenuButton"
-          data-bs-toggle="dropdown" aria-expanded="false">
-    <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-  </button>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <form method="POST" action="/batches/toggle-status/${response.batch.id}">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item">
-                                                ${response.batch.status === 'Active' ? 'Deactivate' : 'Activate'}
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                `);
+          // Get current row count for serial number
+          const newSerialNo = $('#table tbody tr').length + 1;
+
+          // Append new batch to table with proper structure
+          const newRow = `
+            <tr>
+              <td>${newSerialNo}</td>
+              <td>${response.batch.batch_id}</td>
+              <td>${response.batch.start_date}</td>
+              <td>${response.batch.username || '—'}</td>
+              <td>${response.batch.shift || '—'}</td>
+              <td>
+                <span class="badge ${response.batch.status === 'Deactivated' ? 'bg-danger' : 'bg-success'}">
+                  ${response.batch.status}
+                </span>
+              </td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary" type="button" 
+                          id="dropdownMenu${newSerialNo}" 
+                          data-bs-toggle="dropdown" 
+                          aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" 
+                      aria-labelledby="dropdownMenu${newSerialNo}">
+                    <li>
+                      <form method="POST" action="/batches/toggle-status/${response.batch.id}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                          ${response.batch.status === 'Active' ? 'Deactivate' : 'Reactivate'}
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          `;
+          
+          $('#table tbody').append(newRow);
+          
+          // Show success message (optional)
+          alert('Batch assigned successfully!');
         }
       },
       error: function (xhr) {
         if (xhr.status === 422) {
           const errors = xhr.responseJSON.errors;
-          console.log(errors);
-          // Optional: show validation errors on modal
+          console.log('Validation errors:', errors);
+          
+          // Show error message
+          let errorMsg = 'Validation errors:\n';
+          for (let field in errors) {
+            errorMsg += `- ${errors[field][0]}\n`;
+          }
+          alert(errorMsg);
+        } else {
+          alert('An error occurred. Please try again.');
         }
       }
     });
   });
+});
 
 </script>
 

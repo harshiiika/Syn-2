@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Student\Pending;
 use App\Models\Student\Student;
+use App\Models\Student\Onboard;
 use App\Models\Student\Inquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,18 +15,18 @@ class StudentController extends Controller
     /**
      * Display PENDING INQUIRY students - students with incomplete forms
      * Route: student.student.pending
+     * this is pending lists ka controller 
      */
+
+//this is pending controller named as StudentController 
     public function index()
     {
         try {
-            // Get ALL students with pending_fees status (incomplete forms)
-            $students = Student::where('status', 'pending_fees')
-                ->orderBy('created_at', 'desc')
-                ->get();
+            // Get students from student_pending collection
+            $students = Pending::orderBy('created_at', 'desc')->get();
             
-            \Log::info('Fetching pending inquiry students:', [
-                'count' => $students->count(),
-                'students' => $students->pluck('name', '_id')->toArray()
+            Log::info('Fetching pending inquiry students:', [
+                'count' => $students->count()
             ]);
             
             return view('student.student.pending', [
@@ -32,110 +34,22 @@ class StudentController extends Controller
                 'totalCount' => $students->count(),
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error loading pending students: ' . $e->getMessage());
+            Log::error('Error loading pending students: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to load students');
         }
     }
 
     /**
-     * Display ONBOARDED students - students with complete forms
-     * Route: student.onboard.onboard
-     */
-    public function onboardedStudents()
-    {
-        try {
-            \Log::info('=== ONBOARDING PAGE LOADED ===');
-            
-            // Get students with 'onboarded' status (complete forms)
-            $students = Student::where('status', 'onboarded')
-                ->orderBy('created_at', 'desc')
-                ->get();
-            
-            \Log::info('Fetching onboarded students:', [
-                'count' => $students->count(),
-                'student_ids' => $students->pluck('_id')->toArray(),
-                'student_names' => $students->pluck('name')->toArray()
-            ]);
-            
-            return view('student.onboard.onboard', [
-                'students' => $students,
-                'totalCount' => $students->count()
-            ]);
-            
-        } catch (\Exception $e) {
-            \Log::error('Error loading onboarded students: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
-            return redirect()->back()
-                ->with('error', 'Failed to load students: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Show fully paid (active) students
-     */
-    public function activeStudents()
-    {
-        $students = Student::getActiveStudents();
-        return view('master.student.onboard', compact('students'));
-    }
-
-    /**
-     * Display pending fees students
-     */
-    public function pendingFees()
-    {
-        try {
-            $students = Student::getPendingFeesStudents();
-            
-            return view('student.html_fees', [
-                'students' => $students,
-                'totalCount' => $students->count(),
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to load pending fees students');
-        }
-    }
-
-    /**
-     * Show single student details (works for both pending and onboarded)
-     */
-    public function show($id)
-    {
-        try {
-            $student = Student::findOrFail($id);
-            
-            Log::info('Viewing student details:', [
-                'student_id' => $id,
-                'student_name' => $student->name,
-                'status' => $student->status
-            ]);
-            
-            // Return appropriate view based on status
-            if ($student->status === 'onboarded') {
-                return view('student.onboard.view', compact('student'));
-            }
-            
-            return view('student.onboard.onboard', ['student' => $student]);
-            
-        } catch (\Exception $e) {
-            Log::error("View failed for student ID {$id}: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Student not found');
-        }
-    }
-
-    /**
-     * Edit student form (works for both pending and onboarded)
+     * Edit student form (for pending students)
      */
     public function edit($id)
     {
         try {
-            $student = Student::findOrFail($id);
+            $student = Pending::findOrFail($id);
             
-            Log::info('Editing student:', [
+            Log::info('Editing pending student:', [
                 'student_id' => $id,
-                'student_name' => $student->name,
-                'status' => $student->status
+                'student_name' => $student->name
             ]);
             
             return view('student.student.edit', compact('student'));
@@ -147,410 +61,287 @@ class StudentController extends Controller
     }
 
     /**
-     * Update student information
-     * This handles BOTH pending and onboarded students
+     * Update pending student information with file uploads
      */
-    public function update(Request $request, $id)
-    {
-        try {
-            \Log::info('=== UPDATE REQUEST START ===', [
-                'student_id' => $id,
-                'request_data_keys' => array_keys($request->all())
-            ]);
+public function update(Request $request, $id)
+{
+    try {
+        Log::info('=== PENDING STUDENT UPDATE START ===', [
+            'student_id' => $id,
+            'has_passport_photo' => $request->hasFile('passport_photo'),
+            'has_marksheet' => $request->hasFile('marksheet'),
+            'has_secondary_marksheet' => $request->hasFile('secondary_marksheet')
+        ]);
 
-            $student = Student::findOrFail($id);
+        $student = Pending::findOrFail($id);
+        
+        // Validate all fields
+        $validated = $request->validate([
+            // Basic Details
+            'name' => 'required|string|max:255',
+            'father' => 'required|string|max:255',
+            'mother' => 'required|string|max:255',
+            'dob' => 'required|date',
+            'mobileNumber' => 'required|string|regex:/^[0-9]{10}$/',
+            'fatherWhatsapp' => 'required|string|regex:/^[0-9]{10}$/',
+            'motherContact' => 'required|string|regex:/^[0-9]{10}$/',
+            'studentContact' => 'required|string|regex:/^[0-9]{10}$/',
+            'category' => 'required|in:GENERAL,OBC,SC,ST',
+            'gender' => 'required|in:Male,Female,Others',
+            'fatherOccupation' => 'required|string',
+            'motherOccupation' => 'required|string',
             
-            \Log::info('Student found - BEFORE update:', [
-                'student_id' => $student->_id,
-                'student_name' => $student->name,
-                'current_status' => $student->status
-            ]);
-
-            $validated = $request->validate([
-                // Basic Details
-                'name' => 'nullable|string|max:255',
-                'father' => 'nullable|string|max:255',
-                'mother' => 'nullable|string|max:255',
-                'dob' => 'nullable|date',
-                'mobileNumber' => 'nullable|string|regex:/^[0-9]{10}$/',
-                'fatherWhatsapp' => 'nullable|string|regex:/^[0-9]{10}$/',
-                'motherContact' => 'nullable|string|regex:/^[0-9]{10}$/',
-                'studentContact' => 'nullable|string|regex:/^[0-9]{10}$/',
-                'category' => 'nullable|in:GENERAL,OBC,SC,ST',
-                'gender' => 'nullable|in:Male,Female,Others',
-                'fatherOccupation' => 'nullable|string|max:255',
-                'fatherGrade' => 'nullable|string|max:255',
-                'motherOccupation' => 'nullable|string|max:255',
-                
-                // Address Details
-                'state' => 'nullable|string|max:255',
-                'city' => 'nullable|string|max:255',
-                'pinCode' => 'nullable|string|regex:/^[0-9]{6}$/',
-                'address' => 'nullable|string',
-                'belongToOtherCity' => 'nullable|in:Yes,No',
-                'economicWeakerSection' => 'nullable|in:Yes,No',
-                'armyPoliceBackground' => 'nullable|in:Yes,No',
-                'speciallyAbled' => 'nullable|in:Yes,No',
-                
-                // Course Details
-                'course_type' => 'nullable|string',
-                'course' => 'nullable|string',
-                'courseName' => 'nullable|string',
-                'deliveryMode' => 'nullable|string',
-                'medium' => 'nullable|string',
-                'board' => 'nullable|string',
-                'courseContent' => 'nullable|string',
-                
-                // Academic Details
-                'previousClass' => 'nullable|string',
-                'previousMedium' => 'nullable|string',
-                'schoolName' => 'nullable|string|max:255',
-                'previousBoard' => 'nullable|string',
-                'passingYear' => 'nullable|string|regex:/^[0-9]{4}$/',
-                'percentage' => 'nullable|numeric|min:0|max:100',
-                
-                // Scholarship Eligibility
-                'isRepeater' => 'nullable|in:Yes,No',
-                'scholarshipTest' => 'nullable|in:Yes,No',
-                'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
-                'competitionExam' => 'nullable|in:Yes,No',
-                
-                // Batch
-                'batchName' => 'nullable|string|max:255',
-            ]);
-
-            // Remove null values to avoid overwriting existing data
-            $validated = array_filter($validated, function($value) {
-                return $value !== null;
-            });
-
-            // Update student
-            $student->update($validated);
-            $student->refresh();
+            // Address Details
+            'state' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'pinCode' => 'required|string|regex:/^[0-9]{6}$/',
+            'address' => 'required|string',
+            'belongToOtherCity' => 'required|in:Yes,No',
+            'economicWeakerSection' => 'required|in:Yes,No',
+            'armyPoliceBackground' => 'required|in:Yes,No',
+            'speciallyAbled' => 'required|in:Yes,No',
             
-            \Log::info('Student AFTER update:', [
-                'student_id' => $student->_id,
-                'status' => $student->status
-            ]);
+            // Course Details
+            'course_type' => 'required|string',
+            'courseName' => 'required|string',
+            'deliveryMode' => 'required|string',
+            'medium' => 'required|string',
+            'board' => 'required|string',
+            'courseContent' => 'required|string',
             
-            // Check if ALL required fields are filled (only for pending_fees students)
-            if ($student->status === 'pending_fees') {
-                $requiredFields = [
-                    'name', 'father', 'mother', 'dob', 'mobileNumber', 
-                    'category', 'gender', 
-                    'state', 'city', 'pinCode', 'address',
-                    'belongToOtherCity', 'economicWeakerSection', 
-                    'armyPoliceBackground', 'speciallyAbled',
-                    'course_type', 'courseName', 'deliveryMode', 'medium', 
-                    'board', 'courseContent',
-                    'previousClass', 'previousMedium', 'schoolName', 
-                    'previousBoard', 'passingYear', 'percentage',
-                    'isRepeater', 'scholarshipTest', 'lastBoardPercentage', 
-                    'competitionExam', 'batchName'
-                ];
+            // Academic Details
+            'previousClass' => 'required|string',
+            'previousMedium' => 'required|string',
+            'schoolName' => 'required|string|max:255',
+            'previousBoard' => 'required|string',
+            'passingYear' => 'required|string|regex:/^[0-9]{4}$/',
+            'percentage' => 'required|numeric|min:0|max:100',
+            
+            // Scholarship Eligibility
+            'isRepeater' => 'required|in:Yes,No',
+            'scholarshipTest' => 'required|in:Yes,No',
+            'lastBoardPercentage' => 'required|numeric|min:0|max:100',
+            'competitionExam' => 'required|in:Yes,No',
+            
+            // Batch
+            'batchName' => 'required|string|max:255',
+            
+            // File uploads (optional on update if already uploaded)
+            'passport_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'marksheet' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'caste_certificate' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'scholarship_proof' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'secondary_marksheet' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'senior_secondary_marksheet' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+        ]);
 
-                $isComplete = true;
-                $missingFields = [];
+        //   CRITICAL FIX: Handle file uploads and preserve existing documents
+        $fileFields = [
+            'passport_photo',
+            'marksheet', 
+            'caste_certificate',
+            'scholarship_proof',
+            'secondary_marksheet',
+            'senior_secondary_marksheet'
+        ];
+
+        $documentData = [];
+        
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                // New file uploaded - convert to Base64
+                $file = $request->file($field);
+                $fileContent = file_get_contents($file->getRealPath());
+                $base64 = base64_encode($fileContent);
+                $mimeType = $file->getMimeType();
+                $documentData[$field] = "data:{$mimeType};base64,{$base64}";
                 
-                foreach ($requiredFields as $field) {
-                    $value = $student->$field;
-                    if ($value === null || $value === '' || (is_string($value) && trim($value) === '')) {
-                        $isComplete = false;
-                        $missingFields[] = $field;
-                    }
-                }
-                
-                \Log::info('=== FORM COMPLETION CHECK ===', [
-                    'is_complete' => $isComplete,
-                    'total_required' => count($requiredFields),
-                    'total_missing' => count($missingFields),
-                    'missing_fields' => $missingFields
+                Log::info("  New file uploaded: {$field}", [
+                    'mime_type' => $mimeType,
+                    'size' => strlen($base64)
                 ]);
-
-                if ($isComplete) {
-                    \Log::info('✓✓✓ FORM IS COMPLETE - MOVING TO ONBOARDED ✓✓✓', [
-                        'student_id' => $student->_id,
-                        'student_name' => $student->name
-                    ]);
-
-                    try {
-                        // Get all student data
-                        $onboardedData = $student->toArray();
-                        
-                        // Remove MongoDB _id to create new document
-                        unset($onboardedData['_id']);
-                        
-                        // Add onboarded timestamp
-                        $onboardedData['onboardedAt'] = now();
-                        $onboardedData['status'] = 'onboarded';
-                        
-                        \Log::info('Creating onboarded student entry:', [
-                            'data_keys' => array_keys($onboardedData),
-                            'name' => $onboardedData['name'] ?? 'N/A'
-                        ]);
-                        
-                        // Create entry in onboarded_students collection
-                        $onboarded = \App\Models\Student\Onboard::create($onboardedData);
-                        
-                        \Log::info('✓ Onboarded student created:', [
-                            'onboarded_id' => $onboarded->_id,
-                            'collection' => 'onboarded_students'
-                        ]);
-                        
-                        // Delete from students (pending) collection
-                        $studentId = $student->_id;
-                        $student->delete();
-                        
-                        \Log::info('✓ Deleted from pending students:', [
-                            'deleted_id' => $studentId
-                        ]);
-
-                        \Log::info('✓✓✓ STUDENT MOVED TO ONBOARDED COLLECTION SUCCESSFULLY ✓✓✓');
-
-                        return redirect()->route('student.student.pending')
-                            ->with('success', 'Student form completed! Moved to Onboarding Students section.');
-                            
-                    } catch (\Exception $e) {
-                        \Log::error('❌ ERROR MOVING STUDENT TO ONBOARDED:', [
-                            'error' => $e->getMessage(),
-                            'trace' => $e->getTraceAsString()
-                        ]);
-                        
-                        return redirect()->route('student.student.pending')
-                            ->with('error', 'Failed to move student: ' . $e->getMessage());
-                    }
+            } else {
+                // No new file - preserve existing document if it exists
+                if (!empty($student->$field) && $student->$field !== 'N/A') {
+                    $documentData[$field] = $student->$field;
+                    Log::info("  Preserved existing document: {$field}");
                 }
-                
-                return redirect()->route('student.student.pending')
-                    ->with('info', 'Student updated. Missing ' . count($missingFields) . ' field(s): ' . implode(', ', array_slice($missingFields, 0, 5)));
             }
+        }
+
+        // Store courseType for compatibility
+        $validated['courseType'] = $validated['course_type'];
+
+        Log::info('  ALL REQUIRED FIELDS FILLED - MOVING TO ONBOARDED', [
+            'documents_count' => count(array_filter($documentData))
+        ]);
+
+        try {
+            //   Create in student_onboard collection WITH ALL DOCUMENTS
+            $onboardData = array_merge($student->toArray(), $validated, $documentData);
+            $onboardData['status'] = 'onboarded';
+            $onboardData['onboardedAt'] = now();
+            unset($onboardData['_id']); // Remove old _id to create new
             
-            // For already onboarded students, just redirect back to onboarded list
+            Log::info('  Onboard data prepared:', [
+                'documents' => [
+                    'passport_photo' => !empty($onboardData['passport_photo']),
+                    'marksheet' => !empty($onboardData['marksheet']),
+                    'secondary_marksheet' => !empty($onboardData['secondary_marksheet']),
+                    'senior_secondary_marksheet' => !empty($onboardData['senior_secondary_marksheet']),
+                    'caste_certificate' => !empty($onboardData['caste_certificate']),
+                    'scholarship_proof' => !empty($onboardData['scholarship_proof']),
+                ]
+            ]);
+            
+            $onboardStudent = \App\Models\Student\Onboard::create($onboardData);
+            
+            // Delete from pending
+            $student->delete();
+            
+            Log::info('  Student moved to onboard collection WITH DOCUMENTS:', [
+                'new_id' => $onboardStudent->_id,
+                'name' => $onboardStudent->name,
+                'has_passport_photo' => !empty($onboardStudent->passport_photo),
+                'has_marksheet' => !empty($onboardStudent->marksheet),
+                'has_secondary_marksheet' => !empty($onboardStudent->secondary_marksheet)
+            ]);
+
             return redirect()->route('student.onboard.onboard')
-                ->with('success', 'Student updated successfully');
-            
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            \Log::error('Student not found: ', ['id' => $id]);
-            return redirect()->back()
-                ->with('error', 'Student not found')
-                ->withInput();
+                ->with('success', 'Student onboarding completed! All documents transferred successfully.');
                 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation failed', ['errors' => $e->errors()]);
-            return redirect()->back()
-                ->withErrors($e->errors())
-                ->withInput();
-            
         } catch (\Exception $e) {
-            \Log::error('Error updating student: ' . $e->getMessage(), [
+            Log::error('❌ ERROR MOVING STUDENT:', [
+                'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
-            return redirect()->back()
-                ->with('error', 'Failed to update student: ' . $e->getMessage())
-                ->withInput();
+            
+            return redirect()->route('student.student.pending')
+                ->with('error', 'Failed to complete onboarding: ' . $e->getMessage());
         }
+    
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::error('Validation failed', ['errors' => $e->errors()]);
+        return redirect()->back()
+            ->withErrors($e->errors())
+            ->withInput();
+        
+    } catch (\Exception $e) {
+        Log::error('Error updating student: ' . $e->getMessage());
+        return redirect()->back()
+            ->with('error', 'Failed to update student: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
     /**
-     * Convert inquiry to student
+     * Check if all required fields are filled
      */
-    public function convertFromInquiry(Request $request, $inquiryId)
+    private function checkAllFieldsFilled($student)
+    {
+        $requiredFields = [
+            'name', 'father', 'mother', 'dob', 'mobileNumber', 
+            'fatherWhatsapp', 'motherContact', 'studentContact',
+            'category', 'gender', 'fatherOccupation', 'motherOccupation',
+            'state', 'city', 'pinCode', 'address',
+            'belongToOtherCity', 'economicWeakerSection', 
+            'armyPoliceBackground', 'speciallyAbled',
+            'course_type', 'courseName', 'deliveryMode', 'medium', 
+            'board', 'courseContent',
+            'previousClass', 'previousMedium', 'schoolName', 
+            'previousBoard', 'passingYear', 'percentage',
+            'isRepeater', 'scholarshipTest', 'lastBoardPercentage', 
+            'competitionExam', 'batchName',
+            'passport_photo', 'marksheet' // Required files
+        ];
+
+        foreach ($requiredFields as $field) {
+            $value = $student->$field;
+            if ($value === null || $value === '' || (is_string($value) && trim($value) === '')) {
+                Log::info("Missing field: {$field}");
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    
+    /**
+     * Transfer student from Pending to Onboard with proper history tracking
+     */
+    public function transferToOnboard(Request $request, $id)
     {
         try {
-            $inquiry = Inquiry::findOrFail($inquiryId);
+            Log::info('=== TRANSFER TO ONBOARD START ===', ['pending_id' => $id]);
             
-            $validated = $request->validate([
-                'total_fees' => 'required|numeric|min:0',
-                'paid_fees' => 'nullable|numeric|min:0',
-                'courseName' => 'required|string',
-                'deliveryMode' => 'required|string',
-                'courseContent' => 'nullable|string',
-                'branch' => 'required|string',
-            ]);
-
-            $totalFees = $validated['total_fees'];
-            $paidFees = $validated['paid_fees'] ?? 0;
-            $remainingFees = $totalFees - $paidFees;
-
-            if ($remainingFees <= 0) {
-                $status = Student::STATUS_ACTIVE;
-                $feeStatus = 'paid';
-            } elseif ($paidFees > 0) {
-                $status = Student::STATUS_PENDING_FEES;
-                $feeStatus = 'partial';
-            } else {
-                $status = Student::STATUS_PENDING_FEES;
-                $feeStatus = 'pending';
+            $pendingStudent = Pending::findOrFail($id);
+            
+            // Prepare onboard data
+            $onboardData = $pendingStudent->toArray();
+            unset($onboardData['_id']);
+            
+            // Set onboard metadata
+            $onboardData['status'] = 'onboarded';
+            $onboardData['transferred_from'] = 'pending';
+            $onboardData['onboardedAt'] = now();
+            $onboardData['transferred_at'] = now();
+            $onboardData['transferred_by'] = auth()->user()->email ?? 'Admin';
+            
+            //   BUILD COMPLETE HISTORY - Transfer existing history from inquiry
+            $completeHistory = [];
+            
+            // 1. Get history from pending student (which came from inquiry)
+            if (isset($pendingStudent->history) && is_array($pendingStudent->history)) {
+                $completeHistory = $pendingStudent->history;
             }
-
-            $student = Student::create([
-                'name' => $inquiry->name,
-                'father' => $inquiry->father,
-                'mobileNumber' => $inquiry->mobileNumber,
-                'alternateNumber' => $inquiry->alternateNumber ?? null,
-                'email' => $inquiry->email,
-                'courseName' => $validated['courseName'],
-                'deliveryMode' => $validated['deliveryMode'],
-                'courseContent' => $validated['courseContent'] ?? null,
-                'branch' => $validated['branch'],
-                'total_fees' => $totalFees,
-                'paid_fees' => $paidFees,
-                'remaining_fees' => $remainingFees,
-                'status' => $status,
-                'fee_status' => $feeStatus,
+            
+            // 2. Add "Transferred to Onboard" entry
+            $onboardHistoryEntry = [
+                'action' => 'Student Onboarded',
+                'description' => 'Student successfully onboarded and transferred to onboarding collection',
+                'changed_by' => auth()->user()->name ?? auth()->user()->email ?? 'Admin',
+                'timestamp' => now()->toIso8601String(),
+                'date' => now()->format('d M Y, h:i A')
+            ];
+            
+            // Add to beginning of array (newest first)
+            array_unshift($completeHistory, $onboardHistoryEntry);
+            
+            // Set the complete history
+            $onboardData['history'] = $completeHistory;
+            
+            Log::info('Creating onboard student with complete history', [
+                'student_name' => $pendingStudent->name,
+                'history_count' => count($completeHistory)
             ]);
-
-            $inquiry->update(['status' => 'converted']);
-
-            if ($remainingFees > 0) {
-                return redirect()->route('students.pending_fees')
-                    ->with('success', 'Student onboarded successfully! Pending fees: ₹' . $remainingFees);
-            } else {
-                return redirect()->route('students.active')
-                    ->with('success', 'Student onboarded successfully with full payment!');
-            }
-
+            
+            // Create in onboard collection
+            $onboardStudent = Onboard::create($onboardData);
+            
+            Log::info('  Onboard student created', [
+                'onboard_id' => $onboardStudent->_id,
+                'name' => $onboardStudent->name,
+                'history_entries' => count($onboardStudent->history ?? [])
+            ]);
+            
+            // Delete from pending
+            $pendingStudent->delete();
+            
+            Log::info('  Transfer to onboard complete');
+            
+            return redirect()->route('student.onboard.onboard')
+                ->with('success', "Student '{$onboardStudent->name}' successfully onboarded!");
+                
         } catch (\Exception $e) {
+            Log::error('❌ Transfer to onboard failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return redirect()->back()
                 ->with('error', 'Failed to onboard student: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Store a newly created student
-     */
-    public function store(Request $request)
-    {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'father' => 'required|string|max:255',
-                'mobileNumber' => 'required|string|regex:/^[0-9]{10}$/',
-                'courseName' => 'required|string|max:255',
-                'deliveryMode' => 'required|string',
-                'courseContent' => 'nullable|string',
-                'email' => 'required|email|unique:mongodb.students',
-                'alternateNumber' => 'nullable|string|regex:/^[0-9]{10}$/',
-                'branch' => 'required|string',
-                'total_fees' => 'required|numeric|min:0',
-                'paid_fees' => 'nullable|numeric|min:0',
-            ]);
-
-            $totalFees = $validated['total_fees'];
-            $paidFees = $validated['paid_fees'] ?? 0;
-            $remainingFees = $totalFees - $paidFees;
-
-            if ($remainingFees <= 0) {
-                $status = Student::STATUS_ACTIVE;
-                $feeStatus = 'paid';
-            } elseif ($paidFees > 0) {
-                $status = Student::STATUS_PENDING_FEES;
-                $feeStatus = 'partial';
-            } else {
-                $status = Student::STATUS_PENDING_FEES;
-                $feeStatus = 'pending';
-            }
-
-            $student = Student::create([
-                'name' => $validated['name'],
-                'father' => $validated['father'],
-                'mobileNumber' => $validated['mobileNumber'],
-                'alternateNumber' => $validated['alternateNumber'] ?? null,
-                'email' => $validated['email'],
-                'courseName' => $validated['courseName'],
-                'deliveryMode' => $validated['deliveryMode'],
-                'courseContent' => $validated['courseContent'] ?? null,
-                'branch' => $validated['branch'],
-                'total_fees' => $totalFees,
-                'paid_fees' => $paidFees,
-                'remaining_fees' => $remainingFees,
-                'status' => $status,
-                'fee_status' => $feeStatus,
-            ]);
-
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Student added successfully',
-                    'student' => $student
-                ], 201);
-            }
-
-            return redirect()->route('student.html')->with('success', 'Student added successfully');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'error',
-                    'errors' => $e->errors()
-                ], 422);
-            }
-
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to add student'
-                ], 500);
-            }
-
-            return redirect()->back()->with('error', 'Failed to add student');
-        }
-    }
-
-    /**
-     * Update student fees
-     */
-    public function updateFees(Request $request, $id)
-    {
-        try {
-            $student = Student::findOrFail($id);
-            
-            $validated = $request->validate([
-                'payment_amount' => 'required|numeric|min:0',
-            ]);
-
-            $paymentAmount = $validated['payment_amount'];
-            $student->paid_fees += $paymentAmount;
-            $student->remaining_fees -= $paymentAmount;
-
-            if ($student->remaining_fees <= 0) {
-                $student->status = Student::STATUS_ACTIVE;
-                $student->fee_status = 'paid';
-                $student->remaining_fees = 0;
-            } elseif ($student->paid_fees > 0) {
-                $student->fee_status = 'partial';
-            }
-
-            $student->save();
-
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Payment recorded successfully',
-                    'remaining_fees' => $student->remaining_fees,
-                    'redirect' => $student->remaining_fees <= 0 ? route('students.active') : null
-                ]);
-            }
-
-            if ($student->remaining_fees <= 0) {
-                return redirect()->route('students.active')
-                    ->with('success', 'Payment completed! Student is now active.');
-            }
-
-            return redirect()->route('students.pending_fees')
-                ->with('success', 'Payment recorded. Remaining: ₹' . $student->remaining_fees);
-
-        } catch (\Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to update fees'
-                ], 500);
-            }
-
-            return redirect()->back()->with('error', 'Failed to update fees');
-        }
-    }
 }

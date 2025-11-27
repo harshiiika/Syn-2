@@ -233,205 +233,186 @@
         <p>synthesisbikaner@gmail.com</p>
       </div>
       
-      <div class="accordion accordion-flush" id="accordionFlushExample">
-        <!-- Same accordion structure as edit page -->
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management </button>
-          </h2>
-          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
-                      id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
-                      id="side-icon"></i> Batches Assignment</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i> Master </button>
-          </h2>
-          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
-                      id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i
-                      class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
-                    Batches</a></li>
-                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
-                      id="side-icon"></i> Scholarship</a>
-                </li>
-                <li><a class="item" href="{{ route('fees.index') }}">
-<i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
-                      id="side-icon"></i> Other Fees Master</a>
-                </li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
-                      id="side-icon"></i> Branch
-                    Management</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-            </button>
-          </h2>
-          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
-                      id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i> Student Migrate</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button"> 
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-            </button>
-          </h2>
-          
-          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry Management </a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}">
-    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
-</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Pending Fees
-                    Students</a></li>
-                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Students</a></li>
-              </ul>
-            </div>
-          </div>  
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-              id="accordion-button">
-              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-            </button>
-          </h2>
-          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Collection</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-              id="accordion-button">
-              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Managment
-            </button>
-          </h2>
-          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Student</a></li>
-                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Employee</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-              id="accordion-button">
-              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-            </button>
-          </h2>
-          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon">
-                    </i>Units</a></li>
-                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Dispatch Material</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-              id="accordion-button">
-              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Managment
-            </button>
-          </h2>
-          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test
-                    Master</i></a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-              id="accordion-button">
-              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports</i>
-            </button>
-          </h2>
-          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon">
-                    </i>Walk In</a></li>
-                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Attendance</a>
-                </li>
-                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
-                    Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
-                    History</a></li>
-                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
-                      id="side-icon"></i>Onboard History</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+     <div class="accordion accordion-flush" id="accordionFlushExample">
+  <!-- User Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+        </ul>
       </div>
+    </div>
+  </div>
+
+  <!-- Master -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+      </button>
+    </h2>
+    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fees Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+        id="accordion-button">
+        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+      </button>
+    </h2>
+    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+        id="accordion-button">
+        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+      </button>
+    </h2>
+    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Material -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+        id="accordion-button">
+        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+      </button>
+    </h2>
+    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="{{ route('study_material.dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Series Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+        id="accordion-button">
+        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+      </button>
+    </h2>
+    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+        id="accordion-button">
+        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+      </button>
+    </h2>
+    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <!-- Main Content Area -->
@@ -451,109 +432,121 @@
             <span>{{ session('success') }}</span>
           </div>
         @endif
-
-        <form method="POST" action="{{ route('inquiries.scholarship.update', $inquiry->_id) }}">
+<form method="POST" action="{{ route('inquiries.scholarship.update', $inquiry->_id) }}" id="scholarshipForm">
     @csrf
     @method('PUT')
 
-          <!-- Scholarship Details Section -->
-          <div class="form-section">
-            <h4>Scholarship Details</h4>
-            
-            <div class="detail-row">
-              <div class="detail-label">Eligible For Scholarship</div>
-              <div class="detail-value">
+    <!-- Scholarship Details Section -->
+    <div class="form-section">
+        <h4>Scholarship Details</h4>
+        
+        <div class="detail-row">
+            <div class="detail-label">Eligible For Scholarship</div>
+            <div class="detail-value">
                 @if($eligibleForScholarship)
-                  <span style="color: #28a745; font-weight: 600;">Yes</span>
+                    <span style="color: #28a745; font-weight: 600;">Yes</span>
                 @else
-                  <span style="color: #dc3545; font-weight: 600;">No</span>
+                    <span style="color: #dc3545; font-weight: 600;">No</span>
                 @endif
-              </div>
             </div>
+        </div>
 
-            @if($eligibleForScholarship && $scholarship)
-              <div class="detail-row">
+        @if($eligibleForScholarship && $scholarship)
+            <div class="detail-row">
                 <div class="detail-label">Name of Scholarship</div>
                 <div class="detail-value">{{ $scholarship->scholarship_name ?? 'N/A' }}</div>
-              </div>
-            @endif
-
-            <div class="detail-row">
-              <div class="detail-label">Total Fee Before Discount</div>
-              <div class="detail-value highlight">₹{{ number_format($totalFeeBeforeDiscount, 2) }}</div>
             </div>
+        @endif
 
-            <div class="detail-row">
-              <div class="detail-label">Discount Percentage</div>
-              <div class="detail-value highlight" id="discountPercentageDisplay">{{ $discountPercentage }}%</div>
+        <div class="detail-row">
+            <div class="detail-label">Total Fee Before Discount</div>
+            <div class="detail-value highlight">₹{{ number_format($totalFeeBeforeDiscount, 2) }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Discount Percentage</div>
+            <div class="detail-value highlight" id="discountPercentageDisplay">{{ $discountPercentage }}%</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Discounted Fees</div>
+            <div class="detail-value highlight" id="discountedFeesDisplay">₹{{ number_format($scholarshipDiscountedFees, 2) }}</div>
+        </div>
+    </div>
+
+    <!-- Discretionary Discount Section -->
+    <div class="form-section">
+        <h4>Discretionary Discount</h4>
+        
+       <div class="form-group">
+            <label>Do You Want Add discretionary discount</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="add_discretionary_discount" value="Yes" id="discountYes" 
+                           {{ $inquiry->discretionary_discount === 'Yes' ? 'checked' : '' }}>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="add_discretionary_discount" value="No" id="discountNo" 
+                           {{ $inquiry->discretionary_discount !== 'Yes' ? 'checked' : '' }}>
+                    No
+                </label>
             </div>
+        </div>
 
-            <div class="detail-row">
-              <div class="detail-label">Discounted Fees</div>
-              <div class="detail-value highlight" id="discountedFeesDisplay">₹{{ number_format($scholarshipDiscountedFees, 2) }}</div>
-            </div>
-          </div>
-
-          <!-- Discretionary Discount Section -->
-          <div class="form-section">
-            <h4>Discretionary Discount</h4>
-            
+        <!--   CRITICAL: Ensure these fields have correct names matching validation -->
+        <div class="discount-input-section {{ $inquiry->discretionary_discount === 'Yes' ? 'active' : '' }}" id="discountInputSection">
             <div class="form-group">
-              <label>Do You Want Add discretionary discount</label>
-              <div class="radio-group">
-                <label>
-                  <input type="radio" name="add_discretionary_discount" value="Yes" id="discountYes">
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" name="add_discretionary_discount" value="No" id="discountNo" checked>
-                  No
-                </label>
-              </div>
-            </div>
-
-            <div class="discount-input-section" id="discountInputSection">
-              <div class="form-group">
                 <label>Discount Type</label>
                 <select name="discretionary_discount_type" class="form-select" id="discountType">
-                  <option value="percentage">Percentage (%)</option>
-                  <option value="fixed">Fixed Amount (₹)</option>
+                    <option value="percentage" {{ $inquiry->discretionary_discount_type === 'percentage' ? 'selected' : '' }}>Percentage (%)</option>
+                    <option value="fixed" {{ $inquiry->discretionary_discount_type === 'fixed' ? 'selected' : '' }}>Fixed Amount (₹)</option>
                 </select>
-              </div>
-
-              <div class="form-group">
-                <label>Discount Value</label>
-                <input type="number" name="discretionary_discount_value" class="form-control" 
-                       id="discountValue" min="0" step="0.01">
-              </div>
-
-              <div class="form-group">
-                <label>Reason for Discretionary Discount</label>
-                <textarea name="discretionary_discount_reason" class="form-control" 
-                          rows="3" id="discountReason"></textarea>
-              </div>
-
-              <div class="detail-row" style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 15px;">
-                <div class="detail-label">Final Fees After All Discounts</div>
-                <div class="detail-value highlight" style="font-size: 1.3em;" id="finalFeesDisplay">
-                  ₹{{ number_format($discountedFees, 2) }}
-                </div>
-              </div>
             </div>
 
-            <input type="hidden" name="total_fee_before_discount" value="{{ $totalFeeBeforeDiscount }}">
-            <input type="hidden" name="scholarship_discount_percentage" value="{{ $discountPercentage }}">
-            <input type="hidden" name="scholarship_discounted_fees" value="{{ $discountedFees }}">
-            <input type="hidden" name="final_fees" id="finalFeesInput" value="{{ $discountedFees }}">
-          </div>
+            <div class="form-group">
+                <label>Discount Value</label>
+                <input type="number" 
+                       name="discretionary_discount_value" 
+                       class="form-control" 
+                       id="discountValue" 
+                       min="0" 
+                       step="0.01"
+                       value="{{ $inquiry->discretionary_discount_value ?? '' }}"
+                       placeholder="Enter discount value">
+            </div>
 
-          <!-- Footer with Next Button -->
-          <div class="sticky-footer">
-            <button type="submit" class="btn-next">
-              Next <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-        </form>
+            <div class="form-group">
+                <label>Reason for Discretionary Discount</label>
+                <textarea name="discretionary_discount_reason" 
+                          class="form-control" 
+                          rows="3" 
+                          id="discountReason"
+                          placeholder="Please provide a reason for this discount">{{ $inquiry->discretionary_discount_reason ?? '' }}</textarea>
+            </div>
+
+            <div class="detail-row" style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                <div class="detail-label">Final Fees After All Discounts</div>
+                <div class="detail-value highlight" style="font-size: 1.3em;" id="finalFeesDisplay">
+                    ₹{{ number_format($finalFees, 2) }}
+                </div>
+            </div>
+        </div>
+
+   <!-- Hidden fields with correct names -->
+        <input type="hidden" name="total_fee_before_discount" value="{{ $totalFeeBeforeDiscount }}">
+        <input type="hidden" name="scholarship_discount_percentage" value="{{ $discountPercentage }}">
+        <input type="hidden" name="scholarship_discounted_fees" value="{{ $scholarshipDiscountedFees }}">
+        <input type="hidden" name="final_fees" id="finalFeesInput" value="{{ $finalFees }}">
+      </div>
+
+    <!-- Footer -->
+    <div class="sticky-footer">
+        <button type="submit" class="btn-next">
+             Save & Continue <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+</form>
 
       </div>
     </div>
@@ -563,105 +556,151 @@
   <script src="{{asset('js/emp.js')}}"></script>
   
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const discountYes = document.getElementById('discountYes');
-      const discountNo = document.getElementById('discountNo');
-      const discountInputSection = document.getElementById('discountInputSection');
-      const discountType = document.getElementById('discountType');
-      const discountValue = document.getElementById('discountValue');
-      const discountReason = document.getElementById('discountReason');
-      const finalFeesDisplay = document.getElementById('finalFeesDisplay');
-      const finalFeesInput = document.getElementById('finalFeesInput');
+document.addEventListener('DOMContentLoaded', function() {
+  const discountYes = document.getElementById('discountYes');
+  const discountNo = document.getElementById('discountNo');
+  const discountInputSection = document.getElementById('discountInputSection');
+  const discountType = document.getElementById('discountType');
+  const discountValue = document.getElementById('discountValue');
+  const discountReason = document.getElementById('discountReason');
+  const finalFeesDisplay = document.getElementById('finalFeesDisplay');
+  const finalFeesInput = document.getElementById('finalFeesInput');
+  const scholarshipForm = document.querySelector('form');
 
-      const scholarshipDiscountedFees = {{ $discountedFees }};
-      const totalFeeBeforeDiscount = {{ $totalFeeBeforeDiscount }};
+  const scholarshipDiscountedFees = {{ $scholarshipDiscountedFees }};
+  const savedFinalFees = {{ $finalFees }};
 
-      // Toggle discount input section
-      discountYes.addEventListener('change', function() {
-        if (this.checked) {
-          discountInputSection.classList.add('active');
-        }
-      });
+  // 🔥 FIX: Initialize with saved values on page load
+  console.log('🔄 Initializing with saved data:', {
+    scholarshipDiscountedFees: scholarshipDiscountedFees,
+    savedFinalFees: savedFinalFees,
+    discretionary_discount: '{{ $inquiry->discretionary_discount }}',
+    has_saved_values: {{ $inquiry->discretionary_discount === 'Yes' ? 'true' : 'false' }}
+  });
 
-      discountNo.addEventListener('change', function() {
-        if (this.checked) {
-          discountInputSection.classList.remove('active');
-          resetDiscountCalculation();
-        }
-      });
+  // Set initial final fees display
+  finalFeesDisplay.textContent = '₹' + savedFinalFees.toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  finalFeesInput.value = savedFinalFees.toFixed(2);
 
-      // Calculate final fees on discount input change
-      function calculateFinalFees() {
-        if (!discountYes.checked) return;
-
-        const type = discountType.value;
-        const value = parseFloat(discountValue.value) || 0;
-
-        let finalFees = scholarshipDiscountedFees;
-
-        if (value > 0) {
-          if (type === 'percentage') {
-            const additionalDiscount = (scholarshipDiscountedFees * value) / 100;
-            finalFees = scholarshipDiscountedFees - additionalDiscount;
-          } else if (type === 'fixed') {
-            finalFees = scholarshipDiscountedFees - value;
-          }
-        }
-
-        // Ensure final fees is not negative
-        finalFees = Math.max(0, finalFees);
-
-        // Update display and hidden input
-        finalFeesDisplay.textContent = '₹' + finalFees.toLocaleString('en-IN', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-        finalFeesInput.value = finalFees.toFixed(2);
+  // Toggle discount section
+  discountYes.addEventListener('change', function() {
+    if (this.checked) {
+      discountInputSection.classList.add('active');
+      discountType.setAttribute('required', 'required');
+      discountValue.setAttribute('required', 'required');
+      discountReason.setAttribute('required', 'required');
+      
+      // Recalculate if values exist
+      if (discountValue.value) {
+        calculateFinalFees();
       }
+    }
+  });
 
-      function resetDiscountCalculation() {
-        discountValue.value = '';
-        discountReason.value = '';
-        finalFeesDisplay.textContent = '₹' + scholarshipDiscountedFees.toLocaleString('en-IN', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+  discountNo.addEventListener('change', function() {
+    if (this.checked) {
+      discountInputSection.classList.remove('active');
+      discountType.removeAttribute('required');
+      discountValue.removeAttribute('required');
+      discountReason.removeAttribute('required');
+      resetDiscountCalculation();
+    }
+  });
+
+  // Calculate final fees
+  function calculateFinalFees() {
+    if (!discountYes.checked) return;
+
+    const type = discountType.value;
+    const value = parseFloat(discountValue.value) || 0;
+
+    let finalFees = scholarshipDiscountedFees;
+
+    if (value > 0) {
+      if (type === 'percentage') {
+        const additionalDiscount = (scholarshipDiscountedFees * value) / 100;
+        finalFees = scholarshipDiscountedFees - additionalDiscount;
+        console.log('💰 Percentage discount:', {
+          base: scholarshipDiscountedFees,
+          percentage: value,
+          discount_amount: additionalDiscount,
+          final: finalFees
         });
-        finalFeesInput.value = scholarshipDiscountedFees.toFixed(2);
+      } else if (type === 'fixed') {
+        finalFees = scholarshipDiscountedFees - value;
+        console.log('💰 Fixed discount:', {
+          base: scholarshipDiscountedFees,
+          discount_amount: value,
+          final: finalFees
+        });
       }
+    }
 
-      // Add event listeners
-      discountType.addEventListener('change', calculateFinalFees);
-      discountValue.addEventListener('input', calculateFinalFees);
+    finalFees = Math.max(0, finalFees);
 
-      // Form validation
-      document.getElementById('scholarshipForm').addEventListener('submit', function(e) {
-        if (discountYes.checked) {
-          const value = parseFloat(discountValue.value) || 0;
-          const reason = discountReason.value.trim();
-
-          if (value > 0 && !reason) {
-            e.preventDefault();
-            alert('Please provide a reason for the discretionary discount.');
-            discountReason.focus();
-            return false;
-          }
-
-          if (discountType.value === 'percentage' && value > 100) {
-            e.preventDefault();
-            alert('Discount percentage cannot exceed 100%.');
-            discountValue.focus();
-            return false;
-          }
-
-          if (discountType.value === 'fixed' && value > scholarshipDiscountedFees) {
-            e.preventDefault();
-            alert('Discount amount cannot exceed the discounted fees.');
-            discountValue.focus();
-            return false;
-          }
-        }
-      });
+    finalFeesDisplay.textContent = '₹' + finalFees.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
+    finalFeesInput.value = finalFees.toFixed(2);
+
+    console.log('✅ Final fees calculated:', finalFees);
+  }
+
+  function resetDiscountCalculation() {
+    finalFeesDisplay.textContent = '₹' + scholarshipDiscountedFees.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    finalFeesInput.value = scholarshipDiscountedFees.toFixed(2);
+  }
+
+  discountType.addEventListener('change', calculateFinalFees);
+  discountValue.addEventListener('input', calculateFinalFees);
+
+  // Form validation before submit
+  scholarshipForm.addEventListener('submit', function(e) {
+    console.log('📝 Form submitting...');
+    
+    if (discountYes.checked) {
+      const value = parseFloat(discountValue.value) || 0;
+      const reason = discountReason.value.trim();
+
+      if (value > 0 && !reason) {
+        e.preventDefault();
+        alert('⚠️ Please provide a reason for the discretionary discount.');
+        discountReason.focus();
+        return false;
+      }
+
+      if (discountType.value === 'percentage' && value > 100) {
+        e.preventDefault();
+        alert('⚠️ Discount percentage cannot exceed 100%.');
+        discountValue.focus();
+        return false;
+      }
+
+      if (discountType.value === 'fixed' && value > scholarshipDiscountedFees) {
+        e.preventDefault();
+        alert('⚠️ Discount amount cannot exceed the discounted fees.');
+        discountValue.focus();
+        return false;
+      }
+
+      console.log('✅ Discretionary discount validated:', {
+        type: discountType.value,
+        value: value,
+        reason: reason
+      });
+    }
+
+    console.log('✅ Form validation passed - submitting...');
+    return true;
+  });
+});
   </script>
 
 </body>

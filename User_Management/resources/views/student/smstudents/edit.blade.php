@@ -15,14 +15,12 @@
       padding: 20px;
     }
     .page-header {
-      background-color: #ffffff;
       padding: 20px 30px;
-      margin: 20px;
-      border-radius: 8px;
+      margin: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 90%;
     }
     .page-title {
       color: #e05301;
@@ -48,6 +46,7 @@
       border-radius: 8px;
       padding: 30px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 80%;
     }
     .section-title {
       color: #e05301;
@@ -114,6 +113,13 @@
       background-color: #c04501;
       color: white;
     }
+    .current-file-info {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      border-left: 3px solid #28a745;
+    }
   </style>
 </head>
 
@@ -178,178 +184,186 @@
         <h6>Admin</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-
-      <div class="accordion accordion-flush" id="accordionFlushExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
-            </button>
-          </h2>
-          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>
-                <li>><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i> Master
-            </button>
-          </h2>
-          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-            </button>
-          </h2>
-          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-            </button>
-          </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-              id="accordion-button">
-              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-            </button>
-          </h2>
-          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-              id="accordion-button">
-              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
-            </button>
-          </h2>
-          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Student</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Employee</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-              id="accordion-button">
-              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-            </button>
-          </h2>
-          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-              id="accordion-button">
-              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-            </button>
-          </h2>
-          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-              id="accordion-button">
-              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
-            </button>
-          </h2>
-          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+  <!-- User Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+        </ul>
       </div>
+    </div>
+  </div>
+
+  <!-- Master -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+      </button>
+    </h2>
+    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fees Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+        id="accordion-button">
+        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+      </button>
+    </h2>
+    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+        id="accordion-button">
+        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+      </button>
+    </h2>
+    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Material -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+        id="accordion-button">
+        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+      </button>
+    </h2>
+    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="{{ route('study_material.dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Series Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+        id="accordion-button">
+        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+      </button>
+    </h2>
+    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+        id="accordion-button">
+        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+      </button>
+    </h2>
+    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <div class="right" id="right">
@@ -365,7 +379,7 @@
       <div class="form-container">
         <form method="POST" action="{{ route('smstudents.update', $student->_id ?? $student->id) }}" enctype="multipart/form-data">
           @csrf
-          
+          @method('PUT') 
           <!-- Basic Details Section -->
           <div class="form-section">
             <h5 class="section-title">Basic Details</h5>
@@ -466,9 +480,6 @@
                 <select name="city" class="form-select">
                   <option value="">Select City</option>
                   <option value="Bikaner" {{ ($student->city ?? '') == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
-                  <option value="Jaipur" {{ ($student->city ?? '') == 'Jaipur' ? 'selected' : '' }}>Jaipur</option>
-                  <option value="Jodhpur" {{ ($student->city ?? '') == 'Jodhpur' ? 'selected' : '' }}>Jodhpur</option>
-                  <!-- Add more cities as needed -->
                 </select>
               </div>
             </div>
@@ -557,75 +568,112 @@
           <div class="form-section">
             <h5 class="section-title">Upload Documents</h5>
             
+            <!-- Passport Photo -->
             <div class="mb-3">
-              <label class="form-label">Passport Size Photo.</label>
-              <div class="upload-area" onclick="document.getElementById('passport_photo').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="passport_photo" name="passport_photo" class="d-none" accept="image/*">
-              </div>
+                <label class="form-label">Passport Size Photo</label>
+                <div class="upload-area" onclick="document.getElementById('passport_photo').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="passport_photo" name="passport_photo" class="d-none" accept="image/*">
+                </div>
+                @if(isset($student->passport_photo) && !empty($student->passport_photo))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->passport_photo) ? $student->passport_photo[0] : $student->passport_photo }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
-            <!-- This is the continuation from where your document cuts off -->
-
+            <!-- Marksheet -->
             <div class="mb-3">
-              <label class="form-label">Marksheet of Last Qualifying Exam</label>
-              <div class="upload-area" onclick="document.getElementById('marksheet').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="marksheet" name="marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->marksheet))
-                <small class="text-muted">Current file: {{ basename($student->marksheet) }}</small>
-              @endif
+                <label class="form-label">Marksheet of Last Qualifying Exam</label>
+                <div class="upload-area" onclick="document.getElementById('marksheet').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="marksheet" name="marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->marksheet) && !empty($student->marksheet))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->marksheet) ? $student->marksheet[0] : $student->marksheet }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
+            <!-- Caste Certificate -->
             <div class="mb-3">
-              <label class="form-label">If you are SC/ST/OBC/Minority casted kindly upload receipt by Synthesis</label>
-              <div class="upload-area" onclick="document.getElementById('caste_certificate').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="caste_certificate" name="caste_certificate" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->caste_certificate))
-                <small class="text-muted">Current file: {{ basename($student->caste_certificate) }}</small>
-              @endif
+                <label class="form-label">Caste Certificate</label>
+                <div class="upload-area" onclick="document.getElementById('caste_certificate').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="caste_certificate" name="caste_certificate" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->caste_certificate) && !empty($student->caste_certificate))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->caste_certificate) ? $student->caste_certificate[0] : $student->caste_certificate }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
+            <!-- Scholarship Proof -->
             <div class="mb-3">
-              <label class="form-label">Upload Proof of Scholarship to avail Concession</label>
-              <div class="upload-area" onclick="document.getElementById('scholarship_proof').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="scholarship_proof" name="scholarship_proof" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->scholarship_proof))
-                <small class="text-muted">Current file: {{ basename($student->scholarship_proof) }}</small>
-              @endif
+                <label class="form-label">Proof of Scholarship</label>
+                <div class="upload-area" onclick="document.getElementById('scholarship_proof').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="scholarship_proof" name="scholarship_proof" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->scholarship_proof) && !empty($student->scholarship_proof))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->scholarship_proof) ? $student->scholarship_proof[0] : $student->scholarship_proof }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
+            <!-- Secondary Marksheet -->
             <div class="mb-3">
-              <label class="form-label">Secondary Board Marksheet</label>
-              <div class="upload-area" onclick="document.getElementById('secondary_marksheet').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="secondary_marksheet" name="secondary_marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->secondary_marksheet))
-                <small class="text-muted">Current file: {{ basename($student->secondary_marksheet) }}</small>
-              @endif
+                <label class="form-label">Secondary Board Marksheet</label>
+                <div class="upload-area" onclick="document.getElementById('secondary_marksheet').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="secondary_marksheet" name="secondary_marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->secondary_marksheet) && !empty($student->secondary_marksheet))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->secondary_marksheet) ? $student->secondary_marksheet[0] : $student->secondary_marksheet }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
 
+            <!-- Senior Secondary Marksheet -->
             <div class="mb-3">
-              <label class="form-label">Senior Secondary Board Marksheet</label>
-              <div class="upload-area" onclick="document.getElementById('senior_secondary_marksheet').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload</p>
-                <input type="file" id="senior_secondary_marksheet" name="senior_secondary_marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-              @if(isset($student->senior_secondary_marksheet))
-                <small class="text-muted">Current file: {{ basename($student->senior_secondary_marksheet) }}</small>
-              @endif
+                <label class="form-label">Senior Secondary Board Marksheet</label>
+                <div class="upload-area" onclick="document.getElementById('senior_secondary_marksheet').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload</p>
+                    <input type="file" id="senior_secondary_marksheet" name="senior_secondary_marksheet" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                @if(isset($student->senior_secondary_marksheet) && !empty($student->senior_secondary_marksheet))
+                    <div class="current-file-info">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i> Current file: 
+                            <a href="{{ is_array($student->senior_secondary_marksheet) ? $student->senior_secondary_marksheet[0] : $student->senior_secondary_marksheet }}" target="_blank" class="text-primary">View</a>
+                        </small>
+                    </div>
+                @endif
             </div>
           </div>
 
@@ -654,26 +702,35 @@
       text.classList.toggle('hidden');
     });
 
-    // File upload preview
+    // File upload preview — show file name when selected
     document.querySelectorAll('input[type="file"]').forEach(input => {
-      input.addEventListener('change', function(e) {
+      input.addEventListener('change', function (e) {
+        const uploadArea = e.target.closest('.upload-area');
+        if (!uploadArea) return;
         const fileName = e.target.files[0]?.name;
+        const previewText = uploadArea.querySelector('p');
         if (fileName) {
-          const uploadArea = e.target.closest('.upload-area');
-          const p = uploadArea.querySelector('p');
-          p.textContent = fileName;
-          p.style.color = '#28a745';
+          previewText.innerHTML = `<strong>${fileName}</strong>`;
+          uploadArea.style.borderColor = "#28a745";
+          uploadArea.style.backgroundColor = "#f6fff8";
+        } else {
+          previewText.innerHTML = "Click to upload";
+          uploadArea.style.borderColor = "#dee2e6";
+          uploadArea.style.backgroundColor = "#f8f9fa";
         }
       });
     });
 
-    // Auto-hide flash messages after 5 seconds
-    setTimeout(() => {
-      document.querySelectorAll('.alert').forEach(alert => {
-        alert.classList.remove('show');
-        setTimeout(() => alert.remove(), 150);
-      });
-    }, 5000);
+    // Auto-hide flash messages after a few seconds
+    const flashMessages = document.querySelectorAll('.alert');
+    if (flashMessages.length > 0) {
+      setTimeout(() => {
+        flashMessages.forEach(alert => {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 4000);
+    }
   </script>
 </body>
 </html>

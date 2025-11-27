@@ -235,13 +235,6 @@
     border: none;
 }
 
-#number {
-    margin: 5px 0px 10px 5px;
-    align-items: center;
-    border: 1px solid #000;
-    background-color: #ffffff;
-    color: #000;
-}
 
 .dd {
     margin: 5px;
@@ -304,6 +297,112 @@
 }
 
 
+/* Base style for the dropdown button */
+#number {
+    margin: 5px 0px 10px 5px !important;
+    align-items: center !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    color: #000 !important;
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    line-height: normal !important;
+}
+
+/* Prevent width changes on hover */
+#number:hover {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Prevent width changes on focus */
+#number:focus {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Prevent width changes when dropdown is open (aria-expanded) */
+#number[aria-expanded="true"] {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Prevent width changes when dropdown has .show class */
+#number.show {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+}
+
+/* Prevent width changes on active state */
+#number:active,
+#number.active {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Override Bootstrap's btn-secondary styles */
+#number.btn-secondary,
+#number.btn-secondary:hover,
+#number.btn-secondary:focus,
+#number.btn-secondary:active,
+#number.btn-secondary.active,
+#number.btn-secondary.show,
+#number.btn-secondary[aria-expanded="true"] {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+}
+
+/* Override when parent .dropdown has .show class */
+.dropdown.show > #number,
+.dropdown.show > #number.dropdown-toggle {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+}
+
+/* Ensure dropdown arrow doesn't affect layout */
+#number.dropdown-toggle::after {
+    margin-left: 0.5em;
+    vertical-align: middle;
+}
+
+/* Style the dropdown menu to match button width */
+.line .dropdown-menu {
+    min-width: 80px !important;
+}
 #bottom{
     display: flex;
     align-items: center;
@@ -505,7 +604,6 @@ height: 30px;
     border-radius: 20px;
     font-size: 14px;
     font-weight: 500;
-    transition: all 0.2s ease;
 }
 
 .subject-tag:hover {

@@ -125,7 +125,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/profile/profile.html"> <i class="fa-solid fa-user"></i>Profile</a></li>
+        <li><a class="dropdown-item" href="{{ route('profile.index') }}"> <i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
@@ -142,204 +142,185 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
       <!-- Left side bar accordian -->
       <div class="accordion accordion-flush" id="accordionFlushExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management </button>
-          </h2>
-          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
-                      id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
-                      id="side-icon"></i> Batches Assignment</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i> Master </button>
-          </h2>
-          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
-                      id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i
-                      class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
-                    Batches</a></li>
-                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
-                      id="side-icon"></i> Scholarship</a>
-                </li>
-                <li><a class="item" href="{{ route('fees.index') }}">
-                    <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
-                      id="side-icon"></i> Other Fees Master</a>
-                </li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
-                      id="side-icon"></i> Branch
-                    Management</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-            </button>
-          </h2>
-          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
-                      id="side-icon"></i> Session</a></li>
-                <li><a class="item {{ request()->routeIs('calendar.index') ? 'active' : '' }}" 
-                  href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i> Student Migrate</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-            </button>
-          </h2>
-
-          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry Management </a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}">
-                    <i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a>
-                </li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Pending Fees
-                    Students</a></li>
-                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Students</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-              id="accordion-button">
-              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-            </button>
-          </h2>
-          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Collection</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-              id="accordion-button">
-              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Managment
-            </button>
-          </h2>
-          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Student</a></li>
-                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Employee</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-              id="accordion-button">
-              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-            </button>
-          </h2>
-          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon">
-                    </i>Units</a></li>
-                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Dispatch Material</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-              id="accordion-button">
-              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Managment
-            </button>
-          </h2>
-          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test
-                    Master</i></a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-              id="accordion-button">
-              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports</i>
-            </button>
-          </h2>
-          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon">
-                    </i>Walk In</a></li>
-                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Attendance</a>
-                </li>
-                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
-                    Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
-                    History</a></li>
-                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
-                      id="side-icon"></i>Onboard History</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+  <!-- User Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+        </ul>
       </div>
+    </div>
+  </div>
+
+  <!-- Master -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+      </button>
+    </h2>
+    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fees Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+        id="accordion-button">
+        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+      </button>
+    </h2>
+    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+        id="accordion-button">
+        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+      </button>
+    </h2>
+    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Material -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+        id="accordion-button">
+        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+      </button>
+    </h2>
+    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="{{ route('study_material.dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Series Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+        id="accordion-button">
+        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+      </button>
+    </h2>
+    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+        id="accordion-button">
+        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+      </button>
+    </h2>
+    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
     <div class="right" id="right">
       <div class="top">
@@ -353,10 +334,15 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             Add Employee
           </button>
 
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTwo"
+              <button type="button" 
+            class="btn btn-success d-flex align-items-center justify-content-center" 
+            style="min-width: 140px; height: 38px;" 
+            data-bs-toggle="modal" 
+            data-bs-target="#uploadBranchModal"
             id="up">
-            Upload
-          </button>
+      <i class="fa-solid fa-upload me-1"></i> Upload
+    </button>
+
         </div>
       </div>
       <div class="whole">
@@ -366,9 +352,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <h6>Show Enteries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                10
-              </button>
+            aria-expanded="false">
+            {{ request('per_page', 10) }}
+          </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item">10</a></li>
                 <li><a class="dropdown-item">25</a></li>
@@ -378,8 +364,14 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </div>
           </div>
           <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
+                  <form method="GET" action="{{ route('user.emp.emp') }}" id="searchForm">
+        <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+           <input type="search" 
+               name="search" 
+               placeholder="Search" 
+               class="search-holder" 
+               value="{{ request('search') }}"
+               id="searchInput">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
@@ -399,84 +391,85 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <tbody>
             <!-- Modal fillables where roles are assigned according to dept automatically -->
             <!-- Dynamic table rows populated from database using Blade foreach loop -->
-
-
             <tr>
             </tr>
           </tbody>
           <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-          @foreach($users as $index => $user)
-            <tr>
-              <!-- Serial number (index + 1) -->
-              <td>{{ $index + 1 }}</td>
-              <td>{{ $user->name }}</td>
-              <td>{{ $user->email }}</td>
-              <td>{{ $user->mobileNumber ?? '—' }}</td>
-              <td>{{ $user->roleNames->implode(', ') }}</td>
-              <td>{{ $user->departmentNames->implode(', ') }}</td>
+         @foreach($users as $index => $user)
+  <tr>
+    <td>{{ $index + 1 }}</td>
+    <td>{{ $user->name }}</td>
+    <td>{{ $user->email }}</td>
+    <td>{{ $user->mobileNumber ?? '—' }}</td>
+    
+    <!--Use the accessor properly -->
+    <td>
+      @php
+        $deptNames = $user->departmentNames ?? collect();
+      @endphp
+      {{ $deptNames->isNotEmpty() ? $deptNames->implode(', ') : '—' }}
+    </td>
+    
+    <td>
+      @php
+        $roleNames = $user->roleNames ?? collect();
+      @endphp
+      {{ $roleNames->isNotEmpty() ? $roleNames->implode(', ') : '—' }}
+    </td>
+
+    <td>
+      <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
+        {{ $user->status ?? 'Active' }}
+      </span>
+    </td>
 
               <td>
-                <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-                  {{ $user->status ?? 'Active' }}
-                </span>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary" type="button" id="dropdownMenu{{ $loop->index }}"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu{{ $loop->index }}">
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                        data-bs-target="#viewModal{{ $user->_id }}">
+                        View Details
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                        data-bs-target="#editModal{{ $user->_id }}">
+                        Edit Details
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                        data-bs-target="#passwordModal{{ $user->_id }}">
+                        Password Update
+                      </a>
+                    </li>
+                    <li>
+                      <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                          <!-- <i class="fas fa-toggle-{{ $user->status === 'Active' ? 'off' : 'on' }} me-2"></i> -->
+                          {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
               </td>
-
-             <td>
-  <div class="dropdown">
-    <button class="btn btn-sm btn-outline-secondary" type="button" 
-            id="dropdownMenu{{ $loop->index }}" 
-            data-bs-toggle="dropdown" 
-            aria-expanded="false">
-      <i class="fas fa-ellipsis-v"></i>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end" 
-        aria-labelledby="dropdownMenu{{ $loop->index }}">
-      <li>
-        <a class="dropdown-item" href="#" 
-           data-bs-toggle="modal"
-           data-bs-target="#viewModal{{ $user->_id }}">
-          <i class="fas fa-eye me-2"></i>View Details
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item" href="#" 
-           data-bs-toggle="modal"
-           data-bs-target="#editModal{{ $user->_id }}">
-          <i class="fas fa-edit me-2"></i>Edit Details
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item" href="#" 
-           data-bs-toggle="modal"
-           data-bs-target="#passwordModal{{ $user->_id }}">
-          <i class="fas fa-key me-2"></i>Password Update
-        </a>
-      </li>
-      <li>
-        <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}" style="display: inline;">
-          @csrf
-          <button type="submit" class="dropdown-item">
-            <i class="fas fa-toggle-{{ $user->status === 'Active' ? 'off' : 'on' }} me-2"></i>
-            {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
-          </button>
-        </form>
-      </li>
-    </ul>
-  </div>
-</td>
             </tr>
           @endforeach
 
         </table>
 
         <!-- Here options modals are present. -->
-
         <!-- View Modal -->
-
-
         @foreach($users as $user)
-          <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1" data-bs-target="#viewModal{{ $user->_id }}"
+          <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1"
             aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content">
@@ -590,67 +583,159 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </div>
           </div>
         @endforeach
-        <!-- Password Update Modal -->
 
-        @foreach($users as $user)
+<!-- Password Update Modal-->
+@foreach($users as $user)
+  <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1"
+    aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('users.password.update', $user->_id) }}"
+          id="passwordForm{{ $user->_id }}">
+          @csrf
+          @method('PUT')
+          <div class="modal-header">
+            <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password for {{ $user->name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            
+            <!-- Display validation errors -->
+            <div id="errorContainer{{ $user->_id }}" style="display: none;" class="alert alert-danger">
+              <ul id="errorList{{ $user->_id }}" class="mb-0"></ul>
+            </div>
 
-          <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1"
-            aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <form method="POST" action="{{ route('users.password.update', $user->_id) }}">
-                  @csrf
-                  @method('PUT')
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label class="form-label">Current Password</label>
-                      <input type="password" name="current_password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">New Password</label>
-                      <input type="password" name="new_password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Confirm New Password</label>
-                      <input type="password" name="confirm_new_password" class="form-control" required>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="submit" id="submit" class="btn btn-primary">Update Password</button>
-                  </div>
-                </form>
-              </div>
+            <!-- Current Password -->
+            <div class="mb-3">
+              <label class="form-label">Current Password <span class="text-danger">*</span></label>
+              <input type="password" 
+                     name="current_password" 
+                     id="current_password{{ $user->_id }}"
+                     class="form-control"
+                     placeholder="Enter current password" 
+                     required>
+              <span class="text-danger" id="error-current_password{{ $user->_id }}"></span>
+            </div>
+
+            <!-- New Password -->
+            <div class="mb-3">
+              <label class="form-label">New Password <span class="text-danger">*</span></label>
+              <input type="password" 
+                     name="new_password" 
+                     id="new_password{{ $user->_id }}" 
+                     class="form-control"
+                     placeholder="Enter new password" 
+                     minlength="8" 
+                     required>
+              <small class="form-text text-muted">Minimum 8 characters, must include uppercase, lowercase, and number</small>
+              <span class="text-danger" id="error-new_password{{ $user->_id }}"></span>
+            </div>
+
+            <!-- Confirm New Password -->
+            <div class="mb-3">
+              <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
+              <input type="password" 
+                     name="confirm_new_password" 
+                     id="confirm_password{{ $user->_id }}" 
+                     class="form-control"
+                     placeholder="Re-enter new password"
+                     required>
+              <span class="text-danger" id="password-match-error{{ $user->_id }}"></span>
             </div>
           </div>
-
-        @endforeach
-      </div>
-      <div class="footer">
-        <div class="left-footer">
-          <p>Showing 1 to 10 of 10 Enteries</p>
-        </div>
-        <div class="right-footer">
-          <nav aria-label="...">
-            <ul class="pagination">
-              <li class="page-item"><a href="#" class="page-link" id="pg1">Previous</a></li>
-              <li class="page-item active">
-                <a class="page-link" href="#" aria-current="page" id="pg2">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="/user management/emp/emp2.html" id="pg3">2</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
-            </ul>
-          </nav>
-        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn{{ $user->_id }}">Update Password</button>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
+@endforeach
+
+      </div>
+<div class="footer">
+  <div class="left-footer">
+    <p>Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} entries
+      @if(request('search'))
+        <span class="text-muted">(filtered from {{ \App\Models\User\User::count() }} total entries)</span>
+      @endif
+    </p>
+  </div>
+  <div class="right-footer">
+    <nav aria-label="Page navigation example" id="bottom">
+      <ul class="pagination" id="pagination">
+        {{-- Previous Page Link --}}
+        @if ($users->onFirstPage())
+          <li class="page-item disabled">
+            <span class="page-link" id="pg1">Previous</span>
+          </li>
+        @else
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $users->previousPageUrl() }}" 
+               id="pg1">Previous</a>
+          </li>
+        @endif
+
+        {{-- Pagination Elements --}}
+        @php
+          $start = max($users->currentPage() - 2, 1);
+          $end = min($start + 4, $users->lastPage());
+          $start = max($end - 4, 1);
+        @endphp
+
+        @if($start > 1)
+          <li class="page-item" id="pg2">
+            <a class="page-link" href="{{ $users->url(1) }}">1</a>
+          </li>
+          @if($start > 2)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+        @endif
+
+        @for ($i = $start; $i <= $end; $i++)
+          <li class="page-item {{ $users->currentPage() == $i ? 'active' : '' }}">
+            <a class="page-link" 
+               href="{{ $users->url($i) }}"
+               id="pg{{ $i }}">{{ $i }}</a>
+          </li>
+        @endfor
+
+        @if($end < $users->lastPage())
+          @if($end < $users->lastPage() - 1)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+          <li class="page-item">
+            <a class="page-link" href="{{ $users->url($users->lastPage()) }}">{{ $users->lastPage() }}</a>
+          </li>
+        @endif
+
+        {{-- Next Page Link --}}
+        @if ($users->hasMorePages())
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $users->nextPageUrl() }}" 
+               id="pg4">Next</a>
+          </li>
+        @else
+          <li class="page-item disabled">
+            <span class="page-link" id="pg4">Next</span>
+          </li>
+        @endif
+      </ul>
+    </nav>
+  </div>
+</div>
   </div>
   </div>
   <!-- Modal Form with fillables for add employee starts here -->
 
+  <!-- Add Employee Modal -->
 <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content" id="content-one">
@@ -661,64 +746,77 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       <div class="modal-body">
         <form method="POST" action="{{ route('users.add') }}" id="addEmployeeForm">
           @csrf
+          
+          <!-- Show validation errors -->
+          @if ($errors->any())
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
           <div class="mb-3">
             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" required>
-            <span class="text-danger" id="error-name"></span>
+            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" value="{{ old('name') }}" required>
           </div>
 
           <div class="mb-3">
             <label for="mobileNumber" class="form-label">Mobile No. <span class="text-danger">*</span></label>
-            <input type="tel" name="mobileNumber" class="form-control" placeholder="Enter Your Mobile Number" required>
-            <span class="text-danger" id="error-mobileNumber"></span>
+            <input type="tel" name="mobileNumber" class="form-control" placeholder="Enter 10 digit mobile number"
+              pattern="[0-9]{10}" maxlength="10" value="{{ old('mobileNumber') }}" required>
+            <small class="form-text text-muted">Enter exactly 10 digits</small>
           </div>
 
           <div class="mb-3">
             <label for="alternateNumber" class="form-label">Alternate Mobile No.</label>
-            <input type="tel" name="alternateNumber" class="form-control" placeholder="Enter Your Alternate Mobile Number">
+            <input type="tel" name="alternateNumber" class="form-control"
+              placeholder="Enter 10 digit alternate number" pattern="[0-9]{10}" maxlength="10" value="{{ old('alternateNumber') }}">
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-            <input type="email" name="email" class="form-control" placeholder="Enter Your Email" required>
-            <span class="text-danger" id="error-email"></span>
+            <input type="email" name="email" class="form-control" placeholder="Enter Your Email" value="{{ old('email') }}" required>
           </div>
 
           <div class="mb-3">
             <label for="branch" class="form-label">Select Branch <span class="text-danger">*</span></label>
             <select class="form-select" name="branch" required>
-              <option selected disabled>Select Branch</option>
-              <option value="Bikaner">Bikaner</option>
+              <option value="">Select Branch</option>
+              <option value="Bikaner" {{ old('branch') == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
             </select>
           </div>
 
           <div class="mb-3">
-            <label for="departments" class="form-label">Select Department <span class="text-danger">*</span></label>
-            <select class="form-select" name="departments[]" required>
-              <option selected disabled>Select Department</option>
-              <option value="Front Office">Front Office</option>
-              <option value="Back Office">Back Office</option>
-              <option value="Office">Office</option>
-              <option value="Test Management">Test Management</option>
-              <option value="Admin">Admin</option>
+            <label for="department" class="form-label">Select Department <span class="text-danger">*</span></label>
+            <select class="form-select" name="department" required>
+              <option value="">Select Department</option>
+              <option value="Front Office" {{ old('department') == 'Front Office' ? 'selected' : '' }}>Front Office</option>
+              <option value="Back Office" {{ old('department') == 'Back Office' ? 'selected' : '' }}>Back Office</option>
+              <option value="Office" {{ old('department') == 'Office' ? 'selected' : '' }}>Office</option>
+              <option value="Test Management" {{ old('department') == 'Test Management' ? 'selected' : '' }}>Test Management</option>
+              <option value="Admin" {{ old('department') == 'Admin' ? 'selected' : '' }}>Admin</option>
             </select>
           </div>
 
           <div class="mb-3">
             <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-            <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
-            <span class="text-danger" id="error-password"></span>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password"
+              minlength="6" required>
+            <small class="form-text text-muted">Minimum 6 characters</small>
           </div>
 
           <div class="mb-3">
-            <label for="confirm_password" class="form-label">Confirm Password <span class="text-danger">*</span></label>
-            <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
-            <span class="text-danger" id="error-confirm_password"></span>
+            <label for="password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control"
+              placeholder="Confirm Password" required>
           </div>
 
-          <div class="modal-footer">
+          <div class="modal-footer" id="footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" id="add">Submit</button>
           </div>
         </form>
       </div>
@@ -726,76 +824,256 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </div>
 </div>
 
-    <!-- Upload Modal -->
-    <div class="modal fade" id="exampleModalTwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+  <!-- Upload Modal -->
+<div class="modal fade" id="uploadBranchModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #ed5b00ff; color: white;">
+        <h5 class="modal-title">Upload Employees</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-        <div class="modal-dialog">
-          <div class="modal-content" id="modal-two">
-            <div class="modal-header">
-              <h2 class="modal-title fs-5" id="exampleModalLabel">Upload</h2>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body" id="sample-body">
-              <a href="/user management/emp/employees_synthesis.xlsx"><button class="sampleFile" id="xlsx">Download
-                  Sample File</button></a>
-              <form action="upload.php" method="post" enctype="multipart/form-data" id="form-control">
-                <input type="file" class="form-control" id="inputGroupFile01">
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submit">Close</button>
-              <button type="button" class="btn btn-primary" id="add">Save changes</button>
-            </div>
-          </div>
+      <div class="modal-body">
+        <!-- Export Current Data Section -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Export Current Data</label>
+          <p class="text-muted small">Download all current employee data as Excel file.</p>
+          <a href="{{ route('users.export') }}?search={{ request('search') }}&per_page={{ request('per_page', 10) }}" 
+             class="btn btn-info w-100" style="background-color: #ffffffff ;  border-color: #ffffffff""><button type="submit" class="btn btn-success w-100" style="background-color: #ed5b00ff ; border-color: #ed5b00ff">
+     <i class="fa-solid fa-download"></i> Download Current Employees
+            </button></a>
+          </a>
         </div>
+
+        <hr>
+
+        <!-- Step 2: Upload File -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Upload Your File</label>          
+          <form id="uploadEmployeeForm" action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            
+            <div class="mb-3">
+              <input type="file" id="importEmployeeFile" name="import_file" class="form-control" 
+                accept=".xlsx,.xls,.csv" required>
+            </div>
+
+            <div id="employeeFilePreview" class="alert alert-light d-none" style="border: 1px solid #ddd;">
+              <strong>File Selected:</strong>
+              <div id="employeePreviewText"></div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100" id="uploadEmployeeBtn">
+              <i class="fa-solid fa-upload"></i> Import Employees
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
+</div>
 
 </body>
+<!-- AJAX Script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Bootstrap Bundle JS (includes Popper) -->
+<!-- Bootstrap Bundle (with Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 
-<!-- Custom JS -->
-<script src="{{asset('js/emp.js')}}"></script>
+<!-- Your custom JS (must come after jQuery + Bootstrap) -->
+<script src="{{ asset(path: 'js/emp.js') }}"></script>
 
-<!-- AJAX Script -->
+<!-- Enhanced JavaScript for Password Update and upload modal -->
 <script>
-$('#addEmployeeForm').on('submit', function (e) {
-    e.preventDefault();
-    $('.text-danger').text(''); // Clear errors
+document.addEventListener('DOMContentLoaded', function() {
+  @foreach($users as $user)
+  (function() {
+    const userId = '{{ $user->_id }}';
+    const form = document.getElementById('passwordForm' + userId);
+    const currentPassword = document.getElementById('current_password' + userId);
+    const newPassword = document.getElementById('new_password' + userId);
+    const confirmPassword = document.getElementById('confirm_password' + userId);
+    const submitBtn = document.getElementById('submitBtn' + userId);
+    const matchError = document.getElementById('password-match-error' + userId);
+    const newPasswordError = document.getElementById('error-new_password' + userId);
+    const errorContainer = document.getElementById('errorContainer' + userId);
+    const errorList = document.getElementById('errorList' + userId);
 
-    $.ajax({
-        url: "{{ route('users.add') }}",
-        method: 'POST',
-        data: $(this).serialize(),
-        success: function (response) {
-            // Close modal
-            $('#exampleModalOne').modal('hide');
-            
-            // Reset form
-            $('#addEmployeeForm')[0].reset();
-            
-            // Reload page to show new employee
-            window.location.href = "{{ route('user.emp.emp') }}";
-        },
-        error: function (xhr) {
-            if (xhr.status === 422) {
-                const errors = xhr.responseJSON.errors;
-                for (let field in errors) {
-                    $('#error-' + field).text(errors[field][0]);
-                }
-            } else {
-                alert('An error occurred. Please try again.');
-            }
+    // Real-time password strength validation
+    if (newPassword) {
+      newPassword.addEventListener('input', function() {
+        const password = this.value;
+        let errors = [];
+
+        if (password.length > 0 && password.length < 8) {
+          errors.push('Password must be at least 8 characters');
         }
+        if (password.length > 0 && !/[a-z]/.test(password)) {
+          errors.push('Must contain a lowercase letter');
+        }
+        if (password.length > 0 && !/[A-Z]/.test(password)) {
+          errors.push('Must contain an uppercase letter');
+        }
+        if (password.length > 0 && !/\d/.test(password)) {
+          errors.push('Must contain a number');
+        }
+
+        newPasswordError.textContent = errors.join(', ');
+        
+        // Also check if passwords match when typing in new password
+        if (confirmPassword.value && password !== confirmPassword.value) {
+          matchError.textContent = 'Passwords do not match';
+        } else {
+          matchError.textContent = '';
+        }
+      });
+    }
+
+    // Real-time password match validation
+    if (confirmPassword) {
+      confirmPassword.addEventListener('input', function() {
+        if (newPassword.value !== this.value) {
+          matchError.textContent = 'Passwords do not match';
+        } else {
+          matchError.textContent = '';
+        }
+      });
+    }
+
+    // Form submission validation
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear previous errors
+        matchError.textContent = '';
+        newPasswordError.textContent = '';
+        errorContainer.style.display = 'none';
+        errorList.innerHTML = '';
+        
+        let isValid = true;
+        let errors = [];
+
+        // Validate current password
+        if (!currentPassword.value) {
+          errors.push('Current password is required');
+          isValid = false;
+        }
+
+        // Validate new password
+        if (!newPassword.value) {
+          errors.push('New password is required');
+          isValid = false;
+        } else {
+          if (newPassword.value.length < 8) {
+            errors.push('New password must be at least 8 characters');
+            isValid = false;
+          }
+          if (!/[a-z]/.test(newPassword.value)) {
+            errors.push('New password must contain a lowercase letter');
+            isValid = false;
+          }
+          if (!/[A-Z]/.test(newPassword.value)) {
+            errors.push('New password must contain an uppercase letter');
+            isValid = false;
+          }
+          if (!/\d/.test(newPassword.value)) {
+            errors.push('New password must contain a number');
+            isValid = false;
+          }
+          if (currentPassword.value === newPassword.value) {
+            errors.push('New password must be different from current password');
+            isValid = false;
+          }
+        }
+
+        // Validate password confirmation
+        if (!confirmPassword.value) {
+          errors.push('Password confirmation is required');
+          isValid = false;
+        } else if (newPassword.value !== confirmPassword.value) {
+          matchError.textContent = 'Passwords do not match';
+          errors.push('Passwords do not match');
+          isValid = false;
+        }
+
+        if (!isValid) {
+          // Show errors
+          errorList.innerHTML = errors.map(err => '<li>' + err + '</li>').join('');
+          errorContainer.style.display = 'block';
+          return false;
+        }
+
+        // If validation passes, submit the form
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Updating...';
+        form.submit();
+      });
+    }
+
+    // Reset form when modal is closed
+    const modal = document.getElementById('passwordModal' + userId);
+    if (modal) {
+      modal.addEventListener('hidden.bs.modal', function () {
+        form.reset();
+        matchError.textContent = '';
+        newPasswordError.textContent = '';
+        errorContainer.style.display = 'none';
+        errorList.innerHTML = '';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Update Password';
+      });
+    }
+  })();
+  @endforeach
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const fileInput = document.getElementById('importEmployeeFile');
+  const preview = document.getElementById('employeeFilePreview');
+  const previewText = document.getElementById('employeePreviewText');
+  
+  if (fileInput) {
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      
+      if (file) {
+        preview.classList.remove('d-none');
+        const fileSize = (file.size / 1024).toFixed(2);
+        const fileIcon = file.name.endsWith('.csv') ? 'fa-file-csv' : 'fa-file-excel';
+        
+        previewText.innerHTML = `
+          <div class="d-flex align-items-center">
+            <i class="fa-solid ${fileIcon} text-success me-2 fs-4"></i>
+            <div>
+              <div><strong>${file.name}</strong></div>
+              <small class="text-muted">${fileSize} KB</small>
+            </div>
+          </div>
+        `;
+      } else {
+        preview.classList.add('d-none');
+      }
     });
+  }
+
+  // Reset form when modal closes
+  const uploadModal = document.getElementById('uploadBranchModal');
+  if (uploadModal) {
+    uploadModal.addEventListener('hidden.bs.modal', function() {
+      const form = document.getElementById('uploadEmployeeForm');
+      if (form) {
+        form.reset();
+        preview.classList.add('d-none');
+      }
+    });
+  }
 });
 </script>
-
 </html>

@@ -13,6 +13,27 @@
             padding: 0;
             box-sizing: border-box;
         }
+        .timeline {
+    position: relative;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgb(224, 83, 1);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px rgb(224, 83, 1);
+}
 
         body {
             font-family: Arial, sans-serif;
@@ -558,6 +579,91 @@
             background-color: rgb(224, 83, 1);
             border-color: rgb(224, 83, 1);
         }
+
+        /* Simple History Timeline Styles */
+.history-timeline {
+    position: relative;
+    padding: 20px;
+}
+
+.history-item {
+    background: white;
+    border-left: 4px solid #e05301;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.history-item:hover {
+    box-shadow: 0 4px 8px rgba(224, 83, 1, 0.15);
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+
+.history-action {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e05301;
+}
+
+.history-date {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.history-user {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.history-description {
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.history-changes {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.change-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.change-label {
+    font-weight: 600;
+    min-width: 120px;
+    color: #495057;
+}
+
+.change-value {
+    color: #666;
+}
+
+.empty-history {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-history i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
     </style>
 </head>
 <body>
@@ -594,204 +700,186 @@
                 <p>synthesisbikaner@gmail.com</p>
             </div>
 
-               <div class="accordion accordion-flush" id="accordionFlushExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management </button>
-          </h2>
-          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('user.emp.emp') }}"> <i class="fa-solid fa-user"
-                      id="side-icon"></i> Employee</a></li>
-                <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group"
-                      id="side-icon"></i> Batches Assignment</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i> Master </button>
-          </h2>
-          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
-                      id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i
-                      class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
-                    Batches</a></li>
-                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap"
-                      id="side-icon"></i> Scholarship</a>
-                </li>
-                <li><a class="item" href="{{ route('fees.index') }}">
-<i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}
-"><i class="fa-solid fa-wallet"
-                      id="side-icon"></i> Other Fees Master</a>
-                </li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project"
-                      id="side-icon"></i> Branch
-                    Management</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-            </button>
-          </h2>
-          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day"
-                      id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="/session mana/calendar/cal.html"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="/session mana/student/student.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i> Student Migrate</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button"> 
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-            </button>
-          </h2>
-          
-          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info"
-                      id="side-icon"></i> Inquiry Management </a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}">
-    <i class="fa-solid fa-user-check" id="side-icon"></i> Student Onboard
-</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Pending Fees
-                    Students</a></li>
-                <li><a class="item" href="/student management/students/stu.html"><i class="fa-solid fa-user-check"
-                      id="side-icon"></i>Students</a></li>
-              </ul>
-            </div>
-          </div>  
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-              id="accordion-button">
-              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-            </button>
-          </h2>
-          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/fees management/collect/collect.html"><i class="fa-solid fa-credit-card"
-                      id="side-icon"></i> Fees Collection</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-              id="accordion-button">
-              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Managment
-            </button>
-          </h2>
-          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/attendance management/students/student.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Student</a></li>
-                <li><a class="item" href="/attendance management/employee/employee.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Employee</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-              id="accordion-button">
-              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-            </button>
-          </h2>
-          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/study material/units/units.html"> <i class="fa-solid fa-user" id="side-icon">
-                    </i>Units</a></li>
-                <li><a class="item" href="/study material/dispatch/dispatch.html"> <i class="fa-solid fa-user"
-                      id="side-icon"> </i>Dispatch Material</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-              id="accordion-button">
-              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Managment
-            </button>
-          </h2>
-          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/testseries/test.html"> <i class="fa-solid fa-user" id="side-icon"> </i>Test
-                    Master</i></a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-              id="accordion-button">
-              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports</i>
-            </button>
-          </h2>
-          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="/reports/walk in/walk.html"> <i class="fa-solid fa-user" id="side-icon">
-                    </i>Walk In</a></li>
-                <li><a class="item" href="/reports/att/att.html"><i class="fa-solid fa-calendar-days"
-                      id="side-icon"></i> Attendance</a>
-                </li>
-                <li><a class="item" href="/reports/test/test.html"><i class="fa-solid fa-file" id="side-icon"></i>Test
-                    Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry
-                    History</a></li>
-                <li><a class="item" href="/reports/onboard/onboard.html"><i class="fa-solid fa-file"
-                      id="side-icon"></i>Onboard History</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+       <div class="accordion accordion-flush" id="accordionFlushExample">
+  <!-- User Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+        </ul>
       </div>
+    </div>
+  </div>
+
+  <!-- Master -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+      </button>
+    </h2>
+    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fees Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+        id="accordion-button">
+        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+      </button>
+    </h2>
+    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+        id="accordion-button">
+        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+      </button>
+    </h2>
+    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Material -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+        id="accordion-button">
+        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+      </button>
+    </h2>
+    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="{{ route('study_material.dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Series Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+        id="accordion-button">
+        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+      </button>
+    </h2>
+    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+        id="accordion-button">
+        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+      </button>
+    </h2>
+    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
         <div class="right" id="right">
@@ -956,7 +1044,6 @@
                             <select class="form-select" id="branch_name">
                                 <option value="">Select Branch</option>
                                 <option value="Bikaner">Bikaner</option>
-                                <option value="Jaipur">Jaipur</option>
                             </select>
                         </div>
                         <div class="row">
@@ -1051,9 +1138,199 @@
             </div>
         </div>
     </div>
-<script src="{{asset('js/emp.js')}}"></script>
+
+<!-- History Modal -->
+<div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #e05301 0%, #ff7733 100%);">
+                <h5 class="modal-title text-white">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="historyModalBody" style="max-height: 500px; overflow-y: auto; background: #f8f9fa;">
+                <!-- Loading spinner -->
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Loading history...</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="{{asset('js/emp.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Simple History Function
+window.History = async function(id) {
+    try {
+        const modal = new bootstrap.Modal(document.getElementById('historyModal'));
+        const modalBody = document.getElementById('historyModalBody');
+        
+        // Show loading
+        modalBody.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading history...</p>
+            </div>
+        `;
+        
+        modal.show();
+        
+        // Fetch history
+        const response = await fetch(`/inquiries/${id}/history`);
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to load history');
+        }
+        
+        const history = data.data || [];
+        
+        if (history.length === 0) {
+            modalBody.innerHTML = `
+                <div class="empty-history">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <h5>No History Yet</h5>
+                    <p>No activity recorded for this inquiry</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Render history
+        let html = '<div class="history-timeline">';
+        
+        history.forEach(item => {
+            const actionIcon = getActionIcon(item.action);
+            
+            html += `
+                <div class="history-item">
+                    <div class="history-header">
+                        <div class="history-action">
+                            <i class="${actionIcon}"></i>
+                            ${escapeHtml(item.action)}
+                        </div>
+                        <div class="history-date">
+                            <i class="fa-regular fa-clock"></i>
+                            ${escapeHtml(item.date || formatDate(item.timestamp))}
+                        </div>
+                    </div>
+                    
+                    <div class="history-user">
+                        <i class="fa-solid fa-user"></i>
+                        by ${escapeHtml(item.user || 'Admin')}
+                    </div>
+                    
+                    <div class="history-description">
+                        ${escapeHtml(item.description)}
+                    </div>
+            `;
+            
+            // Show changes if present
+            if (item.changes && Object.keys(item.changes).length > 0) {
+                html += `<div class="history-changes">`;
+                html += `<strong style="font-size: 13px; color: #495057;"><i class="fa-solid fa-list"></i> Changes:</strong><br>`;
+                
+                for (const [field, change] of Object.entries(item.changes)) {
+                    if (typeof change === 'object' && change.from !== undefined) {
+                        html += `
+                            <div class="change-row">
+                                <span class="change-label">${formatFieldName(field)}:</span>
+                                <span class="change-value">
+                                    <span style="color: #dc3545; text-decoration: line-through;">${formatValue(change.from)}</span>
+                                    <i class="fa-solid fa-arrow-right mx-2"></i>
+                                    <span style="color: #28a745; font-weight: 600;">${formatValue(change.to)}</span>
+                                </span>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="change-row">
+                                <span class="change-label">${formatFieldName(field)}:</span>
+                                <span class="change-value">${formatValue(change)}</span>
+                            </div>
+                        `;
+                    }
+                }
+                
+                html += `</div>`;
+            }
+            
+            html += `</div>`;
+        });
+        
+        html += '</div>';
+        
+        modalBody.innerHTML = html;
+        
+    } catch (error) {
+        console.error('History error:', error);
+        document.getElementById('historyModalBody').innerHTML = `
+            <div class="empty-history">
+                <i class="fa-solid fa-exclamation-triangle text-danger"></i>
+                <h5>Error</h5>
+                <p>Failed to load history: ${error.message}</p>
+            </div>
+        `;
+    }
+};
+
+// Helper functions
+function getActionIcon(action) {
+    const icons = {
+        'Created': 'fa-solid fa-plus-circle',
+        'Updated': 'fa-solid fa-pen',
+        'Transferred': 'fa-solid fa-arrow-right',
+        'Deleted': 'fa-solid fa-trash'
+    };
+    return icons[action] || 'fa-solid fa-circle-info';
+}
+
+function formatFieldName(field) {
+    return field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function formatValue(value) {
+    if (value === null || value === undefined || value === '') {
+        return '<span class="text-muted">N/A</span>';
+    }
+    return escapeHtml(String(value));
+}
+
+function formatDate(timestamp) {
+    try {
+        const date = new Date(timestamp);
+        return date.toLocaleString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    } catch (e) {
+        return timestamp;
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
     document.addEventListener('DOMContentLoaded', () => {
         const ENDPOINT = '/inquiries';
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
@@ -1146,10 +1423,9 @@ function renderTable(data) {
                             <i class="fa-solid fa-ellipsis-vertical"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/inquiries/${id}">View</a></li>
-                            <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
+                            <li><a class="dropdown-item" href="/inquiries/${id}/view">View</a></li>                            <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
                             <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="deleteInquiry('${id}'); return false;">Delete</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="History('${id}'); return false;">History</a></li>
                         </ul>
                     </div>
                 </td>
@@ -1310,25 +1586,25 @@ function escapeHtml(text) {
             }
         };
 
-        window.deleteInquiry = async function(id) {
-            if (!confirm('Are you sure you want to delete this inquiry?')) return;
+        // window.deleteInquiry = async function(id) {
+        //     if (!confirm('Are you sure you want to delete this inquiry?')) return;
             
-            try {
-                console.log('Deleting inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
-                });
-                const json = await response.json();
-                if (!json.success) throw new Error(json.message);
+        //     try {
+        //         console.log('Deleting inquiry:', id);
+        //         const response = await fetch(`${ENDPOINT}/${id}`, {
+        //             method: 'DELETE',
+        //             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+        //         });
+        //         const json = await response.json();
+        //         if (!json.success) throw new Error(json.message);
                 
-                alert('Inquiry deleted successfully');
-                loadData();
-            } catch (error) {
-                console.error('Delete error:', error);
-                alert('Failed to delete inquiry: ' + error.message);
-            }
-        };
+        //         alert('Inquiry deleted successfully');
+        //         loadData();
+        //     } catch (error) {
+        //         console.error('Delete error:', error);
+        //         alert('Failed to delete inquiry: ' + error.message);
+        //     }
+        // };
 
 window.onboardSingle = async function(id) {
     if (!confirm('Are you sure you want to onboard this student?')) {
@@ -1357,7 +1633,7 @@ window.onboardSingle = async function(id) {
 
         alert(json.message);
         
-        // ✅ Just reload the table, no redirect
+        //   Just reload the table, no redirect
         loadData();
 
     } catch (error) {
@@ -1365,7 +1641,99 @@ window.onboardSingle = async function(id) {
         alert('Failed to onboard student: ' + error.message);
     }
 };
-        // ✅ Save button click handler
+// Add history modal to modals object
+modals.history = new bootstrap.Modal(document.getElementById('historyModal'));
+
+// History function
+window.History = async function(id) {
+    try {
+        console.log('Loading history for inquiry:', id);
+        
+        // Show loading spinner
+        document.getElementById('historyModalBody').innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `;
+        
+        // Show modal
+        modals.history.show();
+        
+        // Fetch history data
+        const response = await fetch(`${ENDPOINT}/${id}/history`, { 
+            headers: { 'Accept': 'application/json' } 
+        });
+        
+        if (!response.ok) throw new Error('Failed to load history');
+        
+        const json = await response.json();
+        console.log('History response:', json);
+        
+        if (!json.success) throw new Error(json.message || 'Failed to load history');
+        
+        const history = json.data || [];
+        
+        if (history.length === 0) {
+            document.getElementById('historyModalBody').innerHTML = `
+                <div class="text-center text-muted py-4">
+                    <i class="fa-solid fa-history fa-3x mb-3"></i>
+                    <p>No history available for this inquiry</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Render history timeline
+        let historyHtml = '<div class="timeline">';
+        
+        history.forEach((item, index) => {
+            const date = new Date(item.timestamp || item.created_at);
+            const formattedDate = date.toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            
+            historyHtml += `
+                <div class="timeline-item" style="padding: 15px; margin-bottom: 15px; border-left: 3px solid rgb(224, 83, 1); background-color: #f8f9fa;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                        <div>
+                            <strong style="color: rgb(224, 83, 1);">${escapeHtml(item.action || 'Student Enquiry Updated')}</strong>
+                            <br>
+                            <small style="color: #666;">by ${escapeHtml(item.user || 'Admin')}</small>
+                        </div>
+                        <small style="color: #666; white-space: nowrap;">${formattedDate}</small>
+                    </div>
+                    <div style="color: #555;">
+                        ${escapeHtml(item.description || 'Admin updated the enquiry for student.')}
+                    </div>
+               
+                
+                 </div>
+            `;
+        });
+        
+        historyHtml += '</div>';
+        
+        document.getElementById('historyModalBody').innerHTML = historyHtml;
+        
+    } catch (error) {
+        console.error('History error:', error);
+        document.getElementById('historyModalBody').innerHTML = `
+            <div class="text-center text-danger py-4">
+                <i class="fa-solid fa-exclamation-triangle fa-3x mb-3"></i>
+                <p>Failed to load history: ${error.message}</p>
+            </div>
+        `;
+    }
+};
+
+        //   Save button click handler
         elements.saveBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             
@@ -1481,7 +1849,7 @@ document.querySelector('.btn-onboard').addEventListener('click', async function(
 
         alert(json.message);
         
-        // ✅ Just reload the table, no redirect
+        //   Just reload the table, no redirect
         loadData();
 
     } catch (error) {

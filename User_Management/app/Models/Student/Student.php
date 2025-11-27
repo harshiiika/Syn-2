@@ -82,7 +82,7 @@ class Student extends Model
         'status',
         'admission_date',
         
-        // ✅ SCHOLARSHIP & FEES DETAILS
+        //   SCHOLARSHIP & FEES DETAILS
         'eligible_for_scholarship',
         'scholarship_name',
         'total_fee_before_discount',
@@ -106,6 +106,8 @@ class Student extends Model
         'paid_fees',
         'remaining_fees',
         'fee_status',
+          'history',
+         'paymentHistory',
     ];
 
     protected $casts = [
@@ -126,6 +128,7 @@ class Student extends Model
         'installment_3' => 'float',
         'paid_fees' => 'float',
         'remaining_fees' => 'float',
+          'history' => 'array',
         'fees_calculated_at' => 'datetime',
     ];
 
@@ -140,7 +143,7 @@ class Student extends Model
     }
 
     /**
-     * Get all active students
+     * Get all students
      */
     public static function getActiveStudents()
     {
