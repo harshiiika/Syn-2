@@ -273,11 +273,7 @@
       <!-- Top Section -->
       <div class="top">
         <div class="top-text">
-<<<<<<< HEAD
           <h4>TEST SERIES - {{ $courseName }}</h4>
-=======
-          <h4>Test Series</h4>
->>>>>>> 25ebacb57ae821fb9249969068d766e6e5144c4e
         </div>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createTestSeriesModal" style="background-color: #ff6607ff; border-color: #ff6607ff;">
       Create Test Series
@@ -365,8 +361,7 @@
         <!-- Pagination Info -->
         <div class="d-flex justify-content-between align-items-center mt-3">
           <div id="paginationInfo">
-            Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count()) }}</span> entries
-          </div>
+Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count() }}</span> entries          </div>
           <nav>
             <ul class="pagination" id="pagination">
               <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>

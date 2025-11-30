@@ -580,7 +580,6 @@
               <ul class="menu" id="dropdown-body">
                 <li>
     <a href="{{ route('test_series.index') }}">
-         <span> <i class="icon-class"></i> 
       Test Master</span>
     </a>
 </li>              </ul>

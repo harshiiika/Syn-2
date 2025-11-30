@@ -463,7 +463,6 @@
                 </ul>
             </div>
         </div>
-<<<<<<< HEAD
 
         <!-- Student Management -->
         <div class="accordion-item">
@@ -583,8 +582,6 @@
         </div>
 
       </div>
-=======
->>>>>>> 25ebacb57ae821fb9249969068d766e6e5144c4e
     </div>
 
     <div class="main-container">

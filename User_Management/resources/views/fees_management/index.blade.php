@@ -315,21 +315,12 @@
                     </h2>
                     <div id="reports" class="accordion-collapse collapse">
                         <div class="accordion-body">
-<<<<<<< HEAD
                             <ul class="menu" id="dropdown-body">
                                 <li><a class="item" href="#"><i class="fa-solid fa-person-walking" id="side-icon"></i>Walk In</a></li>
                                 <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
                                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
                                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
                                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
-=======
-                            <ul class="menu">
-                                <li><a class="item" href="#"><i class="fa-solid fa-person-walking"></i> Walk In</a></li>
-                                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days"></i> Attendance</a></li>
-                                <li><a class="item" href="#"><i class="fa-solid fa-file"></i> Test Series</a></li>
-                                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file"></i> Inquiry History</a></li>
-                                <li><a class="item" href="#"><i class="fa-solid fa-file"></i> Onboard History</a></li>
->>>>>>> 25ebacb57ae821fb9249969068d766e6e5144c4e
                             </ul>
                         </div>
                     </div>

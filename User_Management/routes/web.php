@@ -410,6 +410,9 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
 
      Route::post('/{testSeriesId}/tests/multiple', [TestSeriesController::class, 'storeMultipleTests'])
         ->name('store_multiple_tests');
+        // In routes/web.php or routes/api.php
+Route::get('/courses/{courseId}/batches', [TestSeriesController::class, 'getCourseBatches'])
+    ->name('courses.batches');
     });
     
 
@@ -417,11 +420,6 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
 |--------------------------------------------------------------------------
 | Units Routes
 |--------------------------------------------------------------------------
-<<<<<<< HEAD
-=======
-|
-|
->>>>>>> 25ebacb57ae821fb9249969068d766e6e5144c4e
 */
 
 Route::prefix('study_material')->group(function () {
