@@ -499,10 +499,10 @@ Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $test
                     <div class="form-check">
                       <input class="form-check-input edit-subject-checkbox" type="checkbox" 
                              name="subjects[]" value="{{ $subject }}" 
-                             id="edit_{{ $seriesId }}_{{ str_replace(' ', '_', $subject) }}"
+                             id="edit_{{ $seriesId }}{{ str_replace(' ', '', $subject) }}"
                              {{ in_array($subject, $seriesSubjects) ? 'checked' : '' }}
                              data-series-id="{{ $seriesId }}">
-                      <label class="form-check-label" for="edit_{{ $seriesId }}_{{ str_replace(' ', '_', $subject) }}">
+                      <label class="form-check-label" for="edit_{{ $seriesId }}{{ str_replace(' ', '', $subject) }}">
                         {{ $subject }}
                       </label>
                     </div>
@@ -754,21 +754,21 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         if (totalPages === 0) return;
 
         const prevLi = document.createElement('li');
-        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-        prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
+        prevLi.className = page-item ${currentPage === 1 ? 'disabled' : ''};
+        prevLi.innerHTML = <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>;
         pagination.appendChild(prevLi);
 
         for (let i = 1; i <= Math.min(totalPages, 5); i++) {
           const li = document.createElement('li');
-          li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+          li.className = page-item ${i === currentPage ? 'active' : ''};
           const activeStyle = i === currentPage ? 'style="background-color: #ff6b35; border-color: #ff6b35;"' : '';
-          li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;" ${activeStyle}>${i}</a>`;
+          li.innerHTML = <a class="page-link" href="#" onclick="changePage(${i}); return false;" ${activeStyle}>${i}</a>;
           pagination.appendChild(li);
         }
 
         const nextLi = document.createElement('li');
-        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-        nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
+        nextLi.className = page-item ${currentPage === totalPages ? 'disabled' : ''};
+        nextLi.innerHTML = <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>;
         pagination.appendChild(nextLi);
       }
 
@@ -839,7 +839,7 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
       
       if (this.checked) {
         // Add marks field if checkbox is checked
-        const existingField = marksDiv.querySelector(`[data-subject="${subject}"]`);
+        const existingField = marksDiv.querySelector([data-subject="${subject}"]);
         if (!existingField) {
           const markField = document.createElement('div');
           markField.className = 'mb-2 subject-mark-field';
@@ -853,7 +853,7 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         }
       } else {
         // Remove marks field if checkbox is unchecked
-        const fieldToRemove = marksDiv.querySelector(`[data-subject="${subject}"]`);
+        const fieldToRemove = marksDiv.querySelector([data-subject="${subject}"]);
         if (fieldToRemove) {
           fieldToRemove.remove();
         }
