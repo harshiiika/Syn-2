@@ -59,13 +59,44 @@ private function getStudentActivities($student)
     /**
      * Display a listing of students
      */
-    public function index()
+public function index(Request $request)
     {
         try {
-            $students = SMstudents::with(['batch', 'course', 'shift'])
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $courseFilter = $request->get('course_filter');
+            $collectionFilter = $request->get('collection', 'main'); // 'main', 'course', or 'all'
+            
+            $query = null;
+            
+            // Option 1: Show only main collection
+            if ($collectionFilter === 'main') {
+                $query = SMstudents::with(['batch', 'course', 'shift']);
+                Log::info('📋 Querying main collection (s_mstudents)');
+            }
+            
+            // Option 2: Show specific course collection
+            elseif ($collectionFilter === 'course' && $courseFilter) {
+                $query = SMstudents::byCourse($courseFilter)->with(['batch', 'course', 'shift']);
+                Log::info('📋 Querying course-specific collection', ['course' => $courseFilter]);
+            }
+            
+            // Option 3: Show ALL students from all collections (merged)
+            elseif ($collectionFilter === 'all') {
+                $students = SMstudents::getAllFromAllCollections();
+                $batches = Batch::where('status', 'Active')->orderBy('name')->get();
+                $courses = Courses::all();
+                $shifts = Shift::where('is_active', true)->get();
                 
+                Log::info('📋 Querying ALL collections', ['total_students' => $students->count()]);
+                
+                return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
+            }
+            
+            // Default: main collection
+            else {
+                $query = SMstudents::with(['batch', 'course', 'shift']);
+            }
+            
+            $students = $query->orderBy('created_at', 'desc')->get();
             $batches = Batch::where('status', 'Active')->orderBy('name')->get();
             $courses = Courses::all();
             $shifts = Shift::where('is_active', true)->get();
@@ -239,7 +270,46 @@ public function testSeries($id)
             ->with('error', 'Error loading test series: ' . $e->getMessage());
     }
 }
-    
+
+
+public function showByCourse($courseName)
+    {
+        try {
+            $course = Courses::where('course_name', $courseName)->first();
+            
+            if (!$course) {
+                return redirect()->route('smstudents.index')
+                    ->with('error', 'Course not found');
+            }
+            
+            $students = SMstudents::byCourse($courseName)
+                ->with(['batch', 'shift'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+            $batches = Batch::where('status', 'Active')->orderBy('name')->get();
+            $courses = Courses::all();
+            $shifts = Shift::where('is_active', true)->get();
+            
+            Log::info('📚 Showing students for course', [
+                'course' => $courseName,
+                'collection' => $course->getStudentCollectionName(),
+                'count' => $students->count()
+            ]);
+            
+            return view('student.smstudents.smstudents', compact(
+                'students', 
+                'batches', 
+                'courses', 
+                'shifts', 
+                'course'
+            ));
+            
+        } catch (\Exception $e) {
+            Log::error('Error loading course students: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load students');
+        }
+    }
 
     /**
      *   ENHANCED: Create activity log entry
@@ -292,6 +362,52 @@ public function testSeries($id)
                 'student_id' => $student->_id ?? 'unknown',
                 'title' => $title
             ]);
+        }
+    }
+
+ public function getCourseStatistics()
+    {
+        try {
+            $courses = Courses::all();
+            $statistics = [];
+            
+            foreach ($courses as $course) {
+                $collectionName = $course->getStudentCollectionName();
+                
+                try {
+                    $totalStudents = $course->getStudentsCount();
+                    $paidStudents = $course->getFullyPaidStudentsCount();
+                    
+                    $statistics[] = [
+                        'course_name' => $course->course_name,
+                        'collection_name' => $collectionName,
+                        'total_students' => $totalStudents,
+                        'fully_paid' => $paidStudents,
+                        'pending_payment' => $totalStudents - $paidStudents
+                    ];
+                } catch (\Exception $e) {
+                    Log::warning("Could not get stats for {$collectionName}");
+                    $statistics[] = [
+                        'course_name' => $course->course_name,
+                        'collection_name' => $collectionName,
+                        'total_students' => 0,
+                        'fully_paid' => 0,
+                        'pending_payment' => 0,
+                        'error' => $e->getMessage()
+                    ];
+                }
+            }
+            
+            return response()->json([
+                'success' => true,
+                'statistics' => $statistics
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -828,6 +944,47 @@ private function getDocumentData($rawData, ...$possibleFields)
     return null;
 }
 
+
+ public function listCourseCollections()
+    {
+        try {
+            $collections = Courses::getAllStudentCollections();
+            
+            $collectionsWithInfo = [];
+            foreach ($collections as $collectionName) {
+                try {
+                    $count = \DB::connection('mongodb')
+                        ->getCollection($collectionName)
+                        ->count();
+                    
+                    // Extract course name from collection name
+                    $courseName = str_replace('students_', '', $collectionName);
+                    $courseName = str_replace('_', ' ', $courseName);
+                    $courseName = ucwords($courseName);
+                    
+                    $collectionsWithInfo[] = [
+                        'collection_name' => $collectionName,
+                        'course_name' => $courseName,
+                        'student_count' => $count
+                    ];
+                } catch (\Exception $e) {
+                    Log::warning("Could not get count for {$collectionName}");
+                }
+            }
+            
+            return response()->json([
+                'success' => true,
+                'collections' => $collectionsWithInfo,
+                'total_collections' => count($collectionsWithInfo)
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 /**
  *   HELPER: Calculate complete fee summary
  */
@@ -1655,5 +1812,498 @@ private function processFeesDataSafe(&$safeStudent, $rawData)
             return $transaction;
         })->filter();
     }
+}
+
+/**
+ * Display student's personal attendance view
+ */
+public function studentAttendance($id)
+{
+    try {
+        $student = SMstudents::with(['batch', 'course', 'shift'])->findOrFail($id);
+        
+        // Get attendance records for this student
+        $currentMonth = request()->get('month', date('Y-m'));
+        
+        Log::info('Loading student attendance view', [
+            'student_id' => $id,
+            'month' => $currentMonth
+        ]);
+        
+        return view('student.smstudents.attendance', compact('student', 'currentMonth'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error loading student attendance: ' . $e->getMessage());
+        return back()->with('error', 'Failed to load attendance data');
+    }
+}
+
+/**
+ * Get individual student's attendance data
+ */
+public function getStudentAttendance(Request $request, $id)
+{
+    try {
+        $student = SMstudents::findOrFail($id);
+        $month = $request->get('month', date('Y-m'));
+        
+        // Parse month
+        $year = (int) substr($month, 0, 4);
+        $monthNum = (int) substr($month, 5, 2);
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNum, $year);
+        
+        $firstDate = sprintf('%04d-%02d-01', $year, $monthNum);
+        $lastDate = sprintf('%04d-%02d-%02d', $year, $monthNum, $daysInMonth);
+        
+        // Fetch attendance records
+        $attendanceRecords = \App\Models\Attendance\Student::where('student_id', (string)$id)
+            ->where('date', '>=', $firstDate)
+            ->where('date', '<=', $lastDate)
+            ->orderBy('date', 'asc')
+            ->get()
+            ->keyBy('date');
+        
+        // Calculate statistics
+        $presentCount = $attendanceRecords->where('status', 'present')->count();
+        $absentCount = $attendanceRecords->where('status', 'absent')->count();
+        
+        // Calculate working days (exclude weekends)
+        $totalWorkingDays = 0;
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $date = sprintf('%04d-%02d-%02d', $year, $monthNum, $day);
+            $dayOfWeek = date('w', strtotime($date));
+            if ($dayOfWeek != 0 && $dayOfWeek != 6) {
+                $totalWorkingDays++;
+            }
+        }
+        
+        $attendancePercentage = $totalWorkingDays > 0 
+            ? round(($presentCount / $totalWorkingDays) * 100, 2) 
+            : 0;
+        
+        // Generate calendar data
+        $calendarData = [];
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $dateStr = sprintf('%04d-%02d-%02d', $year, $monthNum, $day);
+            $timestamp = strtotime($dateStr);
+            $dayOfWeek = date('w', $timestamp);
+            
+            $status = 'not-marked';
+            if (isset($attendanceRecords[$dateStr])) {
+                $status = $attendanceRecords[$dateStr]->status;
+            } elseif ($dayOfWeek == 0 || $dayOfWeek == 6) {
+                $status = 'weekend';
+            }
+            
+            $calendarData[] = [
+                'date' => $dateStr,
+                'day' => $day,
+                'day_name' => date('D', $timestamp),
+                'is_weekend' => ($dayOfWeek == 0 || $dayOfWeek == 6),
+                'status' => $status,
+                'marked_at' => isset($attendanceRecords[$dateStr]) 
+                    ? $attendanceRecords[$dateStr]->marked_at 
+                    : null,
+                'marked_by' => isset($attendanceRecords[$dateStr]) 
+                    ? $attendanceRecords[$dateStr]->marked_by 
+                    : null
+            ];
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'calendar' => $calendarData,
+                'statistics' => [
+                    'total_days' => $daysInMonth,
+                    'working_days' => $totalWorkingDays,
+                    'present' => $presentCount,
+                    'absent' => $absentCount,
+                    'not_marked' => $totalWorkingDays - $presentCount - $absentCount,
+                    'percentage' => $attendancePercentage
+                ],
+                'student' => [
+                    'roll_no' => $student->roll_no,
+                    'name' => $student->student_name ?? $student->name,
+                    'batch' => $student->batch_name,
+                    'course' => $student->course_name
+                ]
+            ]
+        ]);
+        
+    } catch (\Exception $e) {
+        Log::error('Error fetching student attendance: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load attendance data'
+        ], 500);
+    }
+}
+
+/**
+ * Get individual student's attendance data for the view detail page
+ */
+
+
+public function getStudentAttendanceData(Request $request, $id)
+{
+    try {
+        $student = SMstudents::findOrFail($id);
+        $month = $request->get('month', date('Y-m'));
+        
+        \Log::info('📊 Loading student attendance', [
+            'student_id' => $id,
+            'month' => $month
+        ]);
+        
+        // Parse month
+        $year = (int) substr($month, 0, 4);
+        $monthNum = (int) substr($month, 5, 2);
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNum, $year);
+        
+        $firstDate = sprintf('%04d-%02d-01', $year, $monthNum);
+        $lastDate = sprintf('%04d-%02d-%02d', $year, $monthNum, $daysInMonth);
+        
+        // Fetch attendance records from attendance_students collection
+        $attendanceRecords = \App\Models\Attendance\Student::where('student_id', (string)$id)
+            ->where('date', '>=', $firstDate)
+            ->where('date', '<=', $lastDate)
+            ->orderBy('date', 'asc')
+            ->get()
+            ->keyBy('date');
+        
+        \Log::info('✅ Found attendance records', ['count' => $attendanceRecords->count()]);
+        
+        // Calculate statistics
+        $presentCount = $attendanceRecords->where('status', 'present')->count();
+        $absentCount = $attendanceRecords->where('status', 'absent')->count();
+        
+        // Calculate working days (exclude weekends)
+        $totalWorkingDays = 0;
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $date = sprintf('%04d-%02d-%02d', $year, $monthNum, $day);
+            $dayOfWeek = date('w', strtotime($date));
+            if ($dayOfWeek != 0 && $dayOfWeek != 6) {
+                $totalWorkingDays++;
+            }
+        }
+        
+        $attendancePercentage = $totalWorkingDays > 0 
+            ? round(($presentCount / $totalWorkingDays) * 100, 2) 
+            : 0;
+        
+        // Generate calendar data
+        $calendarData = [];
+        $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $dateStr = sprintf('%04d-%02d-%02d', $year, $monthNum, $day);
+            $timestamp = strtotime($dateStr);
+            $dayOfWeek = date('w', $timestamp);
+            
+            $status = 'not-marked';
+            $markedBy = null;
+            $markedAt = null;
+            
+            if (isset($attendanceRecords[$dateStr])) {
+                $record = $attendanceRecords[$dateStr];
+                $status = $record->status;
+                $markedBy = $record->marked_by;
+                $markedAt = $record->marked_at;
+            } elseif ($dayOfWeek == 0 || $dayOfWeek == 6) {
+                $status = 'weekend';
+            }
+            
+            $calendarData[] = [
+                'date' => $dateStr,
+                'day' => $day,
+                'day_name' => $dayNames[$dayOfWeek],
+                'is_weekend' => ($dayOfWeek == 0 || $dayOfWeek == 6),
+                'is_today' => $dateStr === date('Y-m-d'),
+                'status' => $status,
+                'marked_at' => $markedAt,
+                'marked_by' => $markedBy
+            ];
+        }
+        
+        // Generate monthly summary (all 12 months)
+        $monthlySummary = [];
+        $months = [
+            '01' => 'January', '02' => 'February', '03' => 'March', '04' => 'April',
+            '05' => 'May', '06' => 'June', '07' => 'July', '08' => 'August',
+            '09' => 'September', '10' => 'October', '11' => 'November', '12' => 'December'
+        ];
+        
+        foreach ($months as $monthKey => $monthName) {
+            $monthDays = cal_days_in_month(CAL_GREGORIAN, (int)$monthKey, $year);
+            
+            // Calculate working days
+            $workingDays = 0;
+            for ($d = 1; $d <= $monthDays; $d++) {
+                $checkDate = sprintf('%04d-%02d-%02d', $year, (int)$monthKey, $d);
+                $dow = date('w', strtotime($checkDate));
+                if ($dow != 0 && $dow != 6) $workingDays++;
+            }
+            
+            // Get attendance
+            $firstDay = sprintf('%04d-%02d-01', $year, (int)$monthKey);
+            $lastDay = sprintf('%04d-%02d-%02d', $year, (int)$monthKey, $monthDays);
+            
+            $monthRecords = \App\Models\Attendance\Student::where('student_id', (string)$id)
+                ->where('date', '>=', $firstDay)
+                ->where('date', '<=', $lastDay)
+                ->get();
+            
+            $monthPresent = $monthRecords->where('status', 'present')->count();
+            $monthAbsent = $monthRecords->where('status', 'absent')->count();
+            
+            $monthlySummary[] = [
+                'month' => $monthName,
+                'total_days' => $workingDays,
+                'present' => $monthPresent,
+                'absent' => $monthAbsent
+            ];
+        }
+        
+        // Generate chart data (year-to-date)
+        $chartLabels = [];
+        $chartData = [];
+        $currentMonthNum = (int)date('m');
+        
+        for ($m = 1; $m <= $currentMonthNum; $m++) {
+            $monthKey = str_pad($m, 2, '0', STR_PAD_LEFT);
+            $monthDays = cal_days_in_month(CAL_GREGORIAN, $m, $year);
+            
+            $workingDays = 0;
+            for ($d = 1; $d <= $monthDays; $d++) {
+                $checkDate = sprintf('%04d-%02d-%02d', $year, $m, $d);
+                $dow = date('w', strtotime($checkDate));
+                if ($dow != 0 && $dow != 6) $workingDays++;
+            }
+            
+            $firstDay = sprintf('%04d-%02d-01', $year, $m);
+            $lastDay = sprintf('%04d-%02d-%02d', $year, $m, $monthDays);
+            
+            $monthRecords = \App\Models\Attendance\Student::where('student_id', (string)$id)
+                ->where('date', '>=', $firstDay)
+                ->where('date', '<=', $lastDay)
+                ->get();
+            
+            $monthPresent = $monthRecords->where('status', 'present')->count();
+            $percentage = $workingDays > 0 ? round(($monthPresent / $workingDays) * 100, 2) : 0;
+            
+            $chartLabels[] = date('M', mktime(0, 0, 0, $m, 1));
+            $chartData[] = $percentage;
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'calendar' => $calendarData,
+                'monthly_summary' => $monthlySummary,
+                'chart' => [
+                    'labels' => $chartLabels,
+                    'data' => $chartData
+                ],
+                'statistics' => [
+                    'month' => date('F Y', strtotime($month . '-01')),
+                    'total_days' => $daysInMonth,
+                    'working_days' => $totalWorkingDays,
+                    'present' => $presentCount,
+                    'absent' => $absentCount,
+                    'not_marked' => $totalWorkingDays - $presentCount - $absentCount,
+                    'percentage' => $attendancePercentage
+                ]
+            ]
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('❌ Error fetching attendance', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load attendance: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Get comprehensive fees data for a student
+ */
+private function getStudentFeesData($student)
+{
+    // Initialize fees arrays
+    $fees = [];
+    $otherFees = [];
+    $transactions = [];
+    
+    // Get payment history
+    $paymentHistory = $student->paymentHistory ?? [];
+    if (!is_array($paymentHistory)) {
+        $paymentHistory = [];
+    }
+    
+    // Calculate total fees
+    $totalFees = floatval($student->total_fees_inclusive_tax ?? $student->total_fees ?? 0);
+    
+    // If total fees is 0, try to calculate from installments
+    if ($totalFees == 0) {
+        $totalFees = floatval($student->installment_1 ?? 0) 
+                   + floatval($student->installment_2 ?? 0) 
+                   + floatval($student->installment_3 ?? 0);
+    }
+    
+    // Calculate GST if not present
+    $gstAmount = floatval($student->gst_amount ?? 0);
+    if ($gstAmount == 0 && $totalFees > 0) {
+        $baseAmount = $totalFees / 1.18;
+        $gstAmount = $totalFees - $baseAmount;
+    }
+    
+    // Calculate total paid from payment history
+    $totalPaid = 0;
+    foreach ($paymentHistory as $payment) {
+        $totalPaid += floatval($payment['amount'] ?? 0);
+    }
+    
+    // Fallback to stored paid amount if no payment history
+    if ($totalPaid == 0) {
+        $totalPaid = floatval($student->paid_fees ?? $student->paidAmount ?? 0);
+    }
+    
+    $remainingFees = max(0, $totalFees - $totalPaid);
+    
+    // Define installments (40%, 30%, 30% split)
+    $installment1Amount = floatval($student->installment_1 ?? ($totalFees * 0.40));
+    $installment2Amount = floatval($student->installment_2 ?? ($totalFees * 0.30));
+    $installment3Amount = floatval($student->installment_3 ?? ($totalFees * 0.30));
+    
+    // Track installment payments
+    $inst1Paid = 0;
+    $inst2Paid = 0;
+    $inst3Paid = 0;
+    $inst1Date = null;
+    $inst2Date = null;
+    $inst3Date = null;
+    
+    // Process payment history to determine installment status
+    foreach ($paymentHistory as $payment) {
+        $amount = floatval($payment['amount'] ?? 0);
+        $instNum = $payment['installment_number'] ?? null;
+        $payDate = $payment['date'] ?? $payment['payment_date'] ?? null;
+        
+        if ($instNum == 1) {
+            $inst1Paid += $amount;
+            if (!$inst1Date) $inst1Date = $payDate;
+        } elseif ($instNum == 2) {
+            $inst2Paid += $amount;
+            if (!$inst2Date) $inst2Date = $payDate;
+        } elseif ($instNum == 3) {
+            $inst3Paid += $amount;
+            if (!$inst3Date) $inst3Date = $payDate;
+        }
+    }
+    
+    // Build fees array (installments)
+    $fees = [
+        [
+            'installment_number' => 1,
+            'fee_type' => 'Course Fee - Installment 1',
+            'actual_amount' => $installment1Amount,
+            'discount_amount' => 0,
+            'paid_amount' => $inst1Paid,
+            'remaining_amount' => max(0, $installment1Amount - $inst1Paid),
+            'due_date' => null, // You can add due date logic here
+            'paid_date' => $inst1Date,
+            'status' => $inst1Paid >= $installment1Amount ? 'paid' : ($inst1Paid > 0 ? 'partial' : 'pending'),
+            'status_badge' => $inst1Paid >= $installment1Amount ? 'success' : ($inst1Paid > 0 ? 'warning' : 'danger')
+        ],
+        [
+            'installment_number' => 2,
+            'fee_type' => 'Course Fee - Installment 2',
+            'actual_amount' => $installment2Amount,
+            'discount_amount' => 0,
+            'paid_amount' => $inst2Paid,
+            'remaining_amount' => max(0, $installment2Amount - $inst2Paid),
+            'due_date' => null,
+            'paid_date' => $inst2Date,
+            'status' => $inst2Paid >= $installment2Amount ? 'paid' : ($inst2Paid > 0 ? 'partial' : 'pending'),
+            'status_badge' => $inst2Paid >= $installment2Amount ? 'success' : ($inst2Paid > 0 ? 'warning' : 'danger')
+        ],
+        [
+            'installment_number' => 3,
+            'fee_type' => 'Course Fee - Installment 3',
+            'actual_amount' => $installment3Amount,
+            'discount_amount' => 0,
+            'paid_amount' => $inst3Paid,
+            'remaining_amount' => max(0, $installment3Amount - $inst3Paid),
+            'due_date' => null,
+            'paid_date' => $inst3Date,
+            'status' => $inst3Paid >= $installment3Amount ? 'paid' : ($inst3Paid > 0 ? 'partial' : 'pending'),
+            'status_badge' => $inst3Paid >= $installment3Amount ? 'success' : ($inst3Paid > 0 ? 'warning' : 'danger')
+        ]
+    ];
+    
+    // Build transactions array from payment history
+    foreach ($paymentHistory as $index => $payment) {
+        $transactions[] = [
+            'transaction_id' => $payment['transaction_id'] ?? 'TXN' . str_pad($index + 1, 6, '0', STR_PAD_LEFT),
+            'fee_type' => 'installment',
+            'installment_number' => $payment['installment_number'] ?? null,
+            'amount' => floatval($payment['amount'] ?? 0),
+            'payment_method' => $payment['method'] ?? $payment['payment_type'] ?? 'cash',
+            'payment_date' => $payment['date'] ?? $payment['payment_date'] ?? null,
+            'received_by' => $payment['recorded_by'] ?? 'Admin',
+            'remarks' => $payment['remarks'] ?? '-'
+        ];
+    }
+    
+    // Calculate summary
+    $feeSummary = [
+        'fees' => [
+            'total' => $installment1Amount + $installment2Amount + $installment3Amount,
+            'paid' => $inst1Paid + $inst2Paid + $inst3Paid,
+            'pending' => max(0, ($installment1Amount + $installment2Amount + $installment3Amount) - ($inst1Paid + $inst2Paid + $inst3Paid)),
+            'discount' => 0
+        ],
+        'other_fees' => [
+            'total' => 0,
+            'paid' => 0,
+            'pending' => 0
+        ],
+        'grand' => [
+            'total' => $totalFees,
+            'paid' => $totalPaid,
+            'pending' => $remainingFees
+        ]
+    ];
+    
+    // Scholarship data
+    $scholarshipData = [
+        'eligible' => ($student->eligible_for_scholarship ?? 'No') === 'Yes' ? 'Yes' : 'No',
+        'scholarship_name' => $student->scholarship_name ?? 'N/A',
+        'total_before_discount' => floatval($student->total_fee_before_discount ?? $totalFees),
+        'discount_percentage' => floatval($student->discount_percentage ?? 0),
+        'has_discretionary' => ($student->discretionary_discount ?? 'No') === 'Yes',
+        'discretionary_type' => $student->discretionary_discount_type ?? null,
+        'discretionary_value' => floatval($student->discretionary_discount_value ?? 0),
+        'discretionary_reason' => $student->discretionary_discount_reason ?? null,
+    ];
+    
+    return [
+        'fees' => collect($fees),
+        'other_fees' => collect($otherFees),
+        'transactions' => collect($transactions),
+        'feeSummary' => $feeSummary,
+        'scholarshipData' => $scholarshipData,
+        'scholarshipEligible' => [
+            'eligible' => $scholarshipData['eligible'] === 'Yes',
+            'reason' => $scholarshipData['scholarship_name'],
+            'discountPercent' => $scholarshipData['discount_percentage']
+        ]
+    ];
 }
 }

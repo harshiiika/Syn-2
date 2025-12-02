@@ -76,8 +76,6 @@ class BranchController extends Controller
         $columns = ['Branch Name', 'City', 'Status'];
         $sampleData = [
             ['Synthesis Main Branch', 'Bikaner', 'Active'],
-            ['Synthesis Jaipur Branch', 'Jaipur', 'Active'],
-            ['Synthesis Jodhpur Branch', 'Jodhpur', 'Active'],
         ];
 
         $callback = function() use ($columns, $sampleData) {

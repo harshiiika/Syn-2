@@ -5,6 +5,8 @@ namespace App\Models\Student;
 use MongoDB\Laravel\Eloquent\Model;
 use App\Models\Master\Batch;
 use App\Models\Master\Courses;
+use Illuminate\Support\Str;
+
 
 class SMstudents extends Model
 {
@@ -62,7 +64,6 @@ class SMstudents extends Model
         'medium',
         'board',
         
-        //   ALTERNATE FIELD NAMES (from Pending table - for compatibility)
         'name',                  // maps to student_name
         'father',                // maps to father_name
         'mother',                // maps to mother_name
@@ -117,22 +118,7 @@ class SMstudents extends Model
         'fee_status',          // CRITICAL: Paid, Pending, 2nd Installment due, etc.
         'fee_installments',    // Number of installments
         'paidAmount',
-        
-        // Documents (Base64 encoded)
-        // 'passport_photo',
-        // 'marksheet',
-        // 'caste_certificate',
-        // 'scholarship_proof',
-        // 'secondary_marksheet',
-        // 'senior_secondary_marksheet',
-        // Documents (Base64)
-        // 'passport_photo',
-        // 'marksheet',
-        // 'caste_certificate',
-        // 'scholarship_proof',
-        // 'secondary_marksheet',
-        // 'senior_secondary_marksheet',
-        
+    
         // Arrays
         'fees',
         'other_fees',
@@ -166,10 +152,10 @@ class SMstudents extends Model
     'scholarship_proof',
     'secondary_marksheet',
     'senior_secondary_marksheet',
-         'roll_no', 'student_name', 'name', 'email', 'phone', 'shift_id',
-        'father_name', 'mother_name', 'dob', 'father_contact', 'father_whatsapp',
-        'mother_contact', 'category', 'gender', 'father_occupation', 'mother_occupation',
-        'state', 'city', 'pincode', 'address', 'belongs_other_city',
+   'roll_no', 'student_name', 'name', 'email', 'phone', 'shift_id',
+   'father_name', 'mother_name', 'dob', 'father_contact', 'father_whatsapp',
+   'mother_contact', 'category', 'gender', 'father_occupation', 'mother_occupation',
+    'state', 'city', 'pincode', 'address', 'belongs_other_city',
         'economic_weaker_section', 'army_police_background', 'specially_abled',
         'previous_class', 'academic_medium', 'school_name', 'academic_board',
         'passing_year', 'percentage', 'is_repeater', 'scholarship_test',
@@ -177,7 +163,17 @@ class SMstudents extends Model
         'course_id', 'course_name', 'course_type', 'delivery_mode', 'course_content',
         'medium', 'board', 'status', 'admission_date', 'session', 'branch',
         'fees', 'other_fees', 'transactions', 'paymentHistory', 'activities', 'history',
-   
+        'passport_photo', 'marksheet', 'caste_certificate', 'scholarship_proof',
+        'secondary_marksheet', 'senior_secondary_marksheet',
+        'eligible_for_scholarship', 'scholarship_name', 'total_fee_before_discount',
+        'discretionary_discount', 'discretionary_discount_type', 'discretionary_discount_value',
+        'discretionary_discount_reason', 'discount_percentage', 'discount_amount',
+        'discounted_fee', 'fees_breakup', 'total_fees', 'gst_amount',
+        'total_fees_inclusive_tax', 'single_installment_amount',
+        'installment_1', 'installment_2', 'installment_3',
+        'paid_fees', 'paid_amount', 'remaining_fees', 'pending_amount',
+        'fee_status', 'fee_installments', 'paidAmount',
+        'transferred_from', 'transferred_at', 'created_by', 'updated_by', 
 ];
     
     protected $casts = [
@@ -225,14 +221,40 @@ class SMstudents extends Model
     'activities' => 'array',
     'last_payment_date' => 'date',
         'paidAmount' => 'float',
-        'fees' => 'array',
-        'other_fees' => 'array',
-        'transactions' => 'array',
         'fees_breakup' => 'array',
         'history' => 'array',
         'documents' => 'array',
         
     ];
+
+  public static function byCourse($courseNameOrId)
+    {
+        try {
+            // Determine if it's an ID or name
+            if (strlen($courseNameOrId) === 24) {
+                $course = Courses::find($courseNameOrId);
+            } else {
+                $course = Courses::where('course_name', $courseNameOrId)->first();
+            }
+
+            if (!$course) {
+                return collect([]);
+            }
+
+            $collectionName = $course->getStudentCollectionName();
+            
+            // Create a new instance pointing to the course collection
+            $instance = new static;
+            $instance->setTable($collectionName);
+
+            return $instance->newQuery();
+            
+        } catch (\Exception $e) {
+            \Log::error('Error querying students by course: ' . $e->getMessage());
+            return collect([]);
+        }
+    }
+
 
     /**
      * Relationship: Student belongs to a Batch
@@ -434,29 +456,6 @@ class SMstudents extends Model
         return $this;
     }
 
-    /**
-     * ⭐ STATIC METHOD: Get all students of a specific course
-     */
-    public static function byCourse($courseNameOrId)
-    {
-        if (strlen($courseNameOrId) === 24) {
-            // It's an ID
-            $course = Courses::find($courseNameOrId);
-            $courseName = $course->course_name ?? null;
-        } else {
-            $courseName = $courseNameOrId;
-        }
-
-        if (!$courseName) {
-            return collect([]);
-        }
-
-        $instance = new static;
-        $collectionName = $instance->generateCollectionName($courseName);
-        $instance->setTable($collectionName);
-
-        return $instance->newQuery();
-    }
 
     /**
      * ⭐ STATIC METHOD: Get all course-based collections
@@ -476,4 +475,101 @@ class SMstudents extends Model
         
         return $studentCollections;
     }
+
+     public static function getAllFromAllCollections()
+    {
+        $allStudents = collect([]);
+        
+        // 1. Get from main collection
+        $mainStudents = static::all();
+        $allStudents = $allStudents->merge($mainStudents);
+        
+        // 2. Get all course collections
+        $courseCollections = Courses::getAllStudentCollections();
+        
+        foreach ($courseCollections as $collectionName) {
+            try {
+                $instance = new static;
+                $instance->setTable($collectionName);
+                $courseStudents = $instance->get();
+                $allStudents = $allStudents->merge($courseStudents);
+            } catch (\Exception $e) {
+                \Log::warning("Could not read from collection: {$collectionName}");
+            }
+        }
+        
+        // Remove duplicates by roll_no
+        return $allStudents->unique('roll_no');
+    }
+
+       public static function createInBothCollections($data)
+    {
+        \DB::beginTransaction();
+        
+        try {
+            // 1. Get course information
+            $courseId = $data['course_id'] ?? null;
+            $courseName = $data['course_name'] ?? null;
+            
+            if (!$courseId && !$courseName) {
+                throw new \Exception('Course information is required');
+            }
+            
+            // Find course
+            $course = null;
+            if ($courseId) {
+                $course = Courses::find($courseId);
+            } elseif ($courseName) {
+                $course = Courses::where('course_name', $courseName)->first();
+            }
+            
+            if (!$course) {
+                throw new \Exception('Course not found');
+            }
+            
+            // Ensure course_id and course_name are set
+            $data['course_id'] = (string)$course->_id;
+            $data['course_name'] = $course->course_name;
+            
+            // 2. Save to MAIN collection (s_mstudents)
+            $mainStudent = new static($data);
+            $mainStudent->setTable('s_mstudents');
+            $mainStudent->save();
+            
+            \Log::info('✅ Saved to main collection', [
+                'collection' => 's_mstudents',
+                'student_id' => $mainStudent->_id,
+                'roll_no' => $mainStudent->roll_no
+            ]);
+            
+            // 3. Save to COURSE-SPECIFIC collection
+            $courseCollectionName = $course->getStudentCollectionName();
+            $courseStudent = new static($data);
+            $courseStudent->setTable($courseCollectionName);
+            $courseStudent->save();
+            
+            \Log::info('✅ Saved to course collection', [
+                'collection' => $courseCollectionName,
+                'student_id' => $courseStudent->_id,
+                'roll_no' => $courseStudent->roll_no
+            ]);
+            
+            \DB::commit();
+            
+            return [
+                'main_student' => $mainStudent,
+                'course_student' => $courseStudent,
+                'course_collection' => $courseCollectionName
+            ];
+            
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('❌ Failed to create student in both collections', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
 }

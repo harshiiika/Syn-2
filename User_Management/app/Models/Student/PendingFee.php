@@ -65,7 +65,32 @@ class PendingFee extends Model
         'history',
         'alternateMobileNumber',
         'roll_no',
-        'transferred_by'
+        'transferred_by',
+
+        'fatherOccupation', 'fatherGrade', 'motherOccupation',
+        'course_type', 'courseType', 'courseName', 'deliveryMode', 'courseContent',
+    'medium', 'board',
+    // Academic
+    'previousClass', 'previousMedium', 'schoolName', 'previousBoard', 
+    'passingYear', 'percentage',
+    
+    // Scholarship Eligibility
+    'isRepeater', 'scholarshipTest', 'lastBoardPercentage', 'competitionExam',
+    
+    // Batch
+    'batchName', 'batch', 'batch_id', 'course_id',
+    
+    // Fees
+    'eligible_for_scholarship', 'scholarship_name', 'total_fee_before_discount',
+    'discretionary_discount', 'discretionary_discount_type', 'discretionary_discount_value',
+    'discretionary_discount_reason', 'discount_percentage', 'discounted_fee',
+    'fees_breakup', 'total_fees', 'gst_amount', 'total_fees_inclusive_tax',
+    'single_installment_amount', 'installment_1', 'installment_2', 'installment_3',
+    'fees_calculated_at',
+    
+    // Meta
+    'branch', 'session', 'status', 'transferred_from_inquiry', 
+    'inquiry_id', 'transferred_at', 'history'
     ];
     
     protected $casts = [

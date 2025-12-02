@@ -256,8 +256,8 @@
           <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -273,7 +273,7 @@
       <!-- Top Section -->
       <div class="top">
         <div class="top-text">
-          <h4>Test Series</h4>
+          <h4>TEST SERIES - {{ $courseName }}</h4>
         </div>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createTestSeriesModal" style="background-color: #ff6607ff; border-color: #ff6607ff;">
       Create Test Series
@@ -361,8 +361,8 @@
         <!-- Pagination Info -->
         <div class="d-flex justify-content-between align-items-center mt-3">
           <div id="paginationInfo">
-            Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count()) }}</span> entries
-          </div>
+Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count() }}</span> entries
+</div>
           <nav>
             <ul class="pagination" id="pagination">
               <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
@@ -500,10 +500,10 @@
                     <div class="form-check">
                       <input class="form-check-input edit-subject-checkbox" type="checkbox" 
                              name="subjects[]" value="{{ $subject }}" 
-                             id="edit_{{ $seriesId }}_{{ str_replace(' ', '_', $subject) }}"
+                             id="edit_{{ $seriesId }}{{ str_replace(' ', '', $subject) }}"
                              {{ in_array($subject, $seriesSubjects) ? 'checked' : '' }}
                              data-series-id="{{ $seriesId }}">
-                      <label class="form-check-label" for="edit_{{ $seriesId }}_{{ str_replace(' ', '_', $subject) }}">
+                      <label class="form-check-label" for="edit_{{ $seriesId }}{{ str_replace(' ', '', $subject) }}">
                         {{ $subject }}
                       </label>
                     </div>
@@ -619,6 +619,7 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset(path: 'js/emp.js') }}"></script>
   <script>
 document.querySelector('#createTestSeriesModal form').addEventListener('submit', function(e) {
     const testType = document.getElementById('testSeriesType').value;
@@ -754,21 +755,21 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         if (totalPages === 0) return;
 
         const prevLi = document.createElement('li');
-        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-        prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
+        prevLi.className = page-item ${currentPage === 1 ? 'disabled' : ''};
+        prevLi.innerHTML = <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>;
         pagination.appendChild(prevLi);
 
         for (let i = 1; i <= Math.min(totalPages, 5); i++) {
           const li = document.createElement('li');
-          li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+          li.className = page-item ${i === currentPage ? 'active' : ''};
           const activeStyle = i === currentPage ? 'style="background-color: #ff6b35; border-color: #ff6b35;"' : '';
-          li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;" ${activeStyle}>${i}</a>`;
+          li.innerHTML = <a class="page-link" href="#" onclick="changePage(${i}); return false;" ${activeStyle}>${i}</a>;
           pagination.appendChild(li);
         }
 
         const nextLi = document.createElement('li');
-        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-        nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
+        nextLi.className = page-item ${currentPage === totalPages ? 'disabled' : ''};
+        nextLi.innerHTML = <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>;
         pagination.appendChild(nextLi);
       }
 
@@ -781,8 +782,6 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         }
       };
     });
-
-
     document.addEventListener('DOMContentLoaded', function() {
   console.log('Test Series Detail Page JS loaded');
 
@@ -841,7 +840,7 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
       
       if (this.checked) {
         // Add marks field if checkbox is checked
-        const existingField = marksDiv.querySelector(`[data-subject="${subject}"]`);
+        const existingField = marksDiv.querySelector([data-subject="${subject}"]);
         if (!existingField) {
           const markField = document.createElement('div');
           markField.className = 'mb-2 subject-mark-field';
@@ -855,7 +854,7 @@ document.querySelector('#createTestSeriesModal form').addEventListener('submit',
         }
       } else {
         // Remove marks field if checkbox is unchecked
-        const fieldToRemove = marksDiv.querySelector(`[data-subject="${subject}"]`);
+        const fieldToRemove = marksDiv.querySelector([data-subject="${subject}"]);
         if (fieldToRemove) {
           fieldToRemove.remove();
         }

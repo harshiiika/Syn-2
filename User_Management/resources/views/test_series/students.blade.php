@@ -54,7 +54,7 @@
   </div>
 
   <div class="main-container">
-    <!-- Sidebar (copy from your detail.blade.php) -->
+    <!-- Sidebar-->
      <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>Admin</h6>
@@ -226,8 +226,8 @@
           <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
                 <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
                 <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -238,30 +238,78 @@
       </div>
     </div>
 
-    <!-- Main Content -->
+<!-- Main Content -->
     <div class="right" id="right">
-      <div class="top">
-        <div class="top-text">
-          <h4><i class="fas fa-users me-2"></i>{{ $testSeries->test_name }}</h4>
+      <div class="top" style="margin-top: 10px;">
+        <div class="top-text" style="margin-left: 10px;">
+          <h4>{{ $testSeries->test_name }}</h4>
           @php
-  $courseName = $testSeries->course_name ?? ($testSeries->course->course_name ?? ($testSeries->course->name ?? 'Unknown'));
-@endphp
-<a href="{{ route('test_series.show', urlencode($courseName)) }}" class="btn btn-sm btn-outline-secondary">
-</a>
+            $courseName = $testSeries->course_name ?? ($testSeries->course->course_name ?? ($testSeries->course->name ?? 'Unknown'));
+          @endphp
+
         </div>
-        <div class="d-flex gap-2 flex-wrap">
-          <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#lockResultModal" style="background-color: #ff6607ff; color: white">
-            Lock Result
+        <div class="d-flex gap-2 flex-wrap" style="margin-right: 20px;">
+          <!-- Lock Result Button -->
+          <button class="btn btn-warning {{ $testSeries->result_locked ? 'disabled' : '' }}" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#lockResultModal"
+                  {{ $testSeries->result_locked ? 'disabled' : '' }}
+                  style="background-color: #ff6607ff; color: white; border-color: #ff6607ff;">
+            {{ $testSeries->result_locked ? 'Result Locked' : 'Lock Result' }}
           </button>
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadSyllabusModal" style="background-color: #ff6607ff; border-color: #ff6607ff;">
-           Upload Syllabus
+          
+            <!-- Upload Syllabus Button -->
+        <button class="btn btn-primary" 
+                data-bs-toggle="modal" 
+                data-bs-target="#uploadSyllabusModal" 
+                style="background-color: #ff6600ff; border-color: #ff6600ff;">
+            {{ $testSeries->syllabus ? 'Edit' : 'Upload' }} Syllabus
+        </button>
+        
+        @if($testSeries->syllabus)
+            <!-- Download Syllabus -->
+            <a href="{{ route('test_series.download_syllabus', $testSeries->_id) }}" 
+               class="btn btn-info">
+                <i class="fas fa-download"></i> Download Syllabus
+            </a>
+            
+            <!-- Delete Syllabus -->
+            <form action="{{ route('test_series.delete_syllabus', $testSeries->_id) }}" 
+                  method="POST" 
+                  style="display: inline;"
+                  onsubmit="return confirm('Are you sure you want to delete the syllabus?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Syllabus
+                </button>
+            </form>
+        @endif
+          
+          <!-- Upload Result Button -->
+          <button class="btn btn-success {{ $testSeries->result_locked ? 'disabled' : '' }}" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#uploadResultModal"
+                  {{ $testSeries->result_locked ? 'disabled' : '' }}
+                  style="background-color: #ff6607ff; border-color: #ff6607ff;">
+           Upload Result
           </button>
-          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadResultModal" style="background-color: #ff6607ff; border-color: #ff6607ff;">
-            Upload Result
+
+          
+          <!-- Add Test Button -->
+          <button class="btn" 
+                  style="background-color: #ff6600ff; color: white; border-color: #ff6600ff;" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#addTestModal">
+           Add Test
           </button>
-          <button class="btn" style="background-color: #fd550dff; color: white;" data-bs-toggle="modal" data-bs-target="#addTestModal">
-          Add Test
-          </button>
+
+          <!-- Result Uploaded Badge -->
+          @if($testSeries->result_uploaded)
+            <span class="badge bg-success align-self-center px-3 py-2">
+              <i class="fas fa-check-circle me-1"></i>Result Uploaded
+            </span>
+          @endif
         </div>
       </div>
 
@@ -269,17 +317,19 @@
         <!-- Controls -->
         <div class="dd">
           <div class="line">
-            <h6>Show</h6>
+            <h6>Show Enteries:</h6>
             <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown">10</button>
+              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            {{ request('per_page', 10) }}
+          </button>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item entries-option" href="#" data-value="10">10</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="25">25</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="50">50</a></li>
-                <li><a class="dropdown-item entries-option" href="#" data-value="100">100</a></li>
+                <li><a class="dropdown-item">10</a></li>
+                <li><a class="dropdown-item">25</a></li>
+                <li><a class="dropdown-item">50</a></li>
+                <li><a class="dropdown-item">100</a></li>
               </ul>
             </div>
-            <h6>entries</h6>
           </div>
           <div class="search">
             <h4 class="search-text">Search:</h4>
@@ -292,13 +342,13 @@
         <table class="table table-hover" id="studentsTable">
           <thead>
             <tr>
-              <th>Serial No.</th>
-              <th>Student Name</th>
-              <th>RollNumber</th>
-              <th>Test Type</th>
-              <th>Subject Type</th>
-              <th>Father Name</th>
-              <th>Batch code</th>
+              <th scope="col" id="one">Serial No.</th>
+              <th scope="col" id="one">Student Name</th>
+              <th scope="col" id="one">RollNumber</th>
+              <th scope="col" id="one">Test Type</th>
+              <th scope="col" id="one">Subject Type</th>
+              <th scope="col" id="one">Father Name</th>
+              <th scope="col" id="one">Batch code</th>
             </tr>
           </thead>
           <tbody id="tableBody">
@@ -334,7 +384,7 @@
             <ul class="pagination" id="pagination"></ul>
           </nav>
         </div>
-      </div>
+ </div>
     </div>
   </div>
 
@@ -343,109 +393,264 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header" style="background-color: #ff6607ff; color: white;">
-          <h5 class="modal-title"><i class="fas fa-lock me-2"></i>Lock Result</h5>
+          <h5 class="modal-title">Lock Result</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <p>Are you sure you want to lock the results for this test?</p>
-          <p class="text-muted">Once locked, results cannot be modified.</p>
+          <div class="text-center mb-3">
+            <i class="fas fa-exclamation-triangle text-warning" style="font-size: 4rem;"></i>
+          </div>
+          <h5 class="text-center mb-3">Are you sure you want to lock the result?</h5>
+          <p class="text-muted text-center">
+            Once locked, you will <strong>NOT</strong> be able to upload or modify results anymore.
+          </p>
+          
+          @if(!$testSeries->result_uploaded)
+            <div class="alert alert-danger">
+              <i class="fas fa-info-circle me-2"></i>Please upload result before locking!
+            </div>
+          @else
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i>
+              Last uploaded: {{ $testSeries->result_uploaded_at ? $testSeries->result_uploaded_at->format('d M Y, h:i A') : 'N/A' }}
+              <br>Uploaded by: {{ $testSeries->result_uploaded_by ?? 'N/A' }}
+            </div>
+          @endif
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-warning">Lock Results</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Cancel
+          </button>
+          <form method="POST" action="{{ route('test_series.lock_result', $testSeries->_id) }}" style="display: inline;">
+            @csrf
+            <button type="submit" 
+                    class="btn btn-warning" 
+                    {{ !$testSeries->result_uploaded ? 'disabled' : '' }}
+                    style="background-color: #ff6607ff; border-color: #ff6607ff; color: white;">
+              Yes, Lock Result
+            </button>
+          </form>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Upload Syllabus Modal -->
-  <div class="modal fade" id="uploadSyllabusModal" tabindex="-1">
-    <div class="modal-dialog">
-      <form method="POST" enctype="multipart/form-data" class="modal-content">
-        @csrf
-        <div class="modal-header" style="background-color: #ff6607ff; color: white;">
-          <h5 class="modal-title"><i class="fas fa-upload me-2"></i>Upload Syllabus</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<!-- Upload Syllabus Modal -->
+<div class="modal fade" id="uploadSyllabusModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="syllabusUploadForm" action="{{ route('test_series.upload_syllabus', $testSeries->_id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header" style="background-color: #ff6607ff; color: white;">
+                    <h5 class="modal-title">
+                        <i class="fas fa-upload"></i> Upload
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-file-upload" style="font-size: 4rem; color: #ff6607ff;"></i>
+                    </div>
+                    <h5 class="mb-4">Upload Syallbus File</h5>
+                    
+                    <!-- Hidden file input -->
+                    <input type="file" 
+                           id="syllabusFileInput" 
+                           name="syllabus_file" 
+                           accept=".pdf,.doc,.docx,.txt" 
+                           style="display: none;"
+                           required>
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" 
+                                class="btn btn-secondary" 
+                                style="min-width: 100px;"
+                                data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>No
+                        </button>
+                        <button type="button" 
+                                class="btn btn-success" 
+                                id="selectFileBtn"
+                                style="background-color: #ff6607ff; border-color: #ff6607ff; min-width: 100px;">
+                            <i class="fas fa-check me-2"></i>Yes
+                        </button>
+                    </div>
+                    
+                    <div id="selectedFileName" class="mt-3 text-success" style="display: none;">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <small>Selected: <strong><span id="fileName"></span></strong></small>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Select Syllabus File</label>
-            <input type="file" name="syllabus" class="form-control" accept=".pdf,.doc,.docx" required>
-            <small class="text-muted">Accepted formats: PDF, DOC, DOCX</small>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Upload</button>
-        </div>
-      </form>
     </div>
-  </div>
+</div>
+
+
 
   <!-- Upload Result Modal -->
   <div class="modal fade" id="uploadResultModal" tabindex="-1">
-    <div class="modal-dialog">
-      <form method="POST" enctype="multipart/form-data" class="modal-content">
+    <div class="modal-dialog modal-lg">
+      <form method="POST" 
+            action="{{ route('test_series.upload_result', $testSeries->_id) }}" 
+            enctype="multipart/form-data" 
+            class="modal-content">
         @csrf
         <div class="modal-header" style="background-color: #ff6607ff; color: white;">
-          <h5 class="modal-title"><i class="fas fa-upload me-2"></i>Upload Result</h5>
+          <h5 class="modal-title">
+            <i class="fas fa-upload me-2"></i>Upload Result
+          </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
+          <div class="alert alert-info mb-3">
+            <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Test Series Information</h6>
+            <div class="row">
+              <div class="col-md-6">
+                <strong>Test Name:</strong> {{ $testSeries->test_name }}
+              </div>
+              <div class="col-md-6">
+                <strong>Subjects:</strong> {{ implode(', ', $testSeries->subjects ?? []) }}
+              </div>
+            </div>
+          </div>
+
           <div class="mb-3">
-            <label class="form-label">Select Result File</label>
-            <input type="file" name="result" class="form-control" accept=".xlsx,.xls,.csv" required>
-            <small class="text-muted">Accepted formats: Excel, CSV</small>
+            <a href="{{ route('test_series.generate_template', $testSeries->_id) }}" 
+               class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-download me-2"></i>Download Result Template
+            </a>
+            <small class="text-muted d-block mt-2">
+              Download the template with student details pre-filled. Just add marks!
+            </small>
           </div>
-          <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            <small>Format: Roll Number, Student Name, Marks</small>
-          </div>
+
+
+          @if($testSeries->result_uploaded)
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle me-2"></i>
+              <strong>Result already uploaded!</strong><br>
+              Uploading again will replace the previous result.<br>
+              <small>Last uploaded: {{ $testSeries->result_uploaded_at->format('d M Y, h:i A') }}</small>
+            </div>
+          @endif
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-success">Upload</button>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Cancel
+          </button>
+          <button type="submit" class="btn btn-success" style="background-color: #ff6607ff; border-color: #ff6607ff;">
+            <i class="fas fa-upload me-2"></i>Upload Result
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Add Test Modal -->
-  <div class="modal fade" id="addTestModal" tabindex="-1">
-    <div class="modal-dialog">
-      <form method="POST" class="modal-content">
-        @csrf
-        <div class="modal-header" style="background-color: #ff6607ff; color: white;">
-          <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Add New Test</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<!-- Add Test Modal -->
+<div class="modal fade" id="addTestModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <form method="POST" action="{{ route('test_series.store_multiple_tests', $testSeries->_id) }}" class="modal-content">
+      @csrf
+      <div class="modal-header" style="background-color: #ff6607ff; color: white;">
+        <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i>Add Test dates</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+        <div class="alert alert-info mb-3">
+          <i class="fas fa-info-circle me-2"></i>
+          Select test dates for the batches you want to schedule tests for. Leave dates empty for batches you don't want to schedule.
         </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Test Number</label>
-            <input type="number" name="test_number" class="form-control" min="1" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Scheduled Date</label>
-            <input type="date" name="scheduled_date" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Duration (minutes)</label>
-            <input type="number" name="duration" class="form-control" min="30">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn" style="background-color: #ff6607ff; color: white;">Add Test</button>
-        </div>
-      </form>
-    </div>
+
+        <table class="table table-bordered table-hover">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 40%;">Batch Code</th>
+              <th style="width: 60%;">Select Test Date</th>
+            </tr>
+          </thead>
+          <tbody id="batchTestDatesBody">
+            <tr>
+              <td colspan="2" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Loading batches...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-2"></i>Cancel
+        </button>
+        <button type="button" class="btn btn-primary" id="nextBtn" style="background-color: #ff6607ff; border: none;" disabled>
+          <i class="fas fa-arrow-right me-2"></i>Next
+        </button>
+      </div>
+    </form>
   </div>
+</div>
+
+<!-- Test Details Modal - Step 2 -->
+<div class="modal fade" id="testDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <form method="POST" action="{{ route('test_series.store_multiple_tests', $testSeries->_id) }}" class="modal-content" id="testDetailsForm">
+      @csrf
+      <input type="hidden" name="test_dates_data" id="testDatesDataInput">
+      
+      <div class="modal-header" style="background-color: #ff6607ff; color: white;">
+        <h5 class="modal-title"><i class="fas fa-clipboard-list me-2"></i>Test Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Test Number <span class="text-danger">*</span></label>
+          <input type="number" name="test_number" class="form-control" min="1" required>
+          <small class="text-muted">This will be the starting test number. Subsequent tests will be numbered automatically.</small>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Scheduled Time</label>
+          <input type="time" name="scheduled_time" class="form-control" value="14:00">
+          <small class="text-muted">Default: 2:00 PM (applies to all tests)</small>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Duration (minutes)</label>
+          <input type="number" name="duration_minutes" class="form-control" min="30" value="180">
+          <small class="text-muted">Default: 180 minutes (3 hours, applies to all tests)</small>
+        </div>
+
+        <div class="alert alert-success">
+          <i class="fas fa-check-circle me-2"></i>
+          <strong>Ready to create <span id="testCount">0</span> tests</strong>
+          <div id="batchesList" class="mt-2"></div>
+        </div>
+      </div>
+      
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" id="backBtn">
+          <i class="fas fa-arrow-left me-2"></i>Back
+        </button>
+        <button type="submit" class="btn btn-success" style="background-color: #ff6607ff; border: none;">
+          <i class="fas fa-save me-2"></i>Create Tests
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset(path: 'js/emp.js') }}"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Sidebar toggle
       const toggleBtn = document.getElementById('toggleBtn');
       const sidebar = document.getElementById('sidebar');
       const right = document.getElementById('right');
@@ -459,7 +664,6 @@
         });
       }
 
-      // Auto-hide flash messages
       setTimeout(() => {
         document.querySelectorAll('.alert').forEach(alert => {
           alert.classList.remove('show');
@@ -467,7 +671,6 @@
         });
       }, 5000);
 
-      // Table pagination
       let currentPage = 1;
       let entriesPerPage = 10;
       let allRows = [];
@@ -490,18 +693,25 @@
         });
       });
 
-      // Search functionality
       const searchInput = document.getElementById('searchInput');
       if (searchInput) {
         searchInput.addEventListener('input', function() {
           const searchTerm = this.value.toLowerCase().trim();
-          filteredRows = searchTerm === ''
-            ? [...allRows]
-            : allRows.filter(row => row.textContent.toLowerCase().includes(searchTerm));
+          filteredRows = searchTerm === '' ? [...allRows] : allRows.filter(row => row.textContent.toLowerCase().includes(searchTerm));
           currentPage = 1;
           updateTable();
         });
       }
+function handleSyllabusFileSelect(input) {
+    if (input.files && input.files[0]) {
+        const fileName = input.files[0].name;
+        document.getElementById('fileName').textContent = fileName;
+        document.getElementById('selectedFileName').style.display = 'block';
+        
+        // Auto-submit the form after file selection
+        input.form.submit();
+    }
+}
 
       function updateTable() {
         const start = (currentPage - 1) * entriesPerPage;
@@ -535,20 +745,20 @@
         if (totalPages === 0) return;
 
         const prevLi = document.createElement('li');
-        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-        prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
+        prevLi.className = page-item ${currentPage === 1 ? 'disabled' : ''};
+        prevLi.innerHTML = <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>;
         pagination.appendChild(prevLi);
 
         for (let i = 1; i <= Math.min(totalPages, 5); i++) {
           const li = document.createElement('li');
-          li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-          li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
+          li.className = page-item ${i === currentPage ? 'active' : ''};
+          li.innerHTML = <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>;
           pagination.appendChild(li);
         }
 
         const nextLi = document.createElement('li');
-        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-        nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
+        nextLi.className = page-item ${currentPage === totalPages ? 'disabled' : ''};
+        nextLi.innerHTML = <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>;
         pagination.appendChild(nextLi);
       }
 
@@ -561,6 +771,171 @@
         }
       };
     });
-  </script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const selectFileBtn = document.getElementById('selectFileBtn');
+    const fileInput = document.getElementById('syllabusFileInput');
+    const form = document.getElementById('syllabusUploadForm');
+    
+    if (selectFileBtn && fileInput) {
+        // When "Yes" button is clicked, trigger file input
+        selectFileBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        // When file is selected, show filename and auto-submit
+        fileInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                document.getElementById('fileName').textContent = fileName;
+                document.getElementById('selectedFileName').style.display = 'block';
+                
+                // Change button text to indicate upload in progress
+                selectFileBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+                selectFileBtn.disabled = true;
+                
+                // Auto-submit the form
+                setTimeout(function() {
+                    form.submit();
+                }, 500);
+            }
+        });
+    }
+});
+// Load batches when Add Test modal opens
+const addTestModal = document.getElementById('addTestModal');
+const testDetailsModal = new bootstrap.Modal(document.getElementById('testDetailsModal'));
+
+let selectedTestDates = [];
+
+if (addTestModal) {
+  addTestModal.addEventListener('show.bs.modal', function() {
+    const batchesBody = document.getElementById('batchTestDatesBody');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // Show loading state
+    batchesBody.innerHTML = `
+      <tr>
+        <td colspan="2" class="text-center">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-2 text-muted">Loading batches...</p>
+        </td>
+      </tr>
+    `;
+    nextBtn.disabled = true;
+    
+    const courseId = '{{ $testSeries->course_id }}';
+    const baseUrl = '{{ url("/test-series/course") }}';
+    const fetchUrl = ${baseUrl}/${courseId}/batches;
+    
+    fetch(fetchUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.batches && data.batches.length > 0) {
+        let html = '';
+        data.batches.forEach((batch, index) => {
+          html += `
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-users text-primary me-2"></i>
+                  <strong>${batch}</strong>
+                </div>
+              </td>
+              <td>
+                <input type="date" 
+                       class="form-control test-date-input" 
+                       data-batch="${batch}"
+                       min="${new Date().toISOString().split('T')[0]}"
+                       placeholder="dd-mm-yyyy">
+              </td>
+            </tr>
+          `;
+        });
+        batchesBody.innerHTML = html;
+        
+        // Add event listeners to date inputs
+        document.querySelectorAll('.test-date-input').forEach(input => {
+          input.addEventListener('change', validateDates);
+        });
+        
+      } else {
+        batchesBody.innerHTML = `
+          <tr>
+            <td colspan="2" class="text-center text-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              No batches available for this course
+            </td>
+          </tr>
+        `;
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      batchesBody.innerHTML = `
+        <tr>
+          <td colspan="2" class="text-center text-danger">
+            <i class="fas fa-times-circle me-2"></i>
+            Error loading batches. Please try again.
+          </td>
+        </tr>
+      `;
+    });
+  });
+
+  // Validate dates and enable Next button
+  function validateDates() {
+    selectedTestDates = [];
+    const nextBtn = document.getElementById('nextBtn');
+    
+    document.querySelectorAll('.test-date-input').forEach(input => {
+      if (input.value) {
+        selectedTestDates.push({
+          batch_code: input.dataset.batch,
+          test_date: input.value
+        });
+      }
+    });
+    
+    nextBtn.disabled = selectedTestDates.length === 0;
+  }
+
+  // Next button click - Show test details modal
+  document.getElementById('nextBtn')?.addEventListener('click', function() {
+    // Close first modal
+    const firstModal = bootstrap.Modal.getInstance(addTestModal);
+    firstModal.hide();
+    
+    // Update summary
+    document.getElementById('testCount').textContent = selectedTestDates.length;
+    
+    let batchesList = '<ul class="mb-0">';
+    selectedTestDates.forEach(item => {
+      batchesList += <li><strong>${item.batch_code}</strong> - ${new Date(item.test_date).toLocaleDateString('en-GB')}</li>;
+    });
+    batchesList += '</ul>';
+    document.getElementById('batchesList').innerHTML = batchesList;
+    
+    // Store data
+    document.getElementById('testDatesDataInput').value = JSON.stringify(selectedTestDates);
+    
+    // Show second modal
+    testDetailsModal.show();
+  });
+
+  // Back button click
+  document.getElementById('backBtn')?.addEventListener('click', function() {
+    testDetailsModal.hide();
+    const firstModal = new bootstrap.Modal(addTestModal);
+    firstModal.show();
+  });
+}
+ </script>
 </body>
 </html>

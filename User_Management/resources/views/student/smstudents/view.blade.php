@@ -908,7 +908,59 @@
   color: #0056b3;
   text-decoration: underline;
 }
+/* Calendar Styles */
+#calendarTable td {
+  padding: 8px 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
 
+#calendarTable td.empty {
+  cursor: default;
+  background: transparent !important;
+}
+
+#calendarTable td.present {
+  background-color: #d4edda;
+  color: #155724;
+  font-weight: 600;
+}
+
+#calendarTable td.absent {
+  background-color: #f8d7da;
+  color: #721c24;
+  font-weight: 600;
+}
+
+#calendarTable td.weekend {
+  background-color: #f8f9fa;
+  color: #999;
+}
+
+#calendarTable td.not-marked {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+#calendarTable td.today {
+  border: 2px solid #e05301;
+  font-weight: 700;
+}
+
+#calendarTable td:hover:not(.empty) {
+  opacity: 0.8;
+  transform: scale(1.05);
+  transition: all 0.2s;
+}
+
+/* Loading Spinner */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+}
 .doc-actions {
   display: flex;
   gap: 8px;
@@ -1007,182 +1059,186 @@
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-          <div class="accordion accordion-flush" id="accordionFlushExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
-            </button>
-          </h2>
-          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-           <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-           <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i> Master
-            </button>
-          </h2>
-          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-                <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-                <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-            </button>
-          </h2>
-          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-                <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-              id="accordion-button">
-              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-            </button>
-          </h2>
-          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li>><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-                <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-                <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-              id="accordion-button">
-              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-            </button>
-          </h2>
-          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-              id="accordion-button">
-              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
-            </button>
-          </h2>
-          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="{{ route(name: 'attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
-
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Employee</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-              id="accordion-button">
-              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-            </button>
-          </h2>
-          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-              id="accordion-button">
-              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-            </button>
-          </h2>
-          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li>
-    <a href="{{ route('test_series.index') }}">
-        <i class="icon-class"></i> 
-        <span>Test Master</span>
-    </a>
-</li>              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-              id="accordion-button">
-              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
-            </button>
-          </h2>
-          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-              <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+         <div class="accordion accordion-flush" id="accordionFlushExample">
+  <!-- User Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+        </ul>
       </div>
+    </div>
+  </div>
+
+  <!-- Master -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+        id="accordion-button">
+        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+      </button>
+    </h2>
+    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fees Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+        id="accordion-button">
+        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+      </button>
+    </h2>
+    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+        id="accordion-button">
+        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+      </button>
+    </h2>
+    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Material -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+        id="accordion-button">
+        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+      </button>
+    </h2>
+    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Series Management -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+        id="accordion-button">
+        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+      </button>
+    </h2>
+    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+        id="accordion-button">
+        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+      </button>
+    </h2>
+    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <ul class="menu" id="dropdown-body">
+          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <div class="right" id="right">
@@ -1651,116 +1707,96 @@
 
 </div>
 
-        <!-- TAB 2: Student Attendance -->
-        <div class="tab-content-section" id="student-attendance">
-          <div class="attendance-grid">
-            <!-- Calendar Widget -->
-            <div class="attendance-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">OCT 2025</h6>
-              <div class="calendar-widget">
-                <table class="table table-sm text-center">
-                  <thead>
-                    <tr>
-                      <th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td><td></td><td></td><td>1</td><td>2</td><td>3</td><td>4</td>
-                    </tr>
-                    <tr>
-                      <td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td>
-                    </tr>
-                    <tr>
-                      <td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td>
-                    </tr>
-                    <tr>
-                      <td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td>
-                    </tr>
-                    <tr>
-                      <td>26</td><td style="background-color: #e05301; color: white; border-radius: 50%;">27</td><td>28</td><td>29</td><td>30</td><td>31</td><td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+       <!-- TAB 2: Student Attendance -->
+<div class="tab-content-section" id="student-attendance">
+  <!-- Month Selector -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 style="color: #e05301; margin: 0;">
+      <i class="fas fa-calendar-alt"></i> <span id="currentMonthLabel">Loading...</span>
+    </h5>
+    <input type="month" id="monthSelector" class="form-control" style="width: 200px;" value="{{ date('Y-m') }}">
+  </div>
 
-            <!-- Attendance Status Circle -->
-            <div class="attendance-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">Attendance Status</h6>
-              <div class="attendance-status-circle">
-                <canvas id="attendanceChart"></canvas>
-              </div>
-              <p class="text-center mt-3" style="color: #e05301;">Total Presence - 0/167</p>
-            </div>
+  <div class="attendance-grid">
+    <!-- Calendar Widget -->
+    <div class="attendance-card">
+      <h6 style="color: #e05301; margin-bottom: 15px;">
+        <i class="fas fa-calendar"></i> <span id="calendarMonthLabel">{{ strtoupper(date('M Y')) }}</span>
+      </h6>
+      <div class="calendar-widget">
+        <table class="table table-sm text-center" id="calendarTable">
+          <thead>
+            <tr>
+              <th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th>
+            </tr>
+          </thead>
+          <tbody id="calendarBody">
+            <tr>
+              <td colspan="7" class="text-center text-muted py-3">
+                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                <span class="ms-2">Loading calendar...</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-            <!-- Avg Attendance Rate Chart -->
-            <div class="attendance-card">
-              <h6 style="color: #e05301; margin-bottom: 15px;">Avg. Attendance Rate</h6>
-              <select class="form-select form-select-sm mb-3" style="width: 120px;">
-                <option>May-Oct</option>
-              </select>
-              <div class="chart-container">
-                <canvas id="attendanceRateChart"></canvas>
-              </div>
-            </div>
-          </div>
+    <!-- Attendance Status Circle -->
+    <div class="attendance-card">
+      <h6 style="color: #e05301; margin-bottom: 15px;">
+        <i class="fas fa-chart-pie"></i> Attendance Status
+      </h6>
+      <div class="attendance-status-circle">
+        <canvas id="attendanceChart"></canvas>
+      </div>
+      <p class="text-center mt-3" style="color: #e05301; font-weight: 600;">
+        Total Presence - <span id="attendanceRatio">0/0</span>
+      </p>
+    </div>
 
-          <!-- Attendance Table -->
-          <div class="detail-section">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <label>Show</label>
-                <select class="form-select form-select-sm d-inline-block mx-2" style="width: 80px;">
-                  <option>10</option>
-                  <option>25</option>
-                  <option>50</option>
-                </select>
-                <span>entries</span>
-              </div>
-              <div>
-                <label>Search:</label>
-                <input type="search" class="form-control form-control-sm d-inline-block ms-2" style="width: 200px;">
-              </div>
-            </div>
+    <!-- Avg Attendance Rate Chart -->
+    <div class="attendance-card">
+      <h6 style="color: #e05301; margin-bottom: 15px;">
+        <i class="fas fa-chart-line"></i> Attendance Rate
+      </h6>
+      <div class="chart-container">
+        <canvas id="attendanceRateChart"></canvas>
+      </div>
+    </div>
+  </div>
 
-            <table class="table table-bordered">
-              <thead>
-                <tr style="background-color: #f8f9fa;">
-                  <th>Serial No.</th>
-                  <th>Month</th>
-                  <th>Total Days</th>
-                  <th>Total Attendance</th>
-                  <th>Total Absent</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>1</td><td>May</td><td>18</td><td>0</td><td>0</td></tr>
-                <tr><td>2</td><td>June</td><td>30</td><td>0</td><td>0</td></tr>
-                <tr><td>3</td><td>July</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>4</td><td>August</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>5</td><td>September</td><td>30</td><td>0</td><td>0</td></tr>
-                <tr><td>6</td><td>October</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>7</td><td>November</td><td>30</td><td>0</td><td>0</td></tr>
-                <tr><td>8</td><td>December</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>9</td><td>January</td><td>31</td><td>0</td><td>0</td></tr>
-                <tr><td>10</td><td>February</td><td>28</td><td>0</td><td>0</td></tr>
-              </tbody>
-            </table>
+  <!-- Attendance Table -->
+  <div class="detail-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 style="color: #e05301; margin: 0;">
+        <i class="fas fa-table"></i> Monthly Attendance Summary
+      </h6>
+    </div>
 
-            <div class="d-flex justify-content-between align-items-center">
-              <span>Showing 1 to 10 of 12 entries</span>
-              <nav>
-                <ul class="pagination pagination-sm mb-0">
-                  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead style="background-color: #f8f9fa;">
+          <tr>
+            <th>Serial No.</th>
+            <th>Month</th>
+            <th>Total Days</th>
+            <th>Total Attendance</th>
+            <th>Total Absent</th>
+          </tr>
+        </thead>
+        <tbody id="monthlyTableBody">
+          <tr>
+            <td colspan="5" class="text-center text-muted py-4">
+              <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+              <span class="ms-2">Loading monthly data...</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 <!-- TAB 3: Fees Management -->
 <div class="tab-content-section" id="fees-management">
@@ -2658,214 +2694,107 @@
 
     </div>
   </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/smstudents.js') }}"></script>
-  <script>
-    // Tab switching functionality
-    document.querySelectorAll('.tab-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        // Remove active class from all tab buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        
-        // Add active class to clicked button
-        this.classList.add('active');
-        
-        // Hide all tab contents
-        document.querySelectorAll('.tab-content-section').forEach(content => {
-          content.classList.remove('active');
-        });
-        
-        // Show selected tab content
-        const tabId = this.getAttribute('data-tab');
-        document.getElementById(tabId).classList.add('active');
+<script>
+
+  // ========== TAB SWITCHING FUNCTIONALITY ==========
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🎯 Initializing tab switching');
+  
+  // Tab switching for main navigation (Student Detail, Attendance, Fees, Test Series)
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content-section');
+  
+  console.log('Found tab buttons:', tabButtons.length);
+  console.log('Found tab contents:', tabContents.length);
+  
+  tabButtons.forEach((button, index) => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('🔘 Tab button clicked:', this.getAttribute('data-tab'));
+      
+      // Remove active class from all buttons
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Add active class to clicked button
+      this.classList.add('active');
+      
+      // Hide all tab contents
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none';
       });
-    });
-
-    // Fees tab switching
-    document.querySelectorAll('.fees-tab-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        document.querySelectorAll('.fees-tab-btn').forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-
-    // Test type button switching
-    document.querySelectorAll('.test-type-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        const parent = this.parentElement;
-        parent.querySelectorAll('.test-type-btn').forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-
-    // Initialize Charts
-    window.addEventListener('load', function() {
-      // Attendance Donut Chart
-      const attendanceCtx = document.getElementById('attendanceChart');
-      if (attendanceCtx) {
-        new Chart(attendanceCtx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Present', 'Absent'],
-            datasets: [{
-              data: [0, 167],
-              backgroundColor: ['#28a745', '#dc3545']
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-              legend: { display: false }
-            }
-          }
-        });
+      
+      // Show selected tab content
+      const tabId = this.getAttribute('data-tab');
+      const targetTab = document.getElementById(tabId);
+      
+      if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.display = 'block';
+        console.log('✅ Showing tab:', tabId);
+      } else {
+        console.error('❌ Tab content not found:', tabId);
       }
-
-      // Attendance Rate Line Chart
-      const rateCtx = document.getElementById('attendanceRateChart');
-      if (rateCtx) {
-        new Chart(rateCtx, {
-          type: 'line',
-          data: {
-            labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-            datasets: [{
-              label: 'Percentage',
-              data: [0, 0, 0, 0, 0, 0],
-              borderColor: '#e05301',
-              backgroundColor: 'rgba(224, 83, 1, 0.1)',
-              tension: 0.4
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true, max: 35 }
-            }
-          }
-        });
-      }
-
-      // Test Attendance Donut
-      const testAttCtx = document.getElementById('testAttendanceChart');
-      if (testAttCtx) {
-        new Chart(testAttCtx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Attended', 'Not Attended'],
-            datasets: [{
-              data: [0, 100],
-              backgroundColor: ['#28a745', '#dc3545']
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-              legend: { display: false }
-            }
-          }
-        });
-      }
-
-      // Overall Rank Chart
-      const rankCtx = document.getElementById('overallRankChart');
-      if (rankCtx) {
-        new Chart(rankCtx, {
-          type: 'bar',
-          data: {
-            labels: [],
-            datasets: [{
-              label: 'Rank',
-              data: [],
-              backgroundColor: '#e05301'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true }
-            }
-          }
-        });
-      }
-
-      // Overall Percentage Chart
-      const percentCtx = document.getElementById('overallPercentageChart');
-      if (percentCtx) {
-        new Chart(percentCtx, {
-          type: 'bar',
-          data: {
-            labels: [],
-            datasets: [{
-              label: 'Percentage',
-              data: [],
-              backgroundColor: '#e05301'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true, max: 100 }
-            }
-          }
-        });
-      }
-    });
-  </script>
-  <script>
-  // Fees tab switching with content display
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.fees-tab-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        // Remove active class from all buttons
-        document.querySelectorAll('.fees-tab-btn').forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-        
-        // Hide all fee contents
-        document.querySelectorAll('.fees-content').forEach(content => {
-          content.style.display = 'none';
-        });
-        
-        // Show selected content
-        const tab = this.getAttribute('data-fees-tab');
-        const contentId = tab + '-content';
-        const content = document.getElementById(contentId);
-        if (content) {
-          content.style.display = 'block';
-        }
-      });
     });
   });
-  // Test Series Tab JavaScript
+  
+  // Make sure first tab is shown by default
+  if (tabContents.length > 0) {
+    tabContents[0].style.display = 'block';
+  }
+});
+
+// ========== FEES TAB SWITCHING ==========
+document.addEventListener('DOMContentLoaded', function() {
+  const feesTabButtons = document.querySelectorAll('.fees-tab-btn');
+  
+  feesTabButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Remove active from all
+      feesTabButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+      
+      // Hide all fee contents
+      document.querySelectorAll('.fees-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      // Show selected content
+      const tab = this.getAttribute('data-fees-tab');
+      const contentId = tab + '-content';
+      const content = document.getElementById(contentId);
+      if (content) {
+        content.style.display = 'block';
+      }
+    });
+  });
+});
+
+// ========== TEST SERIES TAB SWITCHING ==========
 document.addEventListener('DOMContentLoaded', function() {
   // Test Type Switching (General/SPR)
-  const testTypeButtons = document.querySelector('.test-type-buttons');
-  if (testTypeButtons) {
-    testTypeButtons.addEventListener('click', function(e) {
-      const button = e.target.closest('.test-type-btn');
-      if (!button) return;
-      
+  const testTypeButtons = document.querySelectorAll('.test-type-btn');
+  testTypeButtons.forEach(button => {
+    button.addEventListener('click', function() {
       document.querySelectorAll('.test-type-btn').forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+      this.classList.add('active');
       
       document.querySelectorAll('.test-type-content').forEach(content => {
         content.style.display = 'none';
         content.classList.remove('active');
       });
       
-      const testType = button.getAttribute('data-test-type');
+      const testType = this.getAttribute('data-test-type');
       const targetContent = document.getElementById(testType + '-content');
       if (targetContent) {
         targetContent.style.display = 'block';
         targetContent.classList.add('active');
       }
     });
-  }
+  });
 
   // Type 1/Type 2 switching
   document.querySelectorAll('.pattern-btn[data-type]').forEach(button => {
@@ -2894,192 +2823,330 @@ document.addEventListener('DOMContentLoaded', function() {
       if (targetCard) targetCard.style.display = 'block';
     });
   });
-
-  // Initialize Test Series Charts
-  initializeTestSeriesCharts();
 });
 
-function initializeTestSeriesCharts() {
-  // Overall Rank Chart
-  const rankCtx = document.getElementById('overallRankChart');
-  if (rankCtx) {
-    new Chart(rankCtx, {
-      type: 'bar',
+document.addEventListener('DOMContentLoaded', function() {
+  let studentId = '{{ $student->_id }}';
+  let currentMonth = '{{ date("Y-m") }}';
+  
+  // Store chart instances globally to properly destroy them
+  let attendanceChartInstance = null;
+  let rateChartInstance = null;
+  
+  console.log('🚀 Initializing student attendance for ID:', studentId);
+  
+  // Load attendance data on page load
+  loadAttendanceData();
+  
+  // Month selector change handler
+  const monthSelector = document.getElementById('monthSelector');
+  if (monthSelector) {
+    monthSelector.addEventListener('change', function() {
+      currentMonth = this.value;
+      console.log('📅 Month changed to:', currentMonth);
+      loadAttendanceData();
+    });
+  }
+  
+  /**
+   * Load attendance data from server
+   */
+  function loadAttendanceData() {
+    console.log('📡 Fetching attendance data for month:', currentMonth);
+    
+    fetch(`/smstudents/${studentId}/attendance/data?month=${currentMonth}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('✅ Attendance data received:', data);
+        
+        if (data.success) {
+          updateMonthLabel(data.data.statistics.month);
+          renderCalendar(data.data.calendar);
+          updateAttendanceChart(data.data.statistics);
+          updateRateChart(data.data.chart);
+          updateMonthlyTable(data.data.monthly_summary);
+        } else {
+          console.error('❌ Failed to load attendance:', data.message);
+          showError('Failed to load attendance data');
+        }
+      })
+      .catch(error => {
+        console.error('❌ Error loading attendance:', error);
+        showError('Network error loading attendance data');
+      });
+  }
+  
+  /**
+   * Update month labels
+   */
+  function updateMonthLabel(monthName) {
+    const currentMonthLabel = document.getElementById('currentMonthLabel');
+    const calendarMonthLabel = document.getElementById('calendarMonthLabel');
+    
+    if (currentMonthLabel) currentMonthLabel.textContent = monthName;
+    if (calendarMonthLabel) calendarMonthLabel.textContent = monthName.toUpperCase();
+  }
+  
+  /**
+   * Render calendar with attendance data
+   */
+  function renderCalendar(calendarData) {
+    const tbody = document.getElementById('calendarBody');
+    if (!tbody) {
+      console.error('❌ Calendar body not found');
+      return;
+    }
+    
+    tbody.innerHTML = '';
+    
+    let currentRow = document.createElement('tr');
+    let cellCount = 0;
+    
+    // Add empty cells for days before month starts
+    const firstDayOfWeek = new Date(calendarData[0].date).getDay();
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      const emptyCell = document.createElement('td');
+      emptyCell.classList.add('empty');
+      emptyCell.innerHTML = '&nbsp;';
+      currentRow.appendChild(emptyCell);
+      cellCount++;
+    }
+    
+    // Add actual days
+    calendarData.forEach((dayData) => {
+      const cell = document.createElement('td');
+      cell.textContent = dayData.day;
+      cell.classList.add(dayData.status);
+      
+      if (dayData.is_today) {
+        cell.classList.add('today');
+      }
+      
+      // Add tooltip
+      let tooltipText = `${dayData.day_name}, ${dayData.date}\nStatus: ${dayData.status}`;
+      if (dayData.marked_by) {
+        tooltipText += `\nMarked by: ${dayData.marked_by}`;
+      }
+      cell.title = tooltipText;
+      
+      currentRow.appendChild(cell);
+      cellCount++;
+      
+      // Start new row after 7 cells (Saturday)
+      if (cellCount === 7) {
+        tbody.appendChild(currentRow);
+        currentRow = document.createElement('tr');
+        cellCount = 0;
+      }
+    });
+    
+    // Add remaining empty cells to complete the last row
+    while (cellCount > 0 && cellCount < 7) {
+      const emptyCell = document.createElement('td');
+      emptyCell.classList.add('empty');
+      emptyCell.innerHTML = '&nbsp;';
+      currentRow.appendChild(emptyCell);
+      cellCount++;
+    }
+    
+    // Append last row if it has any cells
+    if (currentRow.children.length > 0) {
+      tbody.appendChild(currentRow);
+    }
+    
+    console.log('✅ Calendar rendered successfully');
+  }
+  
+  /**
+   * Update attendance donut chart
+   */
+  function updateAttendanceChart(statistics) {
+    const canvas = document.getElementById('attendanceChart');
+    if (!canvas) {
+      console.error('❌ Attendance chart canvas not found');
+      return;
+    }
+    
+    // Destroy existing chart instance
+    if (attendanceChartInstance) {
+      attendanceChartInstance.destroy();
+      attendanceChartInstance = null;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    
+    attendanceChartInstance = new Chart(ctx, {
+      type: 'doughnut',
       data: {
-        labels: ['Overall Rank'],
+        labels: ['Present', 'Absent', 'Not Marked'],
         datasets: [{
-          label: 'Average Rank',
-          data: [0],
-          backgroundColor: '#e05301'
+          data: [statistics.present, statistics.absent, statistics.not_marked],
+          backgroundColor: ['#28a745', '#dc3545', '#ffc107'],
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = statistics.working_days;
+                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                return `${label}: ${value} (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    // Update ratio text
+    const ratioElement = document.getElementById('attendanceRatio');
+    if (ratioElement) {
+      ratioElement.textContent = `${statistics.present}/${statistics.working_days}`;
+    }
+    
+    console.log('✅ Attendance chart updated');
+  }
+  
+  /**
+   * Update attendance rate line chart
+   */
+  function updateRateChart(chartData) {
+    const canvas = document.getElementById('attendanceRateChart');
+    if (!canvas) {
+      console.error('❌ Rate chart canvas not found');
+      return;
+    }
+    
+    // Destroy existing chart instance
+    if (rateChartInstance) {
+      rateChartInstance.destroy();
+      rateChartInstance = null;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    
+    rateChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: chartData.labels,
+        datasets: [{
+          label: 'Attendance %',
+          data: chartData.data,
+          borderColor: '#e05301',
+          backgroundColor: 'rgba(224, 83, 1, 0.1)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: 4,
+          pointHoverRadius: 6
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: { beginAtZero: true, reverse: true }
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
         },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
-  // Overall Percentage Chart
-  const percentCtx = document.getElementById('overallPercentageChart');
-  if (percentCtx) {
-    new Chart(percentCtx, {
-      type: 'bar',
-      data: {
-        labels: ['Overall %'],
-        datasets: [{
-          label: 'Average Percentage',
-          data: [0],
-          backgroundColor: '#e05301'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: { y: { beginAtZero: true, max: 100 } },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
-  // Test Attendance Donut
-  const testAttCtx = document.getElementById('testAttendanceChart');
-  if (testAttCtx) {
-    new Chart(testAttCtx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Attended', 'Not Attended'],
-        datasets: [{
-          data: [0, 100],
-          backgroundColor: ['#28a745', '#dc3545']
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: { 
-          legend: { display: true, position: 'bottom' }
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.parsed.y.toFixed(1) + '%';
+              }
+            }
+          }
         }
       }
     });
-  }
-}
-
-</script>
-<script>
-/**
- * View Document in Modal (for Base64 documents)
- */
-function viewDocumentModal(base64Data, title) {
-  // Create modal
-  const modal = document.createElement('div');
-  modal.className = 'doc-preview-modal';
-  modal.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  `;
-  
-  // Close button
-  const closeBtn = document.createElement('button');
-  closeBtn.innerHTML = '<i class="fas fa-times"></i> Close';
-  closeBtn.style.cssText = `
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: white;
-    color: #333;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  `;
-  closeBtn.onclick = () => document.body.removeChild(modal);
-  
-  // Title
-  const titleEl = document.createElement('div');
-  titleEl.textContent = title;
-  titleEl.style.cssText = `
-    color: white;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
-  `;
-  
-  // Content
-  const content = document.createElement('div');
-  content.style.cssText = `
-    max-width: 90%;
-    max-height: 85vh;
-    background: white;
-    border-radius: 8px;
-    overflow: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  `;
-  
-  if (base64Data.includes('application/pdf')) {
-    // PDF
-    const iframe = document.createElement('iframe');
-    iframe.src = base64Data;
-    iframe.style.cssText = `
-      width: 80vw;
-      height: 80vh;
-      border: none;
-    `;
-    content.appendChild(iframe);
-  } else {
-    // Image
-    const img = document.createElement('img');
-    img.src = base64Data;
-    img.style.cssText = `
-      max-width: 100%;
-      max-height: 80vh;
-      display: block;
-    `;
-    content.appendChild(img);
+    
+    console.log('✅ Rate chart updated');
   }
   
-  modal.appendChild(closeBtn);
-  modal.appendChild(titleEl);
-  modal.appendChild(content);
-  document.body.appendChild(modal);
-  
-  // Close on background click
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      document.body.removeChild(modal);
+  /**
+   * Update monthly summary table
+   */
+  function updateMonthlyTable(monthlySummary) {
+    const tbody = document.getElementById('monthlyTableBody');
+    if (!tbody) {
+      console.error('❌ Monthly table body not found');
+      return;
     }
-  });
-  
-  // Close on ESC key
-  const escHandler = (e) => {
-    if (e.key === 'Escape') {
-      document.body.removeChild(modal);
-      document.removeEventListener('keydown', escHandler);
+    
+    tbody.innerHTML = '';
+    
+    if (monthlySummary.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">No data available</td></tr>';
+      return;
     }
-  };
-  document.addEventListener('keydown', escHandler);
-}
+    
+    monthlySummary.forEach((month, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td><strong>${month.month}</strong></td>
+        <td>${month.total_days}</td>
+        <td class="text-success fw-bold">${month.present}</td>
+        <td class="text-danger fw-bold">${month.absent}</td>
+      `;
+      tbody.appendChild(row);
+    });
+    
+    console.log('✅ Monthly table updated');
+  }
+  
+  /**
+   * Show error message
+   */
+  function showError(message) {
+    const calendarBody = document.getElementById('calendarBody');
+    if (calendarBody) {
+      calendarBody.innerHTML = `
+        <tr>
+          <td colspan="7" class="text-center text-danger py-3">
+            <i class="fas fa-exclamation-triangle"></i> ${message}
+          </td>
+        </tr>
+      `;
+    }
+    
+    const monthlyBody = document.getElementById('monthlyTableBody');
+    if (monthlyBody) {
+      monthlyBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center text-danger py-3">
+            <i class="fas fa-exclamation-triangle"></i> ${message}
+          </td>
+        </tr>
+      `;
+    }
+  }
+});
 </script>
 </body>
 </html>

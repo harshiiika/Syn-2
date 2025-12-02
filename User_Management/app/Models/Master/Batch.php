@@ -114,6 +114,4 @@ class Batch extends Model
         $this->attributes['delivery_mode'] = $value;
     }
 
-    // REMOVED THE PROBLEMATIC getCourseNameAttribute() METHOD
-    // REMOVED THE getCourseTypeAttribute() METHOD
 }

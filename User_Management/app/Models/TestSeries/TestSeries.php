@@ -25,29 +25,60 @@ class TestSeries extends Model
     protected $fillable = [
         'test_master_id',
         'course_id',
+        'course_name',
         'test_name',
-        'test_type',              // Type1 or Type2
-        'subject_type',           // Single or Double
-        'subjects',               // Array of subjects (Physics, Chemistry, Mathematics)
-        'test_count',             // No. of test counts
-        'test_series_name',       // Only for Type1
+        'test_type',
+        'subject_type',
+        'subjects',
+        'test_count',
+        'test_number',
+        'test_series_name',
         'status',
         'total_marks',
         'duration_minutes',
+        'subject_marks',
+        'students_enrolled',
+        'students_count',
+        
+        // Result fields
+        'result_uploaded',
+        'result_uploaded_at',
+        'result_uploaded_by',
+        'result_locked',
+        'result_locked_at',
+        'result_locked_by',
+        'total_students_appeared',
+        
         'created_by',
         'updated_by',
+
+        // Syllabus fields
+        'syllabus_file_path',
+        'syllabus_file_name',
+        'syllabus_uploaded_at',
+        'syllabus_uploaded_by',
     ];
 
     /**
      * The attributes that should be cast.
      */
     protected $casts = [
+        'syllabus' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'result_uploaded_at' => 'datetime',
+        'result_locked_at' => 'datetime',
         'subjects' => 'array',
+        'subject_marks' => 'array',
+        'students_enrolled' => 'array',
         'test_count' => 'integer',
+        'test_number' => 'integer',
         'total_marks' => 'integer',
         'duration_minutes' => 'integer',
+        'students_count' => 'integer',
+        'total_students_appeared' => 'integer',
+        'result_uploaded' => 'boolean',
+        'result_locked' => 'boolean',
     ];
 
     /**
@@ -66,6 +97,12 @@ class TestSeries extends Model
             if (!isset($model->status)) {
                 $model->status = 'Pending';
             }
+            if (!isset($model->result_uploaded)) {
+                $model->result_uploaded = false;
+            }
+            if (!isset($model->result_locked)) {
+                $model->result_locked = false;
+            }
             if (!isset($model->created_at)) {
                 $model->created_at = Carbon::now();
             }
@@ -76,74 +113,85 @@ class TestSeries extends Model
         });
     }
 
+    // ============================================
+    // RELATIONSHIPS
+    // ============================================
 
-    /**
-     * Get the course that owns the test series.
-     */
     public function course(): BelongsTo
     {
         return $this->belongsTo(Courses::class, 'course_id', '_id');
     }
 
+    public function results()
+    {
+        return $this->hasMany(TestResult::class, 'test_series_id', '_id');
+    }
+
     /**
-     * Scope a query to only include pending test series.
+     * ⭐ NEW: Relationship to individual tests
      */
+    public function tests()
+    {
+        return $this->hasMany(Test::class, 'test_series_id', '_id');
+    }
+
+    /**
+     * ⭐ NEW: Get only scheduled tests
+     */
+    public function scheduledTests()
+    {
+        return $this->hasMany(Test::class, 'test_series_id', '_id')
+                    ->where('status', 'Scheduled')
+                    ->orderBy('scheduled_date', 'asc');
+    }
+
+    // ============================================
+    // SCOPES
+    // ============================================
+
     public function scopePending($query)
     {
         return $query->where('status', 'Pending');
     }
 
-    /**
-     * Scope a query to only include active test series.
-     */
     public function scopeActive($query)
     {
         return $query->where('status', 'Active');
     }
 
-    /**
-     * Scope a query to only include completed test series.
-     */
     public function scopeCompleted($query)
     {
         return $query->where('status', 'Completed');
     }
 
-    /**
-     * Scope a query to filter by test type.
-     */
     public function scopeOfType($query, $type)
     {
         return $query->where('test_type', $type);
     }
 
-    /**
-     * Scope a query to filter by subject type.
-     */
     public function scopeBySubjectType($query, $subjectType)
     {
         return $query->where('subject_type', $subjectType);
     }
 
-    
-    /**
-     * Scope a query to filter by course.
-     */
     public function scopeForCourse($query, $courseId)
     {
         return $query->where('course_id', $courseId);
     }
 
-    /**
-     * Get formatted subjects list.
-     */
-    public function getFormattedSubjectsAttribute()
+    public function scopeResultUploaded($query)
     {
-        if (!$this->subjects || !is_array($this->subjects)) {
-            return 'N/A';
-        }
-        return implode(', ', $this->subjects);
+        return $query->where('result_uploaded', true);
     }
+
+    public function scopeResultLocked($query)
+    {
+        return $query->where('result_locked', true);
+    }
+
+    // ============================================
+    // GETTERS / ATTRIBUTES
+    // ============================================
 
     /**
      * Get formatted duration.
@@ -165,19 +213,6 @@ class TestSeries extends Model
     }
 
     /**
-     * Get status badge class.
-     */
-    public function getStatusBadgeClassAttribute()
-    {
-        return match($this->status) {
-            'Active' => 'bg-success',
-            'Completed' => 'bg-primary',
-            'Pending' => 'bg-warning',
-            default => 'bg-secondary',
-        };
-    }
-
-    /**
      * Get status icon.
      */
     public function getStatusIconAttribute()
@@ -190,76 +225,22 @@ class TestSeries extends Model
         };
     }
 
-    /**
-     * Check if test series is Type1.
-     */
-    public function isType1(): bool
+    public function getFormattedSubjectsAttribute()
     {
-        return $this->test_type === 'Type1';
+        if (!$this->subjects || !is_array($this->subjects)) {
+            return 'N/A';
+        }
+        return implode(', ', $this->subjects);
     }
 
-    /**
-     * Check if test series is Type2.
-     */
-    public function isType2(): bool
+    public function getStatusBadgeClassAttribute()
     {
-        return $this->test_type === 'Type2';
-    }
-
-    /**
-     * Check if test series is Single subject type.
-     */
-    public function isSingle(): bool
-    {
-        return $this->subject_type === 'Single';
-    }
-
-    /**
-     * Check if test series is Double subject type.
-     */
-    public function isDouble(): bool
-    {
-        return $this->subject_type === 'Double';
-    }
-
-    /**
-     * Check if test series is pending.
-     */
-    public function isPending(): bool
-    {
-        return $this->status === 'Pending';
-    }
-
-    /**
-     * Check if test series is active.
-     */
-    public function isActive(): bool
-    {
-        return $this->status === 'Active';
-    }
-
-    /**
-     * Check if test series is completed.
-     */
-    public function isCompleted(): bool
-    {
-        return $this->status === 'Completed';
-    }
-
-    /**
-     * Activate the test series.
-     */
-    public function activate()
-    {
-        $this->update(['status' => 'Active']);
-    }
-
-    /**
-     * Complete the test series.
-     */
-    public function complete()
-    {
-        $this->update(['status' => 'Completed']);
+        return match($this->status) {
+            'Active' => 'bg-success',
+            'Completed' => 'bg-primary',
+            'Pending' => 'bg-warning',
+            default => 'bg-secondary',
+        };
     }
 
     /**
@@ -279,6 +260,54 @@ class TestSeries extends Model
     }
 
     /**
+     * Get display name for the test series.
+     */
+    public function getDisplayNameAttribute()
+    {
+        if ($this->isType1() && $this->test_series_name) {
+            return $this->test_series_name;
+        }
+        return $this->test_name;
+    }
+
+    public function getFormattedPercentageAttribute()
+    {
+        return number_format($this->percentage ?? 0, 2) . '%';
+    }
+
+    public function getGradeAttribute()
+    {
+        $percentage = $this->percentage ?? 0;
+        if ($percentage >= 90) return 'A+';
+        if ($percentage >= 80) return 'A';
+        if ($percentage >= 70) return 'B+';
+        if ($percentage >= 60) return 'B';
+        if ($percentage >= 50) return 'C';
+        if ($percentage >= 40) return 'D';
+        return 'F';
+    }
+
+    // ============================================
+    // CHECKERS / BOOLEAN METHODS
+    // ============================================
+
+    /**
+     * Check if test series is Single subject type.
+     */
+    public function isSingle(): bool
+    {
+        return $this->subject_type === 'Single';
+    }
+
+    /**
+     * Check if test series is Double subject type.
+     */
+    public function isDouble(): bool
+    {
+        return $this->subject_type === 'Double';
+    }
+
+    /**
      * Check if subject is included in this test series.
      */
     public function hasSubject($subject): bool
@@ -289,14 +318,66 @@ class TestSeries extends Model
         return in_array($subject, $this->subjects);
     }
 
-    /**
-     * Get display name for the test series.
-     */
-    public function getDisplayNameAttribute()
+    public function isType1(): bool
     {
-        if ($this->isType1() && $this->test_series_name) {
-            return $this->test_series_name;
-        }
-        return $this->test_name;
+        return $this->test_type === 'Type1';
+    }
+
+    public function isType2(): bool
+    {
+        return $this->test_type === 'Type2';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'Pending';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'Active';
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status === 'Completed';
+    }
+
+    public function isResultUploaded(): bool
+    {
+        return $this->result_uploaded === true;
+    }
+
+    public function isResultLocked(): bool
+    {
+        return $this->result_locked === true;
+    }
+
+    // ============================================
+    // ACTIONS
+    // ============================================
+
+    public function activate()
+    {
+        $this->update(['status' => 'Active']);
+    }
+
+    public function complete()
+    {
+        $this->update(['status' => 'Completed']);
+    }
+
+    // ============================================
+    // ADDITIONAL SCOPES
+    // ============================================
+
+    public function scopeForTestSeries($query, $testSeriesId)
+    {
+        return $query->where('test_series_id', $testSeriesId);
+    }
+
+    public function scopeTopPerformers($query, $limit = 10)
+    {
+        return $query->orderBy('rank', 'asc')->limit($limit);
     }
 }
