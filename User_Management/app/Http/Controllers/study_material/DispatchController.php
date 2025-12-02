@@ -116,7 +116,7 @@ class DispatchController extends Controller
                 }
                 
                 if ($fatherName === '-') {
-                    Log::warning('⚠️ No father name found', [
+                    Log::warning('⚠ No father name found', [
                         'student_id' => $student->_id,
                         'available_fields' => array_keys($data)
                     ]);
