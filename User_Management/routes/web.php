@@ -27,7 +27,7 @@ use App\Http\Controllers\Attendance\StudentAController;
 use App\Http\Controllers\TestSeries\TestSeriesController;
 use App\Http\Controllers\study_material\Unitscontroller;
 use App\Http\Controllers\study_material\DispatchController;
-use App\Http\Controllers\Reports\AttendanceReportController;
+use App\Http\Controllers\Reports\InquiryHistoryController;
 
 
 
@@ -466,4 +466,22 @@ Route::prefix('fees-management')->group(function () {
     Route::post('process-refund', [FeesManagementController::class, 'processRefund']);
     Route::post('apply-scholarship', [FeesManagementController::class, 'applyScholarship']);
     Route::get('export-pending-fees', [FeesManagementController::class, 'exportPendingFees'])->name('fees.export');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Inquiry History Report Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('reports')->middleware(['auth'])->group(function () {
+    
+    // Inquiry History Routes
+    Route::prefix('inquiry-history')->name('reports.inquiry-history.')->group(function () {
+        Route::get('/', [InquiryHistoryController::class, 'index'])->name('index');
+        Route::get('/data', [InquiryHistoryController::class, 'getData'])->name('data');
+        Route::get('/view/{id}', [InquiryHistoryController::class, 'view'])->name('view');
+        Route::get('/export', [InquiryHistoryController::class, 'export'])->name('export');
+    });
+    
 });
