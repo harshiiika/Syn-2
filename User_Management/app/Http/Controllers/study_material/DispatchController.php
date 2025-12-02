@@ -5,337 +5,225 @@ namespace App\Http\Controllers\study_material;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\study_material\Dispatch;
-use App\Models\Student\Student;  // ✅ Correct path based on your structure
+use App\Models\Student\Student; // Attendance
+use App\Models\Student\SMstudents; // ← ACTUAL STUDENTS (note lowercase 's')
+use Illuminate\Support\Facades\Log;
 
 class DispatchController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         try {
-            // Get unique courses from students
-            $courses = Student::select('course_id', 'course_name')
-                ->distinct()
-                ->whereNotNull('course_id')
-                ->whereNotNull('course_name')
-                ->get()
-                ->map(function($student) {
-                    return [
-                        '_id' => $student->course_id,
-                        'name' => $student->course_name
-                    ];
-                })
-                ->unique('_id')
-                ->values();
-            
-            // Get recent dispatch records
-            $recentDispatches = Dispatch::orderBy('dispatched_at', 'desc')
-                ->take(20)
-                ->get();
-            
-            return view('study_material.Dispatch', compact('courses', 'recentDispatches'));
+            $recentDispatches = Dispatch::orderBy('dispatched_at', 'desc')->take(20)->get();
+            return view('study_material.Dispatch', compact('recentDispatches'));
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading page: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        try {
-            $dispatch = Dispatch::findOrFail($id);
-            $dispatch->delete();
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Dispatch record deleted successfully!'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error deleting record: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Get batches based on selected course
-     */
     public function getBatches(Request $request)
     {
         try {
-            $courseId = $request->input('course_id');
+            $courseName = $request->input('course_name');
             
-            if (!$courseId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Course ID is required'
-                ], 400);
+            if (!$courseName || trim($courseName) === '') {
+                return response()->json(['success' => false, 'message' => 'Course required', 'batches' => []], 400);
             }
             
-            // Get unique batches from students for the selected course
-            $batches = Student::select('batch_id', 'batch_name')
-                ->where('course_id', $courseId)
-                ->whereNotNull('batch_id')
+            // ✅ USE SMSTUDENTS MODEL (actual students with father_name)
+            $students = SMstudents::where('course_name', $courseName)
                 ->whereNotNull('batch_name')
-                ->distinct()
-                ->get()
-                ->map(function($student) {
-                    return [
-                        '_id' => $student->batch_id,
-                        'name' => $student->batch_name
-                    ];
-                })
-                ->unique('_id')
-                ->values();
+                ->where('batch_name', '!=', '')
+                ->get();
             
-            return response()->json([
-                'success' => true,
-                'batches' => $batches
-            ]);
+            if ($students->count() === 0) {
+                return response()->json(['success' => true, 'batches' => []]);
+            }
+            
+            $batchNames = $students->pluck('batch_name')->filter()->unique()->values();
+            $batches = [];
+            foreach ($batchNames as $batchName) {
+                $batches[] = ['batch_name' => $batchName, 'name' => $batchName, 'id' => $batchName];
+            }
+            
+            return response()->json(['success' => true, 'batches' => $batches]);
+            
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error fetching batches: ' . $e->getMessage()
-            ], 500);
+            Log::error('getBatches error', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'batches' => []], 500);
         }
     }
 
-    /**
-     * Get students based on selected course and batch
-     */
     public function getStudents(Request $request)
     {
         try {
-            $courseId = $request->input('course_id');
-            $batchId = $request->input('batch_id');
+            $courseName = $request->input('course_name');
+            $batchName = $request->input('batch_name');
             
-            // Build query
-            $query = Student::query();
+            Log::info('=== GET STUDENTS ===', ['course' => $courseName, 'batch' => $batchName]);
             
-            if ($courseId) {
-                $query->where('course_id', $courseId);
+            // ✅ QUERY SMSTUDENTS - THE ACTUAL STUDENTS TABLE WITH FATHER_NAME
+            $query = SMstudents::query();
+            if ($courseName) $query->where('course_name', $courseName);
+            if ($batchName && $batchName !== 'all') $query->where('batch_name', $batchName);
+            
+            $students = $query->orderBy('roll_no', 'asc')->get();
+            
+            Log::info('Students found in SMstudents', ['count' => $students->count()]);
+            
+            if ($students->count() === 0) {
+                return response()->json(['success' => true, 'students' => []]);
             }
             
-            if ($batchId) {
-                $query->where('batch_id', $batchId);
-            }
+            // Log first student to see fields
+            $firstData = $students->first()->toArray();
+            Log::info('First student fields from SMstudents:', ['fields' => array_keys($firstData)]);
             
-            // Get students with required fields
-            $students = $query->orderBy('roll_no', 'asc')
-                ->get([
-                    '_id',
-                    'roll_no',
-                    'name',
-                    'father_name',
-                    'batch_id',
-                    'batch_name',
-                    'course_id',
-                    'course_name'
-                ]);
-            
-            // Check dispatch status for each student
-            $students->transform(function ($student) {
-                $student->is_dispatched = Dispatch::where('student_id', $student->_id)->exists();
-                return $student;
+            $transformedStudents = $students->map(function ($student) {
+                $data = $student->toArray();
+                $isDispatched = Dispatch::where('student_id', $student->_id)->exists();
+                
+                // ✅ EXTRACT FATHER NAME from SMstudents model
+                $fatherName = '-';
+                
+                // Search for father field
+                foreach ($data as $field => $value) {
+                    if (!is_string($value) && !is_numeric($value)) continue;
+                    if (empty($value) || $value === '-') continue;
+                    
+                    $lowerField = strtolower($field);
+                    if (strpos($lowerField, 'father') !== false || 
+                        strpos($lowerField, 'guardian') !== false || 
+                        strpos($lowerField, 'parent') !== false) {
+                        $fatherName = $value;
+                        Log::info("✅ FATHER NAME FOUND in field '{$field}': {$fatherName}");
+                        break;
+                    }
+                }
+                
+                // Fallback to common field names
+                if ($fatherName === '-') {
+                    $fatherName = $data['father_name'] 
+                        ?? $data['fatherName'] 
+                        ?? $data['fathers_name']
+                        ?? $data['guardian_name']
+                        ?? $data['parent_name']
+                        ?? '-';
+                        
+                    if ($fatherName !== '-') {
+                        Log::info("✅ FATHER NAME from fallback: {$fatherName}");
+                    }
+                }
+                
+                if ($fatherName === '-') {
+                    Log::warning('⚠️ No father name found', [
+                        'student_id' => $student->_id,
+                        'available_fields' => array_keys($data)
+                    ]);
+                }
+                
+                return [
+                    '_id' => $student->_id ?? '',
+                    'id' => $student->_id ?? '',
+                    'roll_no' => $data['roll_no'] ?? $data['rollNo'] ?? '-',
+                    'student_name' => $data['student_name'] ?? $data['name'] ?? $data['studentName'] ?? '-',
+                    'father_name' => $fatherName,
+                    'batch_name' => $data['batch_name'] ?? $data['batchName'] ?? '-',
+                    'is_dispatched' => $isDispatched
+                ];
             });
             
-            return response()->json([
-                'success' => true,
-                'students' => $students,
-                'total_count' => $students->count()
-            ]);
+            Log::info('✅ Students transformed', ['count' => $transformedStudents->count()]);
+            
+            return response()->json(['success' => true, 'students' => $transformedStudents]);
+            
         } catch (\Exception $e) {
+            Log::error('❌ getStudents ERROR', [
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => basename($e->getFile())
+            ]);
             return response()->json([
-                'success' => false,
-                'message' => 'Error fetching students: ' . $e->getMessage()
+                'success' => false, 
+                'message' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    /**
-     * Dispatch study material to selected students
-     */
     public function dispatchMaterial(Request $request)
     {
         try {
-            $request->validate([
-                'student_ids' => 'required|array',
-                'student_ids.*' => 'required|string',
-            ]);
-
+            $request->validate(['student_ids' => 'required|array']);
             $studentIds = $request->input('student_ids');
             $dispatchedCount = 0;
             $alreadyDispatchedCount = 0;
-            $errors = [];
 
             foreach ($studentIds as $studentId) {
-                // Check if already dispatched
-                $existingDispatch = Dispatch::where('student_id', $studentId)->first();
-                
-                if ($existingDispatch) {
+                if (Dispatch::where('student_id', $studentId)->exists()) {
                     $alreadyDispatchedCount++;
                     continue;
                 }
                 
-                $student = Student::find($studentId);
+                // ✅ USE SMSTUDENTS MODEL
+                $student = SMstudents::find($studentId);
                 
                 if ($student) {
+                    $data = $student->toArray();
+                    
+                    // Extract father name
+                    $fatherName = '-';
+                    foreach ($data as $field => $value) {
+                        $lower = strtolower($field);
+                        if ((strpos($lower, 'father') !== false || strpos($lower, 'guardian') !== false) && 
+                            !empty($value) && $value !== '-') {
+                            $fatherName = $value;
+                            break;
+                        }
+                    }
+                    if ($fatherName === '-') {
+                        $fatherName = $data['father_name'] ?? $data['fatherName'] ?? '-';
+                    }
+                    
                     Dispatch::create([
                         'student_id' => $studentId,
-                        'roll_no' => $student->roll_no,
-                        'student_name' => $student->name,
-                        'father_name' => $student->father_name,
-                        'batch_id' => $student->batch_id,
-                        'batch_name' => $student->batch_name ?? 'N/A',
-                        'course_id' => $student->course_id,
-                        'course_name' => $student->course_name ?? 'N/A',
+                        'roll_no' => $data['roll_no'] ?? 'N/A',
+                        'student_name' => $data['student_name'] ?? $data['name'] ?? 'N/A',
+                        'father_name' => $fatherName,
+                        'batch_id' => $student->batch_id ?? '',
+                        'batch_name' => $data['batch_name'] ?? 'N/A',
+                        'course_id' => $student->course_id ?? '',
+                        'course_name' => $data['course_name'] ?? 'N/A',
                         'dispatched_at' => now(),
                         'dispatched_by' => auth()->user()->name ?? 'Admin',
                     ]);
                     
                     $dispatchedCount++;
-                } else {
-                    $errors[] = "Student with ID {$studentId} not found";
                 }
             }
 
-            $message = "Study material dispatched to {$dispatchedCount} student(s) successfully!";
-            
-            if ($alreadyDispatchedCount > 0) {
-                $message .= " {$alreadyDispatchedCount} student(s) were already dispatched.";
-            }
-            
-            if (count($errors) > 0) {
-                $message .= " Errors: " . implode(', ', $errors);
-            }
+            $message = "Dispatched to {$dispatchedCount} student(s)!";
+            if ($alreadyDispatchedCount > 0) $message .= " ({$alreadyDispatchedCount} already dispatched)";
 
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'dispatched_count' => $dispatchedCount,
-                'already_dispatched_count' => $alreadyDispatchedCount,
-                'error_count' => count($errors)
-            ]);
+            return response()->json(['success' => true, 'message' => $message]);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error dispatching material: ' . $e->getMessage()
-            ], 500);
+            Log::error('Dispatch error', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
 
-    /**
-     * Get dispatch history/records
-     */
-    public function getDispatchHistory(Request $request)
+    public function create() { }
+    public function store(Request $request) { }
+    public function show(string $id) { }
+    public function edit(string $id) { }
+    public function update(Request $request, string $id) { }
+    public function destroy(string $id)
     {
         try {
-            $query = Dispatch::query();
-            
-            // Apply filters if provided
-            if ($request->has('course_id') && $request->course_id) {
-                $query->where('course_id', $request->course_id);
-            }
-            
-            if ($request->has('batch_id') && $request->batch_id) {
-                $query->where('batch_id', $request->batch_id);
-            }
-            
-            if ($request->has('search') && $request->search) {
-                $searchTerm = $request->search;
-                $query->where(function($q) use ($searchTerm) {
-                    $q->where('student_name', 'like', "%{$searchTerm}%")
-                      ->orWhere('roll_no', 'like', "%{$searchTerm}%")
-                      ->orWhere('father_name', 'like', "%{$searchTerm}%");
-                });
-            }
-            
-            // Order by most recent first
-            $dispatches = $query->orderBy('dispatched_at', 'desc')
-                ->paginate(50);
-            
-            return response()->json([
-                'success' => true,
-                'dispatches' => $dispatches
-            ]);
+            Dispatch::findOrFail($id)->delete();
+            return response()->json(['success' => true, 'message' => 'Deleted!']);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error fetching dispatch history: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Bulk delete dispatch records
-     */
-    public function bulkDelete(Request $request)
-    {
-        try {
-            $request->validate([
-                'dispatch_ids' => 'required|array',
-                'dispatch_ids.*' => 'required|string',
-            ]);
-
-            $dispatchIds = $request->input('dispatch_ids');
-            $deletedCount = Dispatch::whereIn('_id', $dispatchIds)->delete();
-            
-            return response()->json([
-                'success' => true,
-                'message' => "{$deletedCount} dispatch record(s) deleted successfully!",
-                'deleted_count' => $deletedCount
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error deleting records: ' . $e->getMessage()
-            ], 500);
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
 }

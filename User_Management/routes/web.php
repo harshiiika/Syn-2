@@ -416,11 +416,15 @@ Route::prefix('study_material')->group(function () {
 | Study Material - Dispatch Routes
 |--------------------------------------------------------------------------
 */
-Route::prefix('study_material/dispatch')->group(function () {
-    Route::get('/', [DispatchController::class, 'index']);
-    Route::get('/get-batches', [DispatchController::class, 'getBatches']);
-    Route::get('/get-students', [DispatchController::class, 'getStudents']);
-    Route::post('/dispatch-material', [DispatchController::class, 'dispatchMaterial']);
+// Add this route group
+Route::prefix('study_material/dispatch')->name('dispatch.')->group(function () {
+    Route::get('/', [DispatchController::class, 'index'])->name('index');
+    Route::get('/get-batches', [DispatchController::class, 'getBatches'])->name('getBatches');
+    Route::get('/get-students', [DispatchController::class, 'getStudents'])->name('getStudents');
+    Route::post('/dispatch-material', [DispatchController::class, 'dispatchMaterial'])->name('dispatchMaterial');
+    Route::get('/dispatch-history', [DispatchController::class, 'getDispatchHistory'])->name('getDispatchHistory');
+    Route::post('/bulk-delete', [DispatchController::class, 'bulkDelete'])->name('bulkDelete');
+    Route::delete('/{id}', [DispatchController::class, 'destroy'])->name('destroy');
 });
 
 /*
