@@ -31,7 +31,7 @@
     }
 
     .page-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #d2691e;
       color: white;
       padding: 20px 30px;
       border-radius: 10px;
@@ -74,7 +74,7 @@
     }
 
     .section-title {
-      color: #667eea;
+      color: #d2691e;
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 20px;
@@ -127,7 +127,7 @@
     }
 
     .badge-primary {
-      background-color: #667eea;
+      background-color: #d2691e;
       color: white;
     }
 
@@ -178,7 +178,7 @@
     }
 
     .btn-close-action {
-      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      background: #d2691e;
       color: white;
       border: none;
       padding: 12px 30px;
@@ -195,8 +195,9 @@
 
     .btn-close-action:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+      box-shadow: 0 4px 12px rgba(210, 105, 30, 0.4);
       color: white;
+      background: #b8571a;
     }
 
     .action-footer {
@@ -543,7 +544,7 @@
         </tr>
         <tr>
           <td>Total Fees inclusive tax</td>
-          <td><strong style="color: #667eea;">₹{{ number_format($inquiry->total_fees_with_tax ?? 118000, 2) }}</strong></td>
+          <td><strong style="color: #d2691e;">₹{{ number_format($inquiry->total_fees_with_tax ?? 118000, 2) }}</strong></td>
         </tr>
         <tr>
           <td>If Fees Deposited In Single Installment</td>
