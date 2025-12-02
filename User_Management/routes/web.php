@@ -417,11 +417,6 @@ Route::prefix('test-series')->name('test_series.')->group(function () {
 |--------------------------------------------------------------------------
 | Units Routes
 |--------------------------------------------------------------------------
-<<<<<<< HEAD
-=======
-|
-|
->>>>>>> 25ebacb57ae821fb9249969068d766e6e5144c4e
 */
 
 Route::prefix('study_material')->group(function () {

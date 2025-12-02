@@ -119,13 +119,14 @@ class TestSeriesController extends Controller
                 'testSeries', 
                 'courseName', 
                 'courseSubjects'
-            ));
+                        ));
 
         } catch (\Exception $e) {
             Log::error('Test Series Show ERROR: ' . $e->getMessage());
             return redirect()->route('test_series.index')
                 ->with('error', 'Error: ' . $e->getMessage());
         }
+        
     }
 
 
@@ -218,6 +219,7 @@ class TestSeriesController extends Controller
             return back()->withInput()
                 ->with('error', 'Error: ' . $e->getMessage());
         }
+        
     }
 
     /**

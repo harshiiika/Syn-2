@@ -178,7 +178,7 @@
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
           <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="{{ route('study_material.dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+          <li></li>
         </ul>
       </div>
     </div>
