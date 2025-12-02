@@ -1,349 +1,593 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('content')
-<div class="container-fluid">
-    <div class="row mb-3">
-        <div class="col-12">
-            <a href="{{ route('reports.inquiry-history.index') }}" class="btn btn-secondary mb-3">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
-            <h2 class="text-orange">View Inquiry History</h2>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Inquiry History - Synthesis</title>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .btn-back {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .section-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-title {
+      color: #667eea;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 15px;
+      padding: 12px;
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .detail-row:hover {
+      background-color: #e9ecef;
+    }
+
+    .detail-label {
+      flex: 0 0 280px;
+      font-weight: 600;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .detail-value {
+      flex: 1;
+      color: #212529;
+      font-size: 14px;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .badge-success {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .badge-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .badge-primary {
+      background-color: #667eea;
+      color: white;
+    }
+
+    .badge-warning {
+      background-color: #ffc107;
+      color: #212529;
+    }
+
+    .badge-info {
+      background-color: #17a2b8;
+      color: white;
+    }
+
+    .table-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .info-table tr {
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .info-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .info-table td {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .info-table td:first-child {
+      font-weight: 600;
+      color: #495057;
+      width: 50%;
+    }
+
+    .info-table td:last-child {
+      color: #212529;
+    }
+
+    .btn-close-action {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-close-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+      color: white;
+    }
+
+    .action-footer {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .detail-row {
+        flex-direction: column;
+      }
+
+      .detail-label {
+        margin-bottom: 5px;
+      }
+
+      .info-table td:first-child {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1><i class="fas fa-file-alt me-2"></i>View Inquiry History</h1>
+      <a href="{{ route('reports.inquiry-history.index') }}" class="btn-back">
+        <i class="fas fa-arrow-left me-2"></i>Back
+      </a>
     </div>
 
-    <!-- Basic Details -->
-    <div class="card mb-4">
-        <div class="card-header bg-orange text-white">
-            <h5 class="mb-0">Basic Details</h5>
+    <!-- Basic Details Section -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-user me-2"></i>Basic Details</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Student Name</div>
+        <div class="detail-value">{{ $inquiry->student_name ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Father Name</div>
+        <div class="detail-value">{{ $inquiry->father_name ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Father Contact No</div>
+        <div class="detail-value">{{ $inquiry->father_contact_no ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Father WhatsApp No</div>
+        <div class="detail-value">{{ $inquiry->father_whatsapp_no ?? ($inquiry->father_contact_no ?? '-') }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Student Contact No</div>
+        <div class="detail-value">{{ $inquiry->student_contact_no ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Category</div>
+        <div class="detail-value">
+          <span class="badge badge-primary">{{ strtoupper($inquiry->category ?? 'GENERAL') }}</span>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Student Name</label>
-                    <p class="form-control-plaintext">{{ $inquiry->student_name ?? '-' }}</p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Father Name</label>
-                    <p class="form-control-plaintext">{{ $inquiry->father_name ?? '-' }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Father Contact No</label>
-                    <p class="form-control-plaintext">{{ $inquiry->father_contact_no ?? '-' }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Father WhatsApp No</label>
-                    <p class="form-control-plaintext">{{ $inquiry->father_whatsapp_no ?? '-' }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Student Contact No</label>
-                    <p class="form-control-plaintext">{{ $inquiry->student_contact_no ?? '-' }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Category</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge bg-secondary">{{ $inquiry->category ?? '-' }}</span>
-                    </p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Branch Name</label>
-                    <p class="form-control-plaintext">{{ $inquiry->branch_name ?? 'Bikaner' }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">State</label>
-                    <p class="form-control-plaintext">{{ $inquiry->state ?? '-' }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">City</label>
-                    <p class="form-control-plaintext">{{ $inquiry->city ?? '-' }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Address</label>
-                    <p class="form-control-plaintext">{{ $inquiry->address ?? '-' }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Do You Belong to Economic Weaker Section?</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge {{ $inquiry->economic_weaker_section ? 'bg-success' : 'bg-danger' }}">
-                            {{ $inquiry->economic_weaker_section ? 'Yes' : 'No' }}
-                        </span>
-                    </p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Do You Belong to Any Army/Police/Martyr Background?</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge {{ $inquiry->army_police_martyr_background ? 'bg-success' : 'bg-danger' }}">
-                            {{ $inquiry->army_police_martyr_background ? 'Yes' : 'No' }}
-                        </span>
-                    </p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Are You a Specially Abled?</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge {{ $inquiry->specially_abled ? 'bg-success' : 'bg-danger' }}">
-                            {{ $inquiry->specially_abled ? 'Yes' : 'No' }}
-                        </span>
-                    </p>
-                </div>
-            </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">State</div>
+        <div class="detail-value">{{ $inquiry->state ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">City</div>
+        <div class="detail-value">{{ $inquiry->city ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Address</div>
+        <div class="detail-value">{{ $inquiry->address ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Branch Name</div>
+        <div class="detail-value">
+          <span class="badge badge-info">{{ $inquiry->branch ?? 'Bikaner' }}</span>
         </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Do You Belong to Economic Weaker Section?</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->is_ews ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->is_ews ?? false) ? 'Yes' : 'No' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Do You Belong to Any Army/Police/Martyr Background?</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->is_army_background ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->is_army_background ?? false) ? 'Yes' : 'No' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Are You a Specially Abled?</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->is_specially_abled ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->is_specially_abled ?? false) ? 'Yes' : 'No' }}
+          </span>
+        </div>
+      </div>
     </div>
 
-    <!-- Course Details -->
-    <div class="card mb-4">
-        <div class="card-header bg-orange text-white">
-            <h5 class="mb-0">Course Details</h5>
+    <!-- Course Details Section -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-book me-2"></i>Course Details</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Course Type</div>
+        <div class="detail-value">
+          <span class="badge badge-primary">{{ $inquiry->course_type ?? '-' }}</span>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Course Type</label>
-                    <p class="form-control-plaintext">{{ $inquiry->course_type ?? '-' }}</p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Course Name</label>
-                    <p class="form-control-plaintext">{{ $inquiry->course_name ?? '-' }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Delivery Mode</label>
-                    <p class="form-control-plaintext">{{ $inquiry->delivery_mode ?? '-' }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Medium</label>
-                    <p class="form-control-plaintext">{{ $inquiry->medium ?? '-' }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Board</label>
-                    <p class="form-control-plaintext">{{ $inquiry->board ?? '-' }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label class="form-label fw-bold">Course Content</label>
-                    <p class="form-control-plaintext">{{ $inquiry->course_content ?? '-' }}</p>
-                </div>
-            </div>
-        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Course Name</div>
+        <div class="detail-value">{{ $inquiry->course_name ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Delivery Mode</div>
+        <div class="detail-value">{{ $inquiry->delivery_mode ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Medium</div>
+        <div class="detail-value">{{ $inquiry->medium ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Board</div>
+        <div class="detail-value">{{ $inquiry->board ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Course Content</div>
+        <div class="detail-value">{{ $inquiry->course_content ?? '-' }}</div>
+      </div>
     </div>
 
-    <!-- Scholarship Eligibility -->
-    <div class="card mb-4">
-        <div class="card-header bg-orange text-white">
-            <h5 class="mb-0">Scholarship Eligibility</h5>
+    <!-- Scholarship Eligibility Section -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-graduation-cap me-2"></i>Scholarship Eligibility</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Are you a Repeater From the Foundation Batch?</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->is_repeater ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->is_repeater ?? false) ? 'Yes' : 'No' }}
+          </span>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Are you a Repeater From the Foundation Batch?</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge {{ $inquiry->is_repeater ? 'bg-success' : 'bg-danger' }}">
-                            {{ $inquiry->is_repeater ? 'Yes' : 'No' }}
-                        </span>
-                    </p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Have You Appeared For the Synthesis Scholarship test?</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge {{ $inquiry->appeared_scholarship_test ? 'bg-success' : 'bg-danger' }}">
-                            {{ $inquiry->appeared_scholarship_test ? 'Yes' : 'No' }}
-                        </span>
-                    </p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Percentage Of Marks In last Board Exam</label>
-                    <p class="form-control-plaintext">{{ $inquiry->last_board_exam_percentage ?? '-' }}%</p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Have You Appeared For any of the competition exam?</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge {{ $inquiry->appeared_competition_exam ? 'bg-success' : 'bg-danger' }}">
-                            {{ $inquiry->appeared_competition_exam ? 'Yes' : 'No' }}
-                        </span>
-                    </p>
-                </div>
-            </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Have You Appeared For the Synthesis Scholarship test?</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->scholarship_test_appeared ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->scholarship_test_appeared ?? false) ? 'Yes' : 'No' }}
+          </span>
         </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Percentage Of Marks In last Board Exam</div>
+        <div class="detail-value">
+          @if(isset($inquiry->last_exam_percentage))
+            <span class="badge badge-warning">{{ $inquiry->last_exam_percentage }}%</span>
+          @else
+            -
+          @endif
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Have You Appeared For any of the competition exam?</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->competition_exam_appeared ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->competition_exam_appeared ?? false) ? 'Yes' : 'No' }}
+          </span>
+        </div>
+      </div>
     </div>
 
-    <!-- Scholarship Details -->
-    <div class="card mb-4">
-        <div class="card-header bg-orange text-white">
-            <h5 class="mb-0">Scholarship Details</h5>
+    <!-- Scholarship Details Section -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-award me-2"></i>Scholarship Details</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Eligible For Scholarship</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->eligible_for_scholarship ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->eligible_for_scholarship ?? false) ? 'Yes' : 'No' }}
+          </span>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Eligible For Scholarship</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge {{ $inquiry->eligible_for_scholarship ? 'bg-success' : 'bg-danger' }}">
-                            {{ $inquiry->eligible_for_scholarship ? 'Yes' : 'No' }}
-                        </span>
-                    </p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Name of Scholarship</label>
-                    <p class="form-control-plaintext">{{ $inquiry->scholarship_name ?? '-' }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Total Fee Before Discount</label>
-                    <p class="form-control-plaintext">₹{{ number_format($inquiry->total_fee_before_discount ?? 0, 2) }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Discount Percentage</label>
-                    <p class="form-control-plaintext">{{ $inquiry->discount_percentage ?? 0 }}%</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Discounted Fees</label>
-                    <p class="form-control-plaintext text-success fw-bold">₹{{ number_format($inquiry->discounted_fees ?? 0, 2) }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label class="form-label fw-bold">Discretionary Discount</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge {{ $inquiry->discretionary_discount ? 'bg-success' : 'bg-danger' }}">
-                            {{ $inquiry->discretionary_discount ? 'Yes' : 'No' }}
-                        </span>
-                        @if($inquiry->discretionary_discount && $inquiry->discretionary_discount_amount)
-                            <span class="ms-2">Amount: ₹{{ number_format($inquiry->discretionary_discount_amount, 2) }}</span>
-                        @endif
-                    </p>
-                </div>
-            </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Name of Scholarship</div>
+        <div class="detail-value">{{ $inquiry->scholarship_name ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Total Fee Before Discount</div>
+        <div class="detail-value">
+          <strong>₹{{ number_format($inquiry->total_fee_before_discount ?? 100000, 2) }}</strong>
         </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Discount Percentage</div>
+        <div class="detail-value">
+          <span class="badge badge-success">{{ $inquiry->discount_percentage ?? 0 }}%</span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Discounted Fees</div>
+        <div class="detail-value">
+          <strong style="color: #28a745;">₹{{ number_format($inquiry->discounted_fee ?? 100000, 2) }}</strong>
+        </div>
+      </div>
     </div>
 
-    <!-- Fees and Available Batches Details -->
-    <div class="card mb-4">
-        <div class="card-header bg-orange text-white">
-            <h5 class="mb-0">Fees and Available Batches Details</h5>
+    <!-- Discretionary Discount Section -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-percentage me-2"></i>Discretionary Discount</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Do You Want Add discretionary discount</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->has_discretionary_discount ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->has_discretionary_discount ?? false) ? 'Yes' : 'No' }}
+          </span>
         </div>
-        <div class="card-body">
-            @if($inquiry->fees_breakup && count($inquiry->fees_breakup) > 0)
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Fees Breakup</label>
-                    <ul class="list-group">
-                        @foreach($inquiry->fees_breakup as $item)
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>{{ $item['description'] ?? '-' }}</span>
-                                <span class="fw-bold">₹{{ number_format($item['amount'] ?? 0, 2) }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Total Fees</label>
-                    <p class="form-control-plaintext">₹{{ number_format($inquiry->total_fees ?? 0, 2) }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">GST Amount</label>
-                    <p class="form-control-plaintext">₹{{ number_format($inquiry->gst_amount ?? 0, 2) }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Total Fees inclusive tax</label>
-                    <p class="form-control-plaintext text-primary fw-bold">₹{{ number_format($inquiry->total_fees_inclusive_tax ?? 0, 2) }}</p>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label class="form-label fw-bold">If Fees Deposited In Single Installment</label>
-                    <p class="form-control-plaintext">₹{{ number_format($inquiry->single_installment_amount ?? 0, 2) }}</p>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label class="form-label fw-bold">If Fees Deposited In Three Installments</label>
-                    <div class="row mt-2">
-                        <div class="col-md-4">
-                            <p><strong>Installment 1:</strong> ₹{{ number_format($inquiry->installment_1 ?? 0, 2) }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>Installment 2:</strong> ₹{{ number_format($inquiry->installment_2 ?? 0, 2) }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>Installment 3:</strong> ₹{{ number_format($inquiry->installment_3 ?? 0, 2) }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </div>
+
+      @if($inquiry->has_discretionary_discount ?? false)
+        <div class="detail-row">
+          <div class="detail-label">Discretionary Discount Amount</div>
+          <div class="detail-value">
+            <strong style="color: #28a745;">₹{{ number_format($inquiry->discretionary_discount_amount ?? 0, 2) }}</strong>
+          </div>
         </div>
+
+        <div class="detail-row">
+          <div class="detail-label">Discretionary Discount Percentage</div>
+          <div class="detail-value">
+            <span class="badge badge-success">{{ $inquiry->discretionary_discount_percentage ?? 0 }}%</span>
+          </div>
+        </div>
+      @endif
     </div>
 
-    <!-- Additional Information -->
-    <div class="card mb-4">
-        <div class="card-header bg-orange text-white">
-            <h5 class="mb-0">Additional Information</h5>
+    <!-- Fees and Available Batches Details Section -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-rupee-sign me-2"></i>Fees and Available Batches Details</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Eligible For Scholarship</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->eligible_for_scholarship ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->eligible_for_scholarship ?? false) ? 'Yes' : 'No' }}
+          </span>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Status</label>
-                    <p class="form-control-plaintext">
-                        <span class="badge bg-info">{{ $inquiry->status ?? 'Onboard' }}</span>
-                    </p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Created At</label>
-                    <p class="form-control-plaintext">{{ $inquiry->created_at ? $inquiry->created_at->format('d-m-Y H:i:s') : '-' }}</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Updated At</label>
-                    <p class="form-control-plaintext">{{ $inquiry->updated_at ? $inquiry->updated_at->format('d-m-Y H:i:s') : '-' }}</p>
-                </div>
-            </div>
-            @if($inquiry->remarks)
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label class="form-label fw-bold">Remarks</label>
-                    <p class="form-control-plaintext">{{ $inquiry->remarks }}</p>
-                </div>
-            </div>
-            @endif
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Name of Scholarship</div>
+        <div class="detail-value">{{ $inquiry->scholarship_name ?? '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Total Fee Before Discount</div>
+        <div class="detail-value">
+          <strong>₹{{ number_format($inquiry->total_fee_before_discount ?? 100000, 2) }}</strong>
         </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Discretionary Discount</div>
+        <div class="detail-value">
+          <span class="badge badge-{{ ($inquiry->has_discretionary_discount ?? false) ? 'success' : 'danger' }}">
+            {{ ($inquiry->has_discretionary_discount ?? false) ? 'Yes' : 'No' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Discount Percentage</div>
+        <div class="detail-value">
+          <span class="badge badge-success">{{ $inquiry->discount_percentage ?? 0 }}%</span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Discounted Fee</div>
+        <div class="detail-value">
+          <strong style="color: #28a745;">₹{{ number_format($inquiry->discounted_fee ?? 100000, 2) }}</strong>
+        </div>
+      </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <a href="{{ route('reports.inquiry-history.index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to List
-            </a>
-        </div>
+    <!-- Fees Breakup Table -->
+    <div class="table-card">
+      <h2 class="section-title"><i class="fas fa-calculator me-2"></i>Fees Breakup</h2>
+      
+      <table class="info-table">
+        <tr>
+          <td>Class room course (with test series & study material)</td>
+          <td><strong>₹{{ number_format($inquiry->course_fee ?? 100000, 2) }}</strong></td>
+        </tr>
+        <tr>
+          <td>Total Fees</td>
+          <td><strong>₹{{ number_format($inquiry->total_fees ?? 100000, 2) }}</strong></td>
+        </tr>
+        <tr>
+          <td>GST Amount</td>
+          <td><strong>₹{{ number_format($inquiry->gst_amount ?? 18000, 2) }}</strong></td>
+        </tr>
+        <tr>
+          <td>Total Fees inclusive tax</td>
+          <td><strong style="color: #667eea;">₹{{ number_format($inquiry->total_fees_with_tax ?? 118000, 2) }}</strong></td>
+        </tr>
+        <tr>
+          <td>If Fees Deposited In Single Installment</td>
+          <td><strong style="color: #28a745;">₹{{ number_format($inquiry->single_installment ?? 118000, 2) }}</strong></td>
+        </tr>
+      </table>
     </div>
-</div>
 
-<style>
-.text-orange {
-    color: #ff6600;
-}
+    <!-- Installments Section -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-calendar-alt me-2"></i>If Fees Deposited In Three Installments</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Installment 1</div>
+        <div class="detail-value">
+          <strong>₹{{ number_format($inquiry->installment_1 ?? 47200, 2) }}</strong>
+        </div>
+      </div>
 
-.bg-orange {
-    background-color: #ff6600 !important;
-}
+      <div class="detail-row">
+        <div class="detail-label">Installment 2</div>
+        <div class="detail-value">
+          <strong>₹{{ number_format($inquiry->installment_2 ?? 35400, 2) }}</strong>
+        </div>
+      </div>
 
-.form-control-plaintext {
-    padding-top: 0.375rem;
-    padding-bottom: 0.375rem;
-    margin-bottom: 0;
-    font-size: inherit;
-    line-height: 1.5;
-}
-</style>
-@endsection
+      <div class="detail-row">
+        <div class="detail-label">Installment 3</div>
+        <div class="detail-value">
+          <strong>₹{{ number_format($inquiry->installment_3 ?? 35400, 2) }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Footer -->
+    <div class="action-footer">
+      <a href="{{ route('reports.inquiry-history.index') }}" class="btn-close-action">
+        <i class="fas fa-times"></i>Close
+      </a>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
