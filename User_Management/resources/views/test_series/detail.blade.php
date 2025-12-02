@@ -361,7 +361,8 @@
         <!-- Pagination Info -->
         <div class="d-flex justify-content-between align-items-center mt-3">
           <div id="paginationInfo">
-Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count() }}</span> entries          </div>
+Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ min(10, $testSeries->count()) }}</span> of <span id="totalEntries">{{ $testSeries->count() }}</span> entries
+</div>
           <nav>
             <ul class="pagination" id="pagination">
               <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
