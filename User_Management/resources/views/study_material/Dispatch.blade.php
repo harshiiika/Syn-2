@@ -369,7 +369,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
   <script src="{{asset('js/emp.js')}}"></script>
 
-<<<<<<< HEAD
   <script>
   $(document).ready(function() {
       // ✅ HARDCODED COURSES - Same as Units
@@ -395,6 +394,7 @@
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           }
       });
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
               <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -607,12 +607,14 @@
                     </div>
                 </div>
 >>>>>>> 57074747fa185acdc36be8f29d3ed2f3ab99d8c1
+=======
+>>>>>>> 2a9dc41185145fb5634f3ab52db0376f6d0dad60
 
       // Load courses on page load
       function loadCourses() {
           let options = '<option value="">Select Course</option>';
           Object.keys(coursesData).forEach(function(course) {
-              options += `<option value="${course}">${course}</option>`;
+              options += <option value="${course}">${course}</option>;
           });
           $('#course_name').html(options);
       }
@@ -660,13 +662,13 @@
                           // Handle both _id and id fields
                           let batchId = batch._id || batch.id;
                           let batchName = batch.name || batch.batch_name;
-                          options += `<option value="${batchName}">${batchName}</option>`;
+                          options += <option value="${batchName}">${batchName}</option>;
                       });
                       $('#batch_name').html(options).prop('disabled', false);
                       console.log('✅', response.batches.length, 'batches loaded');
                   } else {
                       $('#batch_name').html('<option value="">No batches found</option>').prop('disabled', true);
-                      console.log('⚠️ No batches found for course:', courseName);
+                      console.log('⚠ No batches found for course:', courseName);
                   }
               },
               error: function(xhr) {
@@ -783,7 +785,7 @@
                       console.log('✅ Table rendered with', response.students.length, 'students');
                   } else {
                       tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;">No students found for this course and batch</td></tr>');
-                      console.log('⚠️ No students found');
+                      console.log('⚠ No students found');
                   }
               },
               error: function(xhr) {
@@ -798,7 +800,6 @@
           $('.student-checkbox').prop('checked', $(this).prop('checked'));
       });
 
-<<<<<<< HEAD
       // Dispatch button click
       $('#dispatchBtn').on('click', function() {
           let selectedIds = [];
@@ -812,7 +813,7 @@
               return;
           }
           
-          if (!confirm(`Are you sure you want to dispatch material to ${selectedIds.length} student(s)?`)) {
+          if (!confirm(Are you sure you want to dispatch material to ${selectedIds.length} student(s)?)) {
               return;
           }
           
@@ -855,344 +856,5 @@
       });
   });
   </script>
-=======
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#flush-collapseNine" aria-expanded="false"
-                            aria-controls="flush-collapseNine">
-                            <i class="fa-solid fa-square-poll-horizontal"></i>Reports
-                        </button>
-                    </h2>
-                    <div id="flush-collapseNine" class="accordion-collapse collapse"
-                        data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a href="/reports/walkin/walkin.html">
-                                        <i class="fa-solid fa-person-walking"></i>Walk In
-                                    </a></li>
-                                <li><a href="/reports/att/att.html">
-                                        <i class="fa-solid fa-calendar-days"></i>Attendance
-                                    </a></li>
-                                <li><a href="/reports/test/test.html">
-                                        <i class="fa-solid fa-file"></i>Test Series
-                                    </a></li>
-                                <li><a href="/reports/inq/inq.html">
-                                        <i class="fa-solid fa-file"></i>Inquiry History
-                                    </a></li>
-                                <li><a href="/reports/onboard/onboard.html">
-                                        <i class="fa-solid fa-file"></i>Onboard History
-                                    </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
->>>>>>> ab196188d8af41bd610a34fe44c9927895c3534d
-        </div>
-
-        <div class="right" id="right">
-            <h5>Display Study Material</h5>
-
-            <div class="upper">
-                <div>
-                    <select id="course" required>
-                        <option value="" disabled selected>Loading courses...</option>
-                    </select>
-                    <div class="error-message" id="course-error">Course is required</div>
-                </div>
-
-                <div>
-                    <select id="batch" required>
-                        <option value="" disabled selected>Select Batch</option>
-                        <option value="all">All</option>
-                    </select>
-                    <div class="error-message" id="batch-error">Batch is required</div>
-                </div>
-
-                <button type="button" class="search">Search</button>
-            </div>
-
-            <div class="bottom">
-                <div class="rw">
-                    <button class="dispatch">Dispatch</button>
-                </div>
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">
-                                <input class="form-check-input" type="checkbox" value="" id="checkDefault">
-                            </th>
-                            <th scope="col">Roll Number</th>
-                            <th scope="col">Student Name</th>
-                            <th scope="col">Father Name</th>
-                            <th scope="col">Batch Name</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Table data will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-        crossorigin="anonymous"></script>
-
-    <script>
-        // Load courses on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCourses();
-        });
-
-        // Function to load courses from API
-        function loadCourses() {
-            const courseSelect = document.getElementById('course');
-            courseSelect.innerHTML = '<option value="" disabled selected>Loading courses...</option>';
-            
-            // TODO: In Laravel blade, replace with actual API call:
-            // fetch('/study_material/dispatch') - controller returns courses in view
-            // Or: fetch('/api/courses') - if you create a dedicated API endpoint
-            
-            // For demo purposes with static HTML, using hardcoded courses
-            const courses = [
-                { _id: 'intensity-12th-iit', name: 'Intensity 12th IIT' },
-                { _id: 'plumule-9th', name: 'Plumule 9th' },
-                { _id: 'radicle-8th', name: 'Radicle 8th' },
-                { _id: 'anthesis-11th-neet', name: 'Anthesis 11th NEET' },
-                { _id: 'dynamic-target-neet', name: 'Dynamic Target NEET' },
-                { _id: 'thurst-target-iit', name: 'Thurst Target IIT' },
-                { _id: 'seedling-10th', name: 'Seedling 10th' },
-                { _id: 'nucleus-7th', name: 'Nucleus 7th' },
-                { _id: 'momentum-12th-neet', name: 'Momentum 12th NEET' },
-                { _id: 'impulse-11th-iit', name: 'Impulse 11th IIT' },
-                { _id: 'atom-6th', name: 'Atom 6th' }
-            ];
-            
-            courseSelect.innerHTML = '<option value="" disabled selected>Select Course</option>';
-            courses.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course._id;
-                option.textContent = course.name;
-                courseSelect.appendChild(option);
-            });
-        }
-
-        // Course dropdown change event - Fetch batches dynamically from API
-        document.getElementById('course').addEventListener('change', function() {
-            const selectedCourse = this.value;
-            const batchSelect = document.getElementById('batch');
-            
-            // Clear error state
-            document.getElementById('course-error').style.display = 'none';
-            this.classList.remove('error');
-            
-            // Clear existing batch options
-            batchSelect.innerHTML = '<option value="" disabled selected>Select Batch</option>';
-            
-            if (!selectedCourse) {
-                return;
-            }
-            
-            // Show loading state
-            batchSelect.innerHTML = '<option value="" disabled selected>Loading batches...</option>';
-            
-            // Fetch batches from backend
-            // Laravel Route: GET /study_material/dispatch/get-batches
-            // Controller: DispatchController@getBatches
-            fetch('/study_material/dispatch/get-batches?course_id=' + encodeURIComponent(selectedCourse))
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.batches) {
-                        // Clear loading message
-                        batchSelect.innerHTML = '<option value="" disabled selected>Select Batch</option>';
-                        
-                        // Add "All" option
-                        const allOption = document.createElement('option');
-                        allOption.value = 'all';
-                        allOption.textContent = 'All';
-                        batchSelect.appendChild(allOption);
-                        
-                        // Add batches from API
-                        data.batches.forEach(batch => {
-                            const option = document.createElement('option');
-                            option.value = batch._id;
-                            option.textContent = batch.name;
-                            batchSelect.appendChild(option);
-                        });
-                    } else {
-                        batchSelect.innerHTML = '<option value="" disabled selected>No batches found</option>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching batches:', error);
-                    batchSelect.innerHTML = '<option value="" disabled selected>Error loading batches</option>';
-                });
-        });
-
-        // Batch dropdown change event
-        document.getElementById('batch').addEventListener('change', function() {
-            document.getElementById('batch-error').style.display = 'none';
-            this.classList.remove('error');
-        });
-
-        // Search button click event
-        document.querySelector('.search').addEventListener('click', function() {
-            const course = document.getElementById('course').value;
-            const batch = document.getElementById('batch').value;
-            const courseError = document.getElementById('course-error');
-            const batchError = document.getElementById('batch-error');
-            const courseSelect = document.getElementById('course');
-            const batchSelect = document.getElementById('batch');
-            
-            // Reset error states
-            courseError.style.display = 'none';
-            batchError.style.display = 'none';
-            courseSelect.classList.remove('error');
-            batchSelect.classList.remove('error');
-            
-            let hasError = false;
-            
-            if (!course) {
-                courseError.style.display = 'block';
-                courseSelect.classList.add('error');
-                hasError = true;
-            }
-            
-            if (!batch) {
-                batchError.style.display = 'block';
-                batchSelect.classList.add('error');
-                hasError = true;
-            }
-            
-            if (hasError) {
-                return;
-            }
-            
-            loadStudents(course, batch);
-        });
-
-        // Function to load students from API
-        function loadStudents(courseId, batchId) {
-            const tableBody = document.querySelector('.table tbody');
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">Loading students...</td></tr>';
-            
-            // Laravel Route: GET /study_material/dispatch/get-students
-            // Controller: DispatchController@getStudents
-            let url = '/study_material/dispatch/get-students?course_id=' + encodeURIComponent(courseId);
-            
-            if (batchId !== 'all') {
-                url += '&batch_id=' + encodeURIComponent(batchId);
-            }
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    tableBody.innerHTML = '';
-                    
-                    if (data.success && data.students && data.students.length > 0) {
-                        data.students.forEach(student => {
-                            const row = tableBody.insertRow();
-                            row.innerHTML = `
-                                <td><input class="form-check-input" type="checkbox" value="${student._id}" data-roll="${student.roll_no}"></td>
-                                <td>${student.roll_no || 'N/A'}</td>
-                                <td>${student.name || 'N/A'}</td>
-                                <td>${student.father_name || 'N/A'}</td>
-                                <td>${student.batch_name || 'N/A'}</td>
-                                <td>
-                                    ${student.is_dispatched 
-                                        ? '<span class="badge bg-success">Dispatched</span>' 
-                                        : '<span class="badge bg-warning">Pending</span>'}
-                                </td>
-                            `;
-                        });
-                    } else {
-                        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">No students found</td></tr>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching students:', error);
-                    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:red;">Error loading students</td></tr>';
-                });
-        }
-
-        // Dispatch button functionality
-        document.querySelector('.dispatch').addEventListener('click', function() {
-            const checkedBoxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
-            
-            if (checkedBoxes.length === 0) {
-                alert('Please select at least one student to dispatch material');
-                return;
-            }
-            
-            const studentIds = Array.from(checkedBoxes).map(cb => cb.value);
-            
-            if (!confirm(`Are you sure you want to dispatch material to ${studentIds.length} student(s)?`)) {
-                return;
-            }
-            
-            // Disable button during API call
-            const dispatchBtn = this;
-            dispatchBtn.disabled = true;
-            dispatchBtn.textContent = 'Dispatching...';
-            
-            // Laravel Route: POST /study_material/dispatch/dispatch-material
-            // Controller: DispatchController@dispatchMaterial
-            fetch('/study_material/dispatch/dispatch-material', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    student_ids: studentIds
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    // Reload the student list to update dispatch status
-                    const course = document.getElementById('course').value;
-                    const batch = document.getElementById('batch').value;
-                    loadStudents(course, batch);
-                    // Uncheck all checkboxes
-                    document.getElementById('checkDefault').checked = false;
-                } else {
-                    alert('Error: ' + (data.message || 'Failed to dispatch material'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error dispatching material. Please try again.');
-            })
-            .finally(() => {
-                dispatchBtn.disabled = false;
-                dispatchBtn.textContent = 'Dispatch';
-            });
-        });
-
-        // Toggle sidebar functionality
-        document.getElementById('toggleBtn').addEventListener('click', function () {
-            const sidebar = document.getElementById('sidebar');
-            const right = document.getElementById('right');
-            
-            if (sidebar.style.display === 'none') {
-                sidebar.style.display = 'flex';
-            } else {
-                sidebar.style.display = 'none';
-            }
-        });
-
-        // Select all checkbox functionality
-        document.getElementById('checkDefault').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
-    </script>
->>>>>>> 57074747fa185acdc36be8f29d3ed2f3ab99d8c1
 </body>
 </html>
