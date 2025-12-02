@@ -446,6 +446,11 @@ Route::prefix('study_material/dispatch')->name('dispatch.')->group(function () {
     Route::get('/dispatch-history', [DispatchController::class, 'getDispatchHistory'])->name('getDispatchHistory');
     Route::post('/bulk-delete', [DispatchController::class, 'bulkDelete'])->name('bulkDelete');
     Route::delete('/{id}', [DispatchController::class, 'destroy'])->name('destroy');
+
+});
+
+Route::prefix('study_material')->name('study_material.')->group(function () {
+    Route::resource('Dispatch', DispatchController::class);
 });
 
 /*
@@ -466,4 +471,28 @@ Route::prefix('fees-management')->group(function () {
     Route::post('process-refund', [FeesManagementController::class, 'processRefund']);
     Route::post('apply-scholarship', [FeesManagementController::class, 'applyScholarship']);
     Route::get('export-pending-fees', [FeesManagementController::class, 'exportPendingFees'])->name('fees.export');
+});
+
+Route::prefix('reports')->name('reports.')->group(function () {
+    // Walk-in Reports
+    Route::get('/walkin', [App\Http\Controllers\Reports\WalkinController::class, 'index'])
+        ->name('walkin.index');
+    
+    Route::get('/walkin/export', [App\Http\Controllers\Reports\WalkinController::class, 'export'])
+        ->name('walkin.export');
+
+    // Attendance Reports - Student
+    Route::prefix('attendance')->name('attendance.')->group(function () {
+        Route::get('/student', [App\Http\Controllers\Reports\AttendanceReportController::class, 'studentIndex'])
+            ->name('student.index');
+        
+        Route::get('/student/data', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getStudentData'])
+            ->name('student.data');
+        
+        Route::get('/student/batches', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getBatchesByCourse'])
+            ->name('student.batches');
+        
+        Route::get('/student/rolls', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getRollsByBatch'])
+            ->name('student.rolls');
+    });
 });
