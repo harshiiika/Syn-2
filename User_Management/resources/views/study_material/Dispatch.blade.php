@@ -399,7 +399,7 @@
       function loadCourses() {
           let options = '<option value="">Select Course</option>';
           Object.keys(coursesData).forEach(function(course) {
-              options += <option value="${course}">${course}</option>;
+              options += `<option value="${course}">${course}</option>`;
           });
           $('#course_name').html(options);
       }
@@ -447,13 +447,13 @@
                           // Handle both _id and id fields
                           let batchId = batch._id || batch.id;
                           let batchName = batch.name || batch.batch_name;
-                          options += <option value="${batchName}">${batchName}</option>;
+                          options += `<option value="${batchName}">${batchName}</option>`;
                       });
                       $('#batch_name').html(options).prop('disabled', false);
                       console.log('✅', response.batches.length, 'batches loaded');
                   } else {
                       $('#batch_name').html('<option value="">No batches found</option>').prop('disabled', true);
-                      console.log('⚠ No batches found for course:', courseName);
+                      console.log('⚠️ No batches found for course:', courseName);
                   }
               },
               error: function(xhr) {
@@ -570,7 +570,7 @@
                       console.log('✅ Table rendered with', response.students.length, 'students');
                   } else {
                       tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;">No students found for this course and batch</td></tr>');
-                      console.log('⚠ No students found');
+                      console.log('⚠️ No students found');
                   }
               },
               error: function(xhr) {
@@ -598,7 +598,7 @@
               return;
           }
           
-          if (!confirm(Are you sure you want to dispatch material to ${selectedIds.length} student(s)?)) {
+          if (!confirm(`Are you sure you want to dispatch material to ${selectedIds.length} student(s)?`)) {
               return;
           }
           
