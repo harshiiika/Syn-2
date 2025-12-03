@@ -27,7 +27,7 @@ use App\Http\Controllers\Attendance\StudentAController;
 use App\Http\Controllers\TestSeries\TestSeriesController;
 use App\Http\Controllers\study_material\Unitscontroller;
 use App\Http\Controllers\study_material\DispatchController;
-use App\Http\Controllers\Reports\AttendanceReportController;
+use App\Http\Controllers\Reports\InquiryHistoryController;
 
 
 
@@ -495,4 +495,43 @@ Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/student/rolls', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getRollsByBatch'])
             ->name('student.rolls');
     });
+});
+/*
+|--------------------------------------------------------------------------
+| Inquiry History Report Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('reports')->name('reports.')->group(function () {
+
+    // Walk-in Reports
+    Route::get('/walkin', [App\Http\Controllers\Reports\WalkinController::class, 'index'])
+        ->name('walkin.index');
+
+    Route::get('/walkin/export', [App\Http\Controllers\Reports\WalkinController::class, 'export'])
+        ->name('walkin.export');
+
+    // Attendance Reports - Student
+    Route::prefix('attendance')->name('attendance.')->group(function () {
+        Route::get('/student', [App\Http\Controllers\Reports\AttendanceReportController::class, 'studentIndex'])
+            ->name('student.index');
+        
+        Route::get('/student/data', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getStudentData'])
+            ->name('student.data');
+        
+        Route::get('/student/batches', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getBatchesByCourse'])
+            ->name('student.batches');
+        
+        Route::get('/student/rolls', [App\Http\Controllers\Reports\AttendanceReportController::class, 'getRollsByBatch'])
+            ->name('student.rolls');
+    });
+
+    // Inquiry History Report Routes
+    Route::get('/inquiry-history', [InquiryHistoryController::class, 'index'])
+        ->name('inquiry-history.index');
+    Route::get('/inquiry-history/data', [InquiryHistoryController::class, 'getData'])
+        ->name('inquiry-history.getData');
+    Route::get('/inquiry-history/export', [InquiryHistoryController::class, 'export'])
+        ->name('inquiry-history.export');
+    Route::get('/inquiry-history/{id}/view', [InquiryHistoryController::class, 'view'])
+        ->name('inquiry-history.view');
 });
