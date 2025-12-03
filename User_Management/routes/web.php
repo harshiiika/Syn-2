@@ -42,9 +42,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Default Route
 // -------------------------
 Route::get('/', function () {
-    return Auth::check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+    return redirect()->route('login');
 })->name('home');
 
 // -------------------------
