@@ -3,9 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
   <title>Students Management</title>
-  <link rel="stylesheet" href="{{ asset('css/emp.css') }}">
+  <link rel="stylesheet" href="<?php echo e(asset('css/emp.css')); ?>">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -167,25 +167,27 @@ canvas {
 <body>
   <!-- Flash Messages -->
   <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
-    @if(session('success'))
+    <?php if(session('success')): ?>
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    @endif
+        <?php echo e(session('success')); ?>
 
-    @if(session('error'))
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
-    @endif
+    <?php endif; ?>
+
+    <?php if(session('error')): ?>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?php echo e(session('error')); ?>
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php endif; ?>
   </div>
 
   <!-- Header -->
   <div class="header">
     <div class="logo">
-      <img src="{{ asset('images/logo.png.jpg') }}" class="img" alt="Logo">
+      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img" alt="Logo">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -218,187 +220,183 @@ canvas {
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-      <div class="accordion accordion-flush" id="accordionFlushExample">
-  <!-- User Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
-      </button>
-    </h2>
-    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+            </button>
+          </h2>
+          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li>><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>
+                    Employee</a></li>
+                <li>><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group"
+                      id="side-icon"></i> Batches Assignment</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-  <!-- Master -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
-      </button>
-    </h2>
-    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+            </button>
+          </h2>
+          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+                <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+                <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+                <li><a class="item" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+                <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-  <!-- Session Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-      </button>
-    </h2>
-    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+            </button>
+          </h2>
+          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+                <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-  <!-- Student Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-      </button>
-    </h2>
-    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+            </button>
+          </h2>
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+                <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+                <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-  <!-- Fees Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-        id="accordion-button">
-        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-      </button>
-    </h2>
-    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+              id="accordion-button">
+              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+            </button>
+          </h2>
+          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="#"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-  <!-- Attendance Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-        id="accordion-button">
-        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
-      </button>
-    </h2>
-    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+              id="accordion-button">
+              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+            </button>
+          </h2>
+          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route(name: 'attendance.employee.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+                <li><a class="item" href="<?php echo e(route(name: 'attendance.student.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-  <!-- Study Material -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-        id="accordion-button">
-        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-      </button>
-    </h2>
-    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+              id="accordion-button">
+              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+            </button>
+          </h2>
+          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-        </ul>
-      </div>
-    </div>
-  </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+              id="accordion-button">
+              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+            </button>
+          </h2>
+          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li>
+    <a href="<?php echo e(route('test_series.index')); ?>">
+        <i class="icon-class"></i> 
+        <span>Test Master</span>
+    </a>
+</li>              </ul>
+            </div>
+          </div>
+        </div>
 
-  <!-- Test Series Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-        id="accordion-button">
-        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-      </button>
-    </h2>
-    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
-        </ul>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+              id="accordion-button">
+              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+            </button>
+          </h2>
+          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+                <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Reports -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-        id="accordion-button">
-        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
-      </button>
-    </h2>
-    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
     </div>
 
 
@@ -416,21 +414,22 @@ canvas {
         <div class="card border-0 shadow-sm mb-4">
           <div class="card-body">
             <h5 class="card-title mb-4">Course Wise Conversion</h5>
-            @if(count($courseWiseData) > 0)
+            <?php if(count($courseWiseData) > 0): ?>
               <canvas id="courseWiseChart" height="100"></canvas>
-            @else
+            <?php else: ?>
               <div class="text-center py-5 text-muted">
                 <i class="fas fa-chart-bar fa-3x mb-3" style="opacity: 0.3;"></i>
                 <p class="mb-0">No walk-in or onboarding data with matching course names</p>
                 <small class="d-block mt-2">
-                  Walk-ins: {{ $analytics['total_walkin'] }} | 
-                  Onboarded: {{ $analytics['total_onboarding'] }}
+                  Walk-ins: <?php echo e($analytics['total_walkin']); ?> | 
+                  Onboarded: <?php echo e($analytics['total_onboarding']); ?>
+
                 </small>
                 <small class="d-block mt-1 text-warning">
                     Check browser console (F12) for course name details
                 </small>
               </div>
-            @endif
+            <?php endif; ?>
           </div>
         </div>
 
@@ -482,35 +481,35 @@ canvas {
               <tbody>
                 <tr class="border-bottom">
                   <td class="py-3 ps-3">Total Walk-in</td>
-                  <td class="py-3 pe-3 text-end fw-bold">{{ number_format($analytics['total_walkin']) }}</td>
+                  <td class="py-3 pe-3 text-end fw-bold"><?php echo e(number_format($analytics['total_walkin'])); ?></td>
                 </tr>
                 <tr class="border-bottom">
                   <td class="py-3 ps-3">Total Onboarding</td>
-                  <td class="py-3 pe-3 text-end fw-bold">{{ number_format($analytics['total_onboarding']) }}</td>
+                  <td class="py-3 pe-3 text-end fw-bold"><?php echo e(number_format($analytics['total_onboarding'])); ?></td>
                 </tr>
                 <tr class="border-bottom">
                   <td class="py-3 ps-3">Test series only</td>
-                  <td class="py-3 pe-3 text-end fw-bold">{{ number_format($analytics['test_series_only']) }}</td>
+                  <td class="py-3 pe-3 text-end fw-bold"><?php echo e(number_format($analytics['test_series_only'])); ?></td>
                 </tr>
                 <tr class="border-bottom">
                   <td class="py-3 ps-3">Class room course</td>
-                  <td class="py-3 pe-3 text-end fw-bold">{{ number_format($analytics['class_room_course']) }}</td>
+                  <td class="py-3 pe-3 text-end fw-bold"><?php echo e(number_format($analytics['class_room_course'])); ?></td>
                 </tr>
                 <tr class="border-bottom">
                   <td class="py-3 ps-3">Study Material only</td>
-                  <td class="py-3 pe-3 text-end fw-bold">{{ number_format($analytics['study_material_only']) }}</td>
+                  <td class="py-3 pe-3 text-end fw-bold"><?php echo e(number_format($analytics['study_material_only'])); ?></td>
                 </tr>
                 <tr class="border-bottom">
                   <td class="py-3 ps-3">Live online class course</td>
-                  <td class="py-3 pe-3 text-end fw-bold">{{ number_format($analytics['live_online_class']) }}</td>
+                  <td class="py-3 pe-3 text-end fw-bold"><?php echo e(number_format($analytics['live_online_class'])); ?></td>
                 </tr>
                 <tr class="border-bottom">
                   <td class="py-3 ps-3">Test series & Study Material</td>
-                  <td class="py-3 pe-3 text-end fw-bold">{{ number_format($analytics['test_series_and_study_material']) }}</td>
+                  <td class="py-3 pe-3 text-end fw-bold"><?php echo e(number_format($analytics['test_series_and_study_material'])); ?></td>
                 </tr>
                 <tr>
                   <td class="py-3 ps-3">Recorded online class course</td>
-                  <td class="py-3 pe-3 text-end fw-bold">{{ number_format($analytics['recorded_online_class']) }}</td>
+                  <td class="py-3 pe-3 text-end fw-bold"><?php echo e(number_format($analytics['recorded_online_class'])); ?></td>
                 </tr>
               </tbody>
             </table>
@@ -527,14 +526,14 @@ canvas {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/emp.js') }}"></script>
+<script src="<?php echo e(asset('js/emp.js')); ?>"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   console.log('  Walk-in Report - Initializing Charts');
   
   // Course Wise Conversion Bar Chart
-  const courseWiseData = @json($courseWiseData);
+  const courseWiseData = <?php echo json_encode($courseWiseData, 15, 512) ?>;
   console.log('  Course Wise Data:', courseWiseData);
   console.log('  Course Wise Data Length:', courseWiseData ? courseWiseData.length : 0);
   
@@ -601,11 +600,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   } else {
     console.warn('  No course wise data - checking what we have:');
-    console.log('Analytics data:', @json($analytics));
+    console.log('Analytics data:', <?php echo json_encode($analytics, 15, 512) ?>);
   }
 
   // Course Type Donut Chart (ORIGINAL WORKING CODE)
-  const courseTypeData = @json($courseTypeData);
+  const courseTypeData = <?php echo json_encode($courseTypeData, 15, 512) ?>;
   console.log('  Course Type Data:', courseTypeData);
   const courseTypeTotal = Object.values(courseTypeData).reduce((a, b) => a + b, 0);
   
@@ -656,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Board Type Donut Chart (ORIGINAL WORKING CODE)
-  const boardTypeData = @json($boardTypeData);
+  const boardTypeData = <?php echo json_encode($boardTypeData, 15, 512) ?>;
   console.log('  Board Type Data:', boardTypeData);
   const boardTypeTotal = Object.values(boardTypeData).reduce((a, b) => a + b, 0);
   
@@ -706,7 +705,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Medium Type Donut Chart (ORIGINAL WORKING CODE)
-  const mediumTypeData = @json($mediumTypeData);
+  const mediumTypeData = <?php echo json_encode($mediumTypeData, 15, 512) ?>;
   console.log('  Medium Type Data:', mediumTypeData);
   const mediumTypeTotal = Object.values(mediumTypeData).reduce((a, b) => a + b, 0);
   
@@ -760,3 +759,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+<?php /**PATH C:\Users\DELL\Syn-2\resources\views/reports/walkin.blade.php ENDPATH**/ ?>
