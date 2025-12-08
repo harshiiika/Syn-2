@@ -60,7 +60,7 @@
       </div>
 
       <!-- Left side bar accordian -->
-      <div class="accordion accordion-flush" id="accordionFlushExample">
+         <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">

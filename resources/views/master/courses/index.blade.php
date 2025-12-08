@@ -1,4 +1,68 @@
+{{--
 
+SESSION MANAGEMENT BLADE FILE - CODE SUMMARY
+
+
+LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title, 
+           external CSS (Font Awesome, custom emp.css, Bootstrap)
+
+LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
+            notification bell, user dropdown menu with profile and login options
+
+LINE 50-51: Main container div starts
+
+LINE 52-233: Left Sidebar Navigation
+  - LINE 52-58: Sidebar container and admin info display
+  - LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
+    * LINE 61-75: User Management (Employee, Batches Assignment)
+    * LINE 76-99: master (Courses, Batches, Scholarship, Fees, Branch)
+    * LINE 100-114: Session Management (Session, Calendar, Student Migrate)
+    * LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
+    * LINE 132-142: Fees Management (Fees Collection)
+    * LINE 143-155: Attendance Management (Student, Employee)
+    * LINE 156-168: Study Material (Units, Dispatch Material)
+    * LINE 169-179: Test Series Management (Test master)
+    * LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
+
+LINE 234-252: Right Content Area Header
+  - LINE 239-246: Action buttons 
+
+LINE 253-282: Table Controls
+  - LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
+  - LINE 269-274: Search input field with icon
+
+LINE 275-295: Table Structure
+  - LINE 287-289: Empty tbody tag
+  - LINE 290-294: Comment indicating modal fillables location
+
+LINE 296-338: Dynamic session Table Rows (Blade foreach loop)
+  - Displays session data from database
+  - Status badge with color coding
+
+LINE 340-342: Comment for options modals section
+
+LINE 344-375: View Modal (foreach loop for each session)
+  - Read-only display of session details
+
+LINE 377-445: Edit Modal (foreach loop for each session)
+  - LINE 379-382: PHP variables setup for current department and roles
+  - LINE 384-443: Edit form with PUT method
+
+LINE 481-498: Footer Section
+  - LINE 482-484: Pagination info text
+  - LINE 485-493: Pagination controls (Previous, page numbers, Next)
+
+LINE 499-500: Closing divs for main container
+
+LINE 622-624: Closing divs and body tag
+
+LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js, jQuery)
+
+LINE 629-665: AJAX Script for Dynamic Session Addition
+  - Prevents page reload on form submit
+  - Handles form validation errors
+  - Appends new session to table without refresh
+--}}
 
 
 <!DOCTYPE html>
@@ -6,40 +70,38 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Courses Management</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?php echo e(asset('css/emp.css')); ?>">
+  <link rel="stylesheet" href="{{ asset('css/emp.css') }}">
 </head>
 
 <body>
   <!-- Flash Messages -->
-  <?php if(session('success')): ?>
+  @if(session('success'))
     <div class="flash-container">
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?php echo e(session('success')); ?>
-
+        {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
     </div>
-  <?php endif; ?>
+  @endif
 
-  <?php if(session('error')): ?>
+  @if(session('error'))
     <div class="flash-container">
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?php echo e(session('error')); ?>
-
+        {{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
     </div>
-  <?php endif; ?>
+  @endif
 
   <!-- Header -->
   <div class="header">
     <div class="logo">
-      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img" alt="Logo">
+      <img src="{{ asset('images/logo.png.jpg') }}" class="img" alt="Logo">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -86,8 +148,8 @@
     <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
         </ul>
       </div>
     </div>
@@ -105,12 +167,12 @@
     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees master</a></li>
-          <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees master</a></li>
-          <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees master</a></li>
+          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
         </ul>
       </div>
     </div>
@@ -128,8 +190,8 @@
     <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
         </ul>
       </div>
@@ -148,10 +210,10 @@
     <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -169,7 +231,7 @@
     <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('fees.management.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
         </ul>
       </div>
     </div>
@@ -187,8 +249,8 @@
     <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('attendance.employee.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="<?php echo e(route('attendance.student.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
         </ul>
       </div>
     </div>
@@ -206,8 +268,8 @@
     <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
 
         </ul>
       </div>
@@ -226,7 +288,7 @@
     <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route(name: 'test_series.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Test master</a></li>
+          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test master</a></li>
         </ul>
       </div>
     </div>
@@ -244,10 +306,10 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
         </ul>
       </div>
@@ -292,8 +354,7 @@
         <div class="dropdown">
            <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
         aria-expanded="false">
-        <?php echo e(request('per_page', 10)); ?>
-
+        {{ request('per_page', 10) }}
       </button>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item">10</a></li>
@@ -304,7 +365,7 @@
         </div>
       </div>
       <div class="search mb-3">
-    <form method="GET" action="<?php echo e(route('courses.index')); ?>">
+    <form method="GET" action="{{ route('courses.index') }}">
         <div class="input-group">
             <input 
                 type="search" 
@@ -312,7 +373,7 @@
                 id="searchInput" 
                 class="form-control" 
                 placeholder="Search courses..." 
-                value="<?php echo e(request('search')); ?>"
+                value="{{ request('search') }}"
             >
             <button type="submit" class="btn btn-primary" style="background-color: #ff6600; color: white;">
     <i class="fa-solid fa-magnifying-glass"></i>
@@ -336,41 +397,40 @@
         </tr>
       </thead>
       <tbody id="coursesTable">
-        <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-          <?php
+        @foreach($courses as $index => $course)
+          @php
             $courseId = $course->_id ?? $course->id ?? null;
             if (is_object($courseId)) {
               $courseId = (string) $courseId;
             }
-          ?>
+          @endphp
           <tr>
-            <td><?php echo e($index + 1); ?></td>
-            <td><?php echo e($course->course_name); ?></td>
-            <td><?php echo e(ucfirst($course->course_type)); ?></td>
-            <td><?php echo e($course->class_name); ?></td>
-            <td><?php echo e($course->course_code); ?></td>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $course->course_name }}</td>
+            <td>{{ ucfirst($course->course_type) }}</td>
+            <td>{{ $course->class_name }}</td>
+            <td>{{ $course->course_code }}</td>
             <td>
-              <span class="badge <?php echo e($course->status === 'active' ? 'bg-success' : 'bg-danger'); ?>">
-                <?php echo e(ucfirst($course->status)); ?>
-
+              <span class="badge {{ $course->status === 'active' ? 'bg-success' : 'bg-danger' }}">
+                {{ ucfirst($course->status) }}
               </span>
             </td>
             <td>
               <div class="dropdown">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
                         type="button" 
-                        id="actionDropdown<?php echo e($courseId); ?>" 
+                        id="actionDropdown{{ $courseId }}" 
                         data-bs-toggle="dropdown" 
                         aria-expanded="false">
                   <i class="fas fa-ellipsis-v"></i>
                 </button>
                 
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown<?php echo e($courseId); ?>">
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown{{ $courseId }}">
                   <li>
                     <button class="dropdown-item" 
                             type="button"
                             data-bs-toggle="modal"
-                            data-bs-target="#viewCourseModal<?php echo e($courseId); ?>">
+                            data-bs-target="#viewCourseModal{{ $courseId }}">
                             View Details
                     </button>
                   </li>
@@ -379,7 +439,7 @@
                     <button class="dropdown-item" 
                             type="button"
                             data-bs-toggle="modal"
-                            data-bs-target="#editCourseModal<?php echo e($courseId); ?>">
+                            data-bs-target="#editCourseModal{{ $courseId }}">
                             Edit Details
                     </button>
                   </li>
@@ -387,9 +447,9 @@
                   <li><hr class="dropdown-divider"></li>
 
                   <li>
-                    <form method="POST" action="<?php echo e(route('courses.destroy', $courseId)); ?>" class="d-inline w-100">
-                      <?php echo csrf_field(); ?>
-                      <?php echo method_field('DELETE'); ?>
+                    <form method="POST" action="{{ route('courses.destroy', $courseId) }}" class="d-inline w-100">
+                      @csrf
+                      @method('DELETE')
                       <button type="submit" 
                               class="dropdown-item text-danger" 
                               onclick="return confirm('Are you sure you want to delete this course?')">
@@ -401,14 +461,14 @@
               </div>
             </td>
           </tr>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        @endforeach
       </tbody>
     </table>
     <!-- showing entries -->
     <!-- Pagination Info & Controls -->
 <div class="d-flex justify-content-between align-items-center mt-3">
   <div class="show" id="paginationInfo">
-    Showing <span id="showingFrom">1</span> to <span id="showingTo"><?php echo e($courses->count()); ?></span> of <span id="totalEntries"><?php echo e($courses->total()); ?></span> entries
+    Showing <span id="showingFrom">1</span> to <span id="showingTo">{{ $courses->count() }}</span> of <span id="totalEntries">{{ $courses->total() }}</span> entries
   </div>
   <nav>
     <ul class="pagination" id="pagination">
@@ -432,7 +492,7 @@
         <div class="mb-3">
           <label class="form-label fw-bold">Step 1: Download Sample File</label>
           <p class="text-muted small">Get a pre-formatted Excel file with dummy data to understand the required format.</p>
-          <a href="<?php echo e(route('courses.downloadSample')); ?>" class="btn btn-warning w-100" style= "background-color: rgb(224, 83, 1);">
+          <a href="{{ route('courses.downloadSample') }}" class="btn btn-warning w-100" style= "background-color: rgb(224, 83, 1);">
             <i class="fa-solid fa-download"></i> Download Sample File
           </a>
         </div>
@@ -443,8 +503,8 @@
           <label class="form-label fw-bold">Step 2: Upload Your File</label>
           <p class="text-muted small">Select the edited Excel file to import courses in bulk.</p>
           
-          <form id="uploadForm" action="<?php echo e(route('courses.import')); ?>" method="POST" enctype="multipart/form-data">
-            <?php echo csrf_field(); ?>
+          <form id="uploadForm" action="{{ route('courses.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
             
             <div class="mb-3">
               <input type="file" id="importFile" name="import_file" class="form-control" 
@@ -490,8 +550,8 @@
     <!-- Create Course Modal -->
     <div class="modal fade" id="createCourseModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
-        <form action="<?php echo e(route('courses.store')); ?>" method="POST" class="modal-content">
-          <?php echo csrf_field(); ?>
+        <form action="{{ route('courses.store') }}" method="POST" class="modal-content">
+          @csrf
           <div class="modal-header">
             <h5 class="modal-title">Create Course</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -500,27 +560,27 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label">Course Name</label>
-              <input type="text" name="course_name" class="form-control" required value="<?php echo e(old('course_name')); ?>">
+              <input type="text" name="course_name" class="form-control" required value="{{ old('course_name') }}">
             </div>
 
             <div class="mb-3">
               <label class="form-label">Course Type</label>
               <select name="course_type" class="form-control" required>
                 <option value="">Select Type</option>
-                <option value="Pre - Foundation" <?php echo e(old('course_type') == 'Pre - Foundation' ? 'selected' : ''); ?>>Pre - Foundation</option>
-                <option value="Pre - Medical" <?php echo e(old('course_type') == 'Pre - Medical' ? 'selected' : ''); ?>>Pre - Medical</option>
-                <option value="Pre - Engineering" <?php echo e(old('course_type') == 'Pre - Engineering' ? 'selected' : ''); ?>>Pre - Engineering</option>
+                <option value="Pre - Foundation" {{ old('course_type') == 'Pre - Foundation' ? 'selected' : '' }}>Pre - Foundation</option>
+                <option value="Pre - Medical" {{ old('course_type') == 'Pre - Medical' ? 'selected' : '' }}>Pre - Medical</option>
+                <option value="Pre - Engineering" {{ old('course_type') == 'Pre - Engineering' ? 'selected' : '' }}>Pre - Engineering</option>
               </select>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Class Name</label>
-              <input type="text" name="class_name" class="form-control" required value="<?php echo e(old('class_name')); ?>">
+              <input type="text" name="class_name" class="form-control" required value="{{ old('class_name') }}">
             </div>
 
             <div class="mb-3">
               <label class="form-label">Course Code</label>
-              <input type="text" name="course_code" class="form-control" required value="<?php echo e(old('course_code')); ?>">
+              <input type="text" name="course_code" class="form-control" required value="{{ old('course_code') }}">
             </div>
 
             <div class="mb-3">
@@ -548,8 +608,8 @@
             <div class="mb-3">
               <label class="form-label">Status</label>
               <select name="status" class="form-control" required>
-                <option value="active" <?php echo e(old('status') == 'active' ? 'selected' : ''); ?>>Active</option>
-                <option value="inactive" <?php echo e(old('status') == 'inactive' ? 'selected' : ''); ?>>Inactive</option>
+                <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
+                <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
               </select>
             </div>
           </div>
@@ -563,120 +623,120 @@
     </div>
 
     <!-- View Modal -->
-    <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-      <?php
+    @foreach($courses as $course)
+      @php
         $courseId = $course->_id ?? $course->id ?? null;
         if (is_object($courseId)) {
           $courseId = (string) $courseId;
         }
         $subjects = is_array($course->subjects) ? $course->subjects : json_decode($course->subjects, true) ?? [];
-      ?>
-      <div class="modal fade" id="viewCourseModal<?php echo e($courseId); ?>" tabindex="-1"
-        aria-labelledby="viewCourseLabel<?php echo e($courseId); ?>" aria-hidden="true">
+      @endphp
+      <div class="modal fade" id="viewCourseModal{{ $courseId }}" tabindex="-1"
+        aria-labelledby="viewCourseLabel{{ $courseId }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="viewCourseLabel<?php echo e($courseId); ?>">Course Details</h5>
+              <h5 class="modal-title" id="viewCourseLabel{{ $courseId }}">Course Details</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
               <div class="mb-3">
                 <label class="form-label">Course Name</label>
-                <input type="text" class="form-control" value="<?php echo e($course->course_name); ?>" readonly>
+                <input type="text" class="form-control" value="{{ $course->course_name }}" readonly>
               </div>
               <div class="mb-3">
                 <label class="form-label">Course Type</label>
-                <input type="text" class="form-control" value="<?php echo e(ucfirst($course->course_type)); ?>" readonly>
+                <input type="text" class="form-control" value="{{ ucfirst($course->course_type) }}" readonly>
               </div>
               <div class="mb-3">
                 <label class="form-label">Class Name</label>
-                <input type="text" class="form-control" value="<?php echo e($course->class_name); ?>" readonly>
+                <input type="text" class="form-control" value="{{ $course->class_name }}" readonly>
               </div>
               <div class="mb-3">
                 <label class="form-label">Course Code</label>
-                <input type="text" class="form-control" value="<?php echo e($course->course_code); ?>" readonly>
+                <input type="text" class="form-control" value="{{ $course->course_code }}" readonly>
               </div>
               <div class="mb-3">
                 <label class="form-label">Subjects</label>
                 <div class="subject-tags-readonly">
-                  <?php if(count($subjects) > 0): ?>
-                    <?php $__currentLoopData = $subjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subject): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                      <span class="subject-tag-readonly"><?php echo e($subject); ?></span>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                  <?php else: ?>
+                  @if(count($subjects) > 0)
+                    @foreach($subjects as $subject)
+                      <span class="subject-tag-readonly">{{ $subject }}</span>
+                    @endforeach
+                  @else
                     <span class="text-muted">No subjects assigned</span>
-                  <?php endif; ?>
+                  @endif
                 </div>
               </div>
               <div class="mb-3">
                 <label class="form-label">Status</label>
-                <input type="text" class="form-control" value="<?php echo e(ucfirst($course->status)); ?>" readonly>
+                <input type="text" class="form-control" value="{{ ucfirst($course->status) }}" readonly>
               </div>
             </div>
           </div>
         </div>
       </div>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    @endforeach
 
     <!-- Edit Modal -->
-    <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-      <?php
+    @foreach($courses as $course)
+      @php
         $courseId = $course->_id ?? $course->id ?? null;
         if (is_object($courseId)) {
           $courseId = (string) $courseId;
         }
         $subjects = is_array($course->subjects) ? $course->subjects : json_decode($course->subjects, true) ?? [];
-      ?>
-      <div class="modal fade" id="editCourseModal<?php echo e($courseId); ?>" tabindex="-1"
-        aria-labelledby="editCourseLabel<?php echo e($courseId); ?>" aria-hidden="true">
+      @endphp
+      <div class="modal fade" id="editCourseModal{{ $courseId }}" tabindex="-1"
+        aria-labelledby="editCourseLabel{{ $courseId }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
           <div class="modal-content">
-            <form method="POST" action="<?php echo e(route('courses.update', $courseId)); ?>">
-              <?php echo csrf_field(); ?>
-              <?php echo method_field('PUT'); ?>
+            <form method="POST" action="{{ route('courses.update', $courseId) }}">
+              @csrf
+              @method('PUT')
               <div class="modal-header">
-                <h5 class="modal-title" id="editCourseLabel<?php echo e($courseId); ?>">Edit Course</h5>
+                <h5 class="modal-title" id="editCourseLabel{{ $courseId }}">Edit Course</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
                 <div class="mb-3">
                   <label class="form-label">Course Name</label>
-                  <input type="text" class="form-control" name="course_name" value="<?php echo e($course->course_name); ?>" required>
+                  <input type="text" class="form-control" name="course_name" value="{{ $course->course_name }}" required>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Course Type</label>
                   <select name="course_type" class="form-control" required>
-                    <option value="Pre - Foundation" <?php echo e($course->course_type == 'Pre - Foundation' ? 'selected' : ''); ?>>Pre - Foundation</option>
-                    <option value="Pre - Medical" <?php echo e($course->course_type == 'Pre - Medical' ? 'selected' : ''); ?>>Pre - Medical</option>
-                    <option value="Pre - Engineering" <?php echo e($course->course_type == 'Pre - Engineering' ? 'selected' : ''); ?>>Pre - Engineering</option>
+                    <option value="Pre - Foundation" {{ $course->course_type == 'Pre - Foundation' ? 'selected' : '' }}>Pre - Foundation</option>
+                    <option value="Pre - Medical" {{ $course->course_type == 'Pre - Medical' ? 'selected' : '' }}>Pre - Medical</option>
+                    <option value="Pre - Engineering" {{ $course->course_type == 'Pre - Engineering' ? 'selected' : '' }}>Pre - Engineering</option>
                   </select>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Class Name</label>
-                  <input type="text" class="form-control" name="class_name" value="<?php echo e($course->class_name); ?>" required>
+                  <input type="text" class="form-control" name="class_name" value="{{ $course->class_name }}" required>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Course Code</label>
-                  <input type="text" class="form-control" name="course_code" value="<?php echo e($course->course_code); ?>" required>
+                  <input type="text" class="form-control" name="course_code" value="{{ $course->course_code }}" required>
                 </div>
                 <div class="mb-3">
   <label class="form-label">Subjects</label>
   <div class="subject-input-wrapper position-relative">
     <input type="text" 
-           id="editSubjectInput<?php echo e($courseId); ?>" 
+           id="editSubjectInput{{ $courseId }}" 
            class="form-control" 
            placeholder="Subject name"
            autocomplete="off">
     
-    <div id="editSubjectSuggestions<?php echo e($courseId); ?>" 
+    <div id="editSubjectSuggestions{{ $courseId }}" 
          class="list-group position-absolute w-100" 
          style="z-index: 1050; max-height: 200px; overflow-y: auto; display: none;">
     </div>
     
-    <div id="editSubjectTags<?php echo e($courseId); ?>" 
+    <div id="editSubjectTags{{ $courseId }}" 
          class="subject-tags mt-2" 
-         data-subjects='<?php echo json_encode($subjects, 15, 512) ?>' 
-         data-course-id="<?php echo e($courseId); ?>">
+         data-subjects='@json($subjects)' 
+         data-course-id="{{ $courseId }}">
     </div>
   </div>
 </div>
@@ -684,8 +744,8 @@
                 <div class="mb-3">
                   <label class="form-label">Status</label>
                   <select class="form-select" name="status">
-                    <option value="active" <?php echo e($course->status === 'active' ? 'selected' : ''); ?>>Active</option>
-                    <option value="inactive" <?php echo e($course->status === 'inactive' ? 'selected' : ''); ?>>Inactive</option>
+                    <option value="active" {{ $course->status === 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ $course->status === 'inactive' ? 'selected' : '' }}>Inactive</option>
                   </select>
                 </div>
               </div>
@@ -697,7 +757,7 @@
           </div>
         </div>
       </div>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    @endforeach
   </div>
 </div>
 </div>
@@ -832,8 +892,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="<?php echo e(asset('js/courses.js')); ?>"></script>
+  <script src="{{ asset('js/courses.js') }}"></script>
 </body>
 
 </html>
-<?php /**PATH C:\Users\Priyanshi Rathore\Syn-2\resources\views/master/courses/index.blade.php ENDPATH**/ ?>

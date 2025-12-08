@@ -1,4 +1,81 @@
+{{--
 
+BRANCH MANAGEMENT BLADE FILE - CODE SUMMARY
+
+
+LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title,
+external CSS (Font Awesome, custom emp.css, Bootstrap)
+
+LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
+notification bell, user dropdown menu with profile and login options
+
+LINE 50-51: Main container div starts
+
+LINE 52-233: Left Sidebar Navigation
+- LINE 52-58: Sidebar container and admin info display
+- LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
+* LINE 61-75: User Management (Employee, Batches Assignment)
+* LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
+* LINE 100-114: Session Management (Session, Calendar, Student Migrate)
+* LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
+* LINE 132-142: Fees Management (Fees Collection)
+* LINE 143-155: Attendance Management (Student, Employee)
+* LINE 156-168: Study Material (Units, Dispatch Material)
+* LINE 169-179: Test Series Management (Test Master)
+* LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
+
+LINE 234-252: Right Content Area Header
+- LINE 239-246: Action buttons (Add Branch, Upload)
+
+LINE 253-282: Table Controls
+- LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
+- LINE 269-274: Search input field with icon
+
+LINE 275-295: Branch Table Structure
+- LINE 276-286: Table headers
+- LINE 287-289: Empty tbody tag
+- LINE 290-294: Comment indicating modal fillables location
+
+LINE 296-338: Dynamic Branch Table Rows (Blade foreach loop)
+- Displays branch data from database
+- Status badge with color coding
+- Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
+
+LINE 340-342: Comment for options modals section
+
+LINE 344-375: View Modal (foreach loop for each branch emtry)
+- Read-only display of branch details
+- Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
+
+LINE 377-445: Edit Modal (foreach loop for each branch)
+- LINE 379-382: PHP variables setup for current department and roles
+- LINE 384-443: Edit form with PUT method
+- Current Role displayed as read-only
+
+
+LINE 481-498: Footer Section
+- LINE 482-484: Pagination info text
+- LINE 485-493: Pagination controls (Previous, page numbers, Next)
+
+LINE 499-500: Closing divs for main container
+
+LINE 501-503: Comment for Add Branch modal
+
+LINE 504-600: Add Branch Modal
+- LINE 504-509: Modal dialog setup
+- LINE 510-586: Form with POST method to add new branch
+- LINE 587-591: Modal footer with Cancel and Submit buttons
+
+
+LINE 622-624: Closing divs and body tag
+
+LINE 625-628: External JavaScript includes (Bootstrap bundle, emp.js)
+
+LINE 629-665: AJAX Script for Dynamic User Addition
+- Prevents page reload on form submit
+- Handles form validation errors
+- Appends new user to table without refresh
+--}}
 
 <!DOCTYPE html>
 
@@ -12,7 +89,7 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="<?php echo e(asset('css/emp.css')); ?>">
+  <link rel="stylesheet" href="{{asset('css/emp.css')}}">
   <!-- Bootstrap 5.3.6 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
@@ -24,7 +101,7 @@
 
   <div class="header">
     <div class="logo">
-      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img">
+      <img src="{{asset('images/logo.png.jpg')}}" class="img">
 
       <!-- Sidebar toggle button -->
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
@@ -44,7 +121,7 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="<?php echo e(route('profile.index')); ?>""> <i class=" fa-solid fa-user"></i>Profile</a>
+          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class=" fa-solid fa-user"></i>Profile</a>
           </li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
@@ -61,7 +138,7 @@
       </div>
 
       <!-- Left side bar accordian -->
-    <div class="accordion accordion-flush" id="accordionFlushExample">
+     <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -74,8 +151,8 @@
     <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
         </ul>
       </div>
     </div>
@@ -93,12 +170,12 @@
     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-          <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
         </ul>
       </div>
     </div>
@@ -116,8 +193,8 @@
     <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
         </ul>
       </div>
@@ -136,10 +213,10 @@
     <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -157,7 +234,7 @@
     <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('fees.management.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
         </ul>
       </div>
     </div>
@@ -175,8 +252,8 @@
     <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('attendance.employee.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="<?php echo e(route('attendance.student.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
         </ul>
       </div>
     </div>
@@ -194,8 +271,8 @@
     <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
 
         </ul>
       </div>
@@ -214,7 +291,7 @@
     <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('test_series.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
         </ul>
       </div>
     </div>
@@ -232,10 +309,10 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
         </ul>
       </div>
@@ -269,8 +346,7 @@
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <?php echo e(request('per_page', 10)); ?>
-
+                {{ request('per_page', 10) }}
               </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item">10</a></li>
@@ -281,10 +357,10 @@
             </div>
           </div>
           <div class="search">
-            <form method="GET" action="<?php echo e(route('branches.index')); ?>" id="searchForm">
-              <input type="hidden" name="per_page" value="<?php echo e(request('per_page', 10)); ?>">
+            <form method="GET" action="{{ route('branches.index') }}" id="searchForm">
+              <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
               <input type="search" name="search" placeholder="Search" class="search-holder"
-                value="<?php echo e(request('search')); ?>" id="searchInput">
+                value="{{ request('search') }}" id="searchInput">
               <i class="fa-solid fa-magnifying-glass"></i>
             </form>
           </div>
@@ -306,41 +382,39 @@
           </tbody>
           <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-          <?php $__empty_1 = true; $__currentLoopData = $branches; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $branch): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+          @forelse($branches as $index => $branch)
             <tr>
-              <td><?php echo e($branches->firstItem() + $index); ?></td>
-              <td><?php echo e($branch->name); ?></td>
-              <td><?php echo e($branch->city); ?></td>
+              <td>{{ $branches->firstItem() + $index }}</td>
+              <td>{{ $branch->name }}</td>
+              <td>{{ $branch->city }}</td>
               <td>
-                <span class="badge <?php echo e(($branch->status ?? 'Active') === 'Deactivated' ? 'bg-danger' : 'bg-success'); ?>">
-                  <?php echo e($branch->status ?? 'Active'); ?>
-
+                <span class="badge {{ ($branch->status ?? 'Active') === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
+                  {{ $branch->status ?? 'Active' }}
                 </span>
               </td>
 
               <td>
                 <div class="dropdown">
                   <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                    id="actionMenuButton<?php echo e($branch->_id); ?>" data-bs-toggle="dropdown" aria-expanded="false">
+                    id="actionMenuButton{{ $branch->_id }}" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-ellipsis-v"></i>
                   </button>
-                  <ul class="dropdown-menu" aria-labelledby="actionMenuButton<?php echo e($branch->_id); ?>">
+                  <ul class="dropdown-menu" aria-labelledby="actionMenuButton{{ $branch->_id }}">
                     <li>
-                      <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal<?php echo e($branch->_id); ?>">
+                      <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewModal{{ $branch->_id }}">
                         View Details
                       </button>
                     </li>
                     <li>
-                      <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal<?php echo e($branch->_id); ?>">
+                      <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal{{ $branch->_id }}">
                         Edit Details
                       </button>
                     </li>
                     <li>
-                      <form method="POST" action="<?php echo e(route('branches.toggleStatus', $branch->_id)); ?>">
-                        <?php echo csrf_field(); ?>
+                      <form method="POST" action="{{ route('branches.toggleStatus', $branch->_id) }}">
+                        @csrf
                         <button type="submit" class="dropdown-item">
-                          <?php echo e(($branch->status ?? 'Active') === 'Active' ? 'Deactivate' : 'Reactivate'); ?>
-
+                          {{ ($branch->status ?? 'Active') === 'Active' ? 'Deactivate' : 'Reactivate' }}
                         </button>
                       </form>
                     </li>
@@ -348,17 +422,17 @@
                 </div>
               </td>
             </tr>
-          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+          @empty
             <tr>
               <td colspan="5" class="text-center">
-                <?php if(request('search')): ?>
-                  No branches found matching "<?php echo e(request('search')); ?>"
-                <?php else: ?>
+                @if(request('search'))
+                  No branches found matching "{{ request('search') }}"
+                @else
                   No branches available
-                <?php endif; ?>
+                @endif
               </td>
             </tr>
-          <?php endif; ?>
+          @endforelse
 
         </table>
 
@@ -367,53 +441,53 @@
         <!-- View Modal -->
 
 
-        <?php $__currentLoopData = $branches; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $branch): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-          <div class="modal fade" id="viewModal<?php echo e($branch->_id); ?>" tabindex="-1"
-            data-bs-target="#viewModal<?php echo e($branch->_id); ?>" aria-labelledby="viewModalLabel<?php echo e($branch->_id); ?>"
+        @foreach($branches as $branch)
+          <div class="modal fade" id="viewModal{{ $branch->_id }}" tabindex="-1"
+            data-bs-target="#viewModal{{ $branch->_id }}" aria-labelledby="viewModalLabel{{ $branch->_id }}"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="viewModalLabel<?php echo e($branch->_id); ?>">Branch Details</h5>
+                  <h5 class="modal-title" id="viewModalLabel{{ $branch->_id }}">Branch Details</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <div class="mb-3">
                     <label class="form-label">Branch Name</label>
-                    <input type="text" class="form-control" value="<?php echo e($branch->name); ?>" readonly>
+                    <input type="text" class="form-control" value="{{ $branch->name }}" readonly>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Branch City</label>
-                    <input type="text" class="form-control" value="<?php echo e($branch->city); ?>" readonly>
+                    <input type="text" class="form-control" value="{{ $branch->city }}" readonly>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        @endforeach
 
         <!-- Edit Modal -->
-        <?php $__currentLoopData = $branches; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $branch): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-          <div class="modal fade" id="editModal<?php echo e($branch->_id); ?>" tabindex="-1"
-            aria-labelledby="editModalLabel<?php echo e($branch->_id); ?>" aria-hidden="true">
+        @foreach($branches as $branch)
+          <div class="modal fade" id="editModal{{ $branch->_id }}" tabindex="-1"
+            aria-labelledby="editModalLabel{{ $branch->_id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content">
-                <form method="POST" action="<?php echo e(route('branches.update', $branch->_id)); ?>">
-                  <?php echo csrf_field(); ?>
-                  <?php echo method_field('PUT'); ?>
+                <form method="POST" action="{{ route('branches.update', $branch->_id) }}">
+                  @csrf
+                  @method('PUT')
                   <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel<?php echo e($branch->_id); ?>">Edit Branch Details</h5>
+                    <h5 class="modal-title" id="editModalLabel{{ $branch->_id }}">Edit Branch Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <div class="mb-3">
                       <label class="form-label">Branch Name</label>
-                      <input type="text" class="form-control" name="name" value="<?php echo e($branch->name); ?>" required>
+                      <input type="text" class="form-control" name="name" value="{{ $branch->name }}" required>
                     </div>
 
                     <div class="mb-3">
                       <label class="form-label">Branch City</label>
-                      <input type="text" class="form-control" name="city" value="<?php echo e($branch->city); ?>" required>
+                      <input type="text" class="form-control" name="city" value="{{ $branch->city }}" required>
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -424,78 +498,77 @@
               </div>
             </div>
           </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        @endforeach
 
       </div>
       <div class="footer">
         <div class="left-footer">
-          <p>Showing <?php echo e($branches->firstItem() ?? 0); ?> to <?php echo e($branches->lastItem() ?? 0); ?> of <?php echo e($branches->total()); ?>
-
+          <p>Showing {{ $branches->firstItem() ?? 0 }} to {{ $branches->lastItem() ?? 0 }} of {{ $branches->total() }}
             entries
-            <?php if(request('search')): ?>
-              <span class="text-muted">(filtered from <?php echo e(\App\Models\Master\Branch::count()); ?> total entries)</span>
-            <?php endif; ?>
+            @if(request('search'))
+              <span class="text-muted">(filtered from {{ \App\Models\Master\Branch::count() }} total entries)</span>
+            @endif
           </p>
         </div>
         <div class="right-footer">
           <nav aria-label="Page navigation example">
             <ul class="pagination">
-              
-              <?php if($branches->onFirstPage()): ?>
+              {{-- Previous Page Link --}}
+              @if ($branches->onFirstPage())
                 <li class="page-item disabled">
                   <span class="page-link" id="pg1">Previous</span>
                 </li>
-              <?php else: ?>
+              @else
                 <li class="page-item">
-                  <a class="page-link" href="<?php echo e($branches->previousPageUrl()); ?>" id="pg1">Previous</a>
+                  <a class="page-link" href="{{ $branches->previousPageUrl() }}" id="pg1">Previous</a>
                 </li>
-              <?php endif; ?>
+              @endif
 
-              
-              <?php
+              {{-- Pagination Elements --}}
+              @php
                 $start = max($branches->currentPage() - 2, 1);
                 $end = min($start + 4, $branches->lastPage());
                 $start = max($end - 4, 1);
-              ?>
+              @endphp
 
-              <?php if($start > 1): ?>
+              @if($start > 1)
                 <li class="page-item">
-                  <a class="page-link" href="<?php echo e($branches->url(1)); ?>">1</a>
+                  <a class="page-link" href="{{ $branches->url(1) }}">1</a>
                 </li>
-                <?php if($start > 2): ?>
+                @if($start > 2)
                   <li class="page-item disabled">
                     <span class="page-link">...</span>
                   </li>
-                <?php endif; ?>
-              <?php endif; ?>
+                @endif
+              @endif
 
-              <?php for($i = $start; $i <= $end; $i++): ?>
-                <li class="page-item <?php echo e($branches->currentPage() == $i ? 'active' : ''); ?>">
-                  <a class="page-link" href="<?php echo e($branches->url($i)); ?>" id="pg<?php echo e($i); ?>"><?php echo e($i); ?></a>
+              @for ($i = $start; $i <= $end; $i++)
+                <li class="page-item {{ $branches->currentPage() == $i ? 'active' : '' }}">
+                  <a class="page-link" href="{{ $branches->url($i) }}" id="pg{{ $i }}">{{ $i }}</a>
                 </li>
-              <?php endfor; ?>
+              @endfor
 
-              <?php if($end < $branches->lastPage()): ?>
-                <?php if($end < $branches->lastPage() - 1): ?>
+              @if($end < $branches->lastPage())
+                @if($end < $branches->lastPage() - 1)
                   <li class="page-item disabled">
                     <span class="page-link">...</span>
                   </li>
-                <?php endif; ?>
+                @endif
                 <li class="page-item">
-                  <a class="page-link" href="<?php echo e($branches->url($branches->lastPage())); ?>"><?php echo e($branches->lastPage()); ?></a>
+                  <a class="page-link" href="{{ $branches->url($branches->lastPage()) }}">{{ $branches->lastPage() }}</a>
                 </li>
-              <?php endif; ?>
+              @endif
 
-              
-              <?php if($branches->hasMorePages()): ?>
+              {{-- Next Page Link --}}
+              @if ($branches->hasMorePages())
                 <li class="page-item">
-                  <a class="page-link" href="<?php echo e($branches->nextPageUrl()); ?>" id="pg4">Next</a>
+                  <a class="page-link" href="{{ $branches->nextPageUrl() }}" id="pg4">Next</a>
                 </li>
-              <?php else: ?>
+              @else
                 <li class="page-item disabled">
                   <span class="page-link" id="pg4">Next</span>
                 </li>
-              <?php endif; ?>
+              @endif
             </ul>
           </nav>
         </div>
@@ -515,8 +588,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="POST" action="<?php echo e(route('branches.add')); ?>" id="addBranchForm">
-          <?php echo csrf_field(); ?>
+        <form method="POST" action="{{ route('branches.add') }}" id="addBranchForm">
+          @csrf
           <div class="mb-3">
             <label for="branch-name" class="form-label">Branch Name</label>
             <input type="text" name="name" class="form-control" id="branch-name"
@@ -550,7 +623,7 @@
         <div class="mb-3">
           <label class="form-label fw-bold">Step 1: Download Sample File</label>
           <p class="text-muted small">Get a pre-formatted Excel file with dummy data to understand the required format.</p>
-          <a href="<?php echo e(route('branches.downloadSample')); ?>" class="btn btn-warning w-100" style="background-color: rgb(224, 83, 1);">
+          <a href="{{ route('branches.downloadSample') }}" class="btn btn-warning w-100" style="background-color: rgb(224, 83, 1);">
             <i class="fa-solid fa-download"></i> Download Sample File
           </a>
         </div>
@@ -561,8 +634,8 @@
           <label class="form-label fw-bold">Step 2: Upload Your File</label>
           <p class="text-muted small">Select the edited Excel file to import branches in bulk.</p>
           
-          <form id="uploadBranchForm" action="<?php echo e(route('branches.import')); ?>" method="POST" enctype="multipart/form-data">
-            <?php echo csrf_field(); ?>
+          <form id="uploadBranchForm" action="{{ route('branches.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
             
             <div class="mb-3">
               <label for="importBranchFile" class="form-label">Select File</label>
@@ -608,7 +681,7 @@
 <!-- Bootstrap Bundle JS (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-<script src="<?php echo e(asset('js/emp.js')); ?>"></script>
+<script src="{{asset('js/emp.js')}}"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -718,7 +791,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const perPage = this.textContent.trim();
       const currentSearch = new URLSearchParams(window.location.search).get('search') || '';
       
-      let url = '<?php echo e(route("branches.index")); ?>?per_page=' + perPage;
+      let url = '{{ route("branches.index") }}?per_page=' + perPage;
       if (currentSearch) {
         url += '&search=' + encodeURIComponent(currentSearch);
       }
@@ -751,4 +824,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-</html><?php /**PATH C:\Users\Priyanshi Rathore\Syn-2\resources\views/master/branch/branch.blade.php ENDPATH**/ ?>
+</html>
