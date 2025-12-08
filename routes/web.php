@@ -42,9 +42,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Default Route
 // -------------------------
 Route::get('/', function () {
-    return Auth::check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+    return redirect()->route('login');
 })->name('home');
 
 // -------------------------
@@ -100,6 +98,8 @@ Route::post('/batches/{id}/toggle-status', [BatchesController::class, 'toggleSta
 |--------------------------------------------------------------------------
 */
 Route::prefix('courses')->name('courses.')->group(function () {
+        Route::get('/', [OtherFeeController::class, 'index'])->name('master.courses.index');
+
     Route::get('/', [CoursesController::class, 'index'])->name('index');
     Route::get('/create', [CoursesController::class, 'create'])->name('create');
     Route::post('/store', [CoursesController::class, 'store'])->name('store');
@@ -118,6 +118,8 @@ Route::prefix('courses')->name('courses.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('master/batch')->name('batches.')->group(function () {
+        Route::get('/', [OtherFeeController::class, 'index'])->name('master.batches.index');
+
     Route::get('/', [BatchController::class, 'index'])->name('index');
     Route::post('/add', [BatchController::class, 'store'])->name('add');
     Route::put('/{id}/update', [BatchController::class, 'update'])->name('update');
@@ -133,6 +135,8 @@ Route::prefix('master/batch')->name('batches.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('fees-master')->name('fees.')->group(function () {
+        Route::get('/', [OtherFeeController::class, 'index'])->name('master.fees-master.index');
+
     Route::get('/', [FeesMasterController::class, 'index'])->name('index');
     Route::post('/', [FeesMasterController::class, 'store'])->name('store');
     Route::get('/{id}', [FeesMasterController::class, 'show'])->name('show');
@@ -161,6 +165,8 @@ Route::prefix('master/other_fees')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('master/branch')->group(function () {
+        Route::get('/', [OtherFeeController::class, 'index'])->name('master.branches.index');
+
     Route::get('/', [BranchController::class, 'index'])->name('branches.index');
     Route::post('/add', [BranchController::class, 'store'])->name('branches.add');
     Route::put('/{id}', [BranchController::class, 'update'])->name('branches.update');
@@ -190,6 +196,8 @@ Route::prefix('calendar')->name('calendar.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('master')->name('master.')->group(function () {
+        Route::get('/', [OtherFeeController::class, 'index'])->name('master.scholarship.index');
+
     Route::get('/scholarship', [ScholarshipController::class, 'index'])->name('scholarship.index');
     Route::get('/scholarship/data', [ScholarshipController::class, 'index'])->name('scholarship.data');
     Route::post('/scholarship', [ScholarshipController::class, 'store'])->name('scholarship.store');

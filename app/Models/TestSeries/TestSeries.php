@@ -128,7 +128,7 @@ class TestSeries extends Model
     }
 
     /**
-     * ⭐ NEW: Relationship to individual tests
+     *  Relationship to individual tests
      */
     public function tests()
     {
@@ -136,7 +136,7 @@ class TestSeries extends Model
     }
 
     /**
-     * ⭐ NEW: Get only scheduled tests
+     *  Get only scheduled tests
      */
     public function scheduledTests()
     {

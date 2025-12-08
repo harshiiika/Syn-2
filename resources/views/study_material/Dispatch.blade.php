@@ -284,7 +284,8 @@
           <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
               <ul class="menu" id="dropdown-body">
-                <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+
               </ul>
             </div>
           </div>
@@ -371,7 +372,7 @@
 
   <script>
   $(document).ready(function() {
-      // ✅ HARDCODED COURSES - Same as Units
+      //   HARDCODED COURSES - Same as Units
       const coursesData = {
           'Anthesis 11th NEET': [],
           'Momentum 12th NEET': [],
@@ -394,9 +395,7 @@
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           }
       });
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
+
               <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
@@ -531,12 +530,8 @@
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
           <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-<<<<<<< HEAD
           <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
 
-=======
-          <li></li>
->>>>>>> 039c9dbeb4e1ad886ac443818535dd291543c21a
         </ul>
       </div>
     </div>
@@ -572,8 +567,8 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -583,7 +578,6 @@
   </div>
 </div>
 
-=======
             <div class="accordion accordion-flush" id="accordionFlushExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
@@ -621,11 +615,11 @@
 
       loadCourses();
 
-      // ✅ DYNAMIC BATCH LOADING FROM DATABASE - EXACTLY LIKE FEES MANAGEMENT
+      //   DYNAMIC BATCH LOADING FROM DATABASE - EXACTLY LIKE FEES MANAGEMENT
       $('#course_name').on('change', function() {
           let courseName = $(this).val();
           
-          console.log('🔍 Course selected:', courseName);
+          console.log(' Course selected:', courseName);
           
           // Clear error
           $('#course-error').hide();
@@ -644,7 +638,7 @@
               return;
           }
           
-          // ✅ FETCH BATCHES FROM DATABASE - REAL TIME DATA
+          //   FETCH BATCHES FROM DATABASE - REAL TIME DATA
           console.log('📡 Fetching batches from database...');
           $('#batch_name').html('<option value="">Loading batches...</option>').prop('disabled', true);
           
@@ -653,7 +647,7 @@
               type: 'GET',
               data: { course_name: courseName },
               success: function(response) {
-                  console.log('✅ Batches loaded:', response);
+                  console.log('  Batches loaded:', response);
                   
                   let options = '<option value="">Select Batch</option>';
                   
@@ -665,14 +659,14 @@
                           options += `<option value="${batchName}">${batchName}</option>`;
                       });
                       $('#batch_name').html(options).prop('disabled', false);
-                      console.log('✅', response.batches.length, 'batches loaded');
+                      console.log(' ', response.batches.length, 'batches loaded');
                   } else {
                       $('#batch_name').html('<option value="">No batches found</option>').prop('disabled', true);
-                      console.log('⚠️ No batches found for course:', courseName);
+                      console.log('  No batches found for course:', courseName);
                   }
               },
               error: function(xhr) {
-                  console.error('❌ Error fetching batches:', xhr);
+                  console.error(' Error fetching batches:', xhr);
                   $('#batch_name').html('<option value="">Error loading batches</option>').prop('disabled', true);
                   alert('Error loading batches. Please try again.');
               }
@@ -684,15 +678,15 @@
           $('#batch-error').hide();
           $(this).removeClass('select-error');
           currentBatchName = $(this).val();
-          console.log('📌 Batch selected:', currentBatchName);
+          console.log('  Batch selected:', currentBatchName);
       });
 
-      // ✅ Search button click - FETCH REAL DATA FROM DATABASE
+      //   Search button click - FETCH REAL DATA FROM DATABASE
       $('#searchBtn').on('click', function() {
           let courseName = $('#course_name').val();
           let batchName = $('#batch_name').val();
           
-          console.log('🔍 Search clicked:', { courseName, batchName });
+          console.log(' Search clicked:', { courseName, batchName });
           
           // Reset errors
           $('#course-error').hide();
@@ -715,7 +709,7 @@
           }
           
           if (hasError) {
-              console.log('❌ Validation failed');
+              console.log(' Validation failed');
               return;
           }
           
@@ -723,7 +717,7 @@
           loadStudents(courseName, batchName);
       });
 
-      // ✅ Load students function - REAL TIME DATA FROM DATABASE
+      //   Load students function - REAL TIME DATA FROM DATABASE
       function loadStudents(courseName, batchName) {
           console.log('📡 Loading students...', { courseName, batchName });
           
@@ -747,7 +741,7 @@
                   }
                   
                   if (response.students && response.students.length > 0) {
-                      console.log('✅ Found', response.students.length, 'students');
+                      console.log('  Found', response.students.length, 'students');
                       console.log('First student:', response.students[0]);
                       if (response.students[0]._raw_fields) {
                           console.log('Raw field names:', response.students[0]._raw_fields);
@@ -782,14 +776,14 @@
                           `;
                           tbody.append(row);
                       });
-                      console.log('✅ Table rendered with', response.students.length, 'students');
+                      console.log('  Table rendered with', response.students.length, 'students');
                   } else {
                       tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;">No students found for this course and batch</td></tr>');
-                      console.log('⚠️ No students found');
+                      console.log('  No students found');
                   }
               },
               error: function(xhr) {
-                  console.error('❌ Error fetching students:', xhr);
+                  console.error(' Error fetching students:', xhr);
                   tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;color:red;">Error loading students. Please try again.</td></tr>');
               }
           });
@@ -829,7 +823,7 @@
                   student_ids: selectedIds
               },
               success: function(response) {
-                  console.log('✅ Dispatch response:', response);
+                  console.log('  Dispatch response:', response);
                   
                   if (response.success) {
                       alert(response.message);
@@ -846,7 +840,7 @@
                   }
               },
               error: function(xhr) {
-                  console.error('❌ Dispatch error:', xhr);
+                  console.error(' Dispatch error:', xhr);
                   alert('Error dispatching material. Please try again.');
               },
               complete: function() {

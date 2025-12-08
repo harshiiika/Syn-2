@@ -35,7 +35,7 @@ class EmployeeController extends Controller
             return view('attendance.employee.index', compact('branches', 'roles'));
             
         } catch (\Exception $e) {
-            Log::error('❌ Error loading attendance page: ' . $e->getMessage());
+            Log::error(' Error loading attendance page: ' . $e->getMessage());
             return back()->with('error', 'Failed to load attendance page');
         }
     }
@@ -46,7 +46,7 @@ class EmployeeController extends Controller
 public function getData(Request $request)
 {
     try {
-        Log::info('📊 Getting attendance data', ['filters' => $request->all()]);
+        Log::info('  Getting attendance data', ['filters' => $request->all()]);
 
         $branch = $request->get('branch');
         $role = $request->get('role');
@@ -83,8 +83,8 @@ public function getData(Request $request)
         // Get ALL roles for mapping
         $allRoles = Role::all()->keyBy('_id');
 
-        // ⚠️ FIX: Get attendance records with proper date matching
-        Log::info('🔍 Looking for attendance records', [
+        //  Get attendance records with proper date matching
+        Log::info(' Looking for attendance records', [
             'date' => $date,
             'employee_count' => $employees->count()
         ]);
@@ -95,7 +95,7 @@ public function getData(Request $request)
             })->toArray())
             ->get();
 
-        Log::info('📋 Found attendance records', [
+        Log::info('  Found attendance records', [
             'count' => $attendanceRecords->count(),
             'records' => $attendanceRecords->pluck('employee_id', 'status')->toArray()
         ]);
@@ -105,13 +105,13 @@ public function getData(Request $request)
         foreach ($attendanceRecords as $record) {
             $empId = (string) $record->employee_id;
             $attendanceMap[$empId] = $record->status;
-            Log::info('📌 Mapping attendance', [
+            Log::info('  Mapping attendance', [
                 'employee_id' => $empId,
                 'status' => $record->status
             ]);
         }
 
-        // Format data with FIXED role extraction and attendance lookup
+        // Format data with role extraction and attendance lookup
         $data = $employees->map(function($employee) use ($allRoles, $attendanceMap) {
             // Extract role names
             $roleNames = [];
@@ -127,11 +127,11 @@ public function getData(Request $request)
 
             $roleDisplay = !empty($roleNames) ? implode(', ', $roleNames) : 'N/A';
 
-            // ⚠️ FIX: Get attendance status from the map
+            //   Get attendance status from the map
             $employeeIdStr = (string) $employee->_id;
             $status = $attendanceMap[$employeeIdStr] ?? 'not-marked';
 
-            Log::info('👤 Employee data', [
+            Log::info('  Employee data', [
                 'id' => $employeeIdStr,
                 'name' => $employee->name,
                 'status' => $status
@@ -170,7 +170,7 @@ public function getData(Request $request)
         ]);
 
     } catch (\Exception $e) {
-        Log::error('❌ Error getting attendance data: ' . $e->getMessage(), [
+        Log::error(' Error getting attendance data: ' . $e->getMessage(), [
             'trace' => $e->getTraceAsString()
         ]);
         
@@ -197,7 +197,7 @@ public function markAttendance(Request $request)
         $status = $request->status;
         $dateString = $request->date; // e.g., "2025-11-17"
 
-        Log::info('📝 Marking attendance', [
+        Log::info('  Marking attendance', [
             'employee_id' => $employeeId,
             'status' => $status,
             'date' => $dateString,
@@ -228,7 +228,7 @@ public function markAttendance(Request $request)
         }
         $deptDisplay = !empty($deptNames) ? implode(', ', $deptNames) : 'N/A';
 
-        // ⚠️ CRITICAL FIX: Store date as string, not DateTime
+        //   Store date as string, not DateTime
         $attendance = AttendanceRecord::updateOrCreate(
             [
                 'employee_id' => $employeeId,
@@ -254,12 +254,12 @@ public function markAttendance(Request $request)
             'status' => $attendance->status
         ]);
 
-        // ⚠️ VERIFICATION: Try to read it back immediately
+        //   VERIFICATION: Try to read it back immediately
         $verify = AttendanceRecord::where('employee_id', $employeeId)
             ->where('date', $dateString)
             ->first();
 
-        Log::info('🔍 Verification check', [
+        Log::info(' Verification check', [
             'found' => $verify ? 'YES' : 'NO',
             'verify_id' => $verify ? $verify->_id : null
         ]);
@@ -271,7 +271,7 @@ public function markAttendance(Request $request)
         ]);
 
     } catch (\Exception $e) {
-        Log::error('❌ Error marking attendance: ' . $e->getMessage(), [
+        Log::error(' Error marking attendance: ' . $e->getMessage(), [
             'trace' => $e->getTraceAsString()
         ]);
         
@@ -298,7 +298,7 @@ public function markAttendance(Request $request)
             $branch = $request->get('branch');
             $role = $request->get('role');
 
-            Log::info('📝 Marking all attendance', [
+            Log::info('  Marking all attendance', [
                 'status' => $status,
                 'date' => $date,
                 'branch' => $branch,
@@ -386,7 +386,7 @@ public function markAttendance(Request $request)
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error marking bulk attendance: ' . $e->getMessage());
+            Log::error(' Error marking bulk attendance: ' . $e->getMessage());
             
             return response()->json([
                 'success' => false,
@@ -414,7 +414,7 @@ public function markAttendance(Request $request)
             return view('attendance.employee.monthly', compact('branches', 'roles'));
             
         } catch (\Exception $e) {
-            Log::error('❌ Error loading monthly attendance page: ' . $e->getMessage());
+            Log::error(' Error loading monthly attendance page: ' . $e->getMessage());
             return back()->with('error', 'Failed to load monthly attendance page');
         }
     }
@@ -425,7 +425,7 @@ public function markAttendance(Request $request)
  public function getMonthlyData(Request $request)
     {
         try {
-            Log::info('📊 Getting monthly attendance summary', ['filters' => $request->all()]);
+            Log::info('  Getting monthly attendance summary', ['filters' => $request->all()]);
 
             $branch = $request->get('branch');
             $role = $request->get('role');
@@ -490,7 +490,7 @@ public function markAttendance(Request $request)
                 ->where('date', '<=', $lastDate)
                 ->get();
 
-            Log::info('📋 Found attendance records', [
+            Log::info('  Found attendance records', [
                 'count' => $attendanceRecords->count(),
                 'date_range' => $firstDate . ' to ' . $lastDate
             ]);
@@ -558,7 +558,7 @@ public function markAttendance(Request $request)
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error getting monthly summary: ' . $e->getMessage(), [
+            Log::error(' Error getting monthly summary: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
             
@@ -583,7 +583,7 @@ public function markAttendance(Request $request)
             $monthNum = (int) substr($month, 5, 2);
             $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNum, $year);
 
-            Log::info('🔍 Fetching monthly details', [
+            Log::info(' Fetching monthly details', [
                 'employee_id' => $employeeId,
                 'month' => $month,
                 'days_in_month' => $daysInMonth
@@ -599,7 +599,7 @@ public function markAttendance(Request $request)
                 ->get()
                 ->keyBy('date'); // Key by date for easy lookup
 
-            Log::info('📋 Found records', [
+            Log::info('  Found records', [
                 'count' => $records->count(),
                 'dates' => $records->keys()->toArray()
             ]);
@@ -654,7 +654,7 @@ public function markAttendance(Request $request)
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error fetching monthly details: ' . $e->getMessage(), [
+            Log::error(' Error fetching monthly details: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
             

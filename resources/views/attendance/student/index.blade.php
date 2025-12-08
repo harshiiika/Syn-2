@@ -584,8 +584,8 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -808,7 +808,7 @@ function updateFilters() {
 }
 
 function loadAttendanceData() {
-    console.log('📊 Loading student attendance data...');
+    console.log('  Loading student attendance data...');
     updateFilters();
     
     var tbody = $('#attendanceTableBody');
@@ -837,7 +837,7 @@ function loadAttendanceData() {
             }
         },
         error: function(xhr, status, error) {
-            console.error('❌ AJAX Error:', error);
+            console.error(' AJAX Error:', error);
             tbody.html('<tr><td colspan="7" class="text-center text-danger"><p class="mt-2">Error loading data</p></td></tr>');
         }
     });
@@ -850,7 +850,7 @@ function updateStatistics(stats) {
 }
 
 function updateTable(students) {
-    console.log('📋 Updating table with', students.length, 'students');
+    console.log('  Updating table with', students.length, 'students');
     
     var tbody = $('#attendanceTableBody');
     tbody.empty();
@@ -883,11 +883,13 @@ function updateTable(students) {
 function getStatusBadge(status) {
     switch(status) {
         case 'present':
-            return '<span class="status-badge status-present">Present</span>';
+            return '<span class="status-badge status-present"><i class="fas fa-check-circle me-1"></i>Present</span>';
         case 'absent':
-            return '<span class="status-badge status-absent">Absent</span>';
+            return '<span class="status-badge status-absent"><i class="fas fa-times-circle me-1"></i>Absent</span>';
+        case 'weekend':
+            return '<span class="status-badge status-weekend"><i class="fas fa-calendar-times me-1"></i>Weekend</span>';
         default:
-            return '<span class="status-badge status-not-marked">Not-Marked</span>';
+            return '<span class="status-badge status-not-marked"><i class="fas fa-question-circle me-1"></i>Not Marked</span>';
     }
 }
 

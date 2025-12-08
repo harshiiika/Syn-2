@@ -87,7 +87,7 @@ class OnboardController extends Controller
     try {
         $student = Onboard::findOrFail($id);
         
-        // 🔍 DEBUG: Log ALL student course-related fields
+        //  DEBUG: Log ALL student course-related fields
         Log::info('=== STUDENT COURSE DEBUG ===', [
             'student_id' => $id,
             'courseName' => $student->courseName ?? 'NOT SET',
@@ -135,7 +135,7 @@ class OnboardController extends Controller
             ]);
         } else {
             $batches = $allBatches;
-            Log::warning('⚠️ Student course not found, showing all active batches');
+            Log::warning('  Student course not found, showing all active batches');
         }
         
         $courses = Courses::all();
@@ -205,7 +205,7 @@ class OnboardController extends Controller
             // Update fields from request
             $updateData = $request->except(['_token', '_method']);
             
-            // 🔥 CRITICAL FIX: Ensure batch_id is properly set
+            //   CRITICAL  : Ensure batch_id is properly set
             if (!empty($updateData['batchName'])) {
                 $batch = Batch::where('name', $updateData['batchName'])
                     ->orWhere('batch_id', $updateData['batchName'])
@@ -215,14 +215,14 @@ class OnboardController extends Controller
                     $updateData['batch_id'] = (string)$batch->_id;
                     $updateData['batch'] = $batch->batch_id ?? $batch->name;
                     
-                    Log::info('✅ Batch data set during update', [
+                    Log::info('  Batch data set during update', [
                         'batch_id' => $updateData['batch_id'],
                         'batch_name' => $updateData['batch']
                     ]);
                 }
             }
             
-            // 🔥 CRITICAL FIX: Ensure course_id is properly set
+            //   CRITICAL  : Ensure course_id is properly set
             if (!empty($updateData['courseName'])) {
                 $course = Courses::where('name', $updateData['courseName'])
                     ->orWhere('course_name', $updateData['courseName'])
@@ -232,7 +232,7 @@ class OnboardController extends Controller
                     $updateData['course_id'] = (string)$course->_id;
                     $updateData['course'] = $course->name ?? $course->course_name;
                     
-                    Log::info('✅ Course data set during update', [
+                    Log::info('  Course data set during update', [
                         'course_id' => $updateData['course_id'],
                         'course_name' => $updateData['course']
                     ]);
@@ -380,7 +380,7 @@ class OnboardController extends Controller
             // Delete from onboard
             $student->delete();
             
-            Log::info('✅ Transfer to pending fees successful', [
+            Log::info('  Transfer to pending fees successful', [
                 'new_id' => $pendingFeeStudent->_id,
                 'student_name' => $pendingFeeStudent->name
             ]);
@@ -472,7 +472,7 @@ class OnboardController extends Controller
                 ->with('success', "Student '{$onboardStudent->name}' successfully onboarded!");
                 
         } catch (\Exception $e) {
-            Log::error('❌ Transfer to onboard failed', [
+            Log::error(' Transfer to onboard failed', [
                 'error' => $e->getMessage()
             ]);
             

@@ -138,7 +138,7 @@ class PendingFeesController extends Controller
                 return $timeB - $timeA;
             });
             
-            Log::info('✅ History retrieved successfully', [
+            Log::info('  History retrieved successfully', [
                 'student_id' => $id,
                 'total_entries' => count($enrichedHistory),
                 'payment_entries' => count(array_filter($enrichedHistory, function($e) {
@@ -155,7 +155,7 @@ class PendingFeesController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            Log::error('❌ Get history error: ' . $e->getMessage(), [
+            Log::error(' Get history error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
             
@@ -270,7 +270,7 @@ class PendingFeesController extends Controller
                 'name' => $student->name,
             ]);
 
-            //   FIX: Calculate fees if missing
+            //    : Calculate fees if missing
             $totalFees = floatval($student->total_fees ?? 0);
             $gstAmount = floatval($student->gst_amount ?? 0);
             $totalFeesWithGST = floatval($student->total_fees_inclusive_tax ?? 0);
@@ -582,9 +582,9 @@ class PendingFeesController extends Controller
             $newRemainingBalance = max(0, $totalFeesWithGST - $newPaidAmount);
             $isFullyPaid = $newRemainingBalance <= 5;
 
-            // ✅ IF FULLY PAID - Transfer to BOTH collections
+            //   IF FULLY PAID - Transfer to BOTH collections
             if ($isFullyPaid) {
-                Log::info('✅ FEES FULLY PAID - Transferring to BOTH collections');
+                Log::info('  FEES FULLY PAID - Transferring to BOTH collections');
 
                 // Add completion history
                 $completionHistoryEntry = [
@@ -694,11 +694,11 @@ class PendingFeesController extends Controller
                     'senior_secondary_marksheet' => $student->senior_secondary_marksheet ?? null,
                 ];
 
-                // ⭐ SAVE TO BOTH COLLECTIONS
+                //  SAVE TO BOTH COLLECTIONS
                 try {
                     $result = SMstudents::createInBothCollections($smStudentData);
                     
-                    Log::info('✅ Student saved to BOTH collections successfully', [
+                    Log::info('  Student saved to BOTH collections successfully', [
                         'main_student_id' => $result['main_student']->_id,
                         'course_student_id' => $result['course_student']->_id,
                         'course_collection' => $result['course_collection'],
@@ -713,10 +713,10 @@ class PendingFeesController extends Controller
                     ]);
 
                     return redirect()->route('smstudents.index')
-                        ->with('success', "✅ Payment successful! Student '{$result['main_student']->student_name}' enrolled and saved to BOTH main collection and course collection ({$result['course_collection']}). Total Paid: ₹" . number_format($newPaidAmount, 2));
+                        ->with('success', "  Payment successful! Student '{$result['main_student']->student_name}' enrolled and saved to BOTH main collection and course collection ({$result['course_collection']}). Total Paid: ₹" . number_format($newPaidAmount, 2));
                         
                 } catch (\Exception $e) {
-                    Log::error('❌ Failed to save to both collections', [
+                    Log::error(' Failed to save to both collections', [
                         'error' => $e->getMessage()
                     ]);
                     
@@ -726,7 +726,7 @@ class PendingFeesController extends Controller
                 }
             }
 
-            // ✅ PARTIAL PAYMENT - Update pending fees
+            //   PARTIAL PAYMENT - Update pending fees
             $student->paid_fees = $newPaidAmount;
             $student->paidAmount = $newPaidAmount;
             $student->remaining_fees = $newRemainingBalance;
@@ -740,7 +740,7 @@ class PendingFeesController extends Controller
                 ->with('success', "Payment of ₹" . number_format($paymentAmount, 2) . " recorded! Remaining: ₹" . number_format($newRemainingBalance, 2));
 
         } catch (\Exception $e) {
-            Log::error('❌ Payment processing failed', [
+            Log::error(' Payment processing failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -793,7 +793,7 @@ public function transferToSmStudents($id)
         // Generate roll number
         $rollNo = $this->generateRollNumber();
         
-        // ✅ COMPLETE DATA MAPPING - ALL FIELDS FROM BOTH MODELS
+        //   COMPLETE DATA MAPPING - ALL FIELDS FROM BOTH MODELS
         $smStudentData = [
             // ========== PRIMARY FIELDS ==========
             'roll_no' => $rollNo,
@@ -895,7 +895,7 @@ public function transferToSmStudents($id)
             'scholarship_test' => $rawData['scholarshipTest'] ?? 'No',
             'scholarshipTest' => $rawData['scholarshipTest'] ?? 'No',
             
-            // ⭐ CRITICAL FIX: Board Percentage - ALL 3 FORMATS
+            //  CRITICAL  : Board Percentage - ALL 3 FORMATS
             'board_percentage' => $rawData['lastBoardPercentage'] ?? null,
             'last_board_percentage' => $rawData['lastBoardPercentage'] ?? null,
             'lastBoardPercentage' => $rawData['lastBoardPercentage'] ?? null,
@@ -947,7 +947,7 @@ public function transferToSmStudents($id)
             'other_fees' => [],
             'transactions' => [],
             'paymentHistory' => $rawData['paymentHistory'] ?? [],
-            'history' => $rawData['history'] ?? [], // ⭐ TRANSFER COMPLETE HISTORY
+            'history' => $rawData['history'] ?? [], //  TRANSFER COMPLETE HISTORY
             
             // ========== ACTIVITY LOG ==========
             'activities' => [[
@@ -970,17 +970,17 @@ public function transferToSmStudents($id)
             'updated_by' => auth()->user()->name ?? 'System'
         ];
         
-        // ✅ Create SM Student
+        //   Create SM Student
         $smStudent = SMstudents::create($smStudentData);
         
-        // ✅ Update Pending Fees status (DON'T DELETE - Keep for audit)
+        //   Update Pending Fees status (DON'T DELETE - Keep for audit)
         $pendingFees->update([
             'status' => 'completed',
             'transferred_at' => now(),
             'sm_student_id' => (string)$smStudent->_id
         ]);
         
-        Log::info('✅ Transfer to SM Students successful:', [
+        Log::info('  Transfer to SM Students successful:', [
             'sm_student_id' => (string)$smStudent->_id,
             'roll_no' => $rollNo,
             'name' => $smStudentData['student_name'],
@@ -999,7 +999,7 @@ public function transferToSmStudents($id)
             ->with('success', 'Student enrolled successfully! Roll No: ' . $rollNo);
         
     } catch (\Exception $e) {
-        Log::error('❌ Transfer to SM Students failed:', [
+        Log::error(' Transfer to SM Students failed:', [
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString()
         ]);

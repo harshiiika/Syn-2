@@ -158,7 +158,7 @@ class TestSeriesController extends Controller
                     ->with('error', 'Course not found!');
             }
 
-            // ⭐ FIX: Always get course name properly
+            //   : Always get course name properly
             $courseName = $course->course_name ?? $course->name;
             
             Log::info('Course details', [
@@ -189,7 +189,7 @@ class TestSeriesController extends Controller
 
             $testSeriesData = [
                 'course_id' => $validated['course_id'],
-                'course_name' => $courseName, // ⭐ FIX: Always set course_name
+                'course_name' => $courseName, //   : Always set course_name
                 'test_name' => $testName,
                 'test_type' => $validated['test_type'],
                 'subject_type' => $validated['subject_type'],
@@ -376,7 +376,7 @@ class TestSeriesController extends Controller
                 return back()->with('error', 'Test Series not found');
             }
             
-            Log::info('✅ Test Series Found', [
+            Log::info('  Test Series Found', [
                 'test_name' => $testSeries->test_name,
                 'course_id' => $testSeries->course_id,
                 'course_name' => $testSeries->course_name
@@ -389,13 +389,13 @@ class TestSeriesController extends Controller
                 ->orderBy('roll_no', 'asc')
                 ->get();
             
-            Log::info('✅ Students Query Executed', [
+            Log::info('  Students Query Executed', [
                 'count' => $students->count(),
                 'course_id' => $testSeries->course_id
             ]);
             
             if ($students->isEmpty()) {
-                Log::warning('⚠️ No students found for course', [
+                Log::warning('  No students found for course', [
                     'course_id' => $testSeries->course_id,
                     'course_name' => $testSeries->course_name
                 ]);
@@ -404,7 +404,7 @@ class TestSeriesController extends Controller
             return view('test_series.students', compact('testSeries', 'students'));
             
         } catch (\Exception $e) {
-            Log::error('❌ View Students ERROR', [
+            Log::error(' View Students ERROR', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'test_series_id' => $id

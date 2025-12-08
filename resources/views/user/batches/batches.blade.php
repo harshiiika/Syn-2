@@ -284,8 +284,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -484,52 +484,72 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   </div>
 
   <!-- Assign Batch Modal -->
-  <div class="modal fade" id="assignBatchModal" tabindex="-1" aria-labelledby="assignBatchModalLabel"
-    data-bs-target="#assignBatchModal" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content" id="content">
-        <form method="POST" action="{{ route('batches.assign') }}" id="assignBatchForm">
-          @csrf
-          <div class="modal-header">
-            <h1 class="modal-title fs-5">Assign Batches</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="role" class="form-label">Select Role</label>
-              <div class="input-group">
-                <select name="username" class="form-select" required>
-                  <option value="">Select Floor Incharge</option>
+<div class="modal fade" id="assignBatchModal" tabindex="-1" aria-labelledby="assignBatchModalLabel"
+  data-bs-target="#assignBatchModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" id="content">
+      <form method="POST" action="{{ route('batches.assign') }}" id="assignBatchForm">
+        @csrf
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Assign Batches</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+          <!-- Dynamic Floor Incharge Dropdown -->
+          <div class="mb-3">
+            <label for="role" class="form-label">Select Floor Incharge</label>
+            <div class="input-group">
+              <select name="username" class="form-select" required>
+                <option value="">Select Floor Incharge</option>
+                @if(isset($floorIncharges))
+                  @foreach($floorIncharges as $employee)
+                    <option value="{{ $employee->name }}">{{ $employee->name }}</option>
+                  @endforeach
+                @else
+                  <!-- Fallback to hardcoded if floorIncharges not passed -->
                   <option value="Floor Inch Evng (UG)">Floor Inch Evng (UG)</option>
                   <option value="Floor Inch Mrng(UG)">Floor Inch Mrng(UG)</option>
                   <option value="Preeti Acharya">Preeti Acharya</option>
                   <option value="Rajendra Kumar">Rajendra Kumar</option>
                   <option value="Omprakash Jyani">Omprakash Jyani</option>
                   <option value="Test Series Executive">Test Series Executive</option>
-                </select>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="batch" class="form-label">Select Batch</label>
-              <div class="input-group">
-                <select name="batch_id" class="form-select" required>
-                  <option value="">Select Batch</option>
-                  <option value="L1">L1</option>
-                  <option value="L2">L2</option>
-                  <option value="L3">L3</option>
-                  <option value="L4">L4</option>
-                </select>
-              </div>
+                @endif
+              </select>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submit">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="add">Assign</button>
-          </div>
-        </form>
-      </div>
+
+          <!-- Dynamic Batch Dropdown -->
+          <div class="mb-3">
+  <label for="batch" class="form-label">Select Batch <span class="text-danger">*</span></label>
+  <div class="input-group">
+    <select name="batch_id" id="batch_id" class="form-select" required>
+      <option value="">Select Batch</option>
+      @if(isset($availableBatches) && $availableBatches->count() > 0)
+        @foreach($availableBatches as $batch)
+          <option value="{{ $batch->batch_id }}" 
+                  data-shift="{{ $batch->shift }}"
+                  data-start-date="{{ $batch->start_date }}">
+            {{ $batch->batch_id }} - {{ $batch->course }} ({{ $batch->shift }} - {{ $batch->medium }})
+          </option>
+        @endforeach
+      @else
+        <option value="" disabled>No active batches available</option>
+      @endif
+    </select>
+  </div>
+  <small class="form-text text-muted">Shift will be automatically set based on selected batch</small>
+</div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submit">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="add">Assign</button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
 
 </body>
 
@@ -539,89 +559,77 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <script src="{{asset('js/emp.js')}}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+$(document).ready(function() {
+  console.log('Batch assignment page loaded');
 
- $(document).ready(function() {
-  // Ajax for dynamic batch assignment without page reload
+  // Show shift when batch is selected (optional visual feedback)
+  $('#batch_id').on('change', function() {
+    const selectedOption = $(this).find('option:selected');
+    const shift = selectedOption.data('shift');
+    const startDate = selectedOption.data('start-date');
+    
+    if (shift && $('#shift_display').length) {
+      $('#shift_display').val(shift);
+      console.log('Selected batch shift:', shift, 'Start date:', startDate);
+    }
+  });
+
+  // AJAX for batch assignment with page reload (cleanest solution)
   $('#assignBatchForm').on('submit', function (e) {
     e.preventDefault();
+    
+    const submitBtn = $(this).find('button[type="submit"]');
+    const originalText = submitBtn.text();
+    submitBtn.prop('disabled', true).text('Assigning...');
 
     $.ajax({
       url: "{{ route('batches.assign') }}",
       method: 'POST',
       data: $(this).serialize(),
+      dataType: 'json',
       success: function (response) {
+        console.log('Success:', response);
+        
         if (response.status === 'success') {
           // Close modal
           $('#assignBatchModal').modal('hide');
           
-          // Reset form
-          $('#assignBatchForm')[0].reset();
-
-          // Get current row count for serial number
-          const newSerialNo = $('#table tbody tr').length + 1;
-
-          // Append new batch to table with proper structure
-          const newRow = `
-            <tr>
-              <td>${newSerialNo}</td>
-              <td>${response.batch.batch_id}</td>
-              <td>${response.batch.start_date}</td>
-              <td>${response.batch.username || '—'}</td>
-              <td>${response.batch.shift || '—'}</td>
-              <td>
-                <span class="badge ${response.batch.status === 'Deactivated' ? 'bg-danger' : 'bg-success'}">
-                  ${response.batch.status}
-                </span>
-              </td>
-              <td>
-                <div class="dropdown">
-                  <button class="btn btn-sm btn-outline-secondary" type="button" 
-                          id="dropdownMenu${newSerialNo}" 
-                          data-bs-toggle="dropdown" 
-                          aria-expanded="false">
-                    <i class="fas fa-ellipsis-v"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end" 
-                      aria-labelledby="dropdownMenu${newSerialNo}">
-                    <li>
-                      <form method="POST" action="/batches/toggle-status/${response.batch.id}" style="display: inline;">
-                        @csrf
-                        <button type="submit" class="dropdown-item">
-                          ${response.batch.status === 'Active' ? 'Deactivate' : 'Reactivate'}
-                        </button>
-                      </form>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-          `;
+          // Show success message
+          alert('Batch assigned successfully!\nBatch: ' + response.batch.batch_id + '\nShift: ' + response.batch.shift);
           
-          $('#table tbody').append(newRow);
-          
-          // Show success message (optional)
-          alert('Batch assigned successfully!');
+          // Reload page to show new entry
+          window.location.reload();
         }
       },
-      error: function (xhr) {
-        if (xhr.status === 422) {
-          const errors = xhr.responseJSON.errors;
-          console.log('Validation errors:', errors);
-          
-          // Show error message
-          let errorMsg = 'Validation errors:\n';
-          for (let field in errors) {
-            errorMsg += `- ${errors[field][0]}\n`;
+      error: function (xhr, status, error) {
+        console.error('Error:', xhr.responseJSON);
+        
+        let errorMessage = 'An error occurred. Please try again.';
+        
+        if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+          errorMessage = 'Validation errors:\n';
+          for (let field in xhr.responseJSON.errors) {
+            errorMessage += `- ${xhr.responseJSON.errors[field][0]}\n`;
           }
-          alert(errorMsg);
-        } else {
-          alert('An error occurred. Please try again.');
+        } else if (xhr.status === 404) {
+          errorMessage = 'Selected batch not found. Please refresh the page and try again.';
+        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+          errorMessage = xhr.responseJSON.message;
         }
+        
+        alert(errorMessage);
+        submitBtn.prop('disabled', false).text(originalText);
       }
     });
   });
+
+  // Reset modal when closed
+  $('#assignBatchModal').on('hidden.bs.modal', function () {
+    $('#assignBatchForm')[0].reset();
+    if ($('#shift_display').length) {
+      $('#shift_display').val('');
+    }
+  });
 });
-
 </script>
-
 </html>

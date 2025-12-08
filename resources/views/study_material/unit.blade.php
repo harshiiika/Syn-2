@@ -253,8 +253,8 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -601,7 +601,7 @@
               return false;
           }
           
-          // CRITICAL FIX: Get ID from TWO sources!
+          // CRITICAL  : Get ID from TWO sources!
           let unitId = $('#unit_id').val() || $('#unitModal').data('editing-id');
           let isEdit = unitId && unitId.trim() !== '';
           
@@ -694,25 +694,25 @@
           });
       });
 
-      // ULTIMATE FIX: Edit button with DOUBLE backup!
+      // ULTIMATE  : Edit button with DOUBLE backup!
       $(document).on('click', '.edit-btn', function(e) {
           e.preventDefault();
           let clickedUnitId = $(this).data('id');
           
-          console.log('🔍 Edit clicked, ID from button:', clickedUnitId);
+          console.log(' Edit clicked, ID from button:', clickedUnitId);
           
           $.ajax({
               url: '/study_material/units/' + clickedUnitId,
               type: 'GET',
               success: function(response) {
-                  console.log('🔍 Response:', response);
+                  console.log(' Response:', response);
                   
                   if (response.success) {
                       // CRITICAL: Try multiple ID sources!
                       let unitId = response.data._id || response.data.id || clickedUnitId;
                       
-                      console.log('🔍 Got unit ID:', unitId);
-                      console.log('🔍 Setting hidden field...');
+                      console.log(' Got unit ID:', unitId);
+                      console.log(' Setting hidden field...');
                       
                       // Set in hidden field
                       $('#unit_id').val(unitId);
@@ -720,8 +720,8 @@
                       // BACKUP: Store in modal data attribute
                       $('#unitModal').data('editing-id', unitId);
                       
-                      console.log('🔍 Hidden field now contains:', $('#unit_id').val());
-                      console.log('🔍 Modal data now contains:', $('#unitModal').data('editing-id'));
+                      console.log(' Hidden field now contains:', $('#unit_id').val());
+                      console.log(' Modal data now contains:', $('#unitModal').data('editing-id'));
                       
                       $('#session').val(response.data.session);
                       $('#unitModalLabel').text('Edit Units');
@@ -766,13 +766,13 @@
                       $('#unitModal').modal('show');
                       
                       setTimeout(function() {
-                          console.log('✅ After modal shown - Hidden field:', $('#unit_id').val());
-                          console.log('✅ After modal shown - Modal data:', $('#unitModal').data('editing-id'));
+                          console.log('  After modal shown - Hidden field:', $('#unit_id').val());
+                          console.log('  After modal shown - Modal data:', $('#unitModal').data('editing-id'));
                       }, 100);
                   }
               },
               error: function(xhr) {
-                  console.error('❌ Error:', xhr);
+                  console.error(' Error:', xhr);
                   alert('Error loading unit details');
               }
           });

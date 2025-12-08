@@ -98,7 +98,7 @@ async function fetchSubjectSuggestions(query, suggestionsId) {
         } else {
             const noMatch = document.createElement('div');
             noMatch.className = 'list-group-item text-muted';
-            noMatch.textContent = '❌ No matching subjects found';
+            noMatch.textContent = ' No matching subjects found';
             suggestionsContainer.appendChild(noMatch);
             suggestionsContainer.style.display = 'block';
         }

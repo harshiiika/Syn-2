@@ -399,7 +399,7 @@ class SMstudents extends Model
     }
 
     /**
-     * ⭐ SET COLLECTION DYNAMICALLY BASED ON COURSE
+     *  SET COLLECTION DYNAMICALLY BASED ON COURSE
      */
     public function setCollectionByCourse()
     {
@@ -415,7 +415,7 @@ class SMstudents extends Model
     }
 
     /**
-     * ⭐ GENERATE COLLECTION NAME FROM COURSE NAME
+     *  GENERATE COLLECTION NAME FROM COURSE NAME
      * Example: "Thrust Target IIT" → "students_thrust_target_iit"
      */
     private function generateCollectionName($courseName)
@@ -425,7 +425,7 @@ class SMstudents extends Model
     }
 
     /**
-     * ⭐ MOVE STUDENT TO NEW COLLECTION (when course changes)
+     *  MOVE STUDENT TO NEW COLLECTION (when course changes)
      */
     public function moveToCorrectCollection()
     {
@@ -458,7 +458,7 @@ class SMstudents extends Model
 
 
     /**
-     * ⭐ STATIC METHOD: Get all course-based collections
+     *  STATIC METHOD: Get all course-based collections
      */
     public static function getAllCourseCollections()
     {
@@ -536,7 +536,7 @@ class SMstudents extends Model
             $mainStudent->setTable('s_mstudents');
             $mainStudent->save();
             
-            \Log::info('✅ Saved to main collection', [
+            \Log::info('  Saved to main collection', [
                 'collection' => 's_mstudents',
                 'student_id' => $mainStudent->_id,
                 'roll_no' => $mainStudent->roll_no
@@ -548,7 +548,7 @@ class SMstudents extends Model
             $courseStudent->setTable($courseCollectionName);
             $courseStudent->save();
             
-            \Log::info('✅ Saved to course collection', [
+            \Log::info('  Saved to course collection', [
                 'collection' => $courseCollectionName,
                 'student_id' => $courseStudent->_id,
                 'roll_no' => $courseStudent->roll_no
@@ -564,7 +564,7 @@ class SMstudents extends Model
             
         } catch (\Exception $e) {
             \DB::rollBack();
-            \Log::error('❌ Failed to create student in both collections', [
+            \Log::error(' Failed to create student in both collections', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);

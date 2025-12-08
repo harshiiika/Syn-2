@@ -25,7 +25,7 @@ class Pending extends Model
         'category',
         'gender',
         
-        // 🔥 CRITICAL: Parent occupation details
+        //   CRITICAL: Parent occupation details
         'fatherOccupation',
         'fatherGrade',
         'motherOccupation',
@@ -49,11 +49,11 @@ class Pending extends Model
         'courseContent',
         'course_content',
         
-        // 🔥 CRITICAL: Medium and Board
+        //   CRITICAL: Medium and Board
         'medium',
         'board',
         
-        // 🔥 CRITICAL: Academic Details
+        //   CRITICAL: Academic Details
         'previousClass',
         'previousMedium',
         'schoolName',
@@ -61,7 +61,7 @@ class Pending extends Model
         'passingYear',
         'percentage',
         
-        // 🔥 CRITICAL: Scholarship Eligibility
+        //   CRITICAL: Scholarship Eligibility
         'isRepeater',
         'scholarshipTest',
         'lastBoardPercentage',

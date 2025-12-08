@@ -30,7 +30,7 @@ class DispatchController extends Controller
                 return response()->json(['success' => false, 'message' => 'Course required', 'batches' => []], 400);
             }
             
-            // ✅ USE SMSTUDENTS MODEL (actual students with father_name)
+            //   USE SMSTUDENTS MODEL (actual students with father_name)
             $students = SMstudents::where('course_name', $courseName)
                 ->whereNotNull('batch_name')
                 ->where('batch_name', '!=', '')
@@ -62,7 +62,7 @@ class DispatchController extends Controller
             
             Log::info('=== GET STUDENTS ===', ['course' => $courseName, 'batch' => $batchName]);
             
-            // ✅ QUERY SMSTUDENTS - THE ACTUAL STUDENTS TABLE WITH FATHER_NAME
+            //   QUERY SMSTUDENTS - THE ACTUAL STUDENTS TABLE WITH FATHER_NAME
             $query = SMstudents::query();
             if ($courseName) $query->where('course_name', $courseName);
             if ($batchName && $batchName !== 'all') $query->where('batch_name', $batchName);
@@ -83,7 +83,7 @@ class DispatchController extends Controller
                 $data = $student->toArray();
                 $isDispatched = Dispatch::where('student_id', $student->_id)->exists();
                 
-                // ✅ EXTRACT FATHER NAME from SMstudents model
+                //   EXTRACT FATHER NAME from SMstudents model
                 $fatherName = '-';
                 
                 // Search for father field
@@ -96,7 +96,7 @@ class DispatchController extends Controller
                         strpos($lowerField, 'guardian') !== false || 
                         strpos($lowerField, 'parent') !== false) {
                         $fatherName = $value;
-                        Log::info("✅ FATHER NAME FOUND in field '{$field}': {$fatherName}");
+                        Log::info("  FATHER NAME FOUND in field '{$field}': {$fatherName}");
                         break;
                     }
                 }
@@ -111,7 +111,7 @@ class DispatchController extends Controller
                         ?? '-';
                         
                     if ($fatherName !== '-') {
-                        Log::info("✅ FATHER NAME from fallback: {$fatherName}");
+                        Log::info("  FATHER NAME from fallback: {$fatherName}");
                     }
                 }
                 
@@ -133,12 +133,12 @@ class DispatchController extends Controller
                 ];
             });
             
-            Log::info('✅ Students transformed', ['count' => $transformedStudents->count()]);
+            Log::info('  Students transformed', ['count' => $transformedStudents->count()]);
             
             return response()->json(['success' => true, 'students' => $transformedStudents]);
             
         } catch (\Exception $e) {
-            Log::error('❌ getStudents ERROR', [
+            Log::error(' getStudents ERROR', [
                 'error' => $e->getMessage(),
                 'line' => $e->getLine(),
                 'file' => basename($e->getFile())
@@ -164,7 +164,7 @@ class DispatchController extends Controller
                     continue;
                 }
                 
-                // ✅ USE SMSTUDENTS MODEL
+                //   USE SMSTUDENTS MODEL
                 $student = SMstudents::find($studentId);
                 
                 if ($student) {

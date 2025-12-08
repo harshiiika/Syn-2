@@ -31,11 +31,11 @@ class CreateCourseCollections extends Command
         $errors = 0;
 
         if ($courses->isEmpty()) {
-            $this->error('❌ No courses found in the database!');
+            $this->error(' No courses found in the database!');
             return Command::FAILURE;
         }
 
-        $this->info("📚 Found {$courses->count()} courses");
+        $this->info("  Found {$courses->count()} courses");
         
         $db = DB::connection('mongodb')->getMongoDB();
         
@@ -49,13 +49,13 @@ class CreateCourseCollections extends Command
                 ]));
                 
                 if (!empty($existingCollections) && !$this->option('force')) {
-                    $this->warn("⏭️  Collection '{$collectionName}' already exists - skipping");
+                    $this->warn("   Collection '{$collectionName}' already exists - skipping");
                     $skipped++;
                     continue;
                 }
                 
                 if (!empty($existingCollections) && $this->option('force')) {
-                    $this->warn("🔄 Dropping existing collection '{$collectionName}'");
+                    $this->warn("  Dropping existing collection '{$collectionName}'");
                     $db->dropCollection($collectionName);
                 }
                 
@@ -87,20 +87,20 @@ class CreateCourseCollections extends Command
                 $course->student_collection_name = $collectionName;
                 $course->save();
                 
-                $this->info("✅ Created collection: {$collectionName} (Course: {$course->course_name})");
+                $this->info("  Created collection: {$collectionName} (Course: {$course->course_name})");
                 $created++;
                 
             } catch (\Exception $e) {
-                $this->error("❌ Failed to create collection for '{$course->course_name}': " . $e->getMessage());
+                $this->error(" Failed to create collection for '{$course->course_name}': " . $e->getMessage());
                 $errors++;
             }
         }
         
         $this->newLine();
-        $this->info('📊 Summary:');
-        $this->info("   ✅ Created: {$created}");
-        $this->info("   ⏭️  Skipped: {$skipped}");
-        $this->info("   ❌ Errors: {$errors}");
+        $this->info('  Summary:');
+        $this->info("     Created: {$created}");
+        $this->info("      Skipped: {$skipped}");
+        $this->info("    Errors: {$errors}");
         
         if ($errors > 0) {
             return Command::FAILURE;

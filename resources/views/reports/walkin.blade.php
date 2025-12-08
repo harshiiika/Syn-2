@@ -423,7 +423,7 @@ canvas {
                   Onboarded: {{ $analytics['total_onboarding'] }}
                 </small>
                 <small class="d-block mt-1 text-warning">
-                  ⚠️ Check browser console (F12) for course name details
+                    Check browser console (F12) for course name details
                 </small>
               </div>
             @endif
@@ -527,17 +527,17 @@ canvas {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('📊 Walk-in Report - Initializing Charts');
+  console.log('  Walk-in Report - Initializing Charts');
   
   // Course Wise Conversion Bar Chart
   const courseWiseData = @json($courseWiseData);
-  console.log('📊 Course Wise Data:', courseWiseData);
-  console.log('📊 Course Wise Data Length:', courseWiseData ? courseWiseData.length : 0);
+  console.log('  Course Wise Data:', courseWiseData);
+  console.log('  Course Wise Data Length:', courseWiseData ? courseWiseData.length : 0);
   
   if (courseWiseData && courseWiseData.length > 0) {
     const ctx1 = document.getElementById('courseWiseChart');
     if (ctx1) {
-      console.log('✅ Creating bar chart with data:', courseWiseData);
+      console.log('  Creating bar chart with data:', courseWiseData);
       new Chart(ctx1, {
         type: 'bar',
         data: {
@@ -593,16 +593,16 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
       });
-      console.log('✅ Bar chart created successfully');
+      console.log('  Bar chart created successfully');
     }
   } else {
-    console.warn('⚠️ No course wise data - checking what we have:');
+    console.warn('  No course wise data - checking what we have:');
     console.log('Analytics data:', @json($analytics));
   }
 
   // Course Type Donut Chart (ORIGINAL WORKING CODE)
   const courseTypeData = @json($courseTypeData);
-  console.log('📊 Course Type Data:', courseTypeData);
+  console.log('  Course Type Data:', courseTypeData);
   const courseTypeTotal = Object.values(courseTypeData).reduce((a, b) => a + b, 0);
   
   const ctx2 = document.getElementById('courseTypeChart');
@@ -648,12 +648,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     });
-    console.log('✅ Course type chart created');
+    console.log('  Course type chart created');
   }
 
   // Board Type Donut Chart (ORIGINAL WORKING CODE)
   const boardTypeData = @json($boardTypeData);
-  console.log('📊 Board Type Data:', boardTypeData);
+  console.log('  Board Type Data:', boardTypeData);
   const boardTypeTotal = Object.values(boardTypeData).reduce((a, b) => a + b, 0);
   
   const ctx3 = document.getElementById('boardTypeChart');
@@ -698,12 +698,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     });
-    console.log('✅ Board type chart created');
+    console.log('  Board type chart created');
   }
 
   // Medium Type Donut Chart (ORIGINAL WORKING CODE)
   const mediumTypeData = @json($mediumTypeData);
-  console.log('📊 Medium Type Data:', mediumTypeData);
+  console.log('  Medium Type Data:', mediumTypeData);
   const mediumTypeTotal = Object.values(mediumTypeData).reduce((a, b) => a + b, 0);
   
   const ctx4 = document.getElementById('mediumTypeChart');
@@ -748,10 +748,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     });
-    console.log('✅ Medium type chart created');
+    console.log('  Medium type chart created');
   }
   
-  console.log('📊 All charts initialized');
+  console.log('  All charts initialized');
 });
 </script>
 </body>

@@ -338,8 +338,8 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -822,11 +822,11 @@ document.addEventListener("DOMContentLoaded", function () {
         "Pre-Foundation": ["Seedling 10th", "Plumule 9th", "Radicle 8th"]
     };
 
-    // Get values from server - FIXED to use correct DB fields
+    // Get values from server -  ED to use correct DB fields
     const selectedType = "{{ old('courseType', $inquiry->courseType ?? '') }}";
     const selectedCourse = "{{ old('courseName', $inquiry->course_name ?? '') }}";
 
-    console.log('🔍 Page load - Course Type:', selectedType, 'Course Name:', selectedCourse);
+    console.log(' Page load - Course Type:', selectedType, 'Course Name:', selectedCourse);
 
     // Pre-fill on page load
     if (selectedType && courseOptions[selectedType]) {
@@ -890,7 +890,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectedType = "{{ old('courseType', $inquiry->courseType ?? '') }}";
     const selectedCourse = "{{ old('courseName', $inquiry->course_name ?? '') }}";
 
-    console.log('🔍 Page load - Course Type:', selectedType, 'Course Name:', selectedCourse);
+    console.log(' Page load - Course Type:', selectedType, 'Course Name:', selectedCourse);
 
     // Pre-fill on page load
     if (selectedType && courseOptions[selectedType]) {
@@ -927,7 +927,7 @@ document.addEventListener("DOMContentLoaded", function () {
             courseSelect.appendChild(option);
         });
         
-        console.log('📋 Updated courses for type:', type);
+        console.log('  Updated courses for type:', type);
     }
 
     // Allow form submission even if course fields are empty

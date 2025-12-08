@@ -339,8 +339,8 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -450,7 +450,7 @@
                             Shift Update
                           </button> -->
                           @if(empty($batches))
-                              <div class="alert alert-danger">⚠️ No batches found!</div>
+                              <div class="alert alert-danger">  No batches found!</div>
                             @endif
                           <button class="dropdown-item open-shift-modal" data-student-id="{{ $studentId }}">Shift Update</button>
                         </li>
@@ -863,17 +863,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const historyModalEl = document.getElementById('historyModal');
     if (historyModalEl) {
         historyModal = new bootstrap.Modal(historyModalEl);
-        console.log('✅ History Modal initialized');
+        console.log('  History Modal initialized');
     }
 });
 
-// ⭐ GLOBAL FUNCTION - Load Student History
+//  GLOBAL FUNCTION - Load Student History
 function loadStudentHistory(studentId) {
-    console.log('📋 Loading history for student:', studentId);
+    console.log('  Loading history for student:', studentId);
 
     const historyModalBody = document.getElementById('historyModalBody');
     if (!historyModalBody) {
-        console.error('❌ historyModalBody element not found');
+        console.error(' historyModalBody element not found');
         return;
     }
 
@@ -918,7 +918,7 @@ function loadStudentHistory(studentId) {
             });
         })
         .then(json => {
-            console.log('✅ History response:', json);
+            console.log('  History response:', json);
 
             if (!json.success) {
                 throw new Error(json.message || 'Failed to load history');
@@ -1015,7 +1015,7 @@ function loadStudentHistory(studentId) {
 
         })
         .catch(error => {
-            console.error('❌ History error:', error);
+            console.error(' History error:', error);
             historyModalBody.innerHTML = `
                 <div class="text-center text-danger py-5">
                     <i class="fa-solid fa-exclamation-triangle fa-4x mb-3"></i>
@@ -1030,7 +1030,7 @@ function loadStudentHistory(studentId) {
         });
 }
 
-// ⭐ HELPER FUNCTION - Escape HTML
+//  HELPER FUNCTION - Escape HTML
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');

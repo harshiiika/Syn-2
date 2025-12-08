@@ -135,7 +135,7 @@ public function update(Request $request, $id)
             'senior_secondary_marksheet' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
         ]);
 
-        //   CRITICAL FIX: Handle file uploads and preserve existing documents
+        //   CRITICAL  : Handle file uploads and preserve existing documents
         $fileFields = [
             'passport_photo',
             'marksheet', 
@@ -211,7 +211,7 @@ public function update(Request $request, $id)
                 ->with('success', 'Student onboarding completed! All documents transferred successfully.');
                 
         } catch (\Exception $e) {
-            Log::error('❌ ERROR MOVING STUDENT:', [
+            Log::error(' ERROR MOVING STUDENT:', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -334,7 +334,7 @@ public function update(Request $request, $id)
                 ->with('success', "Student '{$onboardStudent->name}' successfully onboarded!");
                 
         } catch (\Exception $e) {
-            Log::error('❌ Transfer to onboard failed', [
+            Log::error(' Transfer to onboard failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);

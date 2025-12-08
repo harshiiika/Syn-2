@@ -57,8 +57,8 @@ class FeesMasterController extends Controller
         
         $data = [
             'course' => $validated['course'],
-            'course_type' => $config['course_type'] ?? null,  //   FIX #1
-            'class_name' => $config['class_name'] ?? null,    //   FIX #2
+            'course_type' => $config['course_type'] ?? null,  
+            'class_name' => $config['class_name'] ?? null,    
             'gst_percent' => $validated['gst_percentage'],
             'classroom_fee' => $validated['classroom_course'] ?? 0,
             'live_fee' => $validated['live_online_course'] ?? 0,
@@ -202,8 +202,8 @@ public function show($id)
         
         $data = [
             'course' => $validated['course'],
-            'course_type' => $config['course_type'] ?? null,  //   FIX #1
-            'class_name' => $config['class_name'] ?? null,    //   FIX #2
+            'course_type' => $config['course_type'] ?? null, 
+            'class_name' => $config['class_name'] ?? null,  
             'gst_percent' => $validated['gst_percentage'],
             'classroom_fee' => $validated['classroom_course'] ?? 0,
             'live_fee' => $validated['live_online_course'] ?? 0,

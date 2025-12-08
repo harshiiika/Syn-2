@@ -40,7 +40,7 @@ class StudentAController extends Controller
             return view('attendance.student.index', compact('branches', 'batches', 'courses'));
             
         } catch (\Exception $e) {
-            Log::error('❌ Error loading student attendance page: ' . $e->getMessage());
+            Log::error(' Error loading student attendance page: ' . $e->getMessage());
             return back()->with('error', 'Failed to load student attendance page');
         }
     }
@@ -51,7 +51,7 @@ class StudentAController extends Controller
     public function getData(Request $request)
     {
         try {
-            Log::info('📊 Getting student attendance data', ['filters' => $request->all()]);
+            Log::info('  Getting student attendance data', ['filters' => $request->all()]);
 
             $branch = $request->get('branch');
             $batch = $request->get('batch');
@@ -87,7 +87,7 @@ class StudentAController extends Controller
             $students = $query->paginate($perPage);
 
             // Get attendance records for the date
-            Log::info('🔍 Looking for attendance records', [
+            Log::info(' Looking for attendance records', [
                 'date' => $date,
                 'student_count' => $students->count()
             ]);
@@ -98,7 +98,7 @@ class StudentAController extends Controller
                 })->toArray())
                 ->get();
 
-            Log::info('📋 Found attendance records', [
+            Log::info('  Found attendance records', [
                 'count' => $attendanceRecords->count()
             ]);
 
@@ -150,7 +150,7 @@ class StudentAController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error getting student attendance data: ' . $e->getMessage(), [
+            Log::error(' Error getting student attendance data: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
             
@@ -177,7 +177,7 @@ class StudentAController extends Controller
             $status = $request->status;
             $dateString = $request->date;
 
-            Log::info('📝 Marking student attendance', [
+            Log::info('  Marking student attendance', [
                 'student_id' => $studentId,
                 'status' => $status,
                 'date' => $dateString
@@ -226,7 +226,7 @@ class StudentAController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error marking student attendance: ' . $e->getMessage());
+            Log::error(' Error marking student attendance: ' . $e->getMessage());
             
             return response()->json([
                 'success' => false,
@@ -252,7 +252,7 @@ class StudentAController extends Controller
             $batch = $request->get('batch');
             $course = $request->get('course');
 
-            Log::info('📝 Marking all student attendance', [
+            Log::info('  Marking all student attendance', [
                 'status' => $status,
                 'date' => $date,
                 'filters' => compact('branch', 'batch', 'course')
@@ -307,7 +307,7 @@ class StudentAController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error marking bulk student attendance: ' . $e->getMessage());
+            Log::error(' Error marking bulk student attendance: ' . $e->getMessage());
             
             return response()->json([
                 'success' => false,
@@ -338,7 +338,7 @@ class StudentAController extends Controller
             return view('attendance.student.monthly', compact('branches', 'batches', 'courses'));
             
         } catch (\Exception $e) {
-            Log::error('❌ Error loading monthly student attendance page: ' . $e->getMessage());
+            Log::error(' Error loading monthly student attendance page: ' . $e->getMessage());
             return back()->with('error', 'Failed to load monthly attendance page');
         }
     }
@@ -349,7 +349,7 @@ class StudentAController extends Controller
     public function getMonthlyData(Request $request)
     {
         try {
-            Log::info('📊 Getting monthly student attendance summary', ['filters' => $request->all()]);
+            Log::info('  Getting monthly student attendance summary', ['filters' => $request->all()]);
 
             $branch = $request->get('branch');
             $batch = $request->get('batch');
@@ -450,7 +450,7 @@ class StudentAController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error getting monthly student summary: ' . $e->getMessage());
+            Log::error(' Error getting monthly student summary: ' . $e->getMessage());
             
             return response()->json([
                 'success' => false,
@@ -515,7 +515,7 @@ class StudentAController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error fetching monthly details: ' . $e->getMessage());
+            Log::error(' Error fetching monthly details: ' . $e->getMessage());
             
             return response()->json([
                 'success' => false,

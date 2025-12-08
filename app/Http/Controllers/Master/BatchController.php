@@ -101,7 +101,6 @@ class BatchController extends Controller
      */
 public function store(Request $request)
 {
-    // Debug logging - FIXED
     Log::info('=== BATCH STORE DEBUG ===');
     Log::info('Request All:', ['data' => $request->all()]);
     Log::info('Course Value:', ['course' => $request->course]);
@@ -163,7 +162,6 @@ public function store(Request $request)
         'status' => 'Active'
     ]);
 
-    // Debug after creation - FIXED
     Log::info('Batch Created:', [
         'id' => $batch->_id,
         'batch_id' => $batch->batch_id,

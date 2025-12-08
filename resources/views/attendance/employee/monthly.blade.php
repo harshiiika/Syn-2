@@ -643,8 +643,8 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -855,7 +855,7 @@ function updateFilters() {
 }
 
 function loadMonthlyData() {
-    console.log('📊 Loading monthly data...');
+    console.log('  Loading monthly data...');
     updateFilters();
     
     var tbody = $('#attendanceTableBody');
@@ -881,14 +881,14 @@ function loadMonthlyData() {
             }
         },
         error: function(xhr, status, error) {
-            console.error('❌ AJAX Error:', error);
+            console.error(' AJAX Error:', error);
             tbody.html('<tr><td colspan="6" class="text-center text-danger"><p class="mt-2">Error loading data</p></td></tr>');
         }
     });
 }
 
 function updateTable(employees) {
-    console.log('📋 Updating table with', employees.length, 'employees');
+    console.log('  Updating table with', employees.length, 'employees');
     
     var tbody = $('#attendanceTableBody');
     tbody.empty();
@@ -949,7 +949,7 @@ function showEmployeeDetails(employeeId, employeeName) {
             }
         },
         error: function(xhr, status, error) {
-            console.error('❌ Error loading details:', error);
+            console.error(' Error loading details:', error);
             modalBody.html('<tr><td colspan="3" class="text-center text-danger"><p class="mt-2">Error loading attendance details</p></td></tr>');
         }
     });
