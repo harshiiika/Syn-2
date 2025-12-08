@@ -15,13 +15,13 @@ LINE 52-233: Left Sidebar Navigation
   - LINE 52-58: Sidebar container and admin info display
   - LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
     * LINE 61-75: User Management (Employee, Batches Assignment)
-    * LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
+    * LINE 76-99: master (Courses, Batches, Scholarship, Fees, Branch)
     * LINE 100-114: Session Management (Session, Calendar, Student Migrate)
     * LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
     * LINE 132-142: Fees Management (Fees Collection)
     * LINE 143-155: Attendance Management (Student, Employee)
     * LINE 156-168: Study Material (Units, Dispatch Material)
-    * LINE 169-179: Test Series Management (Test Master)
+    * LINE 169-179: Test Series Management (Test master)
     * LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
 
 LINE 234-252: Right Content Area Header
@@ -155,13 +155,13 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
     </div>
   </div>
 
-  <!-- Master -->
+  <!-- master -->
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
         id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+        <i class="fa-solid fa-user-group" id="side-icon"></i> master
       </button>
     </h2>
     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -170,8 +170,8 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
           <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
           <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
           <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees master</a></li>
+          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees master</a></li>
           <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
         </ul>
       </div>
@@ -288,7 +288,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
     <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test master</a></li>
         </ul>
       </div>
     </div>
