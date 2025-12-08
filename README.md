@@ -1,31 +1,16 @@
-SYNTHESIS PROJECT
+StudyMate  PROJECT
 @priyanshiii7, @harshiiika, @tisha-dhamu
 
-18-09-25
-Integrated User Management, Session Management, and Student Management, where:
-1. User Management - Employee ✅ CRUD operations all working
-2. Session management - Session ✅ CRUD all working
-3. Student management - Inquiry management ✅ CRUD all working
-4. Pushed the code to the main branch
-
-Next Steps:
-Integrate all the separate folders into one and test if they're working well together.
-Test main for bugs
-
-Project Flow:
-LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY
-
-
 Project Structure:
-1. User Management (Priyanshi)
+1. User Management (Priyanshi - Completed)
    - Employee
    - Batches Assignment
   
-2. Master
-   - Courses
-   - Batches
+2. Master (All Three)
+   - Courses 
+   - Batches 
    - Scholarships
-   - Fees Master
+   - Fees Master 
    - Other Fees Master
    - Branch Management
   
@@ -40,21 +25,21 @@ Project Structure:
    - Pending Fees Student
    - Students
   
-5. Fees Management
+5. Fees Management (Yet to start)
    - Fees Collection
 
-6. Attendance Management
+6. Attendance Management (Yet to start)
    - Employee
    - Student
   
-7. Study Material
+7. Study Material (Yet to start)
    - Units
    - Dispatch Material
 
-8. Test Series Management
+8. Test Series Management (Yet to start)
    - Test Master
   
-9. Reports
+9. Reports (Yet to start)
     - Walk In/Onboarding
     - Attendance
     - Test Series
