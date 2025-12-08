@@ -1,18 +1,5 @@
-SYNTHESIS PROJECT
-@priyanshiii7, @harshiiika, @tisha-dhamu
-
-Work until 10/10/2025
-Integrated User Management, Session Management, and Student Management, where:
-1. Priyanshi - Employee, Batches Assignment, Batches, Branch Assignment ✅ 
-2. Harshika - Session, Courses, Calendar, Student Migrate ✅ 
-3. Tisha - Inquiry, Fees Master, Other fees master ✅ 
-4. Pushed the code; main branch is up to date.
-
-
-Project Flow:
-Updated upstream
-LOGIN -> DASHBOARD -> EMPLOYEE/ SESSION/ INQUIRY /... (Access via left sidebar)
-
+StudyMate  PROJECT
+@priyanshiii7, @harshiiika, @tisha-dhamu, @Bhoomika-Rathore
 
 Project Structure:
 1. User Management (Priyanshi - Completed)

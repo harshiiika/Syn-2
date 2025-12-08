@@ -1,0 +1,714 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.pfp {
+    justify-content: center;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.pfp select {
+    height: 30px;
+    width: 110px;
+    border: 0.5px solid orangered;
+    border-radius: 5px;
+}
+.icons{
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+#side-icon{
+    color: #838383;
+    font-size: 16px;
+}
+.session {
+    align-items: center;
+    flex-direction: row;
+    display: flex;
+    margin: 10px;
+}
+
+.session h5 {
+    color: black;
+    margin: 7px;
+    font-size: 15px;
+}
+
+.fa-bell,
+.fa-user {
+    margin: 5px;
+    color: rgb(190, 51, 0);
+    font-size: 18px;
+}
+
+.text {
+    justify-content: center;
+    align-items: center;
+}
+#dropdown-body{
+    padding: 0 !important;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 0 !important;
+}
+
+.logo {
+    height: 60px;
+    width: 300px;
+    border: 0.1px solid #d8d8d8;
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.img {
+    height: 50px;
+    width: 150px;
+    margin: 4px;
+}
+
+.main-container {
+    max-width: 100%;
+    flex-direction: row;
+    display: flex;
+}
+
+.left {
+    height: 100vh;
+    width: 20%;
+    overflow-y: scroll;
+}
+
+.left h6 {
+    display: flex;
+    margin: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.left p {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.fa-solid,
+.fa-regular {
+    margin: 0px 10px 0px 5px;
+    font-size: 15px;
+}
+
+ .accordion-flush {
+    justify-content: flex-start;
+    align-items: center;
+    height: 10px;
+} 
+.accordion-body{
+    padding: 10px !important;
+}
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+
+}
+
+#accordion-button {
+    font-size: 17px;
+    border: none;
+    height: 38px;
+    padding: 10px !important;
+}
+
+.item {
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+}
+
+.menu li {
+    list-style: none;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 17px;
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Right side css */
+.right {
+    height: 90vh;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: scroll;
+    background-color: #e7e7e7;
+}
+.whole{
+    margin: 5px;
+    padding: 20px;
+    gap: 25px; 
+    width: 97%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: 1px solid #d6d6d6;
+}
+.right h1 {
+    color: rgb(190, 51, 0);
+    margin: 10px;
+}
+
+.toggleBtn {
+    border: none;
+}
+
+#table{
+    font-size: 14px;
+    width: 100%;
+    flex-direction: row;  
+}
+
+.top {
+    justify-content: space-between;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.top h4 {
+    font-size: 20px;
+    color: rgb(224, 83, 1);
+    margin: 10px;
+}
+
+.buttons {
+    flex-direction: row;
+    margin: 10px;
+}
+
+#createCourseBtn {
+    background-color: rgb(224, 83, 1);
+    color: #edfeff;
+    height: 40px;
+    width: 130px;
+    border-radius: 7px;
+    border: 0;
+    margin: 10px;
+}
+ 
+.menu li {
+    list-style: none;
+}
+
+
+.btn-secondary,
+#ellipse {
+    margin: 5px 0px 10px 5px;
+    align-items: center;
+    outline: none;
+    border: 1px solid #000;
+    background-color: #ffffff;
+    border: none;
+}
+
+
+.dd {
+    margin: 5px;
+    width: 100%;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+#toggle-btn{
+    background-color: transparent;
+    justify-content: center;
+    display: flex;
+    border: none;
+    cursor: pointer; 
+}
+
+.fa-bars:hover{ 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.fa-bars{
+    margin-right: 35px;
+}
+#serial{
+    margin-left: 15px;
+}
+
+.line {
+    flex-direction: row; 
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.search {
+    flex-direction: row;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.search-text {
+    font-size: 15px;
+    margin: 5px;
+}
+
+#one{
+    color: rgb(224, 83, 1); 
+}
+.search-holder{
+    border: 1px solid rgb(224, 83, 1);
+    border-radius: 5px;
+    outline: none;
+    padding: 5px;
+}
+
+
+/* Base style for the dropdown button */
+#number {
+    margin: 5px 0px 10px 5px !important;
+    align-items: center !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    color: #000 !important;
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    line-height: normal !important;
+}
+
+/* Prevent width changes on hover */
+#number:hover {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Prevent width changes on focus */
+#number:focus {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Prevent width changes when dropdown is open (aria-expanded) */
+#number[aria-expanded="true"] {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Prevent width changes when dropdown has .show class */
+#number.show {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+}
+
+/* Prevent width changes on active state */
+#number:active,
+#number.active {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Override Bootstrap's btn-secondary styles */
+#number.btn-secondary,
+#number.btn-secondary:hover,
+#number.btn-secondary:focus,
+#number.btn-secondary:active,
+#number.btn-secondary.active,
+#number.btn-secondary.show,
+#number.btn-secondary[aria-expanded="true"] {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+}
+
+/* Override when parent .dropdown has .show class */
+.dropdown.show > #number,
+.dropdown.show > #number.dropdown-toggle {
+    width: 80px !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #000 !important;
+    background-color: #ffffff !important;
+}
+
+/* Ensure dropdown arrow doesn't affect layout */
+#number.dropdown-toggle::after {
+    margin-left: 0.5em;
+    vertical-align: middle;
+}
+
+/* Style the dropdown menu to match button width */
+.line .dropdown-menu {
+    min-width: 80px !important;
+}
+#bottom{
+    display: flex;
+    align-items: center;
+    width: 98%;
+    justify-content: flex-end;
+}
+
+#pagination{
+    border: 1px solid #d4d4d4;
+}
+#pg1{
+    height: 30px;
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    color: #838383;
+    align-items: center;
+}
+#pg2{
+height: 30px;
+    width: 50px;
+    display: flex;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    background-color:  rgb(224, 83, 1);
+}
+#pg3{
+    height: 30px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.show{
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    font-size: 12px;
+}
+
+.toast-container {
+    position: fixed !important;  /* Fixed, not absolute */
+    right: 20px;
+    top: 20px;
+    z-index: 1060;
+}
+
+#toast {
+    justify-content: flex-start;  /* Changed from center */
+    display: flex;
+    align-items: center;
+    border-left: 5px solid red;
+    background-color: #fff;
+    font-size: 14px;             /* Reduced from 17px */
+    min-height: 50px;            /* Changed from fixed height */
+    max-width: 400px;            /* Reduced from 800px */
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#liveToastBtn{
+    background-color: rgb(224, 83, 1);
+    border: none;
+    margin: 7px;
+}
+.fa-circle-xmark{
+    font-size: 27px;
+}
+
+
+/* Modal overall background */
+.modal-content {
+    color: rgb(224, 83, 1) !important;
+    border-radius: 10px !important;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+
+/* Buttons inside modal */
+ .modal-footer 
+ .btn-primary
+  { 
+    background-color: rgb(224, 83, 1) !important; 
+    border-color: rgb(224, 83, 1) !important;
+} 
+/* Force Bootstrap modal close button to black */
+.close-btn {
+  filter: invert(1); 
+}
+
+.dropdown-toggle::after {
+  display: none !important; /* Remove default Bootstrap arrow */
+}
+
+/* Ensure dropdown menu appears above table */
+.dropdown-menu {
+  z-index: 1055 !important;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Fix dropdown positioning in table */
+.table .dropdown {
+  position: relative;
+}
+
+.table .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    margin-top: 0.125rem;
+    min-width: 150px;            /* Ensure minimum width */
+}
+
+/* Style dropdown items */
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Fix button group alignment if using alternative */
+.btn-group .btn {
+  margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+  margin-right: 0;
+}
+
+#ellipsis, [id^="actionDropdown"] {
+    background-color: transparent;
+    color: #6c757d;
+    border: none;
+    font-size: 0.875rem;
+}
+
+#ellipsis:hover, [id^="actionDropdown"]:hover {
+    background-color: #e9ecef;
+    color: #495057;
+    cursor: pointer;
+    border: none!important;
+    text-decoration: none;
+}
+
+#ellipsis:focus, [id^="actionDropdown"]:focus {
+    box-shadow: none!important;
+    outline: none!important;
+    border: none!important;
+    text-decoration: none !important;
+}
+
+/* Subject Tags Styling */
+.subject-input-wrapper {
+    position: relative;
+}
+
+.subject-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+.subject-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: rgb(224, 83, 1);
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.subject-tag:hover {
+    background-color: rgb(200, 70, 0);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subject-tag .remove-subject {
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 4px;
+    transition: transform 0.2s ease;
+}
+
+.subject-tag .remove-subject:hover {
+    transform: scale(1.2);
+}
+
+/* Subject tags in View Modal (readonly) */
+.subject-tags-readonly {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 40px;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+.subject-tag-readonly {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: rgb(224, 83, 1);
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Modal body adjustments */
+.modal-body .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    border-color: rgb(224, 83, 1);
+    box-shadow: 0 0 0 0.2rem rgba(224, 83, 1, 0.25);
+}
+
+.modal-body .form-control[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* Ensure modals have consistent styling */
+.modal-dialog {
+    max-width: 600px;
+}
+
+.modal-dialog-scrollable .modal-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+/* Shake animation for invalid input */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake-input {
+    animation: shake 0.5s;
+    border-color: #dc3545 !important;
+}
+
+/* Fade-in animation (for error messages, reused elsewhere if needed) */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Error message styling */
+.subject-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    animation: fadeIn 0.3s;
+}
+
+.subject-error i {
+    margin-right: 4px;
+}
+
+/* Suggestion dropdown "no match" styling */
+#subjectSuggestions .list-group-item.text-muted,
+[id^="editSubjectSuggestions"] .list-group-item.text-muted {
+    cursor: default;
+    background-color: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+    font-style: italic;
+}
