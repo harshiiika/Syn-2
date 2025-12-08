@@ -18,7 +18,7 @@
 //     {
 //         $dryRun = $this->option('dry-run');
 
-//         $this->info('🎓 Finding students without roll numbers...');
+//         $this->info('  Finding students without roll numbers...');
 //         $this->newLine();
 
 //         // Find students without roll numbers
@@ -37,7 +37,7 @@
 //         $this->newLine();
 
 //         if ($dryRun) {
-//             $this->warn('🔍 DRY RUN MODE - No changes will be saved');
+//             $this->warn(' DRY RUN MODE - No changes will be saved');
 //             $this->newLine();
 //         }
 
@@ -71,7 +71,7 @@
 //             } catch (\Exception $e) {
 //                 $failed++;
 //                 $this->newLine();
-//                 $this->error("❌ Failed for {$student->student_name}: " . $e->getMessage());
+//                 $this->error(" Failed for {$student->student_name}: " . $e->getMessage());
 //             }
 
 //             $bar->advance();
@@ -82,15 +82,15 @@
 
 //         // Summary
 //         $this->info('=================================');
-//         $this->info('📊 SUMMARY:');
+//         $this->info('  SUMMARY:');
 //         $this->info('=================================');
 //         $this->info("  Assigned: {$assigned}");
-//         $this->error("❌ Failed: {$failed}");
-//         $this->info("📝 Total: {$students->count()}");
+//         $this->error(" Failed: {$failed}");
+//         $this->info("  Total: {$students->count()}");
         
 //         if ($dryRun) {
 //             $this->newLine();
-//             $this->warn('⚠️  This was a DRY RUN. Run without --dry-run to save changes.');
+//             $this->warn('   This was a DRY RUN. Run without --dry-run to save changes.');
 //         } else {
 //             $this->newLine();
 //             $this->info('  Roll numbers have been assigned and saved!');
@@ -123,7 +123,7 @@ class AssignRollNumbers extends Command
         $batchFilter = $this->option('batch');
         $courseFilter = $this->option('course');
 
-        $this->info('🎓 Finding students without roll numbers...');
+        $this->info('  Finding students without roll numbers...');
         $this->newLine();
 
         // Build query
@@ -138,18 +138,18 @@ class AssignRollNumbers extends Command
         // Apply filters
         if ($batchFilter) {
             $query->where('batch_id', $batchFilter);
-            $this->info("📚 Filtering by batch: {$batchFilter}");
+            $this->info("  Filtering by batch: {$batchFilter}");
         }
 
         if ($courseFilter) {
             $query->where('course_id', $courseFilter);
-            $this->info("🎯 Filtering by course: {$courseFilter}");
+            $this->info("  Filtering by course: {$courseFilter}");
         }
 
         $students = $query->with(['course', 'batch'])->get();
 
         if ($students->isEmpty()) {
-            $this->info('✅ All students already have roll numbers!');
+            $this->info('  All students already have roll numbers!');
             return 0;
         }
 
@@ -157,7 +157,7 @@ class AssignRollNumbers extends Command
         $this->newLine();
 
         if ($dryRun) {
-            $this->warn('🔍 DRY RUN MODE - No changes will be saved');
+            $this->warn(' DRY RUN MODE - No changes will be saved');
             $this->newLine();
         }
 
@@ -209,7 +209,7 @@ class AssignRollNumbers extends Command
                     $student->roll_no = $newRollNo;
                     $student->save();
                     
-                    Log::info('✅ Roll number assigned', [
+                    Log::info('  Roll number assigned', [
                         'student_id' => (string)$student->_id,
                         'name' => $student->student_name ?? $student->name,
                         'old_roll_no' => $oldRollNo,
@@ -233,7 +233,7 @@ class AssignRollNumbers extends Command
                     'error' => $e->getMessage()
                 ];
                 
-                Log::error('❌ Failed to assign roll number', [
+                Log::error(' Failed to assign roll number', [
                     'student_id' => (string)$student->_id,
                     'error' => $e->getMessage()
                 ]);
@@ -247,15 +247,15 @@ class AssignRollNumbers extends Command
 
         // Show detailed results
         $this->info('=================================');
-        $this->info('📋 DETAILED RESULTS:');
+        $this->info('  DETAILED RESULTS:');
         $this->info('=================================');
         $this->newLine();
 
         foreach ($results as $result) {
             if (isset($result['error'])) {
-                $this->error("❌ {$result['name']}: {$result['error']}");
+                $this->error(" {$result['name']}: {$result['error']}");
             } else {
-                $this->line("✅ {$result['name']}");
+                $this->line("  {$result['name']}");
                 $this->line("   Course: {$result['course']} | Batch: {$result['batch']}");
                 $this->line("   {$result['old']} → {$result['new']}");
                 $this->newLine();
@@ -265,20 +265,20 @@ class AssignRollNumbers extends Command
         // Summary
         $this->newLine();
         $this->info('=================================');
-        $this->info('📊 SUMMARY:');
+        $this->info('  SUMMARY:');
         $this->info('=================================');
-        $this->info("✅ Assigned: {$assigned}");
+        $this->info("  Assigned: {$assigned}");
         if ($failed > 0) {
-            $this->error("❌ Failed: {$failed}");
+            $this->error(" Failed: {$failed}");
         }
-        $this->info("📝 Total: {$students->count()}");
+        $this->info("  Total: {$students->count()}");
         
         if ($dryRun) {
             $this->newLine();
-            $this->warn('⚠️  This was a DRY RUN. Run without --dry-run to save changes.');
+            $this->warn('   This was a DRY RUN. Run without --dry-run to save changes.');
         } else {
             $this->newLine();
-            $this->info('✅ Roll numbers have been assigned and saved!');
+            $this->info('  Roll numbers have been assigned and saved!');
         }
 
         return $failed > 0 ? 1 : 0;

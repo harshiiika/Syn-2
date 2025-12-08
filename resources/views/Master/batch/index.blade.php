@@ -381,7 +381,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       <td>{{ $batch->batch_id ?? '—' }}</td>
       <td>{{ $batch->class ?? '—' }}</td>
       
-      <!-- FIXED: Display course name properly -->
+      <!--  ED: Display course name properly -->
       <td>
         @if(!empty($batch->course))
           {{ $batch->course }}

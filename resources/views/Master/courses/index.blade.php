@@ -479,7 +479,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
 
 
 
-      <!-- UPLOAD MODAL - NEW FEATURE -->
+      <!-- UPLOAD MODAL -->
 <div class="modal fade" id="uploadCourseModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

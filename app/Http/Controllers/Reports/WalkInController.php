@@ -39,7 +39,7 @@ class WalkinController extends Controller
             // Get medium type distribution
             $mediumTypeData = $this->getMediumTypeDistribution($session);
             
-            Log::info('🎯 FINAL Walk-in Report Data:', [
+            Log::info('  FINAL Walk-in Report Data:', [
                 'session' => $session,
                 'analytics' => $analytics,
                 'course_wise_data' => $courseWiseData,
@@ -82,7 +82,7 @@ class WalkinController extends Controller
         // Get all onboarding records to analyze
         $allOnboard = Onboard::all();
         
-        Log::info('📋 Sample onboard records', [
+        Log::info('  Sample onboard records', [
             'total_count' => $allOnboard->count(),
             'sample_data' => $allOnboard->take(2)->map(function($item) {
                 return [
@@ -148,7 +148,7 @@ class WalkinController extends Controller
             'recorded_online_class' => $recordedOnlineClass,
         ];
         
-        Log::info('✅ Analytics Calculated', $result);
+        Log::info('  Analytics Calculated', $result);
         
         return $result;
     }
@@ -160,14 +160,14 @@ class WalkinController extends Controller
      */
      private function getCourseWiseConversion($session)
     {
-        Log::info('🔍 Starting course-wise conversion analysis...');
+        Log::info(' Starting course-wise conversion analysis...');
         
         // Get ALL distinct course names from both collections
         $inquiryCourses = Inquiry::all()->pluck('course_name')->filter()->unique();
         $onboardCoursesField1 = Onboard::all()->pluck('courseName')->filter()->unique();
         $onboardCoursesField2 = Onboard::all()->pluck('course_name')->filter()->unique();
         
-        Log::info('📚 Found course names in collections:', [
+        Log::info('  Found course names in collections:', [
             'inquiry_courses' => $inquiryCourses->toArray(),
             'onboard_courseName_field' => $onboardCoursesField1->toArray(),
             'onboard_course_name_field' => $onboardCoursesField2->toArray(),
@@ -181,7 +181,7 @@ class WalkinController extends Controller
             ->filter()
             ->values();
         
-        Log::info('🔗 All unique course names found:', [
+        Log::info('  All unique course names found:', [
             'total_unique_courses' => $allCourseNames->count(),
             'course_list' => $allCourseNames->toArray()
         ]);
@@ -200,7 +200,7 @@ class WalkinController extends Controller
                   ->orWhere('course_name', $courseName);
             })->count();
             
-            Log::info("📊 Course: {$courseName}", [
+            Log::info("  Course: {$courseName}", [
                 'walkin' => $walkinCount,
                 'onboarding' => $onboardingCount
             ]);
@@ -214,7 +214,7 @@ class WalkinController extends Controller
             }
         }
         
-        Log::info('✅ Course wise data prepared', [
+        Log::info('  Course wise data prepared', [
             'total_courses_with_data' => count($data),
             'data' => $data
         ]);

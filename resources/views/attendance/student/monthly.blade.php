@@ -838,7 +838,7 @@ function updateFilters() {
 }
 
 function loadMonthlyData() {
-    console.log('📊 Loading monthly student data...');
+    console.log('  Loading monthly student data...');
     updateFilters();
     
     var tbody = $('#attendanceTableBody');
@@ -865,14 +865,14 @@ function loadMonthlyData() {
             }
         },
         error: function(xhr, status, error) {
-            console.error('❌ AJAX Error:', error);
+            console.error(' AJAX Error:', error);
             tbody.html('<tr><td colspan="6" class="text-center text-danger"><p class="mt-2">Error loading data</p></td></tr>');
         }
     });
 }
 
 function updateTable(students) {
-    console.log('📋 Updating table with', students.length, 'students');
+    console.log('  Updating table with', students.length, 'students');
     
     var tbody = $('#attendanceTableBody');
     tbody.empty();
@@ -933,7 +933,7 @@ function showStudentDetails(studentId, studentName) {
             }
         },
         error: function(xhr, status, error) {
-            console.error('❌ Error loading details:', error);
+            console.error(' Error loading details:', error);
             modalBody.html('<tr><td colspan="3" class="text-center text-danger"><p class="mt-2">Error loading attendance details</p></td></tr>');
         }
     });

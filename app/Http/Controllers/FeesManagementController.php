@@ -75,7 +75,7 @@ class FeesManagementController extends Controller
         try {
             $search = $request->input('search', '');
             
-            Log::info('🔍 Search request received: ' . $search);
+            Log::info(' Search request received: ' . $search);
             
             $query = SMstudents::query();
             
@@ -92,7 +92,7 @@ class FeesManagementController extends Controller
             
             $students = $query->limit(100)->get();
             
-            Log::info('📊 Students found: ' . $students->count());
+            Log::info('  Students found: ' . $students->count());
             
             $data = [];
             foreach ($students as $index => $student) {
@@ -130,7 +130,7 @@ class FeesManagementController extends Controller
                 ];
             }
 
-            Log::info('✅ Returning ' . count($data) . ' students');
+            Log::info('  Returning ' . count($data) . ' students');
 
             return response()->json([
                 'success' => true, 
@@ -140,7 +140,7 @@ class FeesManagementController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            Log::error('❌ Search Student Error: ' . $e->getMessage());
+            Log::error(' Search Student Error: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
             
             return response()->json([
@@ -157,7 +157,7 @@ class FeesManagementController extends Controller
             $fromDate = $request->input('from_date');
             $toDate = $request->input('to_date');
             
-            Log::info('📅 Filter transactions from ' . $fromDate . ' to ' . $toDate);
+            Log::info('  Filter transactions from ' . $fromDate . ' to ' . $toDate);
             
             $query = SMstudents::where('paid_fees', '>', 0);
             
@@ -218,7 +218,7 @@ class FeesManagementController extends Controller
         $batchId = $request->input('batch_id', '');
         $feeStatus = $request->input('fee_status', '');
         
-        Log::info('📊 Fee Status Search Request:', [
+        Log::info('  Fee Status Search Request:', [
             'course_id' => $courseId,
             'batch_id' => $batchId,
             'fee_status' => $feeStatus
@@ -245,7 +245,7 @@ class FeesManagementController extends Controller
         // FILTER 1: BY COURSE
         if ($courseId && isset($courseMapping[$courseId])) {
             $courseName = $courseMapping[$courseId];
-            Log::info('🔍 Applying course filter: ' . $courseName);
+            Log::info(' Applying course filter: ' . $courseName);
             
             $query->where(function($q) use ($courseName) {
                 $q->where('course_name', '=', $courseName)
@@ -259,7 +259,7 @@ class FeesManagementController extends Controller
         
         // FILTER 2: BY BATCH (OPTIONAL - If matches after course, fine. If not, ignore and continue)
         if ($batchId && $batchId !== '') {
-            Log::info('🎯 Attempting batch filter: ' . $batchId);
+            Log::info('  Attempting batch filter: ' . $batchId);
             
             $batch = Batch::find($batchId);
             if ($batch) {
@@ -284,7 +284,7 @@ class FeesManagementController extends Controller
                 
                 // If batch filter eliminated all results, remove it
                 if ($countAfterBatch == 0) {
-                    Log::warning('⚠️ Batch filter returned 0 results, reverting to course filter only');
+                    Log::warning('  Batch filter returned 0 results, reverting to course filter only');
                     
                     // Rebuild query without batch filter
                     $query = SMstudents::query();
@@ -303,13 +303,13 @@ class FeesManagementController extends Controller
                     $appliedFilters[] = 'batch:' . $batchName;
                 }
             } else {
-                Log::warning('⚠️ Batch not found: ' . $batchId);
+                Log::warning('  Batch not found: ' . $batchId);
             }
         }
         
         // FILTER 3: BY FEE STATUS
         if ($feeStatus && $feeStatus !== 'All' && $feeStatus !== '') {
-            Log::info('💰 Applying fee status filter: ' . $feeStatus);
+            Log::info('  Applying fee status filter: ' . $feeStatus);
             
             if (strtolower($feeStatus) === 'paid') {
                 $query->where(function($q) {
@@ -333,12 +333,12 @@ class FeesManagementController extends Controller
         // EXECUTE QUERY
         $students = $query->limit(500)->get();
         
-        Log::info('✅ Final query result: ' . $students->count() . ' students');
+        Log::info('  Final query result: ' . $students->count() . ' students');
         Log::info('Applied filters: ' . implode(', ', $appliedFilters));
         
         // FALLBACK: If no results and filters were applied, get all students with course
         if ($students->count() == 0 && !empty($appliedFilters)) {
-            Log::warning('🔄 No results with applied filters, trying course only...');
+            Log::warning('  No results with applied filters, trying course only...');
             
             $query = SMstudents::query();
             
@@ -353,12 +353,12 @@ class FeesManagementController extends Controller
             }
             
             $students = $query->limit(500)->get();
-            Log::info('🔄 Fallback result: ' . $students->count() . ' students');
+            Log::info('  Fallback result: ' . $students->count() . ' students');
         }
         
         // ULTIMATE FALLBACK: If still no results, get all students
         if ($students->count() == 0) {
-            Log::warning('⚠️ Still no results, fetching all students as fallback...');
+            Log::warning('  Still no results, fetching all students as fallback...');
             $students = SMstudents::limit(200)->get();
         }
         
@@ -437,7 +437,7 @@ class FeesManagementController extends Controller
             ];
         }
         
-        Log::info('✅ Returning ' . count($data) . ' formatted students');
+        Log::info('  Returning ' . count($data) . ' formatted students');
         
         return response()->json([
             'success' => true,
@@ -453,7 +453,7 @@ class FeesManagementController extends Controller
         ]);
         
     } catch (\Exception $e) {
-        Log::error('❌ Fee Status Search Error: ' . $e->getMessage());
+        Log::error(' Fee Status Search Error: ' . $e->getMessage());
         Log::error('Stack trace: ' . $e->getTraceAsString());
         
         return response()->json([
@@ -720,7 +720,7 @@ class FeesManagementController extends Controller
         }
     }
 
-    // ✅ NEW FUNCTION: Add Other Charges
+  
     public function addOtherCharges(Request $request)
     {
         try {
@@ -730,7 +730,7 @@ class FeesManagementController extends Controller
             $feeType = $request->input('fee_type');
             $amount = floatval($request->input('amount', 0));
             
-            Log::info('💰 Adding other charges for student: ' . $studentId);
+            Log::info('  Adding other charges for student: ' . $studentId);
             
             if (!$studentId || !$paymentDate || !$paymentType || !$feeType || $amount <= 0) {
                 return response()->json([
@@ -780,7 +780,7 @@ class FeesManagementController extends Controller
             
             $student->save();
             
-            Log::info('✅ Other charges added successfully');
+            Log::info('  Other charges added successfully');
             
             return response()->json([
                 'success' => true,
@@ -789,7 +789,7 @@ class FeesManagementController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            Log::error('❌ Add Other Charges Error: ' . $e->getMessage());
+            Log::error(' Add Other Charges Error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error adding other charges: ' . $e->getMessage()
@@ -797,7 +797,7 @@ class FeesManagementController extends Controller
         }
     }
 
-    // ✅ NEW FUNCTION: Process Refund
+    //  Process Refund
     public function processRefund(Request $request)
     {
         try {
@@ -805,7 +805,7 @@ class FeesManagementController extends Controller
             $refundType = $request->input('refund_type');
             $discountPercentage = floatval($request->input('discount_percentage', 0));
             
-            Log::info('💸 Processing refund for student: ' . $studentId);
+            Log::info('  Processing refund for student: ' . $studentId);
             
             if (!$studentId || !$refundType || $discountPercentage <= 0 || $discountPercentage > 100) {
                 return response()->json([
@@ -865,7 +865,7 @@ class FeesManagementController extends Controller
             $student->transaction_history = $transactions;
             $student->save();
             
-            Log::info('✅ Refund processed successfully: ₹' . $refundAmount);
+            Log::info('  Refund processed successfully: ₹' . $refundAmount);
             
             return response()->json([
                 'success' => true,
@@ -879,7 +879,7 @@ class FeesManagementController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            Log::error('❌ Process Refund Error: ' . $e->getMessage());
+            Log::error(' Process Refund Error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error processing refund: ' . $e->getMessage()
@@ -887,7 +887,7 @@ class FeesManagementController extends Controller
         }
     }
 
-    // ✅ NEW FUNCTION: Apply Scholarship
+    //  Apply Scholarship
     public function applyScholarship(Request $request)
     {
         try {
@@ -895,7 +895,7 @@ class FeesManagementController extends Controller
             $discountPercentage = floatval($request->input('discount_percentage', 0));
             $reason = $request->input('reason');
             
-            Log::info('🎓 Applying scholarship for student: ' . $studentId);
+            Log::info('  Applying scholarship for student: ' . $studentId);
             
             if (!$studentId || $discountPercentage <= 0 || $discountPercentage > 100 || !$reason) {
                 return response()->json([
@@ -957,7 +957,7 @@ class FeesManagementController extends Controller
             $student->transaction_history = $transactions;
             $student->save();
             
-            Log::info('✅ Scholarship applied successfully: ₹' . $discountAmount);
+            Log::info('  Scholarship applied successfully: ₹' . $discountAmount);
             
             return response()->json([
                 'success' => true,
@@ -976,7 +976,7 @@ class FeesManagementController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            Log::error('❌ Apply Scholarship Error: ' . $e->getMessage());
+            Log::error(' Apply Scholarship Error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error applying scholarship: ' . $e->getMessage()

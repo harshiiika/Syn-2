@@ -894,7 +894,7 @@ $(document).ready(function() {
     
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
     if (!csrfToken) {
-        console.error('❌ CSRF token not found!');
+        console.error(' CSRF token not found!');
     } else {
         console.log('  CSRF token found');
     }
@@ -902,7 +902,7 @@ $(document).ready(function() {
     var today = new Date().toISOString().split('T')[0];
     $('#dateFilter').val(today);
     currentFilters.date = today;
-    console.log('📅 Date set to:', today);
+    console.log('  Date set to:', today);
     
     loadAttendanceData();
     
@@ -975,7 +975,7 @@ function updateFilters() {
 }
 
 function loadAttendanceData() {
-    console.log('📊 Loading attendance data...');
+    console.log('  Loading attendance data...');
     updateFilters();
     
     var tbody = $('#attendanceTableBody');
@@ -1003,7 +1003,7 @@ function loadAttendanceData() {
             }
         },
         error: function(xhr, status, error) {
-            console.error('❌ AJAX Error:', error);
+            console.error(' AJAX Error:', error);
             tbody.html('<tr><td colspan="5" class="text-center text-danger"><p class="mt-2">Error loading data</p></td></tr>');
         }
     });
@@ -1016,7 +1016,7 @@ function updateStatistics(stats) {
 }
 
 function updateTable(employees) {
-    console.log('📋 Updating table with', employees.length, 'employees');
+    console.log('  Updating table with', employees.length, 'employees');
     
     var tbody = $('#attendanceTableBody');
     tbody.empty();
@@ -1029,7 +1029,7 @@ function updateTable(employees) {
     $.each(employees, function(index, employee) {
         var statusBadge = getStatusBadge(employee.status);
         
-        console.log('👤', employee.name, '| Status:', employee.status);
+        console.log(' ', employee.name, '| Status:', employee.status);
         
         var row = '<tr data-employee-id="' + employee._id + '">' +
             '<td class="text-center"><input type="checkbox" class="checkbox-input employee-checkbox" value="' + employee._id + '"></td>' +
@@ -1059,7 +1059,7 @@ function getStatusBadge(status) {
 
 function updateBulkActionButtons() {
     var checkedCount = $('.employee-checkbox:checked').length;
-    console.log('📊 Checked count:', checkedCount);
+    console.log('  Checked count:', checkedCount);
     $('#markPresentBtn, #markAbsentBtn').prop('disabled', checkedCount === 0);
 }
 
@@ -1095,8 +1095,8 @@ function markAllAttendance(status) {
         return $(this).val();
     }).get();
     
-    console.log('🔍 Checked IDs:', checkedIds);
-    console.log('📝 Will mark as:', status);
+    console.log(' Checked IDs:', checkedIds);
+    console.log('  Will mark as:', status);
     
     if (checkedIds.length === 0) {
         Swal.fire({
@@ -1131,7 +1131,7 @@ function markAllAttendance(status) {
             var totalCount = checkedIds.length;
             
             checkedIds.forEach(function(employeeId, index) {
-                console.log('📝 Marking', (index + 1), '/', totalCount, ':', employeeId);
+                console.log('  Marking', (index + 1), '/', totalCount, ':', employeeId);
                 
                 $.ajax({
                     url: '{{ route("attendance.employee.mark") }}',
@@ -1174,7 +1174,7 @@ function markAllAttendance(status) {
                     },
                     error: function(xhr, textStatus, error) {
                         errorCount++;
-                        console.error('❌ AJAX error for:', employeeId);
+                        console.error(' AJAX error for:', employeeId);
                         checkCompletion();
                     }
                 });

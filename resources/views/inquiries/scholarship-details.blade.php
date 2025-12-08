@@ -571,8 +571,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const scholarshipDiscountedFees = {{ $scholarshipDiscountedFees }};
   const savedFinalFees = {{ $finalFees }};
 
-  // 🔥 FIX: Initialize with saved values on page load
-  console.log('🔄 Initializing with saved data:', {
+  //    : Initialize with saved values on page load
+  console.log('  Initializing with saved data:', {
     scholarshipDiscountedFees: scholarshipDiscountedFees,
     savedFinalFees: savedFinalFees,
     discretionary_discount: '{{ $inquiry->discretionary_discount }}',
@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (type === 'percentage') {
         const additionalDiscount = (scholarshipDiscountedFees * value) / 100;
         finalFees = scholarshipDiscountedFees - additionalDiscount;
-        console.log('💰 Percentage discount:', {
+        console.log('  Percentage discount:', {
           base: scholarshipDiscountedFees,
           percentage: value,
           discount_amount: additionalDiscount,
@@ -632,7 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       } else if (type === 'fixed') {
         finalFees = scholarshipDiscountedFees - value;
-        console.log('💰 Fixed discount:', {
+        console.log('  Fixed discount:', {
           base: scholarshipDiscountedFees,
           discount_amount: value,
           final: finalFees
@@ -648,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     finalFeesInput.value = finalFees.toFixed(2);
 
-    console.log('✅ Final fees calculated:', finalFees);
+    console.log('  Final fees calculated:', finalFees);
   }
 
   function resetDiscountCalculation() {
@@ -664,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Form validation before submit
   scholarshipForm.addEventListener('submit', function(e) {
-    console.log('📝 Form submitting...');
+    console.log('  Form submitting...');
     
     if (discountYes.checked) {
       const value = parseFloat(discountValue.value) || 0;
@@ -672,33 +672,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (value > 0 && !reason) {
         e.preventDefault();
-        alert('⚠️ Please provide a reason for the discretionary discount.');
+        alert('  Please provide a reason for the discretionary discount.');
         discountReason.focus();
         return false;
       }
 
       if (discountType.value === 'percentage' && value > 100) {
         e.preventDefault();
-        alert('⚠️ Discount percentage cannot exceed 100%.');
+        alert('  Discount percentage cannot exceed 100%.');
         discountValue.focus();
         return false;
       }
 
       if (discountType.value === 'fixed' && value > scholarshipDiscountedFees) {
         e.preventDefault();
-        alert('⚠️ Discount amount cannot exceed the discounted fees.');
+        alert('  Discount amount cannot exceed the discounted fees.');
         discountValue.focus();
         return false;
       }
 
-      console.log('✅ Discretionary discount validated:', {
+      console.log('  Discretionary discount validated:', {
         type: discountType.value,
         value: value,
         reason: reason
       });
     }
 
-    console.log('✅ Form validation passed - submitting...');
+    console.log('  Form validation passed - submitting...');
     return true;
   });
 });

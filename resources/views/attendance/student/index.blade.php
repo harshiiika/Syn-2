@@ -808,7 +808,7 @@ function updateFilters() {
 }
 
 function loadAttendanceData() {
-    console.log('📊 Loading student attendance data...');
+    console.log('  Loading student attendance data...');
     updateFilters();
     
     var tbody = $('#attendanceTableBody');
@@ -837,7 +837,7 @@ function loadAttendanceData() {
             }
         },
         error: function(xhr, status, error) {
-            console.error('❌ AJAX Error:', error);
+            console.error(' AJAX Error:', error);
             tbody.html('<tr><td colspan="7" class="text-center text-danger"><p class="mt-2">Error loading data</p></td></tr>');
         }
     });
@@ -850,7 +850,7 @@ function updateStatistics(stats) {
 }
 
 function updateTable(students) {
-    console.log('📋 Updating table with', students.length, 'students');
+    console.log('  Updating table with', students.length, 'students');
     
     var tbody = $('#attendanceTableBody');
     tbody.empty();

@@ -817,7 +817,7 @@
   const paymentMode = document.querySelector('input[name="payment_mode"]:checked').value;
   const paymentType = document.querySelector('select[name="payment_type"]').value;
   const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
-  const installmentNumber = document.getElementById('selectedInstallment').value;  // ✅ GET THIS
+  const installmentNumber = document.getElementById('selectedInstallment').value;  //   GET THIS
   
       if (!paymentType) {
         e.preventDefault();
@@ -837,13 +837,13 @@
         return false;
       }
       
-       if (paymentMode === 'installment' && !installmentNumber) {  // ✅ CHECK IT
+       if (paymentMode === 'installment' && !installmentNumber) {  //   CHECK IT
     e.preventDefault();
     alert('Please select an installment to pay');
     return false;
   }
   
-  // ✅ ADD THIS: Log for debugging
+  //   ADD THIS: Log for debugging
   console.log('Submitting payment:', {
     mode: paymentMode,
     installment: installmentNumber,

@@ -233,7 +233,7 @@ class Courses extends Eloquent
             $courseStudent->setTable($courseCollection);
             $courseStudent->save();
             
-            \Log::info("✅ Student saved to BOTH collections", [
+            \Log::info("  Student saved to BOTH collections", [
                 'main_collection' => 's_mstudents',
                 'course_collection' => $courseCollection,
                 'student_id' => $mainStudent->_id,
@@ -246,7 +246,7 @@ class Courses extends Eloquent
             ];
             
         } catch (\Exception $e) {
-            \Log::error("❌ Failed to save student to both collections: " . $e->getMessage());
+            \Log::error(" Failed to save student to both collections: " . $e->getMessage());
             throw $e;
         }
     }

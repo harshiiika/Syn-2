@@ -236,10 +236,6 @@ class ScholarshipController extends Controller
         }
     }
 
-    /**
-     *   NEW: Fix existing records with missing data
-     * Run this once to fix old records: GET /master/scholarship/fix-missing-data
-     */
     public function fixMissingData()
     {
         try {

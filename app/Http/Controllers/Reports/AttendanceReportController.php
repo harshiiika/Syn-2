@@ -22,14 +22,14 @@ class AttendanceReportController extends Controller
             $courses = Courses::select('_id', 'name')
                 ->get();
 
-            Log::info('📊 Student Attendance Report Page Loaded', [
+            Log::info('  Student Attendance Report Page Loaded', [
                 'courses_count' => $courses->count()
             ]);
 
             return view('reports.attendance.student', compact('courses'));
             
         } catch (\Exception $e) {
-            Log::error('❌ Error loading student attendance report page: ' . $e->getMessage());
+            Log::error(' Error loading student attendance report page: ' . $e->getMessage());
             return back()->with('error', 'Failed to load attendance report page');
         }
     }
@@ -79,7 +79,7 @@ public function getBatchesByCourse(Request $request)
     try {
         $courseId = $request->get('course_id');
         
-        Log::info('📋 Getting batches for course', [
+        Log::info('  Getting batches for course', [
             'course_id' => $courseId,
             'request_data' => $request->all()
         ]);
@@ -95,7 +95,7 @@ public function getBatchesByCourse(Request $request)
         $course = Courses::find($courseId);
         
         if (!$course) {
-            Log::warning('⚠️ Course not found', ['course_id' => $courseId]);
+            Log::warning('  Course not found', ['course_id' => $courseId]);
             return response()->json([
                 'success' => false,
                 'message' => 'Course not found'
@@ -104,7 +104,7 @@ public function getBatchesByCourse(Request $request)
 
         $courseName = $course->name ?? $course->course_name;
         
-        Log::info('🔍 Finding batches with actual students', [
+        Log::info(' Finding batches with actual students', [
             'course_id' => $courseId,
             'course_name' => $courseName
         ]);
@@ -123,7 +123,7 @@ public function getBatchesByCourse(Request $request)
             ->select('batch_id', 'batch_name', 'batchName', 'batch')
             ->get();
 
-        Log::info('📊 Raw students query result', [
+        Log::info('  Raw students query result', [
             'total_students' => $students->count(),
             'sample_student' => $students->first() ? [
                 'batch_id' => $students->first()->batch_id,
@@ -134,7 +134,7 @@ public function getBatchesByCourse(Request $request)
         ]);
 
         if ($students->isEmpty()) {
-            Log::warning('⚠️ No students found for this course');
+            Log::warning('  No students found for this course');
             return response()->json([
                 'success' => true,
                 'batches' => [],
@@ -165,7 +165,7 @@ public function getBatchesByCourse(Request $request)
         
         $batches = collect($uniqueBatches)->sortBy('batch_id')->values();
 
-        Log::info('✅ Returning batches', [
+        Log::info('  Returning batches', [
             'count' => $batches->count(),
             'batches' => $batches
         ]);
@@ -176,7 +176,7 @@ public function getBatchesByCourse(Request $request)
         ]);
 
     } catch (\Exception $e) {
-        Log::error('❌ Error loading batches: ' . $e->getMessage(), [
+        Log::error(' Error loading batches: ' . $e->getMessage(), [
             'trace' => $e->getTraceAsString()
         ]);
         
@@ -200,7 +200,7 @@ public function getRollsByBatch(Request $request)
         $batchId = $request->get('batch_id');
         $courseId = $request->get('course_id');
         
-        Log::info('📋 Getting students for batch', [
+        Log::info('  Getting students for batch', [
             'batch_id' => $batchId,
             'course_id' => $courseId
         ]);
@@ -223,7 +223,7 @@ public function getRollsByBatch(Request $request)
 
         $courseName = $course->name ?? $course->course_name;
         
-        Log::info('🔍 Searching for students', [
+        Log::info(' Searching for students', [
             'course' => $courseName,
             'batch_id' => $batchId
         ]);
@@ -248,7 +248,7 @@ public function getRollsByBatch(Request $request)
             ->where('roll_no', '!=', 'N/A')
             ->get(['_id', 'roll_no', 'student_name', 'name', 'studentName', 'batch_id', 'batch', 'batch_name', 'batchName']);
 
-        Log::info('✅ Query results', [
+        Log::info('  Query results', [
             'count' => $students->count()
         ]);
 
@@ -269,7 +269,7 @@ public function getRollsByBatch(Request $request)
                 return $s->batch ?? $s->batch_name ?? $s->batchName ?? $s->batch_id ?? 'Unknown';
             })->unique()->values()->toArray();
             
-            Log::warning('⚠️ No students found in batch', [
+            Log::warning('  No students found in batch', [
                 'batch_id_searched' => $batchId,
                 'course' => $courseName,
                 'available_batches' => $batchesAvailable,
@@ -289,7 +289,7 @@ public function getRollsByBatch(Request $request)
             return $student->roll_no;
         });
 
-        Log::info('✅ Students found and sorted', [
+        Log::info('  Students found and sorted', [
             'count' => $sortedStudents->count(),
             'batch_id' => $batchId,
             'sample' => $sortedStudents->take(3)->map(function($s) {
@@ -313,7 +313,7 @@ public function getRollsByBatch(Request $request)
         ]);
 
     } catch (\Exception $e) {
-        Log::error('❌ Error loading students', [
+        Log::error(' Error loading students', [
             'message' => $e->getMessage(),
             'trace' => $e->getTraceAsString(),
             'batch_id' => $batchId ?? 'unknown',
@@ -335,7 +335,7 @@ public function getRollsByBatch(Request $request)
 public function getStudentData(Request $request)
 {
     try {
-        Log::info('📊 Getting student attendance report', ['filters' => $request->all()]);
+        Log::info('  Getting student attendance report', ['filters' => $request->all()]);
 
         $courseId = $request->get('course');
         $batchId = $request->get('batch');  // Now contains "7YH6" not ObjectID
@@ -361,7 +361,7 @@ public function getStudentData(Request $request)
 
         $courseName = $course->name ?? $course->course_name;
         
-        Log::info('🔍 Looking for student', [
+        Log::info(' Looking for student', [
             'roll_no' => $rollNo,
             'batch_id' => $batchId,  // "7YH6"
             'course' => $courseName
@@ -386,7 +386,7 @@ public function getStudentData(Request $request)
             ->first();
         
         if (!$student) {
-            Log::warning('⚠️ Student not found', [
+            Log::warning('  Student not found', [
                 'roll_no' => $rollNo,
                 'batch_id' => $batchId,
                 'course_id' => $courseId
@@ -398,7 +398,7 @@ public function getStudentData(Request $request)
             ], 404);
         }
 
-        Log::info('✅ Student found', [
+        Log::info('  Student found', [
             'student_id' => (string)$student->_id,
             'name' => $student->student_name ?? $student->name,
             'roll_no' => $student->roll_no
@@ -411,7 +411,7 @@ public function getStudentData(Request $request)
             ->orderBy('date', 'desc')
             ->get();
 
-        Log::info('📋 Found attendance records', [
+        Log::info('  Found attendance records', [
             'count' => $attendanceRecords->count(),
             'student_id' => (string)$student->_id,
             'date_range' => [$startDate, $endDate]
@@ -504,7 +504,7 @@ public function getStudentData(Request $request)
             'attendance_percentage' => $attendancePercentage
         ];
 
-        Log::info('✅ Student attendance report generated', [
+        Log::info('  Student attendance report generated', [
             'student' => $studentInfo['name'],
             'roll_no' => $studentInfo['roll_no'],
             'statistics' => $statistics
@@ -518,7 +518,7 @@ public function getStudentData(Request $request)
         ]);
 
     } catch (\Exception $e) {
-        Log::error('❌ Error getting student attendance report: ' . $e->getMessage(), [
+        Log::error(' Error getting student attendance report: ' . $e->getMessage(), [
             'trace' => $e->getTraceAsString(),
             'request_data' => $request->all()
         ]);

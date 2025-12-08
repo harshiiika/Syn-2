@@ -1,4 +1,4 @@
-// Complete Calendar Module - FIXED: Timezone & Event Loading Issues
+// Complete Calendar Module -  ED: Timezone & Event Loading Issues
 (function() {
     'use strict';
 
@@ -82,7 +82,7 @@
                 center: 'title', 
                 right: 'dayGridMonth,dayGridWeek' 
             },
-            timeZone: 'local', // FIXED: Use local timezone
+            timeZone: 'local', //  ED: Use local timezone
             events: loadEvents,
             eventClick: info => {
                 if (confirm('Delete this event?')) {
@@ -128,7 +128,7 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // FIXED: Normalize all event dates and handle ID formats
+                //  ED: Normalize all event dates and handle ID formats
                 const normalizedEvents = data.data.map(event => {
                     // Handle both old and new ID formats
                     let eventId = event.id;
@@ -244,7 +244,7 @@
                 if (modal) modal.hide();
                 form.reset();
                 
-                // FIXED: Add event with normalized date
+                //  ED: Add event with normalized date
                 const newEvent = {
                     id: res.data?.id || `temp-${Date.now()}`,
                     title: data.description,
@@ -322,7 +322,7 @@
 
         const { startDate, endDate } = range;
 
-        // FIXED: Filter using proper date comparison
+        //  ED: Filter using proper date comparison
         const holidays = allEvents
             .filter(e => e.type === 'holiday' && isDateInRange(e.start, startDate, endDate))
             .sort((a, b) => new Date(a.start) - new Date(b.start));
@@ -383,7 +383,7 @@
                 if (data.success) {
                     showNotification(`${capitalize(type)} deleted successfully`, 'success');
                     
-                    // FIXED: Find event by ID (handle string/number comparison)
+                    //  ED: Find event by ID (handle string/number comparison)
                     const event = calendar.getEventById(String(id));
                     if (event) event.remove();
                     
@@ -440,7 +440,7 @@
 
             showNotification('All Sundays marked as holidays', 'success');
 
-            // FIXED: Add Sunday events with normalized dates
+            //  ED: Add Sunday events with normalized dates
             const sundayEvents = [];
             const d = new Date(startDate);
             while (d <= endDate) {

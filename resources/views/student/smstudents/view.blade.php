@@ -1261,7 +1261,7 @@
           <button class="tab-btn" data-tab="test-series">Test Series</button>
         </div>
 
-     <!-- COMPLETE FIXED TAB 1 - Replace your entire Tab 1 section -->
+     <!-- COMPLETE  ED TAB 1 - Replace your entire Tab 1 section -->
 
 <div class="tab-content-section active" id="student-detail">
   
@@ -1873,7 +1873,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <h6 class="card-title mb-3">📋 Fee Breakdown</h6>
+            <h6 class="card-title mb-3">  Fee Breakdown</h6>
             <table class="table table-sm">
               <tr>
                 <td>Original Fee:</td>
@@ -2702,7 +2702,7 @@
 
   // ========== TAB SWITCHING FUNCTIONALITY ==========
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🎯 Initializing tab switching');
+  console.log('  Initializing tab switching');
   
   // Tab switching for main navigation (Student Detail, Attendance, Fees, Test Series)
   const tabButtons = document.querySelectorAll('.tab-btn');
@@ -2735,9 +2735,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (targetTab) {
         targetTab.classList.add('active');
         targetTab.style.display = 'block';
-        console.log('✅ Showing tab:', tabId);
+        console.log('  Showing tab:', tabId);
       } else {
-        console.error('❌ Tab content not found:', tabId);
+        console.error(' Tab content not found:', tabId);
       }
     });
   });
@@ -2844,7 +2844,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (monthSelector) {
     monthSelector.addEventListener('change', function() {
       currentMonth = this.value;
-      console.log('📅 Month changed to:', currentMonth);
+      console.log('  Month changed to:', currentMonth);
       loadAttendanceData();
     });
   }
@@ -2863,7 +2863,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return response.json();
       })
       .then(data => {
-        console.log('✅ Attendance data received:', data);
+        console.log('  Attendance data received:', data);
         
         if (data.success) {
           updateMonthLabel(data.data.statistics.month);
@@ -2872,12 +2872,12 @@ document.addEventListener('DOMContentLoaded', function() {
           updateRateChart(data.data.chart);
           updateMonthlyTable(data.data.monthly_summary);
         } else {
-          console.error('❌ Failed to load attendance:', data.message);
+          console.error(' Failed to load attendance:', data.message);
           showError('Failed to load attendance data');
         }
       })
       .catch(error => {
-        console.error('❌ Error loading attendance:', error);
+        console.error(' Error loading attendance:', error);
         showError('Network error loading attendance data');
       });
   }
@@ -2899,7 +2899,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function renderCalendar(calendarData) {
     const tbody = document.getElementById('calendarBody');
     if (!tbody) {
-      console.error('❌ Calendar body not found');
+      console.error(' Calendar body not found');
       return;
     }
     
@@ -2960,7 +2960,7 @@ document.addEventListener('DOMContentLoaded', function() {
       tbody.appendChild(currentRow);
     }
     
-    console.log('✅ Calendar rendered successfully');
+    console.log('  Calendar rendered successfully');
   }
   
   /**
@@ -2969,7 +2969,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateAttendanceChart(statistics) {
     const canvas = document.getElementById('attendanceChart');
     if (!canvas) {
-      console.error('❌ Attendance chart canvas not found');
+      console.error(' Attendance chart canvas not found');
       return;
     }
     
@@ -3021,7 +3021,7 @@ document.addEventListener('DOMContentLoaded', function() {
       ratioElement.textContent = `${statistics.present}/${statistics.working_days}`;
     }
     
-    console.log('✅ Attendance chart updated');
+    console.log('  Attendance chart updated');
   }
   
   /**
@@ -3030,7 +3030,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateRateChart(chartData) {
     const canvas = document.getElementById('attendanceRateChart');
     if (!canvas) {
-      console.error('❌ Rate chart canvas not found');
+      console.error(' Rate chart canvas not found');
       return;
     }
     
@@ -3086,7 +3086,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    console.log('✅ Rate chart updated');
+    console.log('  Rate chart updated');
   }
   
   /**
@@ -3095,7 +3095,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateMonthlyTable(monthlySummary) {
     const tbody = document.getElementById('monthlyTableBody');
     if (!tbody) {
-      console.error('❌ Monthly table body not found');
+      console.error(' Monthly table body not found');
       return;
     }
     
@@ -3118,7 +3118,7 @@ document.addEventListener('DOMContentLoaded', function() {
       tbody.appendChild(row);
     });
     
-    console.log('✅ Monthly table updated');
+    console.log('  Monthly table updated');
   }
   
   /**

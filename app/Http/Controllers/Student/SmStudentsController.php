@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\Auth;
 class SmStudentsController extends Controller
 {
 
-    /**
- * NEW METHOD: Get all activities for a student
- */
+
 private function getStudentActivities($student)
 {
     $rawData = $student->getAttributes();
@@ -70,13 +68,13 @@ public function index(Request $request)
             // Option 1: Show only main collection
             if ($collectionFilter === 'main') {
                 $query = SMstudents::with(['batch', 'course', 'shift']);
-                Log::info('📋 Querying main collection (s_mstudents)');
+                Log::info('  Querying main collection (s_mstudents)');
             }
             
             // Option 2: Show specific course collection
             elseif ($collectionFilter === 'course' && $courseFilter) {
                 $query = SMstudents::byCourse($courseFilter)->with(['batch', 'course', 'shift']);
-                Log::info('📋 Querying course-specific collection', ['course' => $courseFilter]);
+                Log::info('  Querying course-specific collection', ['course' => $courseFilter]);
             }
             
             // Option 3: Show ALL students from all collections (merged)
@@ -86,7 +84,7 @@ public function index(Request $request)
                 $courses = Courses::all();
                 $shifts = Shift::where('is_active', true)->get();
                 
-                Log::info('📋 Querying ALL collections', ['total_students' => $students->count()]);
+                Log::info('  Querying ALL collections', ['total_students' => $students->count()]);
                 
                 return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
             }
@@ -291,7 +289,7 @@ public function showByCourse($courseName)
             $courses = Courses::all();
             $shifts = Shift::where('is_active', true)->get();
             
-            Log::info('📚 Showing students for course', [
+            Log::info('  Showing students for course', [
                 'course' => $courseName,
                 'collection' => $course->getStudentCollectionName(),
                 'count' => $students->count()
@@ -1387,7 +1385,7 @@ public function getAttribute($key)
                     ->with('error', 'Course not found!');
             }
 
-            // ⭐ FIX: Always get the course name properly
+            //   : Always get the course name properly
             $courseName = $course->course_name ?? $course->name;
             
             Log::info('Course details', [
@@ -1418,7 +1416,7 @@ public function getAttribute($key)
 
             $testSeriesData = [
                 'course_id' => $validated['course_id'],
-                'course_name' => $courseName, // ⭐ FIX: Always set course_name
+                'course_name' => $courseName, //   : Always set course_name
                 'test_name' => $testName,
                 'test_type' => $validated['test_type'],
                 'subject_type' => $validated['subject_type'],
@@ -1472,11 +1470,11 @@ public function getHistory($id)
         
         $rawData = $student->getAttributes();
         
-        // ⭐ SINGLE SOURCE OF TRUTH
+        //  SINGLE SOURCE OF TRUTH
         $allEntries = [];
         $seenSignatures = []; // Use unique signatures instead of keys
         
-        // 1. ⭐ PRIMARY SOURCE: Get from 'history' field FIRST
+        // 1.  PRIMARY SOURCE: Get from 'history' field FIRST
         if (isset($rawData['history']) && !empty($rawData['history'])) {
             $storedHistory = is_string($rawData['history']) 
                 ? json_decode($rawData['history'], true) 
@@ -1492,12 +1490,12 @@ public function getHistory($id)
                     if (!isset($seenSignatures[$signature])) {
                         $seenSignatures[$signature] = true;
                         $allEntries[] = $entry;
-                        \Log::info('✅ Added from history', [
+                        \Log::info('  Added from history', [
                             'action' => $entry['action'] ?? 'N/A',
                             'signature' => substr($signature, 0, 50)
                         ]);
                     } else {
-                        \Log::info('⏭️ Skipped duplicate from history', [
+                        \Log::info('  Skipped duplicate from history', [
                             'action' => $entry['action'] ?? 'N/A'
                         ]);
                     }
@@ -1529,25 +1527,25 @@ public function getHistory($id)
                     if (!isset($seenSignatures[$signature])) {
                         $seenSignatures[$signature] = true;
                         $allEntries[] = $entry;
-                        \Log::info('✅ Added from activities', ['action' => $entry['action']]);
+                        \Log::info('  Added from activities', ['action' => $entry['action']]);
                     } else {
-                        \Log::info('⏭️ Skipped duplicate from activities', ['action' => $entry['action']]);
+                        \Log::info('  Skipped duplicate from activities', ['action' => $entry['action']]);
                     }
                 }
             }
         }
         
-        // 3. ⭐ DO NOT USE paymentHistory - it's already in history!
+        // 3.  DO NOT USE paymentHistory - it's already in history!
         // The payment entries are added to 'history' when fees are paid,
         // so we skip paymentHistory completely to avoid duplicates
-        \Log::info('⚠️ Skipping paymentHistory to prevent duplicates');
+        \Log::info('  Skipping paymentHistory to prevent duplicates');
         
-        // ⭐ Sort by timestamp (DESCENDING = newest first)
+        //  Sort by timestamp (DESCENDING = newest first)
         usort($allEntries, function($a, $b) {
             return ($b['normalized_timestamp'] ?? 0) <=> ($a['normalized_timestamp'] ?? 0);
         });
         
-        \Log::info('✅ History sorted successfully', [
+        \Log::info('  History sorted successfully', [
             'total_entries' => count($allEntries),
             'first_entry' => $allEntries[0]['action'] ?? 'N/A',
             'first_timestamp' => $allEntries[0]['normalized_timestamp'] ?? 'N/A',
@@ -1569,7 +1567,7 @@ public function getHistory($id)
         ]);
         
     } catch (\Exception $e) {
-        \Log::error('❌ History error: ' . $e->getMessage(), [
+        \Log::error(' History error: ' . $e->getMessage(), [
             'line' => $e->getLine(),
             'student_id' => $id ?? 'unknown'
         ]);
@@ -1951,7 +1949,7 @@ public function getStudentAttendanceData(Request $request, $id)
         $student = SMstudents::findOrFail($id);
         $month = $request->get('month', date('Y-m'));
         
-        \Log::info('📊 Loading student attendance', [
+        \Log::info('  Loading student attendance', [
             'student_id' => $id,
             'month' => $month
         ]);
@@ -1972,7 +1970,7 @@ public function getStudentAttendanceData(Request $request, $id)
             ->get()
             ->keyBy('date');
         
-        \Log::info('✅ Found attendance records', ['count' => $attendanceRecords->count()]);
+        \Log::info('  Found attendance records', ['count' => $attendanceRecords->count()]);
         
         // Calculate statistics
         $presentCount = $attendanceRecords->where('status', 'present')->count();
@@ -2118,7 +2116,7 @@ public function getStudentAttendanceData(Request $request, $id)
         ]);
         
     } catch (\Exception $e) {
-        \Log::error('❌ Error fetching attendance', [
+        \Log::error(' Error fetching attendance', [
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString()
         ]);

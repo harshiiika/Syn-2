@@ -445,20 +445,37 @@ public function addUser(Request $request)
     //2. if user not found, redirect with error
     //3. determine new status based on current status
     //4. update user status and redirect successfully
-     public function toggleStatus($id)
-    {
-        $user = User::find($id);
+    
+    public function toggleStatus($id)
+{
+    $user = User::find($id);
 
-        if (!$user) {
-            return redirect()->route('user.emp.emp')->with('error', 'User not found!');
-        }
-
-        $newStatus = ($user->status ?? 'Active') === 'Active' ? 'Deactivated' : 'Active';
-
-        $user->update(['status' => $newStatus]);
-
-        return redirect()->route('user.emp.emp')->with('success', 'User status changed to ' . $newStatus . '!');
+    if (!$user) {
+        return redirect()->route('user.emp.emp')->with('error', 'User not found!');
     }
+
+    // Get current status, default to 'Active' if not set
+    $currentStatus = $user->status ?? 'Active';
+    
+    // Toggle the status
+    $newStatus = $currentStatus === 'Active' ? 'Deactivated' : 'Active';
+
+    // Use update() method to ensure the change is saved
+    $user->update(['status' => $newStatus]);
+    
+    // Force a fresh query to verify the update
+    $updatedUser = User::find($id);
+    
+    \Log::info('Status toggle', [
+        'user_id' => $id,
+        'old_status' => $currentStatus,
+        'new_status' => $newStatus,
+        'verified_status' => $updatedUser->status ?? 'null'
+    ]);
+
+    return redirect()->route('user.emp.emp')
+        ->with('success', 'User status changed to ' . $newStatus . '!');
+}
 
     /**
      * Debug method to check user data structure

@@ -104,11 +104,11 @@ public function showScholarshipDetails($id)
             'discretionary_discount' => $inquiry->discretionary_discount
         ]);
         
-        // 🔥 FIX: Check if fees were already saved
+        //  
         $feesAlreadyCalculated = !empty($inquiry->fees_calculated_at);
         
         if ($feesAlreadyCalculated) {
-            Log::info('✅ Using SAVED scholarship data (not recalculating)');
+            Log::info('  Using SAVED scholarship data (not recalculating)');
             
             // Use saved data directly
             $eligibleForScholarship = ($inquiry->eligible_for_scholarship === 'Yes');
@@ -116,12 +116,12 @@ public function showScholarshipDetails($id)
             $totalFeeBeforeDiscount = $inquiry->total_fee_before_discount ?? 0;
             $discountPercentage = $inquiry->discount_percentage ?? 0;
             
-            // 🔥 CRITICAL FIX: Use discounted_fee for scholarship amount, total_fees for final amount
+            //  Use discounted_fee for scholarship amount, total_fees for final amount
             $scholarshipDiscountedFees = $inquiry->discounted_fee ?? $totalFeeBeforeDiscount;
             $finalFees = $inquiry->total_fees ?? $scholarshipDiscountedFees;
             $discountedFees = $finalFees; // This should show final fees after ALL discounts
             
-            Log::info('📊 Using saved scholarship data:', [
+            Log::info('  Using saved scholarship data:', [
                 'eligible' => $eligibleForScholarship,
                 'discount_percentage' => $discountPercentage,
                 'total_fee_before_discount' => $totalFeeBeforeDiscount,
@@ -142,11 +142,9 @@ public function showScholarshipDetails($id)
             ));
         }
         
-        // ========================================
-        // 🆕 FIRST TIME CALCULATION (not saved yet)
-        // ========================================
+    
         
-        Log::info('🔄 Calculating NEW scholarship data (first time)');
+        Log::info('Calculating NEW scholarship data (first time)');
         
         // Course fees mapping
         $courseFees = [
@@ -653,7 +651,7 @@ public function showScholarshipDetails($id)
         }
         
         //   ADD CREATION HISTORY WITH CORRECT TIMEZONE
-        $now = \Carbon\Carbon::now('Asia/Kolkata'); // Force India timezone
+        $now = Carbon::now('Asia/Kolkata'); // Force India timezone
         
         $data['history'] = [[
             'action' => 'Created',
@@ -706,12 +704,12 @@ public function update(Request $request, $id)
         'category' => 'required|in:GENERAL,OBC,SC,ST',
         'gender' => 'required|in:Male,Female,Others',
         
-        // 🔥 Parent Details
+        //   Parent Details
         'fatherOccupation' => 'nullable|string|max:255',
         'fatherGrade' => 'nullable|string|max:255',
         'motherOccupation' => 'nullable|string|max:255',
         
-        // 🔥 Address Details
+        //   Address Details
         'state' => 'nullable|string|max:255',
         'city' => 'nullable|string|max:255',
         'pinCode' => 'nullable|string|max:6',
@@ -729,7 +727,7 @@ public function update(Request $request, $id)
         'board' => 'nullable|in:CBSE,RBSE,ICSE',
         'courseContent' => 'nullable|string|max:255',
         
-        // 🔥 Academic Details
+        //   Academic Details
         'previousClass' => 'nullable|string',
         'previousMedium' => 'nullable|string',
         'schoolName' => 'nullable|string|max:255',
@@ -737,7 +735,7 @@ public function update(Request $request, $id)
         'passingYear' => 'nullable|integer|min:2000|max:2030',
         'percentage' => 'nullable|numeric|min:0|max:100',
         
-        // 🔥 Scholarship Eligibility
+        //   Scholarship Eligibility
         'isRepeater' => 'nullable|in:Yes,No',
         'scholarshipTest' => 'nullable|in:Yes,No',
         'lastBoardPercentage' => 'nullable|numeric|min:0|max:100',
@@ -762,12 +760,12 @@ public function update(Request $request, $id)
             'category' => $validatedData['category'],
             'gender' => $validatedData['gender'],
             
-            // 🔥 Parent Details
+            //   Parent Details
             'fatherOccupation' => $validatedData['fatherOccupation'] ?? null,
             'fatherGrade' => $validatedData['fatherGrade'] ?? null,
             'motherOccupation' => $validatedData['motherOccupation'] ?? null,
             
-            // 🔥 Address Details
+            //   Address Details
             'state' => $validatedData['state'] ?? null,
             'city' => $validatedData['city'] ?? null,
             'pinCode' => $validatedData['pinCode'] ?? null,
@@ -785,7 +783,7 @@ public function update(Request $request, $id)
             'board' => $validatedData['board'] ?? null,
             'course_content' => $validatedData['courseContent'] ?? null,
             
-            // 🔥 Academic Details
+            //   Academic Details
             'previousClass' => $validatedData['previousClass'] ?? null,
             'previousMedium' => $validatedData['previousMedium'] ?? null,
             'schoolName' => $validatedData['schoolName'] ?? null,
@@ -793,7 +791,7 @@ public function update(Request $request, $id)
             'passingYear' => $validatedData['passingYear'] ?? null,
             'percentage' => $validatedData['percentage'] ?? null,
             
-            // 🔥 Scholarship Eligibility
+            //   Scholarship Eligibility
             'isRepeater' => $validatedData['isRepeater'] ?? 'No',
             'scholarshipTest' => $validatedData['scholarshipTest'] ?? 'No',
             'lastBoardPercentage' => $validatedData['lastBoardPercentage'] ?? null,
@@ -873,7 +871,7 @@ public function updateScholarshipDetails(Request $request, $id)
             'discretionary_discount_reason' => 'nullable|string',
         ]);
 
-        Log::info('✅ Validation passed', $validated);
+        Log::info('  Validation passed', $validated);
 
         // Determine scholarship eligibility and name
         $eligibleForScholarship = 'No';
@@ -919,10 +917,10 @@ public function updateScholarshipDetails(Request $request, $id)
             }
         }
 
-        // 🔥 CRITICAL: Calculate fees correctly after ALL discounts
+        //   CRITICAL: Calculate fees correctly after ALL discounts
         $finalFees = floatval($validated['final_fees']);
         
-        Log::info('💰 Fees Calculation', [
+        Log::info('  Fees Calculation', [
             'base_fee' => $validated['total_fee_before_discount'],
             'scholarship_discount' => $validated['scholarship_discount_percentage'] . '%',
             'after_scholarship' => $validated['scholarship_discounted_fees'],
@@ -939,7 +937,7 @@ public function updateScholarshipDetails(Request $request, $id)
         $installment2 = round($totalFeesInclusiveTax * 0.30, 2);
         $installment3 = round($totalFeesInclusiveTax * 0.30, 2);
         
-        Log::info('💰 Final Calculation', [
+        Log::info('  Final Calculation', [
             'final_fees' => $finalFees,
             'gst_18%' => $gstAmount,
             'total_with_gst' => $totalFeesInclusiveTax,
@@ -976,7 +974,7 @@ public function updateScholarshipDetails(Request $request, $id)
             $updateData['discretionary_discount_reason'] = null;
         }
         
-        // 🔥 CRITICAL: Add CORRECT fees data
+        //   CRITICAL: Add CORRECT fees data
         $updateData['fees_breakup'] = 'Class room course (with test series & study material)';
         $updateData['total_fees'] = $finalFees;  // Base fee after ALL discounts
         $updateData['gst_amount'] = $gstAmount;   // 18% of FINAL fees (not base!)
@@ -1056,7 +1054,7 @@ public function updateScholarshipDetails(Request $request, $id)
         // Verify the save
         $inquiry->refresh();
         
-        Log::info('✅ Scholarship data saved successfully', [
+        Log::info('  Scholarship data saved successfully', [
             'inquiry_id' => $id,
             'eligible_for_scholarship' => $inquiry->eligible_for_scholarship,
             'scholarship_name' => $inquiry->scholarship_name,
@@ -1069,7 +1067,7 @@ public function updateScholarshipDetails(Request $request, $id)
         ]);
         
         return redirect()->route('inquiries.fees-batches.show', $id)
-            ->with('success', '✅ Scholarship details saved successfully!');
+            ->with('success', '  Scholarship details saved successfully!');
             
     } catch (\Exception $e) {
         Log::error('=== SCHOLARSHIP UPDATE ERROR ===', [
@@ -1080,7 +1078,7 @@ public function updateScholarshipDetails(Request $request, $id)
         ]);
         
         return redirect()->back()
-            ->with('error', '❌ Error saving scholarship details: ' . $e->getMessage())
+            ->with('error', ' Error saving scholarship details: ' . $e->getMessage())
             ->withInput();
     }
 }
@@ -1166,12 +1164,12 @@ private function transferToPending($inquiry)
         'category' => $inquiry->category ?? 'GENERAL',
         'gender' => $inquiry->gender ?? null,
         
-        // 🔥 FIX: Parent occupation details
+        //   Parent occupation details
         'fatherOccupation' => $inquiry->fatherOccupation ?? null,
         'fatherGrade' => $inquiry->fatherGrade ?? null,
         'motherOccupation' => $inquiry->motherOccupation ?? null,
         
-        // 🔥 FIX: Address Details
+        //    : Address Details
         'state' => $inquiry->state ?? null,
         'city' => $inquiry->city ?? null,
         'pinCode' => $inquiry->pinCode ?? null,
@@ -1188,11 +1186,11 @@ private function transferToPending($inquiry)
         'deliveryMode' => $inquiry->delivery_mode ?? 'Offline',
         'courseContent' => $inquiry->course_content ?? 'Class Room Course',
         
-        // 🔥 FIX: Medium and Board
+        //    : Medium and Board
         'medium' => $inquiry->medium ?? null,
         'board' => $inquiry->board ?? null,
         
-        // 🔥 FIX: Academic Details
+        //    : Academic Details
         'previousClass' => $inquiry->previousClass ?? null,
         'previousMedium' => $inquiry->previousMedium ?? null,
         'schoolName' => $inquiry->schoolName ?? null,
@@ -1200,7 +1198,7 @@ private function transferToPending($inquiry)
         'passingYear' => $inquiry->passingYear ?? null,
         'percentage' => $inquiry->percentage ?? null,
         
-        // 🔥 FIX: Scholarship Eligibility
+        //    : Scholarship Eligibility
         'isRepeater' => $inquiry->isRepeater ?? 'No',
         'scholarshipTest' => $inquiry->scholarshipTest ?? 'No',
         'lastBoardPercentage' => $inquiry->lastBoardPercentage ?? null,
@@ -1210,7 +1208,7 @@ private function transferToPending($inquiry)
         'batchName' => $inquiry->batch_name ?? $inquiry->batchName ?? null,
         'batch' => $inquiry->batch ?? null,
         
-        // 🔥 FIX: Complete Scholarship & Fees Details
+        //    : Complete Scholarship & Fees Details
         'eligible_for_scholarship' => $inquiry->eligible_for_scholarship ?? 'No',
         'scholarship_name' => $inquiry->scholarship_name ?? 'N/A',
         'total_fee_before_discount' => $inquiry->total_fee_before_discount ?? 0,
@@ -1239,7 +1237,7 @@ private function transferToPending($inquiry)
         'transferred_at' => now(),
     ];
 
-    // 🔥 CRITICAL FIX: Ensure batch_id is set BEFORE creating pending record
+    //   CRITICAL  : Ensure batch_id is set BEFORE creating pending record
     if (empty($pendingData['batch_id']) && !empty($pendingData['batchName'])) {
         $batch = Batch::where('name', $pendingData['batchName'])
             ->orWhere('batch_id', $pendingData['batchName'])
@@ -1249,18 +1247,18 @@ private function transferToPending($inquiry)
             $pendingData['batch_id'] = (string)$batch->_id;
             $pendingData['batch'] = $batch->batch_id ?? $batch->name;
             
-            Log::info('✅ Batch ID set from inquiry', [
+            Log::info('  Batch ID set from inquiry', [
                 'batch_id' => $pendingData['batch_id'],
                 'batch_name' => $pendingData['batch']
             ]);
         } else {
-            Log::warning('⚠️ Batch not found in database', [
+            Log::warning('  Batch not found in database', [
                 'searched_batch_name' => $pendingData['batchName']
             ]);
         }
     }
 
-    // 🔥 CRITICAL FIX: Ensure course_id is set BEFORE creating pending record
+    //   CRITICAL  : Ensure course_id is set BEFORE creating pending record
     if (empty($pendingData['course_id']) && !empty($pendingData['courseName'])) {
         $course = Courses::where('name', $pendingData['courseName'])
             ->orWhere('course_name', $pendingData['courseName'])
@@ -1270,12 +1268,12 @@ private function transferToPending($inquiry)
             $pendingData['course_id'] = (string)$course->_id;
             $pendingData['course'] = $course->name ?? $course->course_name;
             
-            Log::info('✅ Course ID set from inquiry', [
+            Log::info('  Course ID set from inquiry', [
                 'course_id' => $pendingData['course_id'],
                 'course_name' => $pendingData['course']
             ]);
         } else {
-            Log::warning('⚠️ Course not found in database', [
+            Log::warning('  Course not found in database', [
                 'searched_course_name' => $pendingData['courseName']
             ]);
         }
@@ -1306,7 +1304,7 @@ private function transferToPending($inquiry)
     $pendingData['transferred_at'] = $now;
 
     // Log all transferred data for verification
-    Log::info('💾 Complete data being transferred', [
+    Log::info('  Complete data being transferred', [
         'name' => $pendingData['name'],
         'fatherOccupation' => $pendingData['fatherOccupation'] ?? 'NOT SET',
         'medium' => $pendingData['medium'] ?? 'NOT SET',
@@ -1320,7 +1318,7 @@ private function transferToPending($inquiry)
     // Create the pending student with ALL data
     $pendingStudent = Pending::create($pendingData);
 
-    Log::info('✅ Pending student created with complete data', [
+    Log::info('  Pending student created with complete data', [
         'pending_id' => $pendingStudent->_id,
         'name' => $pendingStudent->name,
         'batch_id' => $pendingStudent->batch_id ?? 'NOT SET',
@@ -1425,7 +1423,7 @@ private function transferToPending($inquiry)
     {
         $history = $inquiry->history ?? [];
         
-        //   FIX: Use provided time or create new Carbon instance
+        //    : Use provided time or create new Carbon instance
         if (!$now) {
             $now = Carbon::now('Asia/Kolkata');
         }

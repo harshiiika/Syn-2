@@ -17,7 +17,7 @@ class RollNumberService
     public static function generateUniqueRollNumber($courseId = null, $courseName = null, $batchId = null, $batchName = null)
     {
         try {
-            Log::info('🎯 Generating Roll Number', [
+            Log::info('  Generating Roll Number', [
                 'course_name' => $courseName,
                 'batch_name' => $batchName,
             ]);
@@ -47,7 +47,7 @@ class RollNumberService
             return $rollNumber;
 
         } catch (\Exception $e) {
-            Log::error('❌ Roll Number Failed: ' . $e->getMessage());
+            Log::error(' Roll Number Failed: ' . $e->getMessage());
             return '25' . now()->format('md') . rand(100, 999);
         }
     }
@@ -63,7 +63,7 @@ class RollNumberService
 
         $courseLower = strtolower(trim($courseName));
 
-        // 🎓 YOUR EXACT COURSES MAPPED TO CODES
+        //   YOUR EXACT COURSES MAPPED TO CODES
         $courseMap = [
             // IIT/JEE Courses (11-19)
             'impulse 11th iit' => '11',
@@ -103,7 +103,7 @@ class RollNumberService
             return $classNum;
         }
 
-        Log::warning("⚠️ Course not mapped: '{$courseName}' - using default 99");
+        Log::warning("  Course not mapped: '{$courseName}' - using default 99");
         return '99'; // Default for unmapped courses
     }
 

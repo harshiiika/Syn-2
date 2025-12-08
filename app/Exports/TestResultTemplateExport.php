@@ -186,7 +186,7 @@ class TestResultTemplateExport
             'font' => [
                 'bold' => true, 
                 'size' => 16, 
-                'color' => ['rgb' => 'FD550D']  // ✅ FIXED: Pass RGB as array
+                'color' => ['rgb' => 'FD550D'] 
             ],
         ]);
         $instructionsSheet->getRowDimension(1)->setRowHeight(30);
@@ -229,7 +229,7 @@ class TestResultTemplateExport
         foreach ($this->testSeries->subjects as $index => $subject) {
             $instructionsSheet->setCellValue('A' . $row, ($index + 1) . '. ' . $subject);
             $instructionsSheet->getStyle('A' . $row)->applyFromArray([
-                'font' => ['color' => ['rgb' => 'FD550D']],  // ✅ FIXED: Pass RGB as array
+                'font' => ['color' => ['rgb' => 'FD550D']], 
             ]);
             $row++;
         }

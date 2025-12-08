@@ -115,8 +115,8 @@ class Unitscontroller extends Controller
      */
     public function store(Request $request)
     {
-        // FIXED: Corrected the logging syntax
-        Log::info('🔵 STORE METHOD CALLED', [
+        //  ED: Corrected the logging syntax
+        Log::info('  STORE METHOD CALLED', [
             'url' => request()->url(),
             'full_url' => request()->fullUrl(),
             'method' => request()->method(),
@@ -143,7 +143,7 @@ class Unitscontroller extends Controller
                 'created_by' => Auth::user()->email ?? 'admin'
             ]);
 
-            Log::info('✅ Unit created successfully', ['id' => $unit->_id]);
+            Log::info('  Unit created successfully', ['id' => $unit->_id]);
 
             return response()->json([
                 'success' => true,
@@ -151,7 +151,7 @@ class Unitscontroller extends Controller
                 'data' => $unit
             ]);
         } catch (\Exception $e) {
-            Log::error('❌ Store failed', ['error' => $e->getMessage()]);
+            Log::error(' Store failed', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to add unit: ' . $e->getMessage()
@@ -184,7 +184,7 @@ class Unitscontroller extends Controller
     public function update(Request $request, $id)
     {
         // DEBUG LOG
-        Log::info('🟢 UPDATE METHOD CALLED', [
+        Log::info('  UPDATE METHOD CALLED', [
             'id' => $id,
             'url' => request()->url(),
             'full_url' => request()->fullUrl(),
@@ -205,7 +205,7 @@ class Unitscontroller extends Controller
         try {
             $unit = Unit::findOrFail($id);
             
-            Log::info('📝 Updating unit', [
+            Log::info('  Updating unit', [
                 'id' => $id,
                 'before' => [
                     'course' => $unit->course_name,
@@ -225,7 +225,7 @@ class Unitscontroller extends Controller
                 'updated_by' => Auth::user()->email ?? 'admin'
             ]);
 
-            Log::info('✅ Unit updated successfully', ['id' => $id]);
+            Log::info('  Unit updated successfully', ['id' => $id]);
 
             return response()->json([
                 'success' => true,
@@ -233,7 +233,7 @@ class Unitscontroller extends Controller
                 'data' => $unit
             ]);
         } catch (\Exception $e) {
-            Log::error('❌ Update failed', [
+            Log::error(' Update failed', [
                 'id' => $id,
                 'error' => $e->getMessage()
             ]);
@@ -253,14 +253,14 @@ class Unitscontroller extends Controller
             $unit = Unit::findOrFail($id);
             $unit->delete();
 
-            Log::info('🗑️ Unit deleted successfully', ['id' => $id]);
+            Log::info('  Unit deleted successfully', ['id' => $id]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Unit deleted successfully!'
             ]);
         } catch (\Exception $e) {
-            Log::error('❌ Delete failed', [
+            Log::error(' Delete failed', [
                 'id' => $id,
                 'error' => $e->getMessage()
             ]);

@@ -1005,7 +1005,7 @@ height: 30px;
 
     // Load student history function
     function loadStudentHistory(studentId) {
-      console.log('📋 Loading history for student:', studentId);
+      console.log('  Loading history for student:', studentId);
 
       // Show loading spinner
       document.getElementById('historyModalBody').innerHTML = `
@@ -1136,7 +1136,7 @@ height: 30px;
 
         })
         .catch(error => {
-          console.error('❌ History error:', error);
+          console.error(' History error:', error);
           document.getElementById('historyModalBody').innerHTML = `
             <div class="text-center text-danger py-5">
               <i class="fa-solid fa-exclamation-triangle fa-4x mb-3"></i>
