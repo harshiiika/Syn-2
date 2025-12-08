@@ -63,11 +63,11 @@ class CalendarController extends Controller
                 ];
             });
             
-return view('Master.calendar.calendar', compact('holidays', 'tests'));
+return view('master.calendar.calendar', compact('holidays', 'tests'));
             
         } catch (\Exception $e) {
             Log::error('Calendar Index Error: ' . $e->getMessage());
-            return view('Master.calendar.calendar')
+            return view(' master.calendar.calendar')
                 ->with('error', 'Failed to load calendar data');
         }
     }

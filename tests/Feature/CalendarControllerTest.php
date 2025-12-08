@@ -14,7 +14,7 @@ class CalendarControllerTest extends TestCase
     {
         $response = $this->get(route('calendar.index'));
         $response->assertStatus(200);
-        $response->assertViewIs('Master.calendar.calendar');
+        $response->assertViewIs('master.calendar.calendar');
     }
 
     /** @test */
