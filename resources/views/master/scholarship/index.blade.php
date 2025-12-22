@@ -2,13 +2,15 @@
 <html lang="en">
 
 <head>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
   <title>Other Fees Master</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+ <link rel="stylesheet" href="{{ asset('css/scholarship.css') }}">
 
   <style>
     * {
@@ -469,7 +471,8 @@
 <body>
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img">
+        <img src="{{asset('images/logo.png.jpg')}}" class="img">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -489,6 +492,8 @@
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
+          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
     </div>
@@ -498,10 +503,11 @@
     <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>ADMIN</h6>
-        <p>{{ Auth::user()->email ?? 'synthesisbikaner@gmail.com' }}</p>
+        <p><?php echo e(Auth::user()->email ?? 'synthesisbikaner@gmail.com'); ?></p>
       </div>
 
    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -654,7 +660,7 @@
     <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
         </ul>
       </div>
     </div>
@@ -807,11 +813,20 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-  <script src="{{asset('js/emp.js')}}"></script>
+  <script src="<?php echo e(asset('js/emp.js')); ?>"></script>
   <script>
    document.addEventListener('DOMContentLoaded', () => {
   const ENDPOINT_BASE = '/master/other_fees';
   const DATA_URL = `${ENDPOINT_BASE}/data`;
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+    crossorigin="anonymous"></script>
+
+  <script src="{{asset('js/emp.js')}}"></script>
+<script>
+// Complete Scholarship CRUD Script
+document.addEventListener('DOMContentLoaded', () => {
+  const ENDPOINT_BASE = '/master/scholarship';
+  const DATA_URL = ENDPOINT_BASE;
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
   const tableBody = document.querySelector('#table tbody');
@@ -1158,6 +1173,7 @@
     });
   });
 
+<<<<<<<< HEAD:storage/framework/views/8bf303778314dac0c94bbaa5d8522736.php
   document.getElementById('cancelBtn')?.addEventListener('click', () => {
     form.reset();
     document.getElementById('fee_id').value = '';
@@ -1175,4 +1191,5 @@
   </script>
 </body>
 
-</html>
+</html><?php /**PATH C:\Users\dhamu\Syn-2\resources\views/master/other_fees/index.blade.php ENDPATH**/ ?>
+  </html>

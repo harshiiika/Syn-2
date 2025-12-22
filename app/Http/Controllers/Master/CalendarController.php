@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Models\Master\Holiday;
-use App\Models\Master\Test;
+use App\Models\TestSeries\Test;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -25,52 +25,45 @@ class CalendarController extends Controller
      * Fetches session-specific events and formats them for calendar display
      * @return \Illuminate\View\View
      */
-    public function index()
-    {
-        try {
-            // Get current session from session or default
-            $currentSession = session('current_session_id');
-            
-            // Get all holidays for the current session
-            $holidays = Holiday::when($currentSession, function($query) use ($currentSession) {
-                return $query->where('session_id', $currentSession);
-            })
-            ->orderBy('date', 'asc')
-            ->get()
-            ->map(function($holiday) {
-                return [
-                    'id' => (string) $holiday->_id,
-                    'date' => $holiday->date->format('Y-m-d'),
-                    'description' => $holiday->description,
-                    'type' => $holiday->type,
-                    'formatted_date' => $holiday->date->format('d M Y')
-                ];
-            });
-            
-            // Get all tests for the current session
-            $tests = Test::when($currentSession, function($query) use ($currentSession) {
-                return $query->where('session_id', $currentSession);
-            })
-            ->orderBy('date', 'asc')
-            ->get()
-            ->map(function($test) {
-                return [
-                    'id' => (string) $test->_id,
-                    'date' => $test->date->format('Y-m-d'),
-                    'description' => $test->description,
-                    'test_name' => $test->test_name ?? $test->description,
-                    'formatted_date' => $test->date->format('d M Y')
-                ];
-            });
-            
-return view('Master.calendar.calendar', compact('holidays', 'tests'));
-            
-        } catch (\Exception $e) {
-            Log::error('Calendar Index Error: ' . $e->getMessage());
-            return view('Master.calendar.calendar')
-                ->with('error', 'Failed to load calendar data');
-        }
+   public function index(): mixed
+{
+    try {
+        $currentSession = session('current_session');
+
+        // Get all holidays
+        $holidays = Holiday::all()->map(function ($holiday) {
+            return [
+                'id' => (string) $holiday->_id,
+                'date' => $holiday->date,
+                'description' => $holiday->description,
+            ];
+        });
+
+        // Get all tests for the current session - ONLY TESTS WITH DATES
+        $tests = Test::when($currentSession, function($query) use ($currentSession): mixed {
+            return $query->where('session_id', $currentSession);
+        })
+        ->whereNotNull('date')  // ✓ FIX: Filter out tests without dates
+        ->orderBy('date', 'asc')
+        ->get()
+        ->map(function($test) {
+            return [
+                'id' => (string) $test->_id,
+                'date' => $test->date->format('Y-m-d'),
+                'description' => $test->description,
+                'test_name' => $test->test_name ?? $test->description,
+                'formatted_date' => $test->date->format('d M Y')
+            ];
+        });
+
+        return view('master.calendar.calendar', compact('holidays', 'tests'));
+        
+    } catch (\Exception $e) {
+        Log::error('Calendar Index Error: ' . $e->getMessage());
+        return view('master.calendar.calendar')
+            ->with('error', 'Unable to load calendar. Please try again.');
     }
+}
 
     
     /**

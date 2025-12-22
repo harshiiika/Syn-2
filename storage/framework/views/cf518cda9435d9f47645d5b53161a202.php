@@ -1,85 +1,4 @@
-{{--
 
-EMPLOYEE MANAGEMENT BLADE FILE - CODE SUMMARY
-
-
-LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title,
-external CSS (Font Awesome, custom emp.css, Bootstrap)
-
-LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
-notification bell, user dropdown menu with profile and login options
-
-LINE 50-51: Main container div starts
-
-LINE 52-233: Left Sidebar Navigation
-- LINE 52-58: Sidebar container and admin info display
-- LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
-* LINE 61-75: User Management (Employee, Batches Assignment)
-* LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
-* LINE 100-114: Session Management (Session, Calendar, Student Migrate)
-* LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
-* LINE 132-142: Fees Management (Fees Collection)
-* LINE 143-155: Attendance Management (Student, Employee)
-* LINE 156-168: Study Material (Units, Dispatch Material)
-* LINE 169-179: Test Series Management (Test Master)
-* LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
-
-LINE 234-252: Right Content Area Header
-- LINE 236-238: Page title "EMPLOYEE"
-- LINE 239-246: Action buttons (Add Employee, Upload)
-
-LINE 253-282: Table Controls
-- LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
-- LINE 269-274: Search input field with icon
-
-LINE 275-295: Employee Table Structure
-- LINE 276-286: Table headers (Serial No, Name, Email, Mobile, Department, Role, Status, Action)
-- LINE 287-289: Empty tbody tag
-- LINE 290-294: Comment indicating modal fillables location
-
-LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
-- Displays user data from database
-- Status badge with color coding
-- Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
-
-LINE 344-375: View Modal (foreach loop for each user)
-- Read-only display of employee details
-- Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
-
-LINE 377-445: Edit Modal (foreach loop for each user)
-- LINE 379-382: PHP variables setup for current department and roles
-- LINE 384-443: Edit form with PUT method
-- Editable fields: Name, Email, Mobile, Alternate Mobile, Branch, Department
-- Current Role displayed as read-only
-
-LINE 447-480: Password Update Modal (foreach loop for each user)
-- Form with PUT method for password update
-- Fields: Current Password, New Password, Confirm New Password
-
-LINE 481-498: Footer Section
-- LINE 482-484: Pagination info text
-- LINE 485-493: Pagination controls (Previous, page numbers, Next)
-
-LINE 499-500: Closing divs for main container
-
-LINE 501-503: Comment for Add Employee modal
-
-LINE 504-600: Add Employee Modal
-- LINE 504-509: Modal dialog setup
-- LINE 510-586: Form with POST method to add new employee
-- Fields: Name, Mobile, Alternate Mobile, Email, Branch, Department,
-Password, Confirm Password, File upload
-- LINE 587-591: Modal footer with Cancel and Submit buttons
-
-LINE 622-624: Closing divs and body tag
-
-LINE 625-628: External JavaScript includes (Bootstrap bundle)
-
-LINE 629-665: AJAX Script for Dynamic User Addition
-- Prevents page reload on form submit
-- Handles form validation errors
-- Appends new user to table without refresh
---}}
 
 <!DOCTYPE html>
 
@@ -93,7 +12,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="{{asset('css/emp.css')}}">
+  <link rel="stylesheet" href="<?php echo e(asset('css/emp.css')); ?>">
   <!-- Bootstrap 5.3.6 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
@@ -105,7 +24,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img">
 
       <!-- Sidebar toggle button -->
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
@@ -125,7 +44,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="{{ route('profile.index') }}"> <i class="fa-solid fa-user"></i>Profile</a></li>
+        <li><a class="dropdown-item" href="<?php echo e(route('profile.index')); ?>"> <i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
         </ul>
       </div>
@@ -154,8 +73,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+          <li><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
         </ul>
       </div>
     </div>
@@ -173,12 +92,12 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+          <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
         </ul>
       </div>
     </div>
@@ -196,8 +115,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
         </ul>
       </div>
@@ -216,10 +135,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -237,7 +156,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+          <li><a class="item" href="<?php echo e(route('fees.management.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
         </ul>
       </div>
     </div>
@@ -255,8 +174,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+          <li><a class="item" href="<?php echo e(route('attendance.employee.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="<?php echo e(route('attendance.student.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
         </ul>
       </div>
     </div>
@@ -274,8 +193,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+          <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
 
         </ul>
       </div>
@@ -294,7 +213,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+          <li><a class="item" href="<?php echo e(route(name: 'test_series.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
         </ul>
       </div>
     </div>
@@ -312,10 +231,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
         </ul>
       </div>
@@ -354,7 +273,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
-            {{ request('per_page', 10) }}
+            <?php echo e(request('per_page', 10)); ?>
+
           </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item">10</a></li>
@@ -365,13 +285,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </div>
           </div>
           <div class="search">
-                  <form method="GET" action="{{ route('user.emp.emp') }}" id="searchForm">
-        <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                  <form method="GET" action="<?php echo e(route('user.emp.emp')); ?>" id="searchForm">
+        <input type="hidden" name="per_page" value="<?php echo e(request('per_page', 10)); ?>">
            <input type="search" 
                name="search" 
                placeholder="Search" 
                class="search-holder" 
-               value="{{ request('search') }}"
+               value="<?php echo e(request('search')); ?>"
                id="searchInput">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
@@ -397,65 +317,69 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </tbody>
           <!-- Modal fillables where roles are assigned according to dept automatically -->
 
-         @foreach($users as $index => $user)
+         <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
   <tr>
-    <td>{{ $index + 1 }}</td>
-    <td>{{ $user->name }}</td>
-    <td>{{ $user->email }}</td>
-    <td>{{ $user->mobileNumber ?? '—' }}</td>
+    <td><?php echo e($index + 1); ?></td>
+    <td><?php echo e($user->name); ?></td>
+    <td><?php echo e($user->email); ?></td>
+    <td><?php echo e($user->mobileNumber ?? '—'); ?></td>
     
     <!--Use the accessor properly -->
     <td>
-      @php
+      <?php
         $deptNames = $user->departmentNames ?? collect();
-      @endphp
-      {{ $deptNames->isNotEmpty() ? $deptNames->implode(', ') : '—' }}
+      ?>
+      <?php echo e($deptNames->isNotEmpty() ? $deptNames->implode(', ') : '—'); ?>
+
     </td>
     
     <td>
-      @php
+      <?php
         $roleNames = $user->roleNames ?? collect();
-      @endphp
-      {{ $roleNames->isNotEmpty() ? $roleNames->implode(', ') : '—' }}
+      ?>
+      <?php echo e($roleNames->isNotEmpty() ? $roleNames->implode(', ') : '—'); ?>
+
     </td>
 
     <td>
-      <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
-        {{ $user->status ?? 'Active' }}
+      <span class="badge <?php echo e($user->status === 'Deactivated' ? 'bg-danger' : 'bg-success'); ?>">
+        <?php echo e($user->status ?? 'Active'); ?>
+
       </span>
     </td>
 
               <td>
                 <div class="dropdown">
-                  <button class="btn btn-sm btn-outline-secondary" type="button" id="dropdownMenu{{ $loop->index }}"
+                  <button class="btn btn-sm btn-outline-secondary" type="button" id="dropdownMenu<?php echo e($loop->index); ?>"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-ellipsis-v"></i>
                   </button>
-                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu{{ $loop->index }}">
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu<?php echo e($loop->index); ?>">
                     <li>
                       <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                        data-bs-target="#viewModal{{ $user->_id }}">
+                        data-bs-target="#viewModal<?php echo e($user->_id); ?>">
                         View Details
                       </a>
                     </li>
                     <li>
                       <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                        data-bs-target="#editModal{{ $user->_id }}">
+                        data-bs-target="#editModal<?php echo e($user->_id); ?>">
                         Edit Details
                       </a>
                     </li>
                     <li>
                       <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                        data-bs-target="#passwordModal{{ $user->_id }}">
+                        data-bs-target="#passwordModal<?php echo e($user->_id); ?>">
                         Password Update
                       </a>
                     </li>
                     <li>
-                      <form method="POST" action="{{ route('users.toggleStatus', $user->_id) }}" style="display: inline;">
-                        @csrf
+                      <form method="POST" action="<?php echo e(route('users.toggleStatus', $user->_id)); ?>" style="display: inline;">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="dropdown-item">
-                          <!-- <i class="fas fa-toggle-{{ $user->status === 'Active' ? 'off' : 'on' }} me-2"></i> -->
-                          {{ $user->status === 'Active' ? 'Deactivate' : 'Reactivate' }}
+                          <!-- <i class="fas fa-toggle-<?php echo e($user->status === 'Active' ? 'off' : 'on'); ?> me-2"></i> -->
+                          <?php echo e($user->status === 'Active' ? 'Deactivate' : 'Reactivate'); ?>
+
                         </button>
                       </form>
                     </li>
@@ -463,116 +387,116 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                 </div>
               </td>
             </tr>
-          @endforeach
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
         </table>
 
         <!-- Here options modals are present. -->
         <!-- View Modal -->
-        @foreach($users as $user)
-          <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1"
-            aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
+        <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+          <div class="modal fade" id="viewModal<?php echo e($user->_id); ?>" tabindex="-1"
+            aria-labelledby="viewModalLabel<?php echo e($user->_id); ?>" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="viewModalLabel{{ $user->_id }}">Employee Details</h5>
+                  <h5 class="modal-title" id="viewModalLabel<?php echo e($user->_id); ?>">Employee Details</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <div class="mb-3">
                     <label class="form-label">Name</label>
-                    <input type="text" class="form-control" value="{{ $user->name }}" readonly>
+                    <input type="text" class="form-control" value="<?php echo e($user->name); ?>" readonly>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="text" class="form-control" value="{{ $user->email }}" readonly>
+                    <input type="text" class="form-control" value="<?php echo e($user->email); ?>" readonly>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Mobile</label>
-                    <input type="text" class="form-control" value="{{ $user->mobileNumber ?? '—' }}" readonly>
+                    <input type="text" class="form-control" value="<?php echo e($user->mobileNumber ?? '—'); ?>" readonly>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Alternate Mobile</label>
-                    <input type="text" class="form-control" value="{{ $user->alternateNumber ?? '—' }}" readonly>
+                    <input type="text" class="form-control" value="<?php echo e($user->alternateNumber ?? '—'); ?>" readonly>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Branch</label>
-                    <input type="text" class="form-control" value="{{ $user->branch ?? '—' }}" readonly>
+                    <input type="text" class="form-control" value="<?php echo e($user->branch ?? '—'); ?>" readonly>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Department</label>
                     <input type="text" class="form-control"
-                      value="{{ $user->departmentNames ? $user->departmentNames->join(', ') : '—' }}" readonly>
+                      value="<?php echo e($user->departmentNames ? $user->departmentNames->join(', ') : '—'); ?>" readonly>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
         <!-- Edit Modal -->
-        @foreach($users as $user)
-          <div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1"
-            aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
+        <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+          <div class="modal fade" id="editModal<?php echo e($user->_id); ?>" tabindex="-1"
+            aria-labelledby="editModalLabel<?php echo e($user->_id); ?>" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content">
-                <form method="POST" action="{{ route('users.update', $user->_id) }}">
-                  @csrf
-                  @method('PUT')
+                <form method="POST" action="<?php echo e(route('users.update', $user->_id)); ?>">
+                  <?php echo csrf_field(); ?>
+                  <?php echo method_field('PUT'); ?>
                   <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel{{ $user->_id }}">Edit Employee Details</h5>
+                    <h5 class="modal-title" id="editModalLabel<?php echo e($user->_id); ?>">Edit Employee Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <div class="mb-3">
                       <label class="form-label">Name</label>
-                      <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
+                      <input type="text" class="form-control" name="name" value="<?php echo e($user->name); ?>" required>
                     </div>
 
                     <div class="mb-3">
                       <label class="form-label">Email</label>
-                      <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
+                      <input type="email" class="form-control" name="email" value="<?php echo e($user->email); ?>" required>
                     </div>
 
                     <div class="mb-3">
                       <label class="form-label">Mobile</label>
-                      <input type="text" class="form-control" name="mobileNumber" value="{{ $user->mobileNumber ?? '' }}"
+                      <input type="text" class="form-control" name="mobileNumber" value="<?php echo e($user->mobileNumber ?? ''); ?>"
                         required>
                     </div>
 
                     <div class="mb-3">
                       <label class="form-label">Alternate Mobile</label>
                       <input type="text" class="form-control" name="alternateNumber"
-                        value="{{ $user->alternateNumber ?? '' }}">
+                        value="<?php echo e($user->alternateNumber ?? ''); ?>">
                     </div>
 
                     <div class="mb-3">
                       <label class="form-label">Branch</label>
                       <select class="form-select" name="branch" required>
-                        <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
+                        <option value="Bikaner" <?php echo e($user->branch == 'Bikaner' ? 'selected' : ''); ?>>Bikaner</option>
                       </select>
                     </div>
 
                     <div class="mb-3">
                       <label class="form-label">Department</label>
                       <select class="form-select" name="department" required>
-                        @php
+                        <?php
                           $currentDepartment = $user->departmentNames->first() ?? '';
-                        @endphp
-                        <option value="Front Office" {{ $currentDepartment == 'Front Office' ? 'selected' : '' }}>Front
+                        ?>
+                        <option value="Front Office" <?php echo e($currentDepartment == 'Front Office' ? 'selected' : ''); ?>>Front
                           Office</option>
-                        <option value="Back Office" {{ $currentDepartment == 'Back Office' ? 'selected' : '' }}>Back Office
+                        <option value="Back Office" <?php echo e($currentDepartment == 'Back Office' ? 'selected' : ''); ?>>Back Office
                         </option>
-                        <option value="Office" {{ $currentDepartment == 'Office' ? 'selected' : '' }}>Office</option>
-                        <option value="Test Management" {{ $currentDepartment == 'Test Management' ? 'selected' : '' }}>Test
+                        <option value="Office" <?php echo e($currentDepartment == 'Office' ? 'selected' : ''); ?>>Office</option>
+                        <option value="Test Management" <?php echo e($currentDepartment == 'Test Management' ? 'selected' : ''); ?>>Test
                           Management</option>
-                        <option value="Admin" {{ $currentDepartment == 'Admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="Admin" <?php echo e($currentDepartment == 'Admin' ? 'selected' : ''); ?>>Admin</option>
                       </select>
                     </div>
 
                     <div class="mb-3">
                       <label class="form-label">Current Role</label>
-                      <input type="text" class="form-control" value="{{ $user->roleNames->join(', ') ?? '—' }}" readonly>
+                      <input type="text" class="form-control" value="<?php echo e($user->roleNames->join(', ') ?? '—'); ?>" readonly>
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -583,27 +507,27 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               </div>
             </div>
           </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 <!-- Password Update Modal-->
-@foreach($users as $user)
-  <div class="modal fade" id="passwordModal{{ $user->_id }}" tabindex="-1"
-    aria-labelledby="passwordModalLabel{{ $user->_id }}" aria-hidden="true">
+<?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+  <div class="modal fade" id="passwordModal<?php echo e($user->_id); ?>" tabindex="-1"
+    aria-labelledby="passwordModalLabel<?php echo e($user->_id); ?>" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
-        <form method="POST" action="{{ route('users.password.update', $user->_id) }}"
-          id="passwordForm{{ $user->_id }}">
-          @csrf
-          @method('PUT')
+        <form method="POST" action="<?php echo e(route('users.password.update', $user->_id)); ?>"
+          id="passwordForm<?php echo e($user->_id); ?>">
+          <?php echo csrf_field(); ?>
+          <?php echo method_field('PUT'); ?>
           <div class="modal-header">
-            <h5 class="modal-title" id="passwordModalLabel{{ $user->_id }}">Update Password for {{ $user->name }}</h5>
+            <h5 class="modal-title" id="passwordModalLabel<?php echo e($user->_id); ?>">Update Password for <?php echo e($user->name); ?></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             
             <!-- Display validation errors -->
-            <div id="errorContainer{{ $user->_id }}" style="display: none;" class="alert alert-danger">
-              <ul id="errorList{{ $user->_id }}" class="mb-0"></ul>
+            <div id="errorContainer<?php echo e($user->_id); ?>" style="display: none;" class="alert alert-danger">
+              <ul id="errorList<?php echo e($user->_id); ?>" class="mb-0"></ul>
             </div>
 
             <!-- Current Password -->
@@ -611,11 +535,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <label class="form-label">Current Password <span class="text-danger">*</span></label>
               <input type="password" 
                      name="current_password" 
-                     id="current_password{{ $user->_id }}"
+                     id="current_password<?php echo e($user->_id); ?>"
                      class="form-control"
                      placeholder="Enter current password" 
                      required>
-              <span class="text-danger" id="error-current_password{{ $user->_id }}"></span>
+              <span class="text-danger" id="error-current_password<?php echo e($user->_id); ?>"></span>
             </div>
 
             <!-- New Password -->
@@ -623,13 +547,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <label class="form-label">New Password <span class="text-danger">*</span></label>
               <input type="password" 
                      name="new_password" 
-                     id="new_password{{ $user->_id }}" 
+                     id="new_password<?php echo e($user->_id); ?>" 
                      class="form-control"
                      placeholder="Enter new password" 
                      minlength="8" 
                      required>
               <small class="form-text text-muted">Minimum 8 characters, must include uppercase, lowercase, and number</small>
-              <span class="text-danger" id="error-new_password{{ $user->_id }}"></span>
+              <span class="text-danger" id="error-new_password<?php echo e($user->_id); ?>"></span>
             </div>
 
             <!-- Confirm New Password -->
@@ -637,97 +561,97 @@ LINE 629-665: AJAX Script for Dynamic User Addition
               <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
               <input type="password" 
                      name="confirm_new_password" 
-                     id="confirm_password{{ $user->_id }}" 
+                     id="confirm_password<?php echo e($user->_id); ?>" 
                      class="form-control"
                      placeholder="Re-enter new password"
                      required>
-              <span class="text-danger" id="password-match-error{{ $user->_id }}"></span>
+              <span class="text-danger" id="password-match-error<?php echo e($user->_id); ?>"></span>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="submitBtn{{ $user->_id }}">Update Password</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn<?php echo e($user->_id); ?>">Update Password</button>
           </div>
         </form>
       </div>
     </div>
   </div>
-@endforeach
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
       </div>
 <div class="footer">
   <div class="left-footer">
-    <p>Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} entries
-      @if(request('search'))
-        <span class="text-muted">(filtered from {{ \App\Models\User\User::count() }} total entries)</span>
-      @endif
+    <p>Showing <?php echo e($users->firstItem() ?? 0); ?> to <?php echo e($users->lastItem() ?? 0); ?> of <?php echo e($users->total()); ?> entries
+      <?php if(request('search')): ?>
+        <span class="text-muted">(filtered from <?php echo e(\App\Models\User\User::count()); ?> total entries)</span>
+      <?php endif; ?>
     </p>
   </div>
   <div class="right-footer">
     <nav aria-label="Page navigation example" id="bottom">
       <ul class="pagination" id="pagination">
-        {{-- Previous Page Link --}}
-        @if ($users->onFirstPage())
+        
+        <?php if($users->onFirstPage()): ?>
           <li class="page-item disabled">
             <span class="page-link" id="pg1">Previous</span>
           </li>
-        @else
+        <?php else: ?>
           <li class="page-item">
             <a class="page-link" 
-               href="{{ $users->previousPageUrl() }}" 
+               href="<?php echo e($users->previousPageUrl()); ?>" 
                id="pg1">Previous</a>
           </li>
-        @endif
+        <?php endif; ?>
 
-        {{-- Pagination Elements --}}
-        @php
+        
+        <?php
           $start = max($users->currentPage() - 2, 1);
           $end = min($start + 4, $users->lastPage());
           $start = max($end - 4, 1);
-        @endphp
+        ?>
 
-        @if($start > 1)
+        <?php if($start > 1): ?>
           <li class="page-item" id="pg2">
-            <a class="page-link" href="{{ $users->url(1) }}">1</a>
+            <a class="page-link" href="<?php echo e($users->url(1)); ?>">1</a>
           </li>
-          @if($start > 2)
+          <?php if($start > 2): ?>
             <li class="page-item disabled">
               <span class="page-link">...</span>
             </li>
-          @endif
-        @endif
+          <?php endif; ?>
+        <?php endif; ?>
 
-        @for ($i = $start; $i <= $end; $i++)
-          <li class="page-item {{ $users->currentPage() == $i ? 'active' : '' }}">
+        <?php for($i = $start; $i <= $end; $i++): ?>
+          <li class="page-item <?php echo e($users->currentPage() == $i ? 'active' : ''); ?>">
             <a class="page-link" 
-               href="{{ $users->url($i) }}"
-               id="pg{{ $i }}">{{ $i }}</a>
+               href="<?php echo e($users->url($i)); ?>"
+               id="pg<?php echo e($i); ?>"><?php echo e($i); ?></a>
           </li>
-        @endfor
+        <?php endfor; ?>
 
-        @if($end < $users->lastPage())
-          @if($end < $users->lastPage() - 1)
+        <?php if($end < $users->lastPage()): ?>
+          <?php if($end < $users->lastPage() - 1): ?>
             <li class="page-item disabled">
               <span class="page-link">...</span>
             </li>
-          @endif
+          <?php endif; ?>
           <li class="page-item">
-            <a class="page-link" href="{{ $users->url($users->lastPage()) }}">{{ $users->lastPage() }}</a>
+            <a class="page-link" href="<?php echo e($users->url($users->lastPage())); ?>"><?php echo e($users->lastPage()); ?></a>
           </li>
-        @endif
+        <?php endif; ?>
 
-        {{-- Next Page Link --}}
-        @if ($users->hasMorePages())
+        
+        <?php if($users->hasMorePages()): ?>
           <li class="page-item">
             <a class="page-link" 
-               href="{{ $users->nextPageUrl() }}" 
+               href="<?php echo e($users->nextPageUrl()); ?>" 
                id="pg4">Next</a>
           </li>
-        @else
+        <?php else: ?>
           <li class="page-item disabled">
             <span class="page-link" id="pg4">Next</span>
           </li>
-        @endif
+        <?php endif; ?>
       </ul>
     </nav>
   </div>
@@ -745,48 +669,48 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="POST" action="{{ route('users.add') }}" id="addEmployeeForm">
-          @csrf
+        <form method="POST" action="<?php echo e(route('users.add')); ?>" id="addEmployeeForm">
+          <?php echo csrf_field(); ?>
           
           <!-- Show validation errors -->
-          @if ($errors->any())
+          <?php if($errors->any()): ?>
             <div class="alert alert-danger">
               <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                  <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
               </ul>
             </div>
-          @endif
+          <?php endif; ?>
 
           <div class="mb-3">
             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" value="{{ old('name') }}" required>
+            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" value="<?php echo e(old('name')); ?>" required>
           </div>
 
           <div class="mb-3">
             <label for="mobileNumber" class="form-label">Mobile No. <span class="text-danger">*</span></label>
             <input type="tel" name="mobileNumber" class="form-control" placeholder="Enter 10 digit mobile number"
-              pattern="[0-9]{10}" maxlength="10" value="{{ old('mobileNumber') }}" required>
+              pattern="[0-9]{10}" maxlength="10" value="<?php echo e(old('mobileNumber')); ?>" required>
             <small class="form-text text-muted">Enter exactly 10 digits</small>
           </div>
 
           <div class="mb-3">
             <label for="alternateNumber" class="form-label">Alternate Mobile No.</label>
             <input type="tel" name="alternateNumber" class="form-control"
-              placeholder="Enter 10 digit alternate number" pattern="[0-9]{10}" maxlength="10" value="{{ old('alternateNumber') }}">
+              placeholder="Enter 10 digit alternate number" pattern="[0-9]{10}" maxlength="10" value="<?php echo e(old('alternateNumber')); ?>">
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-            <input type="email" name="email" class="form-control" placeholder="Enter Your Email" value="{{ old('email') }}" required>
+            <input type="email" name="email" class="form-control" placeholder="Enter Your Email" value="<?php echo e(old('email')); ?>" required>
           </div>
 
           <div class="mb-3">
             <label for="branch" class="form-label">Select Branch <span class="text-danger">*</span></label>
             <select class="form-select" name="branch" required>
               <option value="">Select Branch</option>
-              <option value="Bikaner" {{ old('branch') == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
+              <option value="Bikaner" <?php echo e(old('branch') == 'Bikaner' ? 'selected' : ''); ?>>Bikaner</option>
             </select>
           </div>
 
@@ -794,11 +718,11 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             <label for="department" class="form-label">Select Department <span class="text-danger">*</span></label>
             <select class="form-select" name="department" required>
               <option value="">Select Department</option>
-              <option value="Front Office" {{ old('department') == 'Front Office' ? 'selected' : '' }}>Front Office</option>
-              <option value="Back Office" {{ old('department') == 'Back Office' ? 'selected' : '' }}>Back Office</option>
-              <option value="Office" {{ old('department') == 'Office' ? 'selected' : '' }}>Office</option>
-              <option value="Test Management" {{ old('department') == 'Test Management' ? 'selected' : '' }}>Test Management</option>
-              <option value="Admin" {{ old('department') == 'Admin' ? 'selected' : '' }}>Admin</option>
+              <option value="Front Office" <?php echo e(old('department') == 'Front Office' ? 'selected' : ''); ?>>Front Office</option>
+              <option value="Back Office" <?php echo e(old('department') == 'Back Office' ? 'selected' : ''); ?>>Back Office</option>
+              <option value="Office" <?php echo e(old('department') == 'Office' ? 'selected' : ''); ?>>Office</option>
+              <option value="Test Management" <?php echo e(old('department') == 'Test Management' ? 'selected' : ''); ?>>Test Management</option>
+              <option value="Admin" <?php echo e(old('department') == 'Admin' ? 'selected' : ''); ?>>Admin</option>
             </select>
           </div>
 
@@ -839,7 +763,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <div class="mb-3">
           <label class="form-label fw-bold">Export Current Data</label>
           <p class="text-muted small">Download all current employee data as Excel file.</p>
-          <a href="{{ route('users.export') }}?search={{ request('search') }}&per_page={{ request('per_page', 10) }}" 
+          <a href="<?php echo e(route('users.export')); ?>?search=<?php echo e(request('search')); ?>&per_page=<?php echo e(request('per_page', 10)); ?>" 
              class="btn btn-info w-100" style="background-color: #ffffffff ;  border-color: #ffffffff""><button type="submit" class="btn btn-success w-100" style="background-color: #ed5b00ff ; border-color: #ed5b00ff">
      <i class="fa-solid fa-download"></i> Download Current Employees
             </button></a>
@@ -851,8 +775,8 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <!-- Step 2: Upload File -->
         <div class="mb-3">
           <label class="form-label fw-bold">Upload Your File</label>          
-          <form id="uploadEmployeeForm" action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+          <form id="uploadEmployeeForm" action="<?php echo e(route('users.import')); ?>" method="POST" enctype="multipart/form-data">
+            <?php echo csrf_field(); ?>
             
             <div class="mb-3">
               <input type="file" id="importEmployeeFile" name="import_file" class="form-control" 
@@ -888,14 +812,14 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 
 <!-- Your custom JS (must come after jQuery + Bootstrap) -->
-<script src="{{ asset(path: 'js/emp.js') }}"></script>
+<script src="<?php echo e(asset(path: 'js/emp.js')); ?>"></script>
 
 <!-- Enhanced JavaScript for Password Update and upload modal -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  @foreach($users as $user)
+  <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
   (function() {
-    const userId = '{{ $user->_id }}';
+    const userId = '<?php echo e($user->_id); ?>';
     const form = document.getElementById('passwordForm' + userId);
     const currentPassword = document.getElementById('current_password' + userId);
     const newPassword = document.getElementById('new_password' + userId);
@@ -1032,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   })();
-  @endforeach
+  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1077,4 +1001,4 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-</html>
+</html><?php /**PATH C:\Users\dhamu\Syn-2\resources\views/user/emp/emp.blade.php ENDPATH**/ ?>

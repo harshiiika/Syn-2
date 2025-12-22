@@ -1,5 +1,5 @@
 StudyMate  PROJECT
-@priyanshiii7, @harshiiika, @tisha-dhamu, @Bhoomika-Rathore
+@priyanshiii7, @harshiiika, @tisha-dhamu
 
 Project Structure:
 1. User Management (Priyanshi - Completed)

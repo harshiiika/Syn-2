@@ -11,7 +11,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\Log;
 
-
 /**
  * CoursesController - Manages course catalog operations
  * Handles CRUD operations for educational courses including search, pagination, validation, and bulk import
@@ -332,7 +331,7 @@ public function importCourses(Request $request)
         $course = Courses::findOrFail($id);
         $course->delete();
         
-        return redirect()->route('courses.index')->with('success', 'Course deleted.');
+        return redirect()->route('master.courses.index')->with('success', 'Course deleted.');
     }
 
     /**
