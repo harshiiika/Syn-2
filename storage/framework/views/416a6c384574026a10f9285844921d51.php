@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
   <title>Fees Master</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="{{ asset('css/FeesMaster.css') }}">
+  <link rel="stylesheet" href="<?php echo e(asset('css/FeesMaster.css')); ?>">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
   
@@ -67,7 +67,7 @@
 
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -85,7 +85,7 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}"><i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="<?php echo e(route('profile.index')); ?>"><i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
         </ul>
       </div>
@@ -112,8 +112,8 @@
     <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+          <li><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
         </ul>
       </div>
     </div>
@@ -131,12 +131,12 @@
     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item active" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+          <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item active" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
         </ul>
       </div>
     </div>
@@ -154,8 +154,8 @@
     <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
         </ul>
       </div>
@@ -174,10 +174,10 @@
     <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -195,7 +195,7 @@
     <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+          <li><a class="item" href="<?php echo e(route('fees.management.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
         </ul>
       </div>
     </div>
@@ -213,8 +213,8 @@
     <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+          <li><a class="item" href="<?php echo e(route('attendance.employee.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="<?php echo e(route('attendance.student.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
         </ul>
       </div>
     </div>
@@ -232,8 +232,8 @@
     <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+          <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
         </ul>
       </div>
     </div>
@@ -251,7 +251,7 @@
     <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+          <li><a class="item" href="<?php echo e(route(name: 'test_series.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
         </ul>
       </div>
     </div>
@@ -269,10 +269,10 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
         </ul>
       </div>
@@ -293,30 +293,32 @@
     </div>
   </div>
   
-  @if(session('success'))
+  <?php if(session('success')): ?>
     <div class="alert alert-success alert-dismissible fade show" style="width: 95%; margin: 10px auto;">
-      {{ session('success') }}
+      <?php echo e(session('success')); ?>
+
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-  @endif
+  <?php endif; ?>
 
-  @if(session('error'))
+  <?php if(session('error')): ?>
     <div class="alert alert-danger alert-dismissible fade show" style="width: 95%; margin: 10px auto;">
-      {{ session('error') }}
+      <?php echo e(session('error')); ?>
+
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-  @endif
+  <?php endif; ?>
 
-  @if($errors->any())
+  <?php if($errors->any()): ?>
     <div class="alert alert-danger alert-dismissible fade show" style="width: 95%; margin: 10px auto;">
       <ul class="mb-0">
-        @foreach($errors->all() as $error)
-          <li>{{ $error }}</li>
-        @endforeach
+        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+          <li><?php echo e($error); ?></li>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
       </ul>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-  @endif
+  <?php endif; ?>
   
   <div class="whole">
     <div class="dd">
@@ -352,28 +354,29 @@
         </tr>
       </thead>
       <tbody>
-        @forelse($fees as $index => $fee)
+        <?php $__empty_1 = true; $__currentLoopData = $fees; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $fee): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
         <tr>
-          <td>{{ ($fees->currentPage() - 1) * $fees->perPage() + $index + 1 }}</td>              
-          <td>{{ $fee->course }}</td>
-          <td>{{ $fee->course_type ?? 'N/A' }}</td>
-          <td>{{ $fee->class_name ?? 'N/A' }}</td>
-          <td class="{{ $fee->status === 'Active' ? 'text-success' : 'text-danger' }}">{{ $fee->status }}</td>
+          <td><?php echo e(($fees->currentPage() - 1) * $fees->perPage() + $index + 1); ?></td>              
+          <td><?php echo e($fee->course); ?></td>
+          <td><?php echo e($fee->course_type ?? 'N/A'); ?></td>
+          <td><?php echo e($fee->class_name ?? 'N/A'); ?></td>
+          <td class="<?php echo e($fee->status === 'Active' ? 'text-success' : 'text-danger'); ?>"><?php echo e($fee->status); ?></td>
           <td>
             <div class="dropdown">
               <button class="btn btn-secondary" type="button" data-bs-toggle="dropdown">
                 <i class="fa-solid fa-ellipsis-vertical" style="color:#000"></i>
               </button>
               <ul class="dropdown-menu">
-                <li><a href="#" class="dropdown-item btn-view" data-id="{{ $fee->id }}">View Fees</a></li>
+                <li><a href="#" class="dropdown-item btn-view" data-id="<?php echo e($fee->id); ?>">View Fees</a></li>
                 <li>
-                  <a href="#" class="dropdown-item btn-edit" data-id="{{ $fee->id }}">Edit</a>
+                  <a href="#" class="dropdown-item btn-edit" data-id="<?php echo e($fee->id); ?>">Edit</a>
                 </li>
                 <li>
-                  <form action="{{ route('fees.toggle', $fee) }}" method="POST">
-                    @csrf @method('PATCH')
+                  <form action="<?php echo e(route('fees.toggle', $fee)); ?>" method="POST">
+                    <?php echo csrf_field(); ?> <?php echo method_field('PATCH'); ?>
                     <button class="dropdown-item" type="submit">
-                      {{ $fee->status === 'Active' ? 'Deactivate' : 'Activate' }}
+                      <?php echo e($fee->status === 'Active' ? 'Deactivate' : 'Activate'); ?>
+
                     </button>
                   </form>
                 </li>
@@ -381,56 +384,56 @@
             </div>
           </td>
         </tr>
-        @empty
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
         <tr><td colspan="6" class="text-center">No Records</td></tr>
-        @endforelse
+        <?php endif; ?>
       </tbody>
     </table>
   </div>
 
   <div class="footer">
     <div class="left-footer">
-      <p>Showing {{ $fees->firstItem() ?? 0 }} to {{ $fees->lastItem() ?? 0 }} of {{ $fees->total() }} Entries</p>
+      <p>Showing <?php echo e($fees->firstItem() ?? 0); ?> to <?php echo e($fees->lastItem() ?? 0); ?> of <?php echo e($fees->total()); ?> Entries</p>
     </div>
     <div class="right-footer">
       <nav aria-label="Page navigation" id="bottom">
         <ul class="pagination">
-          @if ($fees->onFirstPage())
+          <?php if($fees->onFirstPage()): ?>
             <li class="page-item disabled">
               <span class="page-link">Previous</span>
             </li>
-          @else
+          <?php else: ?>
             <li class="page-item">
-              <a class="page-link" href="{{ $fees->previousPageUrl() }}">Previous</a>
+              <a class="page-link" href="<?php echo e($fees->previousPageUrl()); ?>">Previous</a>
             </li>
-          @endif
+          <?php endif; ?>
 
-          @php
+          <?php
             $start = max($fees->currentPage() - 2, 1);
             $end = min($fees->currentPage() + 2, $fees->lastPage());
-          @endphp
+          ?>
 
-          @for ($i = $start; $i <= $end; $i++)
-            @if ($i == $fees->currentPage())
+          <?php for($i = $start; $i <= $end; $i++): ?>
+            <?php if($i == $fees->currentPage()): ?>
               <li class="page-item active">
-                <span class="page-link">{{ $i }}</span>
+                <span class="page-link"><?php echo e($i); ?></span>
               </li>
-            @else
+            <?php else: ?>
               <li class="page-item">
-                <a class="page-link" href="{{ $fees->url($i) }}">{{ $i }}</a>
+                <a class="page-link" href="<?php echo e($fees->url($i)); ?>"><?php echo e($i); ?></a>
               </li>
-            @endif
-          @endfor
+            <?php endif; ?>
+          <?php endfor; ?>
 
-          @if ($fees->hasMorePages())
+          <?php if($fees->hasMorePages()): ?>
             <li class="page-item">
-              <a class="page-link" href="{{ $fees->nextPageUrl() }}">Next</a>
+              <a class="page-link" href="<?php echo e($fees->nextPageUrl()); ?>">Next</a>
             </li>
-          @else
+          <?php else: ?>
             <li class="page-item disabled">
               <span class="page-link">Next</span>
             </li>
-          @endif
+          <?php endif; ?>
         </ul>
       </nav>
     </div>
@@ -442,8 +445,8 @@
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content" id="content">
-        <form action="{{ route('fees.store') }}" method="POST">
-          @csrf
+        <form action="<?php echo e(route('fees.store')); ?>" method="POST">
+          <?php echo csrf_field(); ?>
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Create Fees</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -627,8 +630,8 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content" id="content">
         <form id="editForm" method="POST">
-          @csrf
-          @method('PUT')
+          <?php echo csrf_field(); ?>
+          <?php echo method_field('PUT'); ?>
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Fees</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -981,7 +984,7 @@
 </div>
   </div>
   
-<script src="{{asset('js/emp.js')}}"></script>
+<script src="<?php echo e(asset('js/emp.js')); ?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 
@@ -1469,4 +1472,4 @@ document.getElementById('toggleBtn')?.addEventListener('click', function() {
 </script>
 
 </body>
-</html>
+</html><?php /**PATH C:\Users\dhamu\Syn-2\resources\views/master/fees_master/index.blade.php ENDPATH**/ ?>

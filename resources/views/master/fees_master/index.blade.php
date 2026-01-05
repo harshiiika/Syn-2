@@ -9,8 +9,62 @@
   <link rel="stylesheet" href="{{ asset('css/FeesMaster.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  
+  <style>
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .loading-overlay.active {
+      display: flex;
+    }
+    
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #d2691e;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Error message styling */
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid #f5c6cb;
+      margin: 15px 0;
+    }
+    
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+    }
+  </style>
 </head>
 <body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+  </div>
+
   <div class="header">
     <div class="logo">
       <img src="{{asset('images/logo.png.jpg')}}" class="img">
@@ -31,12 +85,13 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="{{route('profile.index') }}"><i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
         </ul>
       </div>
     </div>
   </div>
+  
   <div class="main-container">
     <div class="left" id="sidebar">
       <div class="text" id="text">
@@ -79,7 +134,7 @@
           <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
           <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
           <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item active" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
           <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
           <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
         </ul>
@@ -122,7 +177,7 @@
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -179,7 +234,6 @@
         <ul class="menu" id="dropdown-body">
           <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
           <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
-
         </ul>
       </div>
     </div>
@@ -267,7 +321,7 @@
   <div class="whole">
     <div class="dd">
       <div class="line">
-        <h6>Show Enteries:</h6>
+        <h6>Show Entries:</h6>
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">10</button>
@@ -313,8 +367,7 @@
               <ul class="dropdown-menu">
                 <li><a href="#" class="dropdown-item btn-view" data-id="{{ $fee->id }}">View Fees</a></li>
                 <li>
-                  <a href="#" class="dropdown-item btn-edit"
-                     data-id="{{ $fee->id }}">Edit</a>
+                  <a href="#" class="dropdown-item btn-edit" data-id="{{ $fee->id }}">Edit</a>
                 </li>
                 <li>
                   <form action="{{ route('fees.toggle', $fee) }}" method="POST">
@@ -384,6 +437,7 @@
   </div>
 </div>
   </div>
+  
   <!-- Create Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -567,6 +621,7 @@
   </div>
 </div>
   </div>
+  
   <!-- Edit Modal -->
   <div class="modal fade" id="exampleModalTwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -579,6 +634,9 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <!-- Error container for edit modal -->
+            <div id="editErrorContainer"></div>
+            
             <div class="mb-3">
               <label for="basic-url" class="form-label">Course</label>
               <div class="input-group">
@@ -751,6 +809,7 @@
   </div>
 </div>
   </div>
+  
   <!-- View Modal -->
   <div class="modal fade" id="exampleModalThree" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -760,6 +819,9 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <!-- Error container for view modal -->
+          <div id="viewErrorContainer"></div>
+          
           <div class="mb-3">
             <label for="basic-url" class="form-label">Course</label>
             <div class="input-group">
@@ -918,6 +980,7 @@
   </div>
 </div>
   </div>
+  
 <script src="{{asset('js/emp.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
@@ -925,7 +988,37 @@
 <script>
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+// Utility function to show loading overlay
+function showLoading() {
+  document.getElementById('loadingOverlay').classList.add('active');
+}
+
+// Utility function to hide loading overlay
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+// Utility function to show error message in modal
+function showError(containerId, message) {
+  const container = document.getElementById(containerId);
+  if (container) {
+    container.innerHTML = `<div class="error-message">${message}</div>`;
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Utility function to clear error messages
+function clearErrors(containerId) {
+  const container = document.getElementById(containerId);
+  if (container) {
+    container.innerHTML = '';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('✅ DOM Content Loaded - Fees Master Page');
+  console.log('🔑 CSRF Token:', csrfToken);
+  
   // CREATE MODAL CALCULATIONS
   const gstInput = document.querySelector('#exampleModal input[name="gst_percentage"]');
   const classroomInput = document.querySelector('#exampleModal input[name="classroom_course"]');
@@ -1106,19 +1199,22 @@ document.addEventListener('DOMContentLoaded', function() {
   if (editStudyInput) editStudyInput.addEventListener('input', calculateEditFees);
   if (editTestInput) editTestInput.addEventListener('input', calculateEditFees);
 
-  // BUTTON HANDLERS
+  // ✅ EDIT BUTTON HANDLERS WITH COMPREHENSIVE ERROR HANDLING
   document.querySelectorAll('.btn-edit').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
       const feeId = this.getAttribute('data-id');
+      console.log('🔧 Edit button clicked for Fee ID:', feeId);
       editFee(feeId);
     });
   });
 
+  // ✅ VIEW BUTTON HANDLERS WITH COMPREHENSIVE ERROR HANDLING
   document.querySelectorAll('.btn-view').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
       const feeId = this.getAttribute('data-id');
+      console.log('👁️ View button clicked for Fee ID:', feeId);
       viewFee(feeId);
     });
   });
@@ -1135,57 +1231,144 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// ✅ ENHANCED EDIT FEE FUNCTION WITH COMPREHENSIVE ERROR HANDLING
 function editFee(id) {
-  fetch(`/fees-master/${id}`, {
+  console.log('📝 Starting editFee for ID:', id);
+  clearErrors('editErrorContainer');
+  showLoading();
+  
+  const url = `/fees-master/${id}`;
+  console.log('🌐 Fetching from URL:', url);
+  
+  fetch(url, {
+    method: 'GET',
     headers: {
       'X-CSRF-TOKEN': csrfToken,
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     }
   })
-  .then(response => response.json())
+  .then(response => {
+    console.log('📡 Response status:', response.status);
+    console.log('📡 Response OK:', response.ok);
+    console.log('📡 Response headers:', [...response.headers.entries()]);
+    
+    if (!response.ok) {
+      return response.text().then(text => {
+        console.error('❌ Response text:', text);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}. ${text}`);
+      });
+    }
+    
+    return response.json();
+  })
   .then(data => {
-    console.log('Edit data received:', data);
+    console.log('✅ Edit data received:', data);
+    console.log('📊 Data type:', typeof data);
+    console.log('📊 Data keys:', Object.keys(data));
     
-    document.getElementById('edit_course').value = data.course;
-    document.getElementById('edit_gst_percentage').value = data.gst_percent;
-    document.getElementById('edit_classroom_course').value = data.classroom_fee;
-    document.getElementById('edit_live_online_course').value = data.live_fee;
-    document.getElementById('edit_recorded_online_course').value = data.recorded_fee;
-    document.getElementById('edit_study_material_only').value = data.study_fee;
-    document.getElementById('edit_test_series_only').value = data.test_fee;
+    hideLoading();
     
+    // Handle different response structures
+    const feeData = data.data || data;
+    console.log('📦 Fee data:', feeData);
+    
+    if (!feeData) {
+      throw new Error('No fee data received from server');
+    }
+    
+    // Populate form fields with fallbacks
+    document.getElementById('edit_course').value = feeData.course || feeData.course_name || '';
+    document.getElementById('edit_gst_percentage').value = feeData.gst_percent || feeData.gst_percentage || 0;
+    document.getElementById('edit_classroom_course').value = feeData.classroom_fee || feeData.classroom_course || 0;
+    document.getElementById('edit_live_online_course').value = feeData.live_fee || feeData.live_online_course || 0;
+    document.getElementById('edit_recorded_online_course').value = feeData.recorded_fee || feeData.recorded_online_course || 0;
+    document.getElementById('edit_study_material_only').value = feeData.study_fee || feeData.study_material_only || 0;
+    document.getElementById('edit_test_series_only').value = feeData.test_fee || feeData.test_series_only || 0;
+    
+    // Trigger calculations
     const event = new Event('input');
     document.getElementById('edit_gst_percentage').dispatchEvent(event);
     
+    // Set form action
     document.getElementById('editForm').action = `/fees-master/${id}`;
     
+    // Show modal
     var editModal = new bootstrap.Modal(document.getElementById('exampleModalTwo'));
     editModal.show();
+    
+    console.log('✅ Edit modal opened successfully');
   })
   .catch(error => {
-    console.error('Error:', error);
-    alert('Failed to load fee details');
+    hideLoading();
+    console.error('❌ Error in editFee:', error);
+    console.error('❌ Error stack:', error.stack);
+    
+    const errorMessage = `Failed to load fee details for editing: ${error.message}. Please check the console for more details.`;
+    showError('editErrorContainer', errorMessage);
+    
+    // Still show the modal even with error
+    var editModal = new bootstrap.Modal(document.getElementById('exampleModalTwo'));
+    editModal.show();
+    
+    // Also show user-friendly alert
+    alert(`Error: ${error.message}\n\nPlease contact technical support if this persists.`);
   });
 }
 
+// ✅ ENHANCED VIEW FEE FUNCTION WITH COMPREHENSIVE ERROR HANDLING
 function viewFee(id) {
-  fetch(`/fees-master/${id}`, {
+  console.log('👁️ Starting viewFee for ID:', id);
+  clearErrors('viewErrorContainer');
+  showLoading();
+  
+  const url = `/fees-master/${id}`;
+  console.log('🌐 Fetching from URL:', url);
+  
+  fetch(url, {
+    method: 'GET',
     headers: {
       'X-CSRF-TOKEN': csrfToken,
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     }
   })
-  .then(response => response.json())
+  .then(response => {
+    console.log('📡 Response status:', response.status);
+    console.log('📡 Response OK:', response.ok);
+    console.log('📡 Response headers:', [...response.headers.entries()]);
+    
+    if (!response.ok) {
+      return response.text().then(text => {
+        console.error('❌ Response text:', text);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}. ${text}`);
+      });
+    }
+    
+    return response.json();
+  })
   .then(data => {
-    console.log('View data received:', data);
+    console.log('✅ View data received:', data);
+    console.log('📊 Data type:', typeof data);
+    console.log('📊 Data keys:', Object.keys(data));
     
-    const gstPercent = parseFloat(data.gst_percent) || 0;
+    hideLoading();
     
-    document.getElementById('view_course').value = data.course;
+    // Handle different response structures
+    const feeData = data.data || data;
+    console.log('📦 Fee data:', feeData);
+    
+    if (!feeData) {
+      throw new Error('No fee data received from server');
+    }
+    
+    const gstPercent = parseFloat(feeData.gst_percent || feeData.gst_percentage || 0);
+    
+    document.getElementById('view_course').value = feeData.course || feeData.course_name || 'N/A';
     document.getElementById('view_gst_percentage').value = gstPercent;
     
     // Classroom Course
-    const classroomFee = parseFloat(data.classroom_fee) || 0;
+    const classroomFee = parseFloat(feeData.classroom_fee || feeData.classroom_course || 0);
     const classroomGst = (classroomFee * gstPercent / 100).toFixed(2);
     const classroomTotal = (classroomFee + parseFloat(classroomGst)).toFixed(2);
     document.getElementById('view_classroom_course').value = classroomFee.toFixed(2);
@@ -1200,7 +1383,7 @@ function viewFee(id) {
     document.getElementById('view_classroom_inst3').value = Math.round(classroomInst3);
     
     // Live Online Course
-    const liveFee = parseFloat(data.live_fee) || 0;
+    const liveFee = parseFloat(feeData.live_fee || feeData.live_online_course || 0);
     const liveGst = (liveFee * gstPercent / 100).toFixed(2);
     const liveTotal = (liveFee + parseFloat(liveGst)).toFixed(2);
     document.getElementById('view_live_online_course').value = liveFee.toFixed(2);
@@ -1215,7 +1398,7 @@ function viewFee(id) {
     document.getElementById('view_live_inst3').value = Math.round(liveInst3);
     
     // Recorded Online Course
-    const recordedFee = parseFloat(data.recorded_fee) || 0;
+    const recordedFee = parseFloat(feeData.recorded_fee || feeData.recorded_online_course || 0);
     const recordedGst = (recordedFee * gstPercent / 100).toFixed(2);
     const recordedTotal = (recordedFee + parseFloat(recordedGst)).toFixed(2);
     document.getElementById('view_recorded_online_course').value = recordedFee.toFixed(2);
@@ -1230,7 +1413,7 @@ function viewFee(id) {
     document.getElementById('view_recorded_inst3').value = Math.round(recordedInst3);
     
     // Study Material Only
-    const studyFee = parseFloat(data.study_fee) || 0;
+    const studyFee = parseFloat(feeData.study_fee || feeData.study_material_only || 0);
     const studyGst = (studyFee * gstPercent / 100).toFixed(2);
     const studyTotal = (studyFee + parseFloat(studyGst)).toFixed(2);
     document.getElementById('view_study_material_only').value = studyFee.toFixed(2);
@@ -1238,22 +1421,37 @@ function viewFee(id) {
     document.getElementById('view_study_material_total').value = studyTotal;
     
     // Test Series Only
-    const testFee = parseFloat(data.test_fee) || 0;
+    const testFee = parseFloat(feeData.test_fee || feeData.test_series_only || 0);
     const testGst = (testFee * gstPercent / 100).toFixed(2);
     const testTotal = (testFee + parseFloat(testGst)).toFixed(2);
     document.getElementById('view_test_series_only').value = testFee.toFixed(2);
     document.getElementById('view_test_series_gst').value = testGst;
     document.getElementById('view_test_series_total').value = testTotal;
     
+    // Show modal
     var viewModal = new bootstrap.Modal(document.getElementById('exampleModalThree'));
     viewModal.show();
+    
+    console.log('✅ View modal opened successfully');
   })
   .catch(error => {
-    console.error('Error:', error);
-    alert('Failed to load fee details');
+    hideLoading();
+    console.error('❌ Error in viewFee:', error);
+    console.error('❌ Error stack:', error.stack);
+    
+    const errorMessage = `Failed to load fee details: ${error.message}. Please check the console for more details.`;
+    showError('viewErrorContainer', errorMessage);
+    
+    // Still show the modal even with error
+    var viewModal = new bootstrap.Modal(document.getElementById('exampleModalThree'));
+    viewModal.show();
+    
+    // Also show user-friendly alert
+    alert(`Error: ${error.message}\n\nPlease contact technical support if this persists.`);
   });
 }
 
+// Search functionality
 document.getElementById('searchInput').addEventListener('keyup', function() {
   const searchValue = this.value.toLowerCase();
   const tableRows = document.querySelectorAll('#table tbody tr');
@@ -1263,6 +1461,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
   });
 });
 
+// Sidebar toggle
 document.getElementById('toggleBtn')?.addEventListener('click', function() {
   const sidebar = document.getElementById('sidebar');
   sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
