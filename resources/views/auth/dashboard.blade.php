@@ -1,3 +1,86 @@
+{{--
+
+EMPLOYEE MANAGEMENT BLADE FILE - CODE SUMMARY
+
+
+LINE 1-19: Document setup - HTML5 doctype, head section with meta tags, title,
+external CSS (Font Awesome, custom emp.css, Bootstrap)
+
+LINE 20-49: Header section - Logo, toggle button for sidebar, session selector,
+notification bell, user dropdown menu with profile and login options
+
+LINE 50-51: Main container div starts
+
+LINE 52-233: Left Sidebar Navigation
+- LINE 52-58: Sidebar container and admin info display
+- LINE 60-233: Bootstrap accordion menu with 9 collapsible sections:
+* LINE 61-75: User Management (Employee, Batches Assignment)
+* LINE 76-99: Master (Courses, Batches, Scholarship, Fees, Branch)
+* LINE 100-114: Session Management (Session, Calendar, Student Migrate)
+* LINE 115-131: Student Management (Inquiry, Onboard, Pending Fees, Students)
+* LINE 132-142: Fees Management (Fees Collection)
+* LINE 143-155: Attendance Management (Student, Employee)
+* LINE 156-168: Study Material (Units, Dispatch Material)
+* LINE 169-179: Test Series Management (Test Master)
+* LINE 180-200: Reports (Walk In, Attendance, Test Series, Inquiry, Onboard)
+
+LINE 234-252: Right Content Area Header
+- LINE 236-238: Page title "EMPLOYEE"
+- LINE 239-246: Action buttons (Add Employee, Upload)
+
+LINE 253-282: Table Controls
+- LINE 254-268: Show entries dropdown (10, 25, 50, 100 options)
+- LINE 269-274: Search input field with icon
+
+LINE 275-295: Employee Table Structure
+- LINE 276-286: Table headers (Serial No, Name, Email, Mobile, Department, Role, Status, Action)
+- LINE 287-289: Empty tbody tag
+- LINE 290-294: Comment indicating modal fillables location
+
+LINE 296-338: Dynamic Employee Table Rows (Blade foreach loop)
+- Displays user data from database
+- Status badge with color coding
+- Action dropdown with 4 options: View, Edit, Password Update, Activate/Deactivate
+
+LINE 344-375: View Modal (foreach loop for each user)
+- Read-only display of employee details
+- Shows: Name, Email, Mobile, Alternate Mobile, Branch, Department
+
+LINE 377-445: Edit Modal (foreach loop for each user)
+- LINE 379-382: PHP variables setup for current department and roles
+- LINE 384-443: Edit form with PUT method
+- Editable fields: Name, Email, Mobile, Alternate Mobile, Branch, Department
+- Current Role displayed as read-only
+
+LINE 447-480: Password Update Modal (foreach loop for each user)
+- Form with PUT method for password update
+- Fields: Current Password, New Password, Confirm New Password
+
+LINE 481-498: Footer Section
+- LINE 482-484: Pagination info text
+- LINE 485-493: Pagination controls (Previous, page numbers, Next)
+
+LINE 499-500: Closing divs for main container
+
+LINE 501-503: Comment for Add Employee modal
+
+LINE 504-600: Add Employee Modal
+- LINE 504-509: Modal dialog setup
+- LINE 510-586: Form with POST method to add new employee
+- Fields: Name, Mobile, Alternate Mobile, Email, Branch, Department,
+Password, Confirm Password, File upload
+- LINE 587-591: Modal footer with Cancel and Submit buttons
+
+LINE 622-624: Closing divs and body tag
+
+LINE 625-628: External JavaScript includes (Bootstrap bundle)
+
+LINE 629-665: AJAX Script for Dynamic User Addition
+- Prevents page reload on form submit
+- Handles form validation errors
+- Appends new user to table without refresh
+--}}
+
 <!DOCTYPE html>
 
 
@@ -37,24 +120,30 @@
       </div>
       <i class="fa-solid fa-bell"></i>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
-          <i class="fa-solid fa-user"></i>
-        </button>
-        <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
-        <i class="fa-solid fa-user"></i> Profile
-    </a></li>
-    <li>
-        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-            @csrf
-            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
-            </button>
-        </form>
-    </li>
-</ul>
-      </div>
+    <button class="btn btn-secondary dropdown-toggle" 
+            id="toggle-btn" 
+            type="button" 
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
     </div>
   </div>
   <div class="main-container">
@@ -67,7 +156,7 @@
       </div>
 
       <!-- Left side bar accordian -->
-          <div class="accordion accordion-flush" id="accordionFlushExample">
+         <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -145,7 +234,7 @@
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -250,12 +339,18 @@
 </div>
     </div>
     <div class="right" id="right">
-        <h2>Welcome to Dashboard</h2>
-        <p>This is the dashboard page.</p>
-    </div>
- 
+<h2 style="color: #ff8000;">Welcome to Dashboard</h2>
+</div>
+
 </body>
-<script src="{{asset('js/emp.js')}}"></script>
+<!-- AJAX Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap Bundle (with Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+<!--custom JS (must come after jQuery + Bootstrap) -->
+<script src="{{ asset(path: 'js/emp.js') }}"></script>
+
 </html>

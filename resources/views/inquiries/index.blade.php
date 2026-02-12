@@ -819,7 +819,7 @@
                                 <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i
                                             class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a>
                                 </li>
-                                <li><a class="item active" href="{{ route('smstudents.index') }}"><i
+                                <li><a class="item" href="{{ route('smstudents.index') }}"><i
                                             class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
                             </ul>
                         </div>

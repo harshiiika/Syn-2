@@ -181,7 +181,6 @@
                 <p>synthesisbikaner@gmail.com</p>
             </div>
 
-<<<<<<< HEAD
 <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
@@ -260,7 +259,7 @@
           <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -362,153 +361,6 @@
     </div>
   </div>
 </div>
-=======
-            <div class="accordion accordion-flush" id="sidebarAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#userMgmt">
-                            <i class="fa-solid fa-user-group"></i> User Management
-                        </button>
-                    </h2>
-                    <div id="userMgmt" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user"></i> Employee</a></li>
-                                <li><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group"></i> Batches Assignment</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#master">
-                            <i class="fa-solid fa-database"></i> Master
-                        </button>
-                    </h2>
-                    <div id="master" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open"></i> Courses</a></li>
-                                <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-users"></i> Batches</a></li>
-                                <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap"></i> Scholarship</a></li>
-                                <li><a class="item" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card"></i> Fees Master</a></li>
-                                <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet"></i> Other Fees Master</a></li>
-                                <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project"></i> Branch Management</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#session">
-                            <i class="fa-solid fa-calendar"></i> Session Management
-                        </button>
-                    </h2>
-                    <div id="session" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day"></i> Session</a></li>
-                                <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days"></i> Calendar</a></li>
-                                <li><a class="item" href="#"><i class="fa-solid fa-user-check"></i> Student Migrate</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#student">
-                            <i class="fa-solid fa-user-graduate"></i> Student Management
-                        </button>
-                    </h2>
-                    <div id="student" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info"></i> Inquiry Management</a></li>
-                                <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check"></i> Student Onboard</a></li>
-                                <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-clock"></i> Pending Fees Students</a></li>
-                                <li><a class="item" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-users"></i> Students</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#fees">
-                            <i class="fa-solid fa-credit-card"></i> Fees Management
-                        </button>
-                    </h2>
-                    <div id="fees" class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a class="item active" href="<?php echo e(route('fees.management.index')); ?>"><i class="fa-solid fa-money-bill-wave"></i> Fee Collection</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#attendance">
-                            <i class="fa-solid fa-calendar-check"></i> Attendance Management
-                        </button>
-                    </h2>
-                    <div id="attendance" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a class="item" href="<?php echo e(route('attendance.employee.index')); ?>"><i class="fa-solid fa-user-tie"></i> Employee</a></li>
-                                <li><a class="item" href="<?php echo e(route('attendance.student.index')); ?>"><i class="fa-solid fa-user-graduate"></i> Student</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#studyMaterial">
-                            <i class="fa-solid fa-book-open"></i> Study Material
-                        </button>
-                    </h2>
-                    <div id="studyMaterial" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a class="item" href="#"><i class="fa-solid fa-book"></i> Units</a></li>
-                                <li><a class="item" href="#"><i class="fa-solid fa-truck"></i> Dispatch Material</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testSeries">
-                            <i class="fa-solid fa-chart-column"></i> Test Series Management
-                        </button>
-                    </h2>
-                    <div id="testSeries" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a class="item" href="<?php echo e(route('test_series.index')); ?>"><i class="fa-solid fa-file-lines"></i> Test Master</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reports">
-                            <i class="fa-solid fa-square-poll-horizontal"></i> Reports
-                        </button>
-                    </h2>
-                    <div id="reports" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="menu" id="dropdown-body">
-                                <li><a class="item" href="#"><i class="fa-solid fa-person-walking" id="side-icon"></i>Walk In</a></li>
-                                <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
-                                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-                                <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-                                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
->>>>>>> ab196188d8af41bd610a34fe44c9927895c3534d
         </div>
 
         <div class="right">

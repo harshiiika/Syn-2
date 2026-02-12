@@ -1,10 +1,12 @@
+
+
 <!DOCTYPE html>
 
 
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-<<<<<<< HEAD:storage/framework/views/1eaeb69ce642d5dcfe0decf9ce990979.php
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Employee</title>
   <!-- Font Awesome Icons -->
@@ -15,241 +17,65 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 
-=======
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile - Synthesis Admin</title>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="<?php echo e(asset('css/emp.css')); ?>">
-  
-  <style>
-    /* Profile-specific styles that extend emp.css */
-    .profile-container {
-      background-color: #fff;
-      border-radius: 8px;
-      padding: 40px;
-      width: 900px;
-      margin: 20px auto;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .profile-header {
-      color: rgb(224, 83, 1);
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 30px;
-      border-bottom: 2px solid rgb(224, 83, 1);
-      padding-bottom: 10px;
-    }
-
-    .image-upload-section {
-      margin-bottom: 30px;
-    }
-
-    .image-upload-label {
-      font-weight: 600;
-      margin-bottom: 15px;
-      display: block;
-      color: #333;
-      font-size: 15px;
-    }
-
-    .upload-box {
-      width: 280px;
-      height: 150px;
-      border: 2px dashed #ddd;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      background-color: #fafafa;
-    }
-
-    .upload-box:hover {
-      border-color: rgb(224, 83, 1);
-      background-color: #fff3e6;
-    }
-
-    .upload-box i {
-      font-size: 48px;
-      color: #999;
-      margin-bottom: 10px;
-    }
-
-    .upload-box:hover i {
-      color: rgb(224, 83, 1);
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-bottom: 25px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-group label {
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: #333;
-      font-size: 15px;
-    }
-
-    .form-group input {
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 14px;
-      transition: all 0.3s;
-      height: 40px;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: rgb(224, 83, 1);
-      box-shadow: 0 0 0 3px rgba(224, 83, 1, 0.1);
-    }
-
-    .update-btn {
-      background-color: rgb(224, 83, 1);
-      color: white;
-      border: none;
-      padding: 12px 40px;
-      border-radius: 7px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      float: right;
-      margin-top: 20px;
-      transition: all 0.3s;
-      height: 40px;
-    }
-
-    .update-btn:hover {
-      background-color: rgb(200, 70, 0);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(224, 83, 1, 0.3);
-    }
-
-    @media (max-width: 768px) {
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      .profile-container {
-        padding: 20px;
-        margin: 10px;
-      }
-    }
-  </style>
-========
-  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
-  <title>Session Calendar</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?php echo e(asset('css/session.css')); ?>">
-  <link rel="stylesheet" href="<?php echo e(asset('css/calendar.css')); ?>">
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
->>>>>>> 6bfb9a29929db3aac1efeacdd7deb7e564dac4ec:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
 </head>
+
 <body>
-<<<<<<< HEAD:storage/framework/views/1eaeb69ce642d5dcfe0decf9ce990979.php
   <!-- Header Section: Contains logo, sidebar toggle, session selector, notifications, and user menu -->
-=======
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
-  <div class="header">
-    <div class="logo">
-      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img" alt="Logo">
-========
-  <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-    <?php if(session('success')): ?>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?php echo e(session('success')); ?>
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-
-    <?php if(session('error')): ?>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?php echo e(session('error')); ?>
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-  </div>
->>>>>>> 6bfb9a29929db3aac1efeacdd7deb7e564dac4ec:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
 
   <div class="header">
     <div class="logo">
       <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img">
-<<<<<<< HEAD:storage/framework/views/1eaeb69ce642d5dcfe0decf9ce990979.php
 
       <!-- Sidebar toggle button -->
-=======
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
->>>>>>> 6bfb9a29929db3aac1efeacdd7deb7e564dac4ec:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
       <div class="session">
         <h5>Session:</h5>
-        <select id="sessionSelect">
-          <option value="2024-2025">2024-2025</option>
-          <option value="2025-2026" selected>2025-2026</option>
-          <option value="2026-2027">2026-2027</option>
+        <select>
+          <option>2024-2025</option>
+          <option>2026</option>
         </select>
       </div>
-      <i class="fa-bell"></i>
+      <i class="fa-solid fa-bell"></i>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fa-solid fa-user"></i>
-        </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="<?php echo e(route('profile.index')); ?>"><i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
-      </div>
+    <button class="btn btn-secondary dropdown-toggle" 
+            id="toggle-btn" 
+            type="button" 
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="<?php echo e(route('profile.index')); ?>">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="<?php echo e(route('logout')); ?>" class="d-inline">
+                <?php echo csrf_field(); ?>
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
     </div>
   </div>
   <div class="main-container">
     <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
     <div class="left" id="sidebar">
-<<<<<<< HEAD:storage/framework/views/1eaeb69ce642d5dcfe0decf9ce990979.php
 
-=======
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
-      <div class="text">
-        <h6>Admin</h6>
-        <p>synthesisbikaner@gmail.com</p>
-      </div>
-
-========
->>>>>>> 6bfb9a29929db3aac1efeacdd7deb7e564dac4ec:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-<<<<<<< HEAD:storage/framework/views/1eaeb69ce642d5dcfe0decf9ce990979.php
 
       <!-- Left side bar accordian -->
-          <div class="accordion accordion-flush" id="accordionFlushExample">
-=======
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
-     <div class="accordion accordion-flush" id="accordionFlushExample">
->>>>>>> 6bfb9a29929db3aac1efeacdd7deb7e564dac4ec:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
+         <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -327,7 +153,7 @@
           <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -383,7 +209,8 @@
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
           <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li></li>
+          <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+
         </ul>
       </div>
     </div>
@@ -419,8 +246,8 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -430,214 +257,19 @@
   </div>
 </div>
     </div>
-<<<<<<< HEAD:storage/framework/views/1eaeb69ce642d5dcfe0decf9ce990979.php
     <div class="right" id="right">
-        <h2>Welcome to Dashboard</h2>
-        <p>This is the dashboard page.</p>
-    </div>
- 
+<h2 style="color: #ff8000;">Welcome to Dashboard</h2>
+</div>
+
 </body>
-<script src="<?php echo e(asset('js/emp.js')); ?>"></script>
+<!-- AJAX Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap Bundle (with Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+<!--custom JS (must come after jQuery + Bootstrap) -->
+<script src="<?php echo e(asset(path: 'js/emp.js')); ?>"></script>
+
 </html><?php /**PATH C:\Users\Priyanshi Rathore\Syn-2\resources\views/auth/dashboard.blade.php ENDPATH**/ ?>
-=======
-
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
-    <div class="right" id="right">
-      <div class="profile-container">
-        <h1 class="profile-header">Personal Information</h1>
-        
-        <form id="profileForm" onsubmit="updateProfile(event)">
-          <div class="image-upload-section">
-            <label class="image-upload-label">Update Image</label>
-            <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-              <i class="fa-solid fa-cloud-arrow-up"></i>
-              <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" value="Admin" required>
-            </div>
-            <div class="form-group">
-              <label for="mobile">Enter Mobile Number</label>
-              <input type="tel" id="mobile" value="1234567890" pattern="[0-9]{10}" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="alternate">Alternate No.</label>
-              <input type="tel" id="alternate" placeholder="Enter Alternate number" pattern="[0-9]{10}">
-            </div>
-            <div class="form-group">
-              <label for="email">Enter Your Email</label>
-              <input type="email" id="email" value="synthesisbikaner@gmail.com" required>
-            </div>
-          </div>
-
-          <button type="submit" class="update-btn">Update Information</button>
-        </form>
-========
-    <!-- Calendar Content -->
-    <div class="calendar-container">
-      <div class="calendar-header">
-        <h3>Session Calendar</h3>
-        <div class="calendar-actions">
-          <button class="btn-mark-sunday" id="markAllSundayBtn">Mark All Sunday as Holiday</button>
-          <button class="btn-add-holiday" id="addHolidayBtn">Add Holiday</button>
-          <button class="btn-add-test" id="addTestBtn">Add Test</button>
-        </div>
-      </div>
-
-      <div class="calendar-content">
-        <!-- Calendar -->
-        <div class="calendar-main">
-          <div id="calendar"></div>
-        </div>
-
-        <!-- Right Sidebar -->
-        <div class="calendar-sidebar">
-          <!-- Holiday List -->
-          <div class="list-card">
-            <div class="list-card-header">Holiday List</div>
-            <div class="list-card-body" id="holidayList">
-              <div class="list-item-empty">No holidays added</div>
-            </div>
-          </div>
-
-          <!-- Test List -->
-          <div class="list-card">
-            <div class="list-card-header">Test List</div>
-            <div class="list-card-body" id="testList">
-              <div class="list-item-empty">No tests added</div>
-            </div>
-          </div>
-        </div>
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
-      </div>
-    </div>
-  </div>
-
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
-  <script src="<?php echo e(asset('js/emp.js')); ?>"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Toggle sidebar
-    document.getElementById('toggleBtn').addEventListener('click', function() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('collapsed');
-      sidebar.classList.toggle('active');
-    });
-
-    // Preview uploaded image
-    function previewImage(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const uploadBox = document.querySelector('.upload-box');
-          uploadBox.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    // Update profile function
-    function updateProfile(event) {
-      event.preventDefault();
-      
-      const formData = {
-        name: document.getElementById('name').value,
-        mobile: document.getElementById('mobile').value,
-        alternate: document.getElementById('alternate').value,
-        email: document.getElementById('email').value
-      };
-
-      // Show success message
-      alert('Profile updated successfully!');
-      console.log('Updated profile data:', formData);
-    }
-
-    // Logout function
-    function logout() {
-      if (confirm('Are you sure you want to log out?')) {
-        alert('Logged out successfully!');
-        window.location.href = '/';
-      }
-    }
-  </script>
-</body>
-</html><?php /**PATH C:\Users\dhamu\Syn-2\User_Management\resources\views/profile/profile.blade.php ENDPATH**/ ?>
-========
-  <!-- Add Holiday Modal (Bootstrap) -->
-  <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addHolidayModalLabel">Add Holiday</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="holidayForm">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="holiday_date" class="form-label">Holiday Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="holiday_date" name="holiday_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="holiday_description" class="form-label">Description <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="holiday_description" name="holiday_description" placeholder="Enter holiday description" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Test Modal (Bootstrap) -->
-  <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addTestModalLabel">Add Test</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="testForm" method="POST" action="<?php echo e(route('calendar.tests.store')); ?>">
-        <?php echo csrf_field(); ?>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="test_date" class="form-label">Test Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="test_date" name="test_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="test_name" class="form-label">Test Name <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="test_name" name="test_name" placeholder="Enter test name" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
-    <script src="<?php echo e(asset('js/calendar.js')); ?>"></script>
-
-</body>
-
-</html><?php /**PATH C:\Users\Priyanshi Rathore\Syn-2\resources\views/master/calendar/calendar.blade.php ENDPATH**/ ?>
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
->>>>>>> 6bfb9a29929db3aac1efeacdd7deb7e564dac4ec:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php

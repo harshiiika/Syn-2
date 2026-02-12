@@ -12,135 +12,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   
 <style>
-  * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-.header {
-  height: 60px;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-.main-container {
-  display: flex;
-  margin-top: 60px;
-  height: calc(100vh - 60px);
-}
-
-.left {
-  width: 280px;
-  background: white;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  overflow-y: auto;
-  transition: width 0.3s ease;
-  position: fixed;
-  left: 0;
-  top: 60px;
-  height: calc(100vh - 60px);
-}
-
-.left.collapsed {
-  width: 0;
-  overflow: hidden;
-}
-
-.right {
-  flex: 1;
-  margin-left: 280px;
-  background-color: #f5f5f5;
-  padding: 25px;
-  height: calc(100vh - 60px);
-  overflow-y: auto;
-  transition: margin-left 0.3s ease;
-}
-
-.left.collapsed ~ .right {
-  margin-left: 0;
-}
-
-.accordion-item {
-  border: none !important;
-  border-bottom: 1px solid #eee !important;
-}
-
-.accordion-button {
-  background: white !important;
-  color: #333 !important;
-  font-weight: 500;
-  padding: 15px 20px;
-  border: none;
-}
-
-.accordion-button:not(.collapsed) {
-  background: #f8f9fa !important;
-  color: #ed5b00 !important;
-}
-
-.accordion-button:focus {
-  box-shadow: none;
-  border: none;
-}
-
-.accordion-body {
-  padding: 0;
-}
-
-.menu {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.menu li {
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.menu li .item {
-  display: flex;
-  align-items: center;
-  padding: 12px 20px 12px 40px;
-  color: #555;
-  text-decoration: none;
-  transition: all 0.3s;
-  font-size: 14px;
-}
-
-.menu li .item:hover {
-  background: #f8f9fa;
-  color: #ed5b00;
-  padding-left: 45px;
-}
-
-.menu li .item.active {
-  background: #ed5b00;
-  color: white;
-  font-weight: 600;
-}
-
-#side-icon {
-  margin-right: 10px;
-  width: 18px;
-}
-
 .text {
   padding: 20px;
   border-bottom: 2px solid #eee;
@@ -157,12 +28,7 @@ body {
   font-size: 13px;
   margin: 0;
 }
-.right {
-  background-color: #f5f5f5;
-  padding: 25px;
-  height: calc(100vh - 100px);
-  overflow-y: auto;
-}
+
 
 .attendance-header {
   display: flex;
@@ -561,205 +427,212 @@ body {
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="<?php echo e(route('profile.index')); ?>"><i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
-        </ul>
+    <li><a class="dropdown-item" href="<?php echo e(route('profile.index')); ?>">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="<?php echo e(route('logout')); ?>" style="display: inline;">
+            <?php echo csrf_field(); ?>
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
 
   <div class="main-container">
-   <div class="left" id="sidebar">
-
+    <div class="left" id="sidebar">
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-      <!-- Left side bar accordian -->
-            <div class="accordion accordion-flush" id="accordionFlushExample">
-  <!-- User Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
-      </button>
-    </h2>
-    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
-        </ul>
+      <!-- Accordion Menu -->
+      <div class="accordion accordion-flush" id="accordionFlushExample">
+        <!-- User Management -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+            </button>
+          </h2>
+          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+                <li><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Master -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+            </button>
+          </h2>
+          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+                <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+                <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+                <li><a class="item" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+                <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+                <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Session Management -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+            </button>
+          </h2>
+          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+                <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Management -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
+              id="accordion-button">
+              <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+            </button>
+          </h2>
+          <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+                <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+                <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+                <li><a class="item" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fees Management -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
+              id="accordion-button">
+              <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+            </button>
+          </h2>
+          <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('fees.management.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance Management -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+              id="accordion-button">
+              <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+            </button>
+          </h2>
+          <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item active" href="<?php echo e(route('attendance.employee.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+                <li><a class="item" href="<?php echo e(route('attendance.student.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Study Material -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
+              id="accordion-button">
+              <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+            </button>
+          </h2>
+          <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+                <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test Series Management -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
+              id="accordion-button">
+              <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+            </button>
+          </h2>
+          <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route(name: 'test_series.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
+              id="accordion-button">
+              <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+            </button>
+          </h2>
+          <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <ul class="menu" id="dropdown-body">
+                <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
+                <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- Master -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
-      </button>
-    </h2>
-    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-          <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Session Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-      </button>
-    </h2>
-    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Student Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-      </button>
-    </h2>
-    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Fees Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-        id="accordion-button">
-        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-      </button>
-    </h2>
-    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('fees.management.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Attendance Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-        id="accordion-button">
-        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
-      </button>
-    </h2>
-    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('attendance.employee.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="<?php echo e(route('attendance.student.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Study Material -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-        id="accordion-button">
-        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-      </button>
-    </h2>
-    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
-
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Test Series Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-        id="accordion-button">
-        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-      </button>
-    </h2>
-    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route(name: 'test_series.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Reports -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-        id="accordion-button">
-        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
-      </button>
-    </h2>
-    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-    </div>
-
+    
     <div class="right" id="right">
       <div class="attendance-header">
         <h4 class="page-title">Employee Attendance</h4>
