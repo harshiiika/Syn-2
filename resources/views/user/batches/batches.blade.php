@@ -96,10 +96,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{ route('profile.index') }}"> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
       </div>
     </div>
   </div>
@@ -310,36 +322,36 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
       </div>
       <div class="whole">
-        <div class="dd">
-             <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            {{ request('per_page', 10) }}
-          </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
-          
-<div class="search">
-  <form method="GET" action="{{ route('user.batches.batches') }}" id="searchForm">
-    <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
-    <input type="search" 
-           name="search" 
-           placeholder="Search" 
-           class="search-holder" 
-           value="{{ request('search') }}"
-           id="searchInput">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </form>
+           <div class="dd">
+  <div class="line">
+    <h6>Show Entries:</h6>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{ request('per_page', 10) }}
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" data-value="5">5</a></li>
+        <li><a class="dropdown-item" href="#" data-value="10">10</a></li>
+        <li><a class="dropdown-item" href="#" data-value="25">25</a></li>
+        <li><a class="dropdown-item" href="#" data-value="50">50</a></li>
+        <li><a class="dropdown-item" href="#" data-value="100">100</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="search">
+    <form method="GET" action="{{ route('user.batches.batches') }}" id="searchForm">
+      <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+      <input type="search" 
+             name="search" 
+             placeholder="Search" 
+             class="search-holder" 
+             value="{{ request('search') }}"
+             id="searchInput">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </form>
+  </div>
 </div>
-        </div>
         <!-- Table starts here -->
 
         <table class="table table-hover" id="table">
@@ -520,12 +532,12 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </div>
 
           <!-- Dynamic Batch Dropdown -->
-          <div class="mb-3">
+<div class="mb-3">
   <label for="batch" class="form-label">Select Batch <span class="text-danger">*</span></label>
   <div class="input-group">
     <select name="batch_id" id="batch_id" class="form-select" required>
       <option value="">Select Batch</option>
-      @if(isset($availableBatches) && $availableBatches->count() > 0)
+      @if(isset($availableBatches) && count($availableBatches) > 0)
         @foreach($availableBatches as $batch)
           <option value="{{ $batch->batch_id }}" 
                   data-shift="{{ $batch->shift }}"
@@ -631,5 +643,134 @@ $(document).ready(function() {
     }
   });
 });
+
+// jQuery ready function for batch assignment
+$(document).ready(function() {
+  console.log('Batch assignment page loaded');
+
+  // Show shift when batch is selected (optional visual feedback)
+  $('#batch_id').on('change', function() {
+    const selectedOption = $(this).find('option:selected');
+    const shift = selectedOption.data('shift');
+    const startDate = selectedOption.data('start-date');
+    
+    if (shift && $('#shift_display').length) {
+      $('#shift_display').val(shift);
+      console.log('Selected batch shift:', shift, 'Start date:', startDate);
+    }
+  });
+
+  // AJAX for batch assignment with page reload
+  $('#assignBatchForm').on('submit', function (e) {
+    e.preventDefault();
+    
+    const submitBtn = $(this).find('button[type="submit"]');
+    const originalText = submitBtn.text();
+    submitBtn.prop('disabled', true).text('Assigning...');
+
+    $.ajax({
+      url: "{{ route('batches.assign') }}",
+      method: 'POST',
+      data: $(this).serialize(),
+      dataType: 'json',
+      success: function (response) {
+        console.log('Success:', response);
+        
+        if (response.status === 'success') {
+          $('#assignBatchModal').modal('hide');
+          alert('Batch assigned successfully!\nBatch: ' + response.batch.batch_id + '\nShift: ' + response.batch.shift);
+          window.location.reload();
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error('Error:', xhr.responseJSON);
+        
+        let errorMessage = 'An error occurred. Please try again.';
+        
+        if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+          errorMessage = 'Validation errors:\n';
+          for (let field in xhr.responseJSON.errors) {
+            errorMessage += `- ${xhr.responseJSON.errors[field][0]}\n`;
+          }
+        } else if (xhr.status === 404) {
+          errorMessage = 'Selected batch not found. Please refresh the page and try again.';
+        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+          errorMessage = xhr.responseJSON.message;
+        }
+        
+        alert(errorMessage);
+        submitBtn.prop('disabled', false).text(originalText);
+      }
+    });
+  });
+
+  // Reset modal when closed
+  $('#assignBatchModal').on('hidden.bs.modal', function () {
+    $('#assignBatchForm')[0].reset();
+    if ($('#shift_display').length) {
+      $('#shift_display').val('');
+    }
+  });
+});
+
+// Vanilla JavaScript for pagination and search (no Blade variables!)
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownButton = document.getElementById('number');
+    const dropdownItems = document.querySelectorAll('.dropdown-item[data-value]');
+    
+    // Get URL parameters using JavaScript
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPerPage = urlParams.get('per_page') || '10';
+    
+    // Highlight current selection
+    dropdownItems.forEach(item => {
+        const itemValue = item.getAttribute('data-value');
+        
+        if (itemValue === currentPerPage) {
+            item.classList.add('active');
+            item.style.backgroundColor = '#ed5b00';
+            item.style.color = 'white';
+        }
+        
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectedValue = this.getAttribute('data-value');
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('per_page', selectedValue);
+            
+            // Get search from URL, not Blade
+            const currentSearch = urlParams.get('search');
+            if (currentSearch) {
+                newUrl.searchParams.set('search', currentSearch);
+            }
+            
+            newUrl.searchParams.delete('page');
+            window.location.href = newUrl.toString();
+        });
+    });
+
+    // Search icon click handler
+    const searchIcon = document.querySelector('.search i.fa-magnifying-glass');
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    
+    if (searchIcon && searchForm) {
+        searchIcon.style.cursor = 'pointer';
+        searchIcon.addEventListener('click', function() {
+            searchForm.submit();
+        });
+    }
+
+    // Search input enter key handler
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+    }
+});
+
 </script>
 </html>

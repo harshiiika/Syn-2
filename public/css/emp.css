@@ -315,9 +315,7 @@
     border: none;
     cursor: pointer; 
 }
-#footer{
-    background-color: #fff;
-}
+
 #serial{
     margin-left: 15px;
 }
@@ -431,13 +429,30 @@ height: 30px;
     border: 0;
     margin: 10px;
 }
-
+#footer{
+    background-color: #fff;
+}
 .modal-dialog-scrollable .modal-header,
 .modal-dialog-scrollable .modal-footer {
     flex-shrink: 0;
 }
 
-
+.modal-footer{
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 10; 
+}
+.footer{
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+}
+.left-footer p{
+    font-size: 12px;
+}
 #inputGroupFile01{
     width: 500px;
     border: 1px dashed #d8d8d8;
@@ -448,12 +463,7 @@ height: 30px;
     flex: 1 1 auto;
 }
 
-.modal-footer{
-    position: sticky;
-    bottom: 0;
-    background-color: #fff;
-    z-index: 10; 
-}
+
 #content-one{
     height: 500px;
     width: 600px;
@@ -489,16 +499,7 @@ height: 30px;
     color: #fff;
 }
 
-.footer{
-    flex-direction: row;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 95%;
-}
-.left-footer p{
-    font-size: 12px;
-}
+
  
 #pass{
     display: flex;
@@ -999,12 +1000,6 @@ button, .btn, a {
     background-color: #6c757d !important;
 }
 
-
-/* ============================================
-   ADD TO emp.css - REMOVE GIANT ARROWS
-   ============================================ */
-
-/* Fix pagination - remove giant arrow pseudo-elements */
 .pagination .page-link::before,
 .pagination .page-link::after {
     content: none !important;

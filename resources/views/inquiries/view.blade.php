@@ -111,10 +111,19 @@
         <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
-        </ul>
+       <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>

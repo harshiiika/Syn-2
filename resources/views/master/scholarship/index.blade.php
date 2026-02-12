@@ -34,9 +34,18 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
@@ -246,7 +255,7 @@
       <div class="whole">
         <div class="dd">
           <div class="line">
-            <h6>Show Enteries:</h6>
+            <h6>Show Entries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false"> 10 </button>
@@ -285,7 +294,7 @@
 
       <div class="footer">
         <div class="left-footer">
-          <p>Showing 0 to 0 of 0 Enteries</p>
+          <p>Showing 0 to 0 of 0 Entries</p>
         </div>
         <div class="right-footer">
           <nav aria-label="Page navigation example" id="bottom">

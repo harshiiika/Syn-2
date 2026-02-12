@@ -110,7 +110,12 @@
       background-color: #fd550dff;
     }
 
-    
+    #export{
+      margin: 10px 20px;
+    }
+    .top-text{
+      margin-left: 10px;
+    }
   </style>
 </head>
 
@@ -152,10 +157,22 @@
           aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
-        </ul>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
       </div>
     </div>
   </div>
@@ -357,36 +374,47 @@
         <div class="top-text">
           <h4>STUDENTS MANAGEMENT</h4>
         </div>
-        <a href="{{ route('smstudents.export') }}" class="btn btn-success">
+        <a href="{{ route('smstudents.export') }}" class="btn btn-success" id="export">
           Export
         </a>
       </div>
 
       <div class="whole">
         <!-- Controls -->
-        <div class="dd">
-           <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            {{ request('per_page', 10) }}
-          </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" id="searchInput">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-        </div>
+<!-- Controls -->
+<div class="dd">
+  <div class="line">
+    <h6>Show Entries:</h6>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{ request('per_page', 10) }}
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{{ route('smstudents.index', ['per_page' => 5, 'search' => request('search'), 'collection' => request('collection'), 'course_filter' => request('course_filter')]) }}">5</a></li>
+        <li><a class="dropdown-item" href="{{ route('smstudents.index', ['per_page' => 10, 'search' => request('search'), 'collection' => request('collection'), 'course_filter' => request('course_filter')]) }}">10</a></li>
+        <li><a class="dropdown-item" href="{{ route('smstudents.index', ['per_page' => 25, 'search' => request('search'), 'collection' => request('collection'), 'course_filter' => request('course_filter')]) }}">25</a></li>
+        <li><a class="dropdown-item" href="{{ route('smstudents.index', ['per_page' => 50, 'search' => request('search'), 'collection' => request('collection'), 'course_filter' => request('course_filter')]) }}">50</a></li>
+        <li><a class="dropdown-item" href="{{ route('smstudents.index', ['per_page' => 100, 'search' => request('search'), 'collection' => request('collection'), 'course_filter' => request('course_filter')]) }}">100</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="search">
+    <form method="GET" action="{{ route('smstudents.index') }}" id="searchForm">
+      <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+      <input type="hidden" name="collection" value="{{ request('collection', 'main') }}">
+      <input type="hidden" name="course_filter" value="{{ request('course_filter') }}">
+      <input type="search" 
+             name="search" 
+             placeholder="Search by roll no, name, batch, course..." 
+             class="search-holder" 
+             value="{{ request('search') }}"
+             id="searchInput">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </form>
+  </div>
+</div>
 
         <!-- Table -->
         <table class="table table-hover" id="table">
@@ -402,77 +430,83 @@
               <th scope="col">Action</th>
             </tr>
           </thead>
-          <tbody id="tableBody">
-            @forelse($students as $student)
-              @php
-                $studentId = $student->_id ?? $student->id ?? null;
-                if (is_object($studentId)) {
-                  $studentId = (string) $studentId;
-                }
-              @endphp
-              <tr data-row="true">
-                <td>{{ $student->roll_no ?? 'N/A' }}</td>
-                <td>{{ $student->student_name ?? $student->name ?? 'N/A' }}</td>
-                <td>{{ $student->batch_name ?? ($student->batch->name ?? 'N/A') }}</td>
-                <td>{{ $student->course_name ?? ($student->course->name ?? 'N/A') }}</td>
-                <td>{{ $student->course_content ?? 'N/A' }}</td>
-                <td>{{ $student->delivery ?? $student->delivery_mode ?? 'N/A' }}</td>
-               {{-- Display shift with fallback --}}
-                <td>{{ $student->shift->name ?? $student->shift ?? 'N/A' }}</td>
-                <td>
-                  <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                      id="actionDropdown{{ $studentId }}" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown{{ $studentId }}">
-                      <li>
-                        <a class="dropdown-item" href="{{ route('smstudents.show', $studentId) }}">
-                         View Details
-                        </a>
-                      </li>
-                      @if(($student->status ?? 'active') === 'active')
-                        <li>
-                          <a class="dropdown-item" href="{{ route('smstudents.edit', $studentId) }}">
-                          Edit Details
-                          </a>
-                        </li>
-                        <li>
-                          <button class="dropdown-item" type="button" data-bs-toggle="modal"
-                            data-bs-target="#passwordModal{{ $studentId }}">
-                            Password Update
-                          </button>
-                        </li>
-                        <li>
-<button class="dropdown-item open-batch-modal" data-student-id="{{ $studentId }}">Batch Update</button>                        <li>
-                          <!-- <button class="dropdown-item" type="button" data-bs-toggle="modal"
-                            data-bs-target="#shiftModal{{ $studentId }}">
-                            Shift Update
-                          </button> -->
-                          @if(empty($batches))
-                              <div class="alert alert-danger">  No batches found!</div>
-                            @endif
-                          <button class="dropdown-item open-shift-modal" data-student-id="{{ $studentId }}">Shift Update</button>
-                        </li>
-
-                       <li>
-  <button class="dropdown-item" type="button" onclick="loadStudentHistory('{{ $studentId }}'); return false;">
-    History
-  </button>
-</li>
-                      @else
-                        <li><span class="dropdown-item-text text-muted"><i class="fas fa-info-circle me-2"></i> Student Inactive</span></li>
-                      @endif
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            @empty
-              <tr id="noResultsRow">
-                <td colspan="8" class="text-center">No students found</td>
-              </tr>
-            @endforelse
-          </tbody>
+         <tbody id="tableBody">
+  @forelse($students as $index => $student)
+    @php
+      $studentId = $student->_id ?? $student->id ?? null;
+      if (is_object($studentId)) {
+        $studentId = (string) $studentId;
+      }
+    @endphp
+    <tr data-row="true">
+      <td>{{ ($students->currentPage() - 1) * $students->perPage() + $index + 1 }}</td>
+      <td>{{ $student->roll_no ?? 'N/A' }}</td>
+      <td>{{ $student->student_name ?? $student->name ?? 'N/A' }}</td>
+      <td>{{ $student->batch_name ?? ($student->batch->name ?? 'N/A') }}</td>
+      <td>{{ $student->course_name ?? ($student->course->name ?? 'N/A') }}</td>
+      <td>{{ $student->course_content ?? 'N/A' }}</td>
+      <td>{{ $student->delivery ?? $student->delivery_mode ?? 'N/A' }}</td>
+      <td>{{ $student->shift->name ?? $student->shift ?? 'N/A' }}</td>
+      <td>
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+            id="actionDropdown{{ $studentId }}" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown{{ $studentId }}">
+            <li>
+              <a class="dropdown-item" href="{{ route('smstudents.show', $studentId) }}">
+                View Details
+              </a>
+            </li>
+            @if(($student->status ?? 'active') === 'active')
+              <li>
+                <a class="dropdown-item" href="{{ route('smstudents.edit', $studentId) }}">
+                  Edit Details
+                </a>
+              </li>
+              <li>
+                <button class="dropdown-item" type="button" data-bs-toggle="modal"
+                  data-bs-target="#passwordModal{{ $studentId }}">
+                  Password Update
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item open-batch-modal" data-student-id="{{ $studentId }}">Batch Update</button>
+              </li>
+              <li>
+                @if(empty($batches))
+                  <div class="alert alert-danger">No batches found!</div>
+                @endif
+                <button class="dropdown-item open-shift-modal" data-student-id="{{ $studentId }}">Shift Update</button>
+              </li>
+              <li>
+                <button class="dropdown-item" type="button" onclick="loadStudentHistory('{{ $studentId }}'); return false;">
+                  History
+                </button>
+              </li>
+            @else
+              <li><span class="dropdown-item-text text-muted"><i class="fas fa-info-circle me-2"></i> Student Inactive</span></li>
+            @endif
+          </ul>
+        </div>
+      </td>
+    </tr>
+  @empty
+    <tr id="noResultsRow">
+      <td colspan="9" class="text-center py-4">
+        @if(request('search'))
+          <p class="mb-0">No students found matching "{{ request('search') }}"</p>
+          <a href="{{ route('smstudents.index') }}" class="btn btn-sm btn-outline-secondary mt-2">
+            <i class="fa-solid fa-times"></i> Clear Search
+          </a>
+        @else
+          <p class="mb-0">No students found</p>
+        @endif
+      </td>
+    </tr>
+  @endforelse
+</tbody>
         </table>
 
         <!-- Pagination Info -->
@@ -701,124 +735,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 5000);
 
     // ========================================
-    // TABLE FUNCTIONALITY
+    // SEARCH FUNCTIONALITY
     // ========================================
-    let currentPage = 1;
-    let entriesPerPage = 10;
-    let allRows = [];
-    let filteredRows = [];
-
-    const tableBody = document.getElementById('tableBody');
-    if (tableBody) {
-        allRows = Array.from(tableBody.querySelectorAll('tr[data-row="true"]'));
-        filteredRows = [...allRows];
-        updateTable();
-    }
-
-    document.querySelectorAll('.entries-option').forEach(option => {
-        option.addEventListener('click', function (e) {
-            e.preventDefault();
-            entriesPerPage = parseInt(this.dataset.value);
-            document.getElementById('number').textContent = entriesPerPage;
-            currentPage = 1;
-            updateTable();
-        });
-    });
-
+    const searchIcon = document.querySelector('.search i.fa-magnifying-glass');
+    const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase().trim();
-            filteredRows = searchTerm === ''
-                ? [...allRows]
-                : allRows.filter(row => row.textContent.toLowerCase().includes(searchTerm));
-            currentPage = 1;
-            updateTable();
+    
+    if (searchIcon && searchForm) {
+        searchIcon.addEventListener('click', function() {
+            searchForm.submit();
         });
     }
 
-    function updateTable() {
-        const start = (currentPage - 1) * entriesPerPage;
-        const end = start + entriesPerPage;
-        const pageRows = filteredRows.slice(start, end);
-
-        allRows.forEach(row => row.style.display = 'none');
-
-        const noResultsRow = document.getElementById('noResultsRow');
-        if (noResultsRow) noResultsRow.style.display = 'none';
-
-        if (pageRows.length > 0) {
-            pageRows.forEach(row => row.style.display = '');
-        } else {
-            if (noResultsRow) {
-                noResultsRow.style.display = '';
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
             }
-        }
-
-        const totalEntries = filteredRows.length;
-        const showingFromEl = document.getElementById('showingFrom');
-        const showingToEl = document.getElementById('showingTo');
-        const totalEntriesEl = document.getElementById('totalEntries');
-        
-        if (showingFromEl) showingFromEl.textContent = totalEntries > 0 ? start + 1 : 0;
-        if (showingToEl) showingToEl.textContent = Math.min(end, totalEntries);
-        if (totalEntriesEl) totalEntriesEl.textContent = totalEntries;
-
-        updatePagination();
+        });
     }
-
-    function updatePagination() {
-        const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
-        const pagination = document.getElementById('pagination');
-        if (!pagination) return;
-
-        pagination.innerHTML = '';
-        if (totalPages === 0) return;
-
-        const prevLi = document.createElement('li');
-        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-        prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
-        pagination.appendChild(prevLi);
-
-        const maxVisiblePages = 5;
-        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-        if (endPage - startPage < maxVisiblePages - 1) {
-            startPage = Math.max(1, endPage - maxVisiblePages + 1);
-        }
-
-        if (startPage > 1) {
-            pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(1); return false;">1</a></li>`;
-            if (startPage > 2) {
-                pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-            }
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a></li>`;
-        }
-
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-            }
-            pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a></li>`;
-        }
-
-        const nextLi = document.createElement('li');
-        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-        nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
-        pagination.appendChild(nextLi);
-    }
-
-    window.changePage = function (page) {
-        const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
-        if (page >= 1 && page <= totalPages) {
-            currentPage = page;
-            updateTable();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    };
 
     // ========================================
     // SHIFT MODAL
@@ -863,17 +799,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const historyModalEl = document.getElementById('historyModal');
     if (historyModalEl) {
         historyModal = new bootstrap.Modal(historyModalEl);
-        console.log('  History Modal initialized');
+        console.log('✅ History Modal initialized');
     }
 });
 
-//  GLOBAL FUNCTION - Load Student History
+// 🌍 GLOBAL FUNCTION - Load Student History
 function loadStudentHistory(studentId) {
-    console.log('  Loading history for student:', studentId);
+    console.log('📖 Loading history for student:', studentId);
 
     const historyModalBody = document.getElementById('historyModalBody');
     if (!historyModalBody) {
-        console.error(' historyModalBody element not found');
+        console.error('❌ historyModalBody element not found');
         return;
     }
 
@@ -918,7 +854,7 @@ function loadStudentHistory(studentId) {
             });
         })
         .then(json => {
-            console.log('  History response:', json);
+            console.log('✅ History response:', json);
 
             if (!json.success) {
                 throw new Error(json.message || 'Failed to load history');
@@ -950,8 +886,6 @@ function loadStudentHistory(studentId) {
 
             // Render history list
             let historyHtml = `
-               
-                
                 <!-- History List -->
                 <div class="list-group list-group-flush">
             `;
@@ -1015,7 +949,7 @@ function loadStudentHistory(studentId) {
 
         })
         .catch(error => {
-            console.error(' History error:', error);
+            console.error('❌ History error:', error);
             historyModalBody.innerHTML = `
                 <div class="text-center text-danger py-5">
                     <i class="fa-solid fa-exclamation-triangle fa-4x mb-3"></i>
@@ -1030,7 +964,7 @@ function loadStudentHistory(studentId) {
         });
 }
 
-//  HELPER FUNCTION - Escape HTML
+// 🛡️ HELPER FUNCTION - Escape HTML
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');

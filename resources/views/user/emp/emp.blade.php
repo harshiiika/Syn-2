@@ -120,15 +120,30 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
       <i class="fa-solid fa-bell"></i>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
-          <i class="fa-solid fa-user"></i>
-        </button>
-        <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="{{ route('profile.index') }}"> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
-      </div>
+    <button class="btn btn-secondary dropdown-toggle" 
+            id="toggle-btn" 
+            type="button" 
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
     </div>
   </div>
   <div class="main-container">
@@ -324,6 +339,39 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 </div>
     </div>
     <div class="right" id="right">
+
+    <!-- Success and Error Messages -->
+<div class="container-fluid px-4 pt-3">
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>
+            <strong>Success!</strong> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+            <strong>Error!</strong> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(session('import_errors'))
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            <strong>Import Issues:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach(session('import_errors') as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+</div>
+
       <div class="top">
         <div class="top-text">
           <h4>EMPLOYEE</h4>
@@ -348,34 +396,36 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       </div>
       <div class="whole">
         <!-- Table controls: entries dropdown and search -->
-        <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            {{ request('per_page', 10) }}
-          </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="search">
-                  <form method="GET" action="{{ route('user.emp.emp') }}" id="searchForm">
-        <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
-           <input type="search" 
-               name="search" 
-               placeholder="Search" 
-               class="search-holder" 
-               value="{{ request('search') }}"
-               id="searchInput">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-        </div>
+    <div class="dd">
+  <div class="line">
+    <h6>Show Entries:</h6>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{ request('per_page', 10) }}
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" data-value="5">5</a></li>
+        <li><a class="dropdown-item" href="#" data-value="10">10</a></li>
+        <li><a class="dropdown-item" href="#" data-value="25">25</a></li>
+        <li><a class="dropdown-item" href="#" data-value="50">50</a></li>
+        <li><a class="dropdown-item" href="#" data-value="100">100</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="search">
+    <form method="GET" action="{{ route('user.emp.emp') }}" id="searchForm">
+      <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+      <input type="search" 
+             name="search" 
+             placeholder="Search" 
+             class="search-holder" 
+             value="{{ request('search') }}"
+             id="searchInput">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </form>
+  </div>
+</div>
         <table class="table table-hover" id="table">
           <thead>
             <tr>
@@ -390,12 +440,9 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </tr>
           </thead>
           <tbody>
-            <!-- Modal fillables where roles are assigned according to dept automatically -->
-            <!-- Dynamic table rows populated from database using Blade foreach loop -->
             <tr>
             </tr>
           </tbody>
-          <!-- Modal fillables where roles are assigned according to dept automatically -->
 
          @foreach($users as $index => $user)
   <tr>
@@ -469,121 +516,231 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
         <!-- Here options modals are present. -->
         <!-- View Modal -->
-        @foreach($users as $user)
-          <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1"
-            aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="viewModalLabel{{ $user->_id }}">Employee Details</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-control" value="{{ $user->name }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="text" class="form-control" value="{{ $user->email }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Mobile</label>
-                    <input type="text" class="form-control" value="{{ $user->mobileNumber ?? '—' }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Alternate Mobile</label>
-                    <input type="text" class="form-control" value="{{ $user->alternateNumber ?? '—' }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Branch</label>
-                    <input type="text" class="form-control" value="{{ $user->branch ?? '—' }}" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Department</label>
-                    <input type="text" class="form-control"
-                      value="{{ $user->departmentNames ? $user->departmentNames->join(', ') : '—' }}" readonly>
-                  </div>
-                </div>
-              </div>
+@foreach($users as $user)
+  <div class="modal fade" id="viewModal{{ $user->_id }}" tabindex="-1"
+    aria-labelledby="viewModalLabel{{ $user->_id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewModalLabel{{ $user->_id }}">Employee Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+          <!-- Profile Picture Display Section - THIS IS NEW! -->
+          <div class="text-center mb-4">
+          <div class="text-center mb-4">
+  @php
+    $profilePicture = $user->profile_picture ?? null;
+  @endphp
+
+  @if(!empty($profilePicture))
+    <!-- User has uploaded profile picture -->
+    <div style="margin-bottom: 1rem;">
+      <img src="{{ asset('storage/' . $profilePicture) }}" 
+           alt="{{ $user->name }}" 
+           class="rounded-circle"
+           style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
+           onerror="console.error('Failed to load:', this.src); this.style.display='none'; document.getElementById('fallback_{{ $user->_id }}').style.display='flex';">
+      <!-- Fallback initial avatar -->
+      <div id="fallback_{{ $user->_id }}" class="rounded-circle d-none align-items-center justify-content-center mx-auto" 
+           style="width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 4px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <span style="font-size: 60px; color: white; font-weight: bold;">
+          {{ strtoupper(substr($user->name, 0, 1)) }}
+        </span>
+      </div>
+    </div>
+  @else
+    <!-- Show initial-based avatar if no picture -->
+    <div style="margin-bottom: 1rem;">
+      <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto" 
+           style="width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 4px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <span style="font-size: 60px; color: white; font-weight: bold;">
+          {{ strtoupper(substr($user->name, 0, 1)) }}
+        </span>
+      </div>
+    </div>
+  @endif
+  
+  <h5 class="mt-3 mb-0">{{ $user->name }}</h5>
+  <small class="text-muted">{{ $user->email }}</small>
+</div>
+            
+            <h5 class="mt-3 mb-0">{{ $user->name }}</h5>
+            <small class="text-muted">{{ $user->email }}</small>
+          </div>
+          <!-- End Profile Picture Section -->
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold text-muted small">MOBILE</label>
+              <p class="mb-0">{{ $user->mobileNumber ?? '—' }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold text-muted small">ALTERNATE MOBILE</label>
+              <p class="mb-0">{{ $user->alternateNumber ?? '—' }}</p>
             </div>
           </div>
-        @endforeach
 
-        <!-- Edit Modal -->
-        @foreach($users as $user)
-          <div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1"
-            aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable">
-              <div class="modal-content">
-                <form method="POST" action="{{ route('users.update', $user->_id) }}">
-                  @csrf
-                  @method('PUT')
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel{{ $user->_id }}">Edit Employee Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label class="form-label">Name</label>
-                      <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Email</label>
-                      <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Mobile</label>
-                      <input type="text" class="form-control" name="mobileNumber" value="{{ $user->mobileNumber ?? '' }}"
-                        required>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Alternate Mobile</label>
-                      <input type="text" class="form-control" name="alternateNumber"
-                        value="{{ $user->alternateNumber ?? '' }}">
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Branch</label>
-                      <select class="form-select" name="branch" required>
-                        <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
-                      </select>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Department</label>
-                      <select class="form-select" name="department" required>
-                        @php
-                          $currentDepartment = $user->departmentNames->first() ?? '';
-                        @endphp
-                        <option value="Front Office" {{ $currentDepartment == 'Front Office' ? 'selected' : '' }}>Front
-                          Office</option>
-                        <option value="Back Office" {{ $currentDepartment == 'Back Office' ? 'selected' : '' }}>Back Office
-                        </option>
-                        <option value="Office" {{ $currentDepartment == 'Office' ? 'selected' : '' }}>Office</option>
-                        <option value="Test Management" {{ $currentDepartment == 'Test Management' ? 'selected' : '' }}>Test
-                          Management</option>
-                        <option value="Admin" {{ $currentDepartment == 'Admin' ? 'selected' : '' }}>Admin</option>
-                      </select>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Current Role</label>
-                      <input type="text" class="form-control" value="{{ $user->roleNames->join(', ') ?? '—' }}" readonly>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" id="submit" class="btn btn-primary">Update</button>
-                  </div>
-                </form>
-              </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold text-muted small">BRANCH</label>
+              <p class="mb-0">{{ $user->branch ?? '—' }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold text-muted small">DEPARTMENT</label>
+              <p class="mb-0">{{ $user->departmentNames ? $user->departmentNames->join(', ') : '—' }}</p>
             </div>
           </div>
-        @endforeach
+
+          <div class="mb-3">
+            <label class="form-label fw-bold text-muted small">ROLE</label>
+            <p class="mb-0">
+              <span class="badge bg-primary">{{ $user->roleNames ? $user->roleNames->join(', ') : '—' }}</span>
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold text-muted small">STATUS</label>
+            <p class="mb-0">
+              <span class="badge {{ $user->status === 'Deactivated' ? 'bg-danger' : 'bg-success' }}">
+                {{ $user->status ?? 'Active' }}
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+@endforeach
+
+<!-- Edit Modal -->
+@foreach($users as $user)
+  <div class="modal fade" id="editModal{{ $user->_id }}" tabindex="-1"
+    aria-labelledby="editModalLabel{{ $user->_id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('users.update', $user->_id) }}" enctype="multipart/form-data">
+          @csrf
+          @method('PUT')
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel{{ $user->_id }}">Edit Employee Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            
+            <!-- Profile Picture Edit Section - THIS IS NEW! -->
+            <div class="mb-4">
+              <label for="edit_profile_picture{{ $user->_id }}" class="form-label fw-bold">Profile Picture</label>
+              <div class="text-center mb-3">
+                @php
+                  $profilePicture = $user->profile_picture ?? null;
+                  $hasProfilePicture = !empty($profilePicture) && \Storage::disk('public')->exists($profilePicture);
+                @endphp
+
+                @if($hasProfilePicture)
+                  <!-- Display existing profile picture -->
+                  <img id="editProfilePreview{{ $user->_id }}" 
+                       src="{{ asset('storage/' . $profilePicture) }}" 
+                       alt="Profile Preview" 
+                       class="rounded-circle"
+                       style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #007bff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                       onerror="this.style.display='none'; document.getElementById('editProfilePreview{{ $user->_id }}_fallback').style.display='flex';">
+                  <!-- Fallback initial avatar -->
+                  <div id="editProfilePreview{{ $user->_id }}_fallback" 
+                       class="rounded-circle d-none align-items-center justify-content-center mx-auto" 
+                       style="width: 120px; height: 120px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 3px solid #007bff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <span style="font-size: 48px; color: white; font-weight: bold;">
+                      {{ strtoupper(substr($user->name, 0, 1)) }}
+                    </span>
+                  </div>
+                @else
+                  <!-- Show initial-based avatar if no profile picture -->
+                  <img id="editProfilePreview{{ $user->_id }}" 
+                       src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=120&background=667eea&color=fff&bold=true" 
+                       alt="Profile Preview" 
+                       class="rounded-circle"
+                       style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #007bff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                @endif
+              </div>
+              
+              <!-- File input for changing picture -->
+              <input type="file" 
+                     name="profile_picture" 
+                     id="edit_profile_picture{{ $user->_id }}"
+                     class="form-control" 
+                     accept="image/jpeg,image/jpg,image/png,image/gif"
+                     onchange="previewImage(event, 'editProfilePreview{{ $user->_id }}')">
+              <small class="form-text text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Leave empty to keep current picture. Accepted: JPG, PNG, GIF (Max: 2MB)
+              </small>
+            </div>
+            <!-- End Profile Picture Section -->
+
+            <div class="mb-3">
+              <label class="form-label">Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Mobile <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="mobileNumber" value="{{ $user->mobileNumber ?? '' }}"
+                pattern="[0-9]{10}" maxlength="10" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Alternate Mobile</label>
+              <input type="text" class="form-control" name="alternateNumber"
+                value="{{ $user->alternateNumber ?? '' }}" pattern="[0-9]{10}" maxlength="10">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Branch <span class="text-danger">*</span></label>
+              <select class="form-select" name="branch" required>
+                <option value="Bikaner" {{ $user->branch == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Department <span class="text-danger">*</span></label>
+              <select class="form-select" name="department" required>
+                @php
+                  $currentDepartment = $user->departmentNames->first() ?? '';
+                @endphp
+                <option value="Front Office" {{ $currentDepartment == 'Front Office' ? 'selected' : '' }}>Front Office</option>
+                <option value="Back Office" {{ $currentDepartment == 'Back Office' ? 'selected' : '' }}>Back Office</option>
+                <option value="Office" {{ $currentDepartment == 'Office' ? 'selected' : '' }}>Office</option>
+                <option value="Test Management" {{ $currentDepartment == 'Test Management' ? 'selected' : '' }}>Test Management</option>
+                <option value="Admin" {{ $currentDepartment == 'Admin' ? 'selected' : '' }}>Admin</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Current Role</label>
+              <input type="text" class="form-control" value="{{ $user->roleNames->join(', ') ?? '—' }}" readonly>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i> Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+@endforeach
+
 
 <!-- Password Update Modal-->
 @foreach($users as $user)
@@ -737,6 +894,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
   <!-- Modal Form with fillables for add employee starts here -->
 
   <!-- Add Employee Modal -->
+
 <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content" id="content-one">
@@ -745,74 +903,151 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="POST" action="{{ route('users.add') }}" id="addEmployeeForm">
+        <form method="POST" action="{{ route('users.add') }}" id="addEmployeeForm" enctype="multipart/form-data">
           @csrf
           
           <!-- Show validation errors -->
           @if ($errors->any())
-            <div class="alert alert-danger">
-              <ul class="mb-0">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong><i class="fa-solid fa-circle-exclamation me-2"></i>Please fix the following errors:</strong>
+              <ul class="mb-0 mt-2">
                 @foreach ($errors->all() as $error)
                   <li>{{ $error }}</li>
                 @endforeach
               </ul>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           @endif
 
+          <!-- Profile Picture Upload Section -->
+          <div class="mb-4">
+            <label for="profile_picture" class="form-label fw-bold">Profile Picture</label>
+            <div class="text-center mb-3">
+              <div id="profilePreviewContainer">
+                <img id="profilePreview" 
+                     src="https://ui-avatars.com/api/?name=User&size=120&background=667eea&color=fff&bold=true" 
+                     alt="Profile Preview" 
+                     class="rounded-circle"
+                     style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #007bff;">
+              </div>
+            </div>
+            <input type="file" 
+                   name="profile_picture" 
+                   id="profile_picture"
+                   class="form-control @error('profile_picture') is-invalid @enderror" 
+                   accept="image/jpeg,image/jpg,image/png,image/gif"
+                   onchange="previewImage(event, 'profilePreview')">
+            <small class="form-text text-muted">Accepted formats: JPG, JPEG, PNG, GIF (Max: 2MB)</small>
+            @error('profile_picture')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
+          </div>
+
           <div class="mb-3">
             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" value="{{ old('name') }}" required>
+            <input type="text" 
+                   name="name" 
+                   class="form-control @error('name') is-invalid @enderror" 
+                   placeholder="Enter Your Name" 
+                   value="{{ old('name') }}" 
+                   required>
+            @error('name')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
 
           <div class="mb-3">
             <label for="mobileNumber" class="form-label">Mobile No. <span class="text-danger">*</span></label>
-            <input type="tel" name="mobileNumber" class="form-control" placeholder="Enter 10 digit mobile number"
-              pattern="[0-9]{10}" maxlength="10" value="{{ old('mobileNumber') }}" required>
+            <input type="tel" 
+                   name="mobileNumber" 
+                   class="form-control @error('mobileNumber') is-invalid @enderror" 
+                   placeholder="Enter 10 digit mobile number"
+                   pattern="[0-9]{10}" 
+                   maxlength="10" 
+                   value="{{ old('mobileNumber') }}" 
+                   required>
             <small class="form-text text-muted">Enter exactly 10 digits</small>
+            @error('mobileNumber')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
           </div>
 
           <div class="mb-3">
             <label for="alternateNumber" class="form-label">Alternate Mobile No.</label>
-            <input type="tel" name="alternateNumber" class="form-control"
-              placeholder="Enter 10 digit alternate number" pattern="[0-9]{10}" maxlength="10" value="{{ old('alternateNumber') }}">
+            <input type="tel" 
+                   name="alternateNumber" 
+                   class="form-control @error('alternateNumber') is-invalid @enderror"
+                   placeholder="Enter 10 digit alternate number" 
+                   pattern="[0-9]{10}" 
+                   maxlength="10" 
+                   value="{{ old('alternateNumber') }}">
+            @error('alternateNumber')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-            <input type="email" name="email" class="form-control" placeholder="Enter Your Email" value="{{ old('email') }}" required>
+            <input type="email" 
+                   name="email" 
+                   class="form-control @error('email') is-invalid @enderror" 
+                   placeholder="Enter Your Email" 
+                   value="{{ old('email') }}" 
+                   required>
+            @error('email')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
           </div>
 
           <div class="mb-3">
             <label for="branch" class="form-label">Select Branch <span class="text-danger">*</span></label>
-            <select class="form-select" name="branch" required>
+            <select class="form-select @error('branch') is-invalid @enderror" name="branch" required>
               <option value="">Select Branch</option>
               <option value="Bikaner" {{ old('branch') == 'Bikaner' ? 'selected' : '' }}>Bikaner</option>
             </select>
+            @error('branch')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
 
           <div class="mb-3">
-            <label for="department" class="form-label">Select Department <span class="text-danger">*</span></label>
-            <select class="form-select" name="department" required>
-              <option value="">Select Department</option>
+            <label for="department" class="form-label">Select Role <span class="text-danger">*</span></label>
+            <select class="form-select @error('department') is-invalid @enderror" name="department" required>
+              <option value="">Select Role</option>
               <option value="Front Office" {{ old('department') == 'Front Office' ? 'selected' : '' }}>Front Office</option>
               <option value="Back Office" {{ old('department') == 'Back Office' ? 'selected' : '' }}>Back Office</option>
               <option value="Office" {{ old('department') == 'Office' ? 'selected' : '' }}>Office</option>
               <option value="Test Management" {{ old('department') == 'Test Management' ? 'selected' : '' }}>Test Management</option>
               <option value="Admin" {{ old('department') == 'Admin' ? 'selected' : '' }}>Admin</option>
             </select>
+            @error('department')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
 
           <div class="mb-3">
             <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-            <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password"
-              minlength="6" required>
+            <input type="password" 
+                   name="password" 
+                   id="password" 
+                   class="form-control @error('password') is-invalid @enderror" 
+                   placeholder="Enter Password"
+                   minlength="6" 
+                   required>
             <small class="form-text text-muted">Minimum 6 characters</small>
+            @error('password')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
           </div>
 
           <div class="mb-3">
             <label for="password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
-            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control"
-              placeholder="Confirm Password" required>
+            <input type="password" 
+                   name="password_confirmation" 
+                   id="password_confirmation" 
+                   class="form-control" 
+                   placeholder="Confirm Password" 
+                   required>
           </div>
 
           <div class="modal-footer" id="footer">
@@ -887,11 +1122,17 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 
-<!-- Your custom JS (must come after jQuery + Bootstrap) -->
+<!--custom JS (must come after jQuery + Bootstrap) -->
 <script src="{{ asset(path: 'js/emp.js') }}"></script>
 
-<!-- Enhanced JavaScript for Password Update and upload modal -->
 <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    @if($errors->any() && session('show_add_modal'))
+        var addModal = new bootstrap.Modal(document.getElementById('exampleModalOne'));
+        addModal.show();
+    @endif
+});
 document.addEventListener('DOMContentLoaded', function() {
   @foreach($users as $user)
   (function() {
@@ -1035,6 +1276,7 @@ document.addEventListener('DOMContentLoaded', function() {
   @endforeach
 });
 
+//import employee file preview
 document.addEventListener('DOMContentLoaded', function() {
   const fileInput = document.getElementById('importEmployeeFile');
   const preview = document.getElementById('employeeFilePreview');
@@ -1076,5 +1318,89 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+//pfp
+function previewImage(event, previewId) {
+    const input = event.target;
+    const preview = document.getElementById(previewId);
+    
+    if (input.files && input.files[0]) {
+        // Validate file size (2MB = 2048KB)
+        const fileSize = input.files[0].size / 1024; // Convert to KB
+        if (fileSize > 2048) {
+            alert('File size must be less than 2MB!');
+            input.value = ''; // Clear the input
+            return;
+        }
+        
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!allowedTypes.includes(input.files[0].type)) {
+            alert('Only JPG, JPEG, PNG, and GIF files are allowed!');
+            input.value = ''; // Clear the input
+            return;
+        }
+        
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            
+            // Hide fallback if it exists
+            const fallback = document.getElementById(previewId + '_fallback');
+            if (fallback) {
+                fallback.style.display = 'none';
+            }
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+//show enteries per page
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownButton = document.getElementById('number');
+    const dropdownItems = document.querySelectorAll('.dropdown-item[data-value]');
+    
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectedValue = this.getAttribute('data-value');
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('per_page', selectedValue);
+            
+            const currentSearch = '{{ $search }}';
+            if (currentSearch) {
+                newUrl.searchParams.set('search', currentSearch);
+            }
+            
+            newUrl.searchParams.delete('page');
+            window.location.href = newUrl.toString();
+        });
+    });
+
+    // Search icon click handler
+    const searchIcon = document.querySelector('.search i.fa-magnifying-glass');
+    const searchForm = document.getElementById('searchForm');
+    
+    if (searchIcon && searchForm) {
+        searchIcon.addEventListener('click', function() {
+            searchForm.submit();
+        });
+    }
+
+    // Search input enter key handler
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+    }
+});
+
 </script>
 </html>

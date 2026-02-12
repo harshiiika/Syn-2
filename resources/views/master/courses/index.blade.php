@@ -119,9 +119,18 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
-        </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
@@ -161,7 +170,7 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
         id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i> master
+        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
       </button>
     </h2>
     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -348,42 +357,43 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
 </div>
 
   <div class="whole">
-    <div class="dd">
-      <div class="line">
-        <h6>Show Entries:</h6>
-        <div class="dropdown">
-           <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+   <div class="dd">
+  <div class="line">
+    <h6>Show Entries:</h6>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
         aria-expanded="false">
         {{ request('per_page', 10) }}
       </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item">10</a></li>
-            <li><a class="dropdown-item">25</a></li>
-            <li><a class="dropdown-item">50</a></li>
-            <li><a class="dropdown-item">100</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="search mb-3">
-    <form method="GET" action="{{ route('courses.index') }}">
-        <div class="input-group">
-            <input 
-                type="search" 
-                name="search" 
-                id="searchInput" 
-                class="form-control" 
-                placeholder="Search courses..." 
-                value="{{ request('search') }}"
-            >
-            <button type="submit" class="btn btn-primary" style="background-color: #ff6600; color: white;">
-    <i class="fa-solid fa-magnifying-glass"></i>
-</button>
-
-        </div>
-    </form>
-</div>
-
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" data-value="5">5</a></li>
+        <li><a class="dropdown-item" href="#" data-value="10">10</a></li>
+        <li><a class="dropdown-item" href="#" data-value="25">25</a></li>
+        <li><a class="dropdown-item" href="#" data-value="50">50</a></li>
+        <li><a class="dropdown-item" href="#" data-value="100">100</a></li>
+      </ul>
     </div>
+  </div>
+  
+  <div class="search mb-3">
+    <form method="GET" action="{{ route('courses.index') }}" id="searchForm">
+      <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+      <div class="input-group">
+        <input 
+          type="search" 
+          name="search" 
+          id="searchInput" 
+          class="form-control" 
+          placeholder="Search courses..." 
+          value="{{ request('search') }}"
+        >
+        <button type="submit" class="btn btn-primary" style="background-color: #ff6600; color: white;">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
     <table class="table table-hover" id="table">
       <thead>
         <tr>
@@ -761,138 +771,120 @@ LINE 629-665: AJAX Script for Dynamic Session Addition
   </div>
 </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset('js/courses.js') }}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     // ========================================
-    // TABLE FUNCTIONALITY - EXACTLY LIKE STUDENTS PAGE
+    // SHOW ENTRIES DROPDOWN FUNCTIONALITY
     // ========================================
-    let currentPage = 1;
-    let entriesPerPage = 10;
-    let allRows = [];
-    let filteredRows = [];
-
-    const tableBody = document.getElementById('coursesTable');
-    if (tableBody) {
-        allRows = Array.from(tableBody.querySelectorAll('tr'));
-        filteredRows = [...allRows];
-        updateTable();
+    const dropdownButton = document.getElementById('number');
+    const dropdownItems = document.querySelectorAll('.dropdown-menu .dropdown-item[data-value]');
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPerPage = urlParams.get('per_page') || '10';
+    
+    // Update button text to show current selection
+    if (dropdownButton) {
+        dropdownButton.textContent = currentPerPage;
     }
-
-    // Entries per page dropdown
-    document.querySelectorAll('.entries-option').forEach(option => {
-        option.addEventListener('click', function (e) {
+    
+    // Highlight current selection and handle clicks
+    dropdownItems.forEach(item => {
+        const itemValue = item.getAttribute('data-value');
+        
+        // Highlight active item
+        if (itemValue === currentPerPage) {
+            item.classList.add('active');
+            item.style.backgroundColor = '#ff6600';
+            item.style.color = 'white';
+        }
+        
+        // Handle click event
+        item.addEventListener('click', function(e) {
             e.preventDefault();
-            entriesPerPage = parseInt(this.dataset.value);
-            document.getElementById('number').textContent = entriesPerPage;
-            currentPage = 1;
-            updateTable();
+            const selectedValue = this.getAttribute('data-value');
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('per_page', selectedValue);
+            
+            // Preserve search parameter if exists
+            const currentSearch = urlParams.get('search');
+            if (currentSearch) {
+                newUrl.searchParams.set('search', currentSearch);
+            }
+            
+            // Reset to page 1 when changing entries per page
+            newUrl.searchParams.delete('page');
+            
+            // Redirect to new URL
+            window.location.href = newUrl.toString();
         });
     });
 
-    // Search functionality
+    // ========================================
+    // SEARCH FUNCTIONALITY
+    // ========================================
+    const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase().trim();
-            filteredRows = searchTerm === ''
-                ? [...allRows]
-                : allRows.filter(row => row.textContent.toLowerCase().includes(searchTerm));
-            currentPage = 1;
-            updateTable();
+    
+    if (searchInput && searchForm) {
+        // Submit on Enter key
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+        
+        // Optional: Auto-submit after typing stops (debounced)
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                // Uncomment if you want auto-search
+                // searchForm.submit();
+            }, 500);
         });
     }
 
-    // Update table display
-    function updateTable() {
-        const start = (currentPage - 1) * entriesPerPage;
-        const end = start + entriesPerPage;
-        const pageRows = filteredRows.slice(start, end);
-
-        // Hide all rows first
-        allRows.forEach(row => row.style.display = 'none');
-
-        // Show rows for current page
-        if (pageRows.length > 0) {
-            pageRows.forEach(row => row.style.display = '');
-        }
-
-        const totalEntries = filteredRows.length;
-        const showingFromEl = document.getElementById('showingFrom');
-        const showingToEl = document.getElementById('showingTo');
-        const totalEntriesEl = document.getElementById('totalEntries');
-        
-        if (showingFromEl) showingFromEl.textContent = totalEntries > 0 ? start + 1 : 0;
-        if (showingToEl) showingToEl.textContent = Math.min(end, totalEntries);
-        if (totalEntriesEl) totalEntriesEl.textContent = totalEntries;
-
-        updatePagination();
+    // ========================================
+    // FILE UPLOAD PREVIEW
+    // ========================================
+    const importFile = document.getElementById('importFile');
+    const filePreview = document.getElementById('filePreview');
+    const previewText = document.getElementById('previewText');
+    
+    if (importFile) {
+        importFile.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const fileName = file.name;
+                const fileSize = (file.size / 1024).toFixed(2); // KB
+                
+                previewText.innerHTML = `
+                    <i class="fa-solid fa-file-excel text-success"></i> 
+                    <strong>${fileName}</strong> 
+                    <span class="text-muted">(${fileSize} KB)</span>
+                `;
+                filePreview.classList.remove('d-none');
+            } else {
+                filePreview.classList.add('d-none');
+            }
+        });
     }
 
-    // Update pagination controls
-    function updatePagination() {
-        const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
-        const pagination = document.getElementById('pagination');
-        if (!pagination) return;
+    // ========================================
+    // AUTO-DISMISS FLASH MESSAGES
+    // ========================================
+    const flashMessages = document.querySelectorAll('.flash-container .alert');
+    flashMessages.forEach(alert => {
+        setTimeout(() => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 150);
+        }, 5000); // Auto-dismiss after 5 seconds
+    });
 
-        pagination.innerHTML = '';
-        if (totalPages === 0) return;
-
-        // Previous button
-        const prevLi = document.createElement('li');
-        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-        prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
-        pagination.appendChild(prevLi);
-
-        const maxVisiblePages = 5;
-        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-        
-        if (endPage - startPage < maxVisiblePages - 1) {
-            startPage = Math.max(1, endPage - maxVisiblePages + 1);
-        }
-
-        // First page + ellipsis
-        if (startPage > 1) {
-            pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(1); return false;">1</a></li>`;
-            if (startPage > 2) {
-                pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-            }
-        }
-
-        // Page numbers
-        for (let i = startPage; i <= endPage; i++) {
-            pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a></li>`;
-        }
-
-        // Last page + ellipsis
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                pagination.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-            }
-            pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a></li>`;
-        }
-
-        // Next button
-        const nextLi = document.createElement('li');
-        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-        nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
-        pagination.appendChild(nextLi);
-    }
-
-    // Change page function (global scope)
-    window.changePage = function (page) {
-        const totalPages = Math.ceil(filteredRows.length / entriesPerPage);
-        if (page >= 1 && page <= totalPages) {
-            currentPage = page;
-            updateTable();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    };
+    console.log('Courses page initialized successfully');
 });
 </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="{{ asset('js/courses.js') }}"></script>
 </body>
-
 </html>

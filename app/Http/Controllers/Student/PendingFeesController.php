@@ -13,22 +13,59 @@ class PendingFeesController extends Controller
     /**
      * Display all students with pending fees
      */
-    public function index()
+/**
+ * Display all students with pending fees with search and pagination
+ */
+public function index(Request $request)
 {
     try {
-        // Only show students that haven't been transferred
-        $pendingFees = PendingFee::where('status', '!=', 'completed')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Get per_page value from request, default to 10
+        $perPage = $request->input('per_page', 10);
+        
+        // Validate per_page to only allow specific values
+        if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
+        // Get search query
+        $search = $request->input('search', '');
+
+        // Build the query - only show students that haven't been transferred
+        $query = PendingFee::where('status', '!=', 'completed');
+
+        // Apply search filter if search term exists
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('father', 'like', '%' . $search . '%')
+                  ->orWhere('mobileNumber', 'like', '%' . $search . '%')
+                  ->orWhere('courseName', 'like', '%' . $search . '%')
+                  ->orWhere('deliveryMode', 'like', '%' . $search . '%')
+                  ->orWhere('courseContent', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Get paginated students
+        $pendingFees = $query->orderBy('created_at', 'desc')
+                             ->paginate($perPage)
+                             ->appends([
+                                 'search' => $search,
+                                 'per_page' => $perPage
+                             ]);
 
         Log::info('Fetching pending fees students:', [
             'count' => $pendingFees->count(),
+            'total' => $pendingFees->total(),
+            'per_page' => $perPage,
+            'search' => $search
         ]);
 
         return view('student.pendingfees.pending', [
             'pendingFees' => $pendingFees,
-            'totalCount' => $pendingFees->count(),
+            'totalCount' => $pendingFees->total(),
+            'search' => $search
         ]);
+        
     } catch (\Exception $e) {
         Log::error('Error loading pending fees students: ' . $e->getMessage());
         return redirect()->back()

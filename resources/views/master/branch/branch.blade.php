@@ -121,10 +121,18 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class=" fa-solid fa-user"></i>Profile</a>
-          </li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
@@ -341,21 +349,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       <div class="whole">
         <!-- Table controls: entries dropdown and search -->
         <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                {{ request('per_page', 10) }}
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
+        <div class="line">
+  <h6>Show Entries:</h6>
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+      aria-expanded="false">
+      {{ request('per_page', 10) }}
+    </button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="#" data-value="5">5</a></li>
+      <li><a class="dropdown-item" href="#" data-value="10">10</a></li>
+      <li><a class="dropdown-item" href="#" data-value="25">25</a></li>
+      <li><a class="dropdown-item" href="#" data-value="50">50</a></li>
+      <li><a class="dropdown-item" href="#" data-value="100">100</a></li>
+    </ul>
+  </div>
+</div>
           <div class="search">
             <form method="GET" action="{{ route('branches.index') }}" id="searchForm">
               <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
@@ -682,46 +691,79 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 <script src="{{asset('js/emp.js')}}"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Page loaded - checking modals...');
+  console.log('Page loaded - initializing Branch Management');
   
-  // Check if modals exist
+  // ========================================
+  // SHOW ENTRIES DROPDOWN FUNCTIONALITY
+  // ========================================
+  const dropdownButton = document.getElementById('number');
+  const dropdownItems = document.querySelectorAll('.line .dropdown-menu .dropdown-item[data-value]');
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentPerPage = urlParams.get('per_page') || '10';
+  
+  // Update button text
+  if (dropdownButton) {
+      dropdownButton.textContent = currentPerPage;
+  }
+  
+  // Handle dropdown clicks
+  dropdownItems.forEach(item => {
+      const itemValue = item.getAttribute('data-value');
+      
+      // Highlight active item
+      if (itemValue === currentPerPage) {
+          item.classList.add('active');
+          item.style.backgroundColor = '#ed5b00';
+          item.style.color = 'white';
+      }
+      
+      // Click handler
+      item.addEventListener('click', function(e) {
+          e.preventDefault();
+          const selectedValue = this.getAttribute('data-value');
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set('per_page', selectedValue);
+          
+          // Preserve search parameter
+          const currentSearch = urlParams.get('search');
+          if (currentSearch) {
+              newUrl.searchParams.set('search', currentSearch);
+          }
+          
+          // Reset to page 1
+          newUrl.searchParams.delete('page');
+          
+          // Redirect
+          window.location.href = newUrl.toString();
+      });
+  });
+
+  // ========================================
+  // MODAL MANAGEMENT
+  // ========================================
   const uploadModal = document.getElementById('uploadBranchModal');
   const addModal = document.getElementById('exampleModalOne');
   
-  console.log('Upload Modal exists:', !!uploadModal);
-  console.log('Add Modal exists:', !!addModal);
-  
-  //Clean up backdrop on modal hide
+  // Clean up backdrop on modal hide
   if (uploadModal) {
     uploadModal.addEventListener('hidden.bs.modal', function () {
-      // Remove all modal backdrops
       const backdrops = document.querySelectorAll('.modal-backdrop');
       backdrops.forEach(backdrop => backdrop.remove());
-      
-      // Reset body classes
       document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
-      
-      console.log('Upload modal closed - backdrop cleaned');
     });
   }
   
   if (addModal) {
     addModal.addEventListener('hidden.bs.modal', function () {
-      // Remove all modal backdrops
       const backdrops = document.querySelectorAll('.modal-backdrop');
       backdrops.forEach(backdrop => backdrop.remove());
-      
-      // Reset body classes
       document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
-      
-      console.log('Add modal closed - backdrop cleaned');
     });
   }
   
@@ -731,25 +773,24 @@ document.addEventListener('DOMContentLoaded', function() {
     uploadBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      console.log('Upload button clicked - opening modal');
-      
       const modalInstance = new bootstrap.Modal(uploadModal, {
-        backdrop: true, // Changed from 'static' to allow clicking outside to close
+        backdrop: true,
         keyboard: true
       });
       modalInstance.show();
     });
-  } else {
-    console.error('Upload button or modal not found!');
   }
   
-  // File preview functionality
+  // ========================================
+  // FILE PREVIEW FUNCTIONALITY
+  // ========================================
   const fileInput = document.getElementById('importBranchFile');
+  const preview = document.getElementById('branchFilePreview');
+  const previewText = document.getElementById('branchPreviewText');
+  
   if (fileInput) {
     fileInput.addEventListener('change', function(e) {
       const file = e.target.files[0];
-      const preview = document.getElementById('branchFilePreview');
-      const previewText = document.getElementById('branchPreviewText');
       
       if (file) {
         preview.classList.remove('d-none');
@@ -771,36 +812,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Auto-submit search form on input (with debounce)
+  // ========================================
+  // SEARCH FUNCTIONALITY
+  // ========================================
   const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
+  const searchForm = document.getElementById('searchForm');
+  
+  if (searchInput && searchForm) {
+    // Submit on Enter key
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        searchForm.submit();
+      }
+    });
+    
+    // Optional: Auto-submit with debounce
     let searchTimeout;
     searchInput.addEventListener('input', function() {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
-        document.getElementById('searchForm').submit();
+        // Uncomment to enable auto-search
+        // searchForm.submit();
       }, 500);
     });
   }
 
-  // Handle entries dropdown
-  const dropdownItems = document.querySelectorAll('.line .dropdown-menu .dropdown-item');
-  dropdownItems.forEach(item => {
-    item.addEventListener('click', function(e) {
-      e.preventDefault();
-      const perPage = this.textContent.trim();
-      const currentSearch = new URLSearchParams(window.location.search).get('search') || '';
-      
-      let url = '{{ route("branches.index") }}?per_page=' + perPage;
-      if (currentSearch) {
-        url += '&search=' + encodeURIComponent(currentSearch);
-      }
-      
-      window.location.href = url;
-    });
-  });
-
-  // Auto-dismiss alerts
+  // ========================================
+  // AUTO-DISMISS ALERTS
+  // ========================================
   const alerts = document.querySelectorAll('.alert-dismissible');
   alerts.forEach(alert => {
     setTimeout(() => {
@@ -811,16 +851,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 5000);
   });
   
-  // Global backdrop cleanup (backup safety measure)
+  // Global backdrop cleanup (safety measure)
   document.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal-backdrop')) {
       e.target.remove();
       document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
-      console.log('Backup: Removed orphaned backdrop on click');
     }
   });
+
+  console.log('Branch Management initialized successfully');
 });
 </script>
 

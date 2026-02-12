@@ -115,10 +115,18 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class=" fa-solid fa-user"></i>Profile</a>
-          </li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
@@ -335,21 +343,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       <div class="whole">
         <!-- Table controls: entries dropdown and search -->
         <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                {{ request('per_page', 10) }}
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
+<div class="line">
+  <h6>Show Entries:</h6>
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+      aria-expanded="false">
+      {{ request('per_page', 10) }}
+    </button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="#" data-value="5">5</a></li>
+      <li><a class="dropdown-item" href="#" data-value="10">10</a></li>
+      <li><a class="dropdown-item" href="#" data-value="25">25</a></li>
+      <li><a class="dropdown-item" href="#" data-value="50">50</a></li>
+      <li><a class="dropdown-item" href="#" data-value="100">100</a></li>
+    </ul>
+  </div>
+</div>
           <div class="search">
             <form method="GET" action="{{ route('batches.index') }}" id="searchForm">
               <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
@@ -575,10 +584,13 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
                     <!-- Start Date -->
                     <div class="mb-3">
-                      <label class="form-label">Start Date</label>
-                      <input type="date" class="form-control" name="start_date" value="{{ $batch->start_date ?? '' }}"
-                        required>
-                    </div>
+  <label class="form-label">Start Date</label>
+  <input type="date" 
+         class="form-control" 
+         name="start_date" 
+         value="{{ $batch->start_date ? \Carbon\Carbon::parse($batch->start_date)->format('Y-m-d') : '' }}"
+         required>
+</div>
 
                     <!-- Delivery Mode -->
                     <div class="mb-3">
@@ -609,19 +621,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                     </div>
 
                     <!-- Installment Date 2 -->
-                    <div class="mb-3">
-                      <label class="form-label">Installment Date 2</label>
-                      <input type="date" class="form-control" name="installment_date_2"
-                        value="{{ $batch->installment_date_2 ?? '' }}">
-                    </div>
+                 <div class="mb-3">
+  <label class="form-label">Installment Date 2</label>
+  <input type="date" 
+         class="form-control" 
+         name="installment_date_2"
+         value="{{ $batch->installment_date_2 ? \Carbon\Carbon::parse($batch->installment_date_2)->format('Y-m-d') : '' }}">
+</div>
 
-                    <!-- Installment Date 3 -->
-                    <div class="mb-3">
-                      <label class="form-label">Installment Date 3</label>
-                      <input type="date" class="form-control" name="installment_date_3"
-                        value="{{ $batch->installment_date_3 ?? '' }}">
-                    </div>
-
+<!-- Installment Date 3 -->
+<div class="mb-3">
+  <label class="form-label">Installment Date 3</label>
+  <input type="date" 
+         class="form-control" 
+         name="installment_date_3"
+         value="{{ $batch->installment_date_3 ? \Carbon\Carbon::parse($batch->installment_date_3)->format('Y-m-d') : '' }}">
+</div>
                     <!-- Status -->
                     <div class="mb-3">
                       <label class="form-label">Status</label>
@@ -943,30 +958,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     }
   });
 
-  // <!-- AJAX Script: Handles dynamic user addition without page reload -->
-  // AJAX for dynamic batch addition without page reload
+  // AJAX for dynamic batch addition
   $('#createBatchForm').on('submit', function (e) {
-    e.preventDefault(); // Prevent default form submission
-    $('.text-danger').text(''); // Clear previous errors
+    e.preventDefault();
+    $('.text-danger').text('');
 
-    // AJAX POST request to add batch
     $.ajax({
       url: "{{ route('batches.add') }}",
       method: 'POST',
       data: $(this).serialize(),
       success: function (response) {
-        // Close the modal
         $('#exampleModalOne').modal('hide');
-
-        // Reset form
         $('#createBatchForm')[0].reset();
-
-        // Force page reload to show new batch
         window.location.href = "{{ route('batches.index') }}";
       },
       error: function (xhr) {
         if (xhr.status === 422) {
-          // Display validation errors
           const errors = xhr.responseJSON.errors;
           for (let field in errors) {
             $('#error-' + field).text(errors[field][0]);
@@ -978,33 +985,47 @@ LINE 629-665: AJAX Script for Dynamic User Addition
     });
   });
 
-  // Auto-fill class name and course type based on selected course
-  document.getElementById('courseSelect').addEventListener('change', function () {
-    const courseMapping = {
-      'Anthesis 11th NEET': { class: '11th (XI)', type: 'Pre-Medical' },
-      'Momentum 12th NEET': { class: '12th (XII)', type: 'Pre-Medical' },
-      'Dynamic Target NEET': { class: 'Target (XII +)', type: 'Pre-Medical' },
-      'Impulse 11th IIT': { class: '11th (XI)', type: 'Pre-Engineering' },
-      'Intensity 12th IIT': { class: '12th (XII)', type: 'Pre-Engineering' },
-      'Thrust Target IIT': { class: 'Target (XII +)', type: 'Pre-Engineering' },
-      'Seedling 10th': { class: '10th (X)', type: 'Pre-Foundation' },
-      'Plumule 9th': { class: '9th (IX)', type: 'Pre-Foundation' },
-      'Radicle 8th': { class: '8th (VIII)', type: 'Pre-Foundation' },
-      'Nucleus 7th': { class: '7th (VII)', type: 'Pre-Foundation' },
-      'Atom 6th': { class: '6th (VI)', type: 'Pre-Foundation' }
-    };
-
-    const selectedCourse = this.value;
-    const courseData = courseMapping[selectedCourse];
-
-    if (courseData) {
-      document.getElementById('classNameDisplay').value = courseData.class;
-      document.getElementById('courseTypeDisplay').value = courseData.type;
-    }
-  });
-
   document.addEventListener('DOMContentLoaded', function () {
-    // File preview functionality
+    // ========================================
+    // SHOW ENTRIES DROPDOWN FUNCTIONALITY
+    // ========================================
+    const dropdownButton = document.getElementById('number');
+    const dropdownItems = document.querySelectorAll('.dropdown-menu .dropdown-item[data-value]');
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPerPage = urlParams.get('per_page') || '10';
+    
+    if (dropdownButton) {
+        dropdownButton.textContent = currentPerPage;
+    }
+    
+    dropdownItems.forEach(item => {
+        const itemValue = item.getAttribute('data-value');
+        
+        if (itemValue === currentPerPage) {
+            item.classList.add('active');
+            item.style.backgroundColor = '#ed5b00';
+            item.style.color = 'white';
+        }
+        
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectedValue = this.getAttribute('data-value');
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('per_page', selectedValue);
+            
+            const currentSearch = urlParams.get('search');
+            if (currentSearch) {
+                newUrl.searchParams.set('search', currentSearch);
+            }
+            
+            newUrl.searchParams.delete('page');
+            window.location.href = newUrl.toString();
+        });
+    });
+
+    // ========================================
+    // FILE PREVIEW FUNCTIONALITY
+    // ========================================
     const fileInput = document.getElementById('importBatchFile');
     const preview = document.getElementById('batchFilePreview');
     const previewText = document.getElementById('batchPreviewText');
@@ -1045,7 +1066,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       });
     }
 
-    // Auto-dismiss alerts after 5 seconds
+    // Auto-dismiss alerts
     const alerts = document.querySelectorAll('.flash-container .alert');
     alerts.forEach(alert => {
       setTimeout(() => {

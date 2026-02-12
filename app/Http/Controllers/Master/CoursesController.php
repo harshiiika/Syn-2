@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\Log;
 
+
 /**
  * CoursesController - Manages course catalog operations
  * Handles CRUD operations for educational courses including search, pagination, validation, and bulk import
@@ -22,25 +23,44 @@ class CoursesController extends Controller
      * @param Request $request - Contains pagination and search parameters
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+     public function index(Request $request)
     {
-        $perPage = $request->get('per_page', 10);
-        $search = $request->get('search');
-
-        $query = Courses::query();
+        // Get per_page value from request, default to 10
+        $perPage = $request->input('per_page', 10);
         
-        if ($search) {
+        // Validate per_page to only allow specific values
+        if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
+        // Get search query
+        $search = $request->input('search', '');
+
+        // Build the query
+        $query = Courses::query();
+
+        // Apply search filter if search term exists
+        if (!empty($search)) {
             $query->where(function($q) use ($search) {
-                $q->where('course_name', 'like', "%{$search}%")
-                  ->orWhere('course_code', 'like', "%{$search}%")
-                  ->orWhere('class_name', 'like', "%{$search}%");
+                $q->where('course_name', 'like', '%' . $search . '%')
+                  ->orWhere('course_type', 'like', '%' . $search . '%')
+                  ->orWhere('class_name', 'like', '%' . $search . '%')
+                  ->orWhere('course_code', 'like', '%' . $search . '%')
+                  ->orWhere('status', 'like', '%' . $search . '%');
             });
         }
 
-        $courses = $query->orderBy('created_at', 'desc')->paginate($perPage)->appends($request->all());
+        // Get paginated courses
+        $courses = $query->orderBy('created_at', 'desc')
+                        ->paginate($perPage)
+                        ->appends([
+                            'search' => $search,
+                            'per_page' => $perPage
+                        ]);
 
         return view('master.courses.index', compact('courses', 'search'));
     }
+
 
     /**
      * Download sample Excel file for bulk import
@@ -417,5 +437,29 @@ public function getSubjectSuggestions(Request $request)
     });
 
     return response()->json(array_slice(array_column($matches, 'subject'), 0, 8));
+}
+/**
+ * Get active courses list for dropdowns
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function getActiveCourses()
+{
+    try {
+        $courses = Courses::where('status', 'active')
+            ->orderBy('course_name', 'asc')
+            ->get(['_id', 'course_name', 'course_type', 'class_name']);
+        
+        return response()->json([
+            'success' => true,
+            'courses' => $courses
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Error fetching courses: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to fetch courses',
+            'courses' => []
+        ], 500);
+    }
 }
 }

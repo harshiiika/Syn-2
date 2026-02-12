@@ -122,10 +122,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
       </div>
     </div>
   </div>
@@ -343,160 +355,202 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
       </div>
       <div class="whole">
-        <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-             <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            {{ request('per_page', 10) }}
-          </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item"> 50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-        </div>
-
-        <!-- Table starts here -->
-        <table class="table table-hover" id="table">
-          <thead>
-            <tr>
-              <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Session Name</th>
-              <th scope="col" id="one">Start Date</th>
-              <th scope="col" id="one">End Date</th>
-              <th scope="col" id="one">Status</th>
-              <th scope="col" id="one">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-
-          <!-- Section for fillables -->
-            @foreach($sessions as $index => $session)
-              @php
-  $sessionId = $session->_id ?? $session->id ?? null;
-  if (is_object($sessionId)) {
-    $sessionId = (string) $sessionId;
-  }
-              @endphp
-              <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $session->name }}</td>
-                <td>{{ \Carbon\Carbon::parse($session->start_date)->format('Y-m-d') }}</td>
-                <td>{{ \Carbon\Carbon::parse($session->end_date)->format('Y-m-d') }}</td>
-                <td>
-                  <span class="badge {{ $session->status === 'active' ? 'bg-success' : 'bg-danger' }}">
-                    {{ ucfirst($session->status) }}
-                  </span>
-                </td>
-                <td>
-  <div class="dropdown">
-    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
-            type="button" 
-            id="actionDropdown{{ $sessionId }}" 
-            data-bs-toggle="dropdown" 
-            aria-expanded="false">
-      <i class="fas fa-ellipsis-v"></i>
-    </button>
-    
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown{{ $sessionId }}">
-      {{-- View is always available --}}
-      <li>
-        <button class="dropdown-item" 
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#viewSessionModal{{ $sessionId }}">
-                View Details
-        </button>
-      </li>
-
-      @if($session->status === 'active')
-        {{-- Show Edit only for active --}}
-        <li>
-          <button class="dropdown-item" 
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editSessionModal{{ $sessionId }}">
-                  Edit Details
-          </button>
-        </li>
-
-        <li><hr class="dropdown-divider"></li>
-
-        {{-- Show End Session only for active --}}
-        <li>
-          <form method="POST" action="{{ route('sessions.end', $sessionId) }}" class="d-inline w-100">
-            @csrf
-            <button type="submit" 
-                    class="dropdown-item text-danger" 
-                    onclick="return confirm('Are you sure you want to end this session?')">
-                    End Session
-            </button>
-          </form>
-        </li>
-      @else
-        {{-- For inactive sessions --}}
-        <li>
-          <span class="dropdown-item-text text-muted">
-            <i class="fas fa-info-circle me-2"></i> Session Ended
-          </span>
-        </li>
-      @endif
-    </ul>
+<div class="dd">
+  <div class="line">
+    <h6>Show Entries:</h6>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{ request('per_page', 10) }}
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" data-value="5">5</a></li>
+        <li><a class="dropdown-item" href="#" data-value="10">10</a></li>
+        <li><a class="dropdown-item" href="#" data-value="25">25</a></li>
+        <li><a class="dropdown-item" href="#" data-value="50">50</a></li>
+        <li><a class="dropdown-item" href="#" data-value="100">100</a></li>
+      </ul>
+    </div>
   </div>
-</td>
+  <div class="search">
+    <form method="GET" action="{{ route('sessions.index') }}" id="searchForm">
+      <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+      <input type="search" 
+             name="search" 
+             placeholder="Search" 
+             class="search-holder" 
+             value="{{ request('search') }}"
+             id="searchInput">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </form>
+  </div>
+</div>
 
-                <!-- <td>
-                  <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-                      data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fa-solid fa-ellipsis-vertical" style="color: #000;"></i>
+<!-- Update the table section to use pagination -->
+<table class="table table-hover" id="table">
+  <thead>
+    <tr>
+      <th scope="col" id="one">Serial No.</th>
+      <th scope="col" id="one">Session Name</th>
+      <th scope="col" id="one">Start Date</th>
+      <th scope="col" id="one">End Date</th>
+      <th scope="col" id="one">Status</th>
+      <th scope="col" id="one">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($sessions as $index => $session)
+      @php
+        $sessionId = $session->_id ?? $session->id ?? null;
+        if (is_object($sessionId)) {
+          $sessionId = (string) $sessionId;
+        }
+      @endphp
+      <tr>
+        <td>{{ $sessions->firstItem() + $index }}</td>
+        <td>{{ $session->name }}</td>
+        <td>{{ \Carbon\Carbon::parse($session->start_date)->format('Y-m-d') }}</td>
+        <td>{{ \Carbon\Carbon::parse($session->end_date)->format('Y-m-d') }}</td>
+        <td>
+          <span class="badge {{ $session->status === 'active' ? 'bg-success' : 'bg-danger' }}">
+            {{ ucfirst($session->status) }}
+          </span>
+        </td>
+        <td>
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                    type="button" 
+                    id="actionDropdown{{ $sessionId }}" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false">
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+            
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown{{ $sessionId }}">
+              <li>
+                <button class="dropdown-item" 
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#viewSessionModal{{ $sessionId }}">
+                        View Details
+                </button>
+              </li>
+
+              @if($session->status === 'active')
+                <li>
+                  <button class="dropdown-item" 
+                          type="button"
+                          data-bs-toggle="modal"
+                          data-bs-target="#editSessionModal{{ $sessionId }}">
+                          Edit Details
+                  </button>
+                </li>
+
+                <li><hr class="dropdown-divider"></li>
+
+                <li>
+                  <form method="POST" action="{{ route('sessions.end', $sessionId) }}" class="d-inline w-100">
+                    @csrf
+                    <button type="submit" 
+                            class="dropdown-item text-danger" 
+                            onclick="return confirm('Are you sure you want to end this session?')">
+                            End Session
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-                      {{-- View is always available --}}
-                      <li>
-                        <button class="dropdown-item" data-bs-toggle="modal"
-                          data-bs-target="#viewSessionModal{{ $sessionId }}">
-                          View Details
-                        </button>
-                      </li>
+                  </form>
+                </li>
+              @else
+                <li>
+                  <span class="dropdown-item-text text-muted">
+                    <i class="fas fa-info-circle me-2"></i> Session Ended
+                  </span>
+                </li>
+              @endif
+            </ul>
+          </div>
+        </td>
+      </tr>
+    @endforeach
+  </tbody>
+</table>
+<div class="footer">
+  <div class="left-footer">
+    <p>Showing {{ $sessions->firstItem() ?? 0 }} to {{ $sessions->lastItem() ?? 0 }} of {{ $sessions->total() }} entries
+      @if(request('search'))
+        <span class="text-muted">(filtered from {{ \App\Models\User\User::count() }} total entries)</span>
+      @endif
+    </p>
+  </div>
+  <div class="right-footer">
+    <nav aria-label="Page navigation example" id="bottom">
+      <ul class="pagination" id="pagination">
+        {{-- Previous Page Link --}}
+        @if ($sessions->onFirstPage())
+          <li class="page-item disabled">
+            <span class="page-link" id="pg1">Previous</span>
+          </li>
+        @else
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $sessions->previousPageUrl() }}" 
+               id="pg1">Previous</a>
+          </li>
+        @endif
 
-                      @if($session->status === 'active')
-                        {{-- Show Edit only for active --}}
-                        <li>
-                          <button class="dropdown-item" data-bs-toggle="modal"
-                            data-bs-target="#editSessionModal{{ $sessionId }}">
-                            Edit Details
-                          </button>
-                        </li>
+        {{-- Pagination Elements --}}
+        @php
+          $start = max($sessions->currentPage() - 2, 1);
+          $end = min($start + 4, $sessions->lastPage());
+          $start = max($end - 4, 1);
+        @endphp
 
-                        {{-- Show End Session only for active --}}
-                        <li>
-                          <form method="POST" action="{{ route('sessions.end', $sessionId) }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item">
-                              End Session
-                            </button>
-                          </form>
-                        </li>
-                      @endif
-                    </ul>
-                  </div>
-                </td> -->
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
+        @if($start > 1)
+          <li class="page-item" id="pg2">
+            <a class="page-link" href="{{ $sessions->url(1) }}">1</a>
+          </li>
+          @if($start > 2)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+        @endif
 
+        @for ($i = $start; $i <= $end; $i++)
+          <li class="page-item {{ $sessions->currentPage() == $i ? 'active' : '' }}">
+            <a class="page-link" 
+               href="{{ $sessions->url($i) }}"
+               id="pg{{ $i }}">{{ $i }}</a>
+          </li>
+        @endfor
+
+        @if($end < $sessions->lastPage())
+          @if($end < $sessions->lastPage() - 1)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+          <li class="page-item">
+            <a class="page-link" href="{{ $sessions->url($sessions->lastPage()) }}">{{ $sessions->lastPage() }}</a>
+          </li>
+        @endif
+
+        {{-- Next Page Link --}}
+        @if ($sessions->hasMorePages())
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $sessions->nextPageUrl() }}" 
+               id="pg4">Next</a>
+          </li>
+        @else
+          <li class="page-item disabled">
+            <span class="page-link" id="pg4">Next</span>
+          </li>
+        @endif
+      </ul>
+    </nav>
+  </div>
+</div>
+    </div>
+  </div>
         <!-- Create Session Modal -->
         @foreach($sessions as $session)
           @php
@@ -641,6 +695,51 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
           crossorigin="anonymous"></script>
         <script src="{{ asset('js/session.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownButton = document.getElementById('number');
+    const dropdownItems = document.querySelectorAll('.dropdown-item[data-value]');
+    
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectedValue = this.getAttribute('data-value');
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('per_page', selectedValue);
+            
+            const currentSearch = '{{ $search }}';
+            if (currentSearch) {
+                newUrl.searchParams.set('search', currentSearch);
+            }
+            
+            newUrl.searchParams.delete('page');
+            window.location.href = newUrl.toString();
+        });
+    });
+
+    // Search icon click handler
+    const searchIcon = document.querySelector('.search i.fa-magnifying-glass');
+    const searchForm = document.getElementById('searchForm');
+    
+    if (searchIcon && searchForm) {
+        searchIcon.addEventListener('click', function() {
+            searchForm.submit();
+        });
+    }
+
+    // Search input enter key handler
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+    }
+});
+
+</script>
 </body>
 
 </html>

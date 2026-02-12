@@ -12,29 +12,36 @@ class BranchController extends Controller
      * Display all branches with search and pagination
      */
     public function index(Request $request)
-    {
-        $perPage = $request->input('per_page', 10);
-        $search = $request->input('search');
-
-        $query = Branch::query();
-
-        // Apply search filter if search term exists
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('city', 'like', '%' . $search . '%')
-                  ->orWhere('status', 'like', '%' . $search . '%');
-            });
-        }
-
-        // Paginate results
-        $branches = $query->paginate($perPage)->appends([
-            'search' => $search,
-            'per_page' => $perPage
-        ]);
-
-        return view('master.branch.branch', compact('branches'));
+{
+    // Get per_page value from request, default to 10
+    $perPage = $request->input('per_page', 10);
+    
+    // Validate per_page to only allow specific values (ADDED 5 for testing)
+    if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+        $perPage = 10;
     }
+    
+    $search = $request->input('search');
+
+    $query = Branch::query();
+
+    // Apply search filter if search term exists
+    if ($search) {
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+              ->orWhere('city', 'like', '%' . $search . '%')
+              ->orWhere('status', 'like', '%' . $search . '%');
+        });
+    }
+
+    // Paginate results
+    $branches = $query->paginate($perPage)->appends([
+        'search' => $search,
+        'per_page' => $perPage
+    ]);
+
+    return view('master.branch.branch', compact('branches'));
+}
 
     /**
      * Store a new branch
@@ -169,4 +176,65 @@ class BranchController extends Controller
 
         return redirect()->route('branches.index')->with('success', 'Branch status changed to ' . $newStatus . '!');
     }
+    
+/**
+ * Get active branches for API
+ */
+public function getActiveBranches()
+{
+    try {
+        \Log::info('=== FETCHING ACTIVE BRANCHES ===');
+        
+        // First check total branches in database
+        $totalBranches = Branch::count();
+        \Log::info('Total branches in database: ' . $totalBranches);
+        
+        // Get all branches to see what statuses exist
+        $allBranches = Branch::all(['_id', 'name', 'city', 'status']);
+        \Log::info('All branches:', $allBranches->toArray());
+        
+        // Query with case-insensitive status check OR get all active branches
+        $branches = Branch::where(function($query) {
+                $query->where('status', 'Active')
+                      ->orWhere('status', 'active');
+            })
+            ->orderBy('name', 'asc')
+            ->get(['_id', 'name', 'city', 'status']);
+            
+        \Log::info('Active branches found: ' . $branches->count());
+        \Log::info('Active branches data:', $branches->toArray());
+        
+        // If no active branches found, return ALL branches as fallback for debugging
+        if ($branches->isEmpty() && $totalBranches > 0) {
+            \Log::warning('⚠️ No active branches found, returning all branches');
+            $branches = $allBranches;
+        }
+        
+        // Convert MongoDB ObjectId to string
+        $branches = $branches->map(function($branch) {
+            return [
+                '_id' => (string) $branch->_id,
+                'name' => $branch->name,
+                'city' => $branch->city ?? '',
+                'status' => $branch->status ?? 'Active'
+            ];
+        });
+            
+        return response()->json([
+            'success' => true,
+            'branches' => $branches,
+            'total_count' => $branches->count()
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('❌ Get active branches error: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+            'branches' => []
+        ], 500);
+    }
+}
 }

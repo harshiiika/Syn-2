@@ -1,43 +1,30 @@
-
-
-
-
 <!DOCTYPE html>
+
+
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
-  <title>Session Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee</title>
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?php echo e(asset('css/session.css')); ?>">
-  <link rel="stylesheet" href="<?php echo e(asset('css/calendar.css')); ?>">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="<?php echo e(asset('css/emp.css')); ?>">
+  <!-- Bootstrap 5.3.6 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+
 </head>
 
 <body>
-  <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-    <?php if(session('success')): ?>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?php echo e(session('success')); ?>
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-
-    <?php if(session('error')): ?>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?php echo e(session('error')); ?>
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-  </div>
+  <!-- Header Section: Contains logo, sidebar toggle, session selector, notifications, and user menu -->
 
   <div class="header">
     <div class="logo">
       <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img">
+
+      <!-- Sidebar toggle button -->
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -61,14 +48,17 @@
       </div>
     </div>
   </div>
-
   <div class="main-container">
+    <!-- Left Sidebar: Navigation menu with collapsible accordion sections -->
     <div class="left" id="sidebar">
+
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-     <div class="accordion accordion-flush" id="accordionFlushExample">
+
+      <!-- Left side bar accordian -->
+          <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -250,109 +240,13 @@
   </div>
 </div>
     </div>
-
-    <!-- Calendar Content -->
-    <div class="calendar-container">
-      <div class="calendar-header">
-        <h3>Session Calendar</h3>
-        <div class="calendar-actions">
-          <button class="btn-mark-sunday" id="markAllSundayBtn">Mark All Sunday as Holiday</button>
-          <button class="btn-add-holiday" id="addHolidayBtn">Add Holiday</button>
-          <button class="btn-add-test" id="addTestBtn">Add Test</button>
-        </div>
-      </div>
-
-      <div class="calendar-content">
-        <!-- Calendar -->
-        <div class="calendar-main">
-          <div id="calendar"></div>
-        </div>
-
-        <!-- Right Sidebar -->
-        <div class="calendar-sidebar">
-          <!-- Holiday List -->
-          <div class="list-card">
-            <div class="list-card-header">Holiday List</div>
-            <div class="list-card-body" id="holidayList">
-              <div class="list-item-empty">No holidays added</div>
-            </div>
-          </div>
-
-          <!-- Test List -->
-          <div class="list-card">
-            <div class="list-card-header">Test List</div>
-            <div class="list-card-body" id="testList">
-              <div class="list-item-empty">No tests added</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="right" id="right">
+        <h2>Welcome to Dashboard</h2>
+        <p>This is the dashboard page.</p>
     </div>
-  </div>
-
-  <!-- Add Holiday Modal (Bootstrap) -->
-  <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addHolidayModalLabel">Add Holiday</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="holidayForm">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="holiday_date" class="form-label">Holiday Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="holiday_date" name="holiday_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="holiday_description" class="form-label">Description <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="holiday_description" name="holiday_description" placeholder="Enter holiday description" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Test Modal (Bootstrap) -->
-  <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addTestModalLabel">Add Test</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="testForm" method="POST" action="<?php echo e(route('calendar.tests.store')); ?>">
-        <?php echo csrf_field(); ?>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="test_date" class="form-label">Test Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="test_date" name="test_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="test_name" class="form-label">Test Name <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="test_name" name="test_name" placeholder="Enter test name" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
-    <script src="<?php echo e(asset('js/calendar.js')); ?>"></script>
-
+ 
 </body>
-
-</html><?php /**PATH C:\Users\Priyanshi Rathore\Syn-2\resources\views/master/calendar/calendar.blade.php ENDPATH**/ ?>
+<script src="<?php echo e(asset('js/emp.js')); ?>"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+</html><?php /**PATH C:\Users\Priyanshi Rathore\Syn-2\resources\views/auth/dashboard.blade.php ENDPATH**/ ?>

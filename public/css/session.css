@@ -476,3 +476,110 @@ height: 30px;
     border: none!important;
     text-decoration: none !important;
 }
+
+.pagination .page-link::before,
+.pagination .page-link::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Standard pagination sizing */
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 5px;
+    align-items: center;
+}
+
+.pagination .page-item {
+    margin: 0;
+}
+
+.pagination .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1;
+    color: #6c757d;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* Remove any icon sizing that might cause giant arrows */
+.pagination .page-link i,
+.pagination .page-link svg,
+.pagination .page-link .fa,
+.pagination .page-link .fas,
+.pagination .page-link .far {
+    display: none !important; /* Force remove icons */
+}
+
+/* Hover State */
+.pagination .page-item:not(.disabled):not(.active) .page-link:hover {
+    background-color: rgba(237, 91, 0, 0.1);
+    color: #ed5b00;
+    border-color: #ed5b00;
+}
+
+/* Active Page */
+.pagination .page-item.active .page-link {
+    background-color: #ed5b00;
+    border-color: #ed5b00;
+    color: white;
+    font-weight: 600;
+}
+
+/* Disabled State */
+.pagination .page-item.disabled .page-link {
+    color: #adb5bd;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Footer/Pagination Info */
+#paginationInfo,
+.show {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.d-flex.justify-content-between.align-items-center.mt-3 {
+    padding: 15px 0;
+}
+
+#footer{
+    background-color: #fff;
+}
+.modal-dialog-scrollable .modal-header,
+.modal-dialog-scrollable .modal-footer {
+    flex-shrink: 0;
+}
+
+.modal-footer{
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 10; 
+}
+.footer{
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+}
+.left-footer p{
+    font-size: 12px;
+}

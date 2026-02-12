@@ -9,6 +9,7 @@ use App\Models\User\Role;
 use App\Models\User\Department;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 
 class UserController extends Controller
@@ -24,171 +25,169 @@ class UserController extends Controller
     //4. create user with the provided details and assigned role and department and redirect successfully
 
     
+
     /**
      * Display employee listing with search and pagination
      */
     public function index(Request $request)
     {
+        // Get per_page value from request, default to 10
         $perPage = $request->input('per_page', 10);
+        
+        // Validate per_page to only allow specific values
+        if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
+        // Get search query
         $search = $request->input('search', '');
 
-        // Build query with search
+        // Build the query
         $query = User::query();
 
+        // Apply search filter if search term exists
         if (!empty($search)) {
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                   ->orWhere('email', 'like', '%' . $search . '%')
-                  ->orWhere('mobileNumber', 'like', '%' . $search . '%');
+                  ->orWhere('mobileNumber', 'like', '%' . $search . '%')
+                  ->orWhere('departmentNames', 'like', '%' . $search . '%')
+                  ->orWhere('roleNames', 'like', '%' . $search . '%');
             });
         }
 
-        // Paginate results
-        $users = $query->paginate($perPage)->appends([
-            'search' => $search,
-            'per_page' => $perPage
-        ]);
+        // Get paginated users
+        $users = $query->orderBy('created_at', 'desc')
+                      ->paginate($perPage)
+                      ->appends([
+                          'search' => $search,
+                          'per_page' => $perPage
+                      ]);
 
-        // Process department and role names
-        $allRoleIds = collect();
-        $allDepartmentIds = collect();
-
-        foreach ($users as $user) {
-            $userDepts = data_get($user, 'departments', []);
-            $userRoles = data_get($user, 'roles', []);
-
-            if (is_array($userDepts)) {
-                $allDepartmentIds = $allDepartmentIds->merge($userDepts);
-            }
-            
-            if (is_array($userRoles)) {
-                $allRoleIds = $allRoleIds->merge($userRoles);
-            }
-        }
-
-        $allRoleIds = $allRoleIds->map(fn($id) => (string) (is_object($id) ? $id : $id))->unique()->filter();
-        $allDepartmentIds = $allDepartmentIds->map(fn($id) => (string) (is_object($id) ? $id : $id))->unique()->filter();
-
-        $departments = Department::whereIn('_id', $allDepartmentIds->toArray())
-            ->get()
-            ->keyBy(fn($dept) => (string) $dept->_id);
-
-        $roles = Role::whereIn('_id', $allRoleIds->toArray())
-            ->get()
-            ->keyBy(fn($role) => (string) $role->_id);
-
-        foreach ($users as $user) {
-            $userDepts = data_get($user, 'departments', []);
-            $userRoles = data_get($user, 'roles', []);
-
-            $user->departmentNames = collect(is_array($userDepts) ? $userDepts : [])
-                ->map(fn($id) => $departments->get((string) (is_object($id) ? $id : $id))?->name)
-                ->filter()
-                ->values();
-
-            $user->roleNames = collect(is_array($userRoles) ? $userRoles : [])
-                ->map(fn($id) => $roles->get((string) (is_object($id) ? $id : $id))?->name)
-                ->filter()
-                ->values();
-        }
-
-        return view('user.emp.emp', compact('users'));
+        // IMPORTANT: Pass both $users and $search to the view
+        return view('user.emp.emp', compact('users', 'search'));
     }
-
-    /**
-     * Show employees
+/**
+     * Add a new employee with profile picture
      */
-public function addUser(Request $request)
-{
-    // Log incoming request
-    \Log::info('=== ADD USER REQUEST STARTED ===');
-    \Log::info('Request data:', $request->all());
+    public function addUser(Request $request)
+    {
+        Log::info('=== ADD USER REQUEST STARTED ===');
 
-    try {
-        // Validate
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'mobileNumber' => 'nullable|string|max:15',
-            'alternateNumber' => 'nullable|string|max:15',
-            'branch' => 'required|string|max:255',
-            'department' => 'required|string',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        try {
+            // Validate input
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'mobileNumber' => 'required|string|regex:/^[0-9]{10}$/|unique:users,mobileNumber',
+                'alternateNumber' => 'nullable|string|regex:/^[0-9]{10}$/',
+                'branch' => 'required|string|max:255',
+                'department' => 'required|string',
+                'password' => 'required|string|min:6|confirmed',
+                'profile_picture' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
+            ]);
 
-        \Log::info('Validation passed:', $validated);
+            Log::info('Validation passed');
 
-        // Map departments to default roles
-        $departmentRoleMapping = [
-            'Front Office' => 'Finance',
-            'Back Office' => 'Administration',
-            'Office' => 'Attendance',
-            'Test Management' => 'Floor Incharge',
-            'Admin' => 'Records'
-        ];
+            // Handle profile picture upload
+            $profilePicturePath = null;
+            if ($request->hasFile('profile_picture')) {
+                try {
+                    $file = $request->file('profile_picture');
+                    
+                    // Create unique filename
+                    $filename = 'profile_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    
+                    // Store in public/storage/profile_pictures
+                    $profilePicturePath = $file->storeAs('profile_pictures', $filename, 'public');
+                    
+                    Log::info('Profile picture uploaded successfully', [
+                        'path' => $profilePicturePath,
+                        'full_path' => storage_path('app/public/' . $profilePicturePath)
+                    ]);
 
-        $selectedDepartment = $request->department;
-        $assignedRole = $departmentRoleMapping[$selectedDepartment] ?? 'Administration';
+                    // Verify file was saved
+                    if (!Storage::disk('public')->exists($profilePicturePath)) {
+                        Log::error('File not found after upload!');
+                        throw new \Exception('Profile picture upload failed - file not found');
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error uploading profile picture', ['error' => $e->getMessage()]);
+                    return back()
+                        ->with('error', 'Failed to upload profile picture: ' . $e->getMessage())
+                        ->withInput()
+                        ->with('show_add_modal', true);
+                }
+            }
 
-        \Log::info('Department:', ['selected' => $selectedDepartment, 'role' => $assignedRole]);
+            // Map departments to roles
+            $departmentRoleMapping = [
+                'Front Office' => 'Finance',
+                'Back Office' => 'Administration',
+                'Office' => 'Attendance',
+                'Test Management' => 'Floor Incharge',
+                'Admin' => 'Records'
+            ];
 
-        // Fetch or create department
-        $department = Department::firstOrCreate(['name' => $selectedDepartment]);
-        \Log::info('Department created/found:', ['id' => $department->_id, 'name' => $department->name]);
+            $selectedDepartment = $request->department;
+            $assignedRole = $departmentRoleMapping[$selectedDepartment] ?? 'Administration';
 
-        // Fetch or create role
-        $role = Role::firstOrCreate(['name' => $assignedRole]);
-        \Log::info('Role created/found:', ['id' => $role->_id, 'name' => $role->name]);
+            // Create department and role
+            $department = Department::firstOrCreate(['name' => $selectedDepartment]);
+            $role = Role::firstOrCreate(['name' => $assignedRole]);
 
-        // Prepare user data
-        $userData = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'mobileNumber' => $request->mobileNumber,
-            'alternateNumber' => $request->alternateNumber,
-            'branch' => $request->branch,
-            'roles' => [$role->_id],
-            'departments' => [$department->_id],
-            'password' => Hash::make($request->password),
-            'status' => 'Active',
-        ];
+            Log::info('Department and Role created', [
+                'department' => $department->_id,
+                'role' => $role->_id
+            ]);
 
-        \Log::info('User data prepared:', $userData);
+            // Create user with all data including profile picture
+            $userData = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'mobileNumber' => $request->mobileNumber,
+                'alternateNumber' => $request->alternateNumber,
+                'branch' => $request->branch,
+                'roles' => [$role->_id],
+                'departments' => [$department->_id],
+                'password' => Hash::make($request->password),
+                'status' => 'Active',
+                'profile_picture' => $profilePicturePath,
+            ];
 
-        // Create user
-        $user = User::create($userData);
-        
-        \Log::info('User created successfully:', [
-            'id' => $user->_id,
-            'name' => $user->name,
-            'email' => $user->email
-        ]);
+            Log::info('Creating user with data', $userData);
 
-        // Verify user was saved
-        $savedUser = User::find($user->_id);
-        if ($savedUser) {
-            \Log::info('User verified in database:', ['id' => $savedUser->_id]);
-        } else {
-            \Log::error('User NOT found in database after creation!');
+            $user = User::create($userData);
+            
+            Log::info('User created successfully', [
+                'id' => $user->_id,
+                'has_profile_picture' => !empty($user->profile_picture)
+            ]);
+
+            return redirect()->route('user.emp.emp')
+                ->with('success', 'Employee added successfully!')
+                ->with('new_user_id', $user->_id);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation failed', $e->errors());
+            return back()
+                ->withErrors($e->errors())
+                ->withInput()
+                ->with('show_add_modal', true);
+                
+        } catch (\Exception $e) {
+            Log::error('Error creating user', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return back()
+                ->with('error', 'Failed to create employee: ' . $e->getMessage())
+                ->withInput()
+                ->with('show_add_modal', true);
         }
-
-        return redirect()->route('user.emp.emp')
-            ->with('success', 'User added successfully!')
-            ->with('new_user_id', $user->_id);
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        \Log::error('Validation failed:', $e->errors());
-        return back()->withErrors($e->errors())->withInput();
-    } catch (\Exception $e) {
-        \Log::error('Error creating user:', [
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return back()->with('error', 'Failed to create user: ' . $e->getMessage())->withInput();
     }
-}  
+
     /**
      * Show employees
      */
@@ -200,78 +199,32 @@ public function addUser(Request $request)
     //4. attach role and department names to each user for display
     //5. return the view with users
 
-  public function showUser(Request $request)
-    {
-        $perPage = $request->input('per_page', 10);
-        $search = $request->input('search', '');
+public function showUser(Request $request)
+{
+    $perPage = $request->input('per_page', 10);
+    $search = $request->input('search', '');
 
-        // Build query with search
-        $query = User::query();
+    // Build query with search
+    $query = User::query();
 
-        if (!empty($search)) {
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%')
-                  ->orWhere('mobileNumber', 'like', '%' . $search . '%');
-            });
-        }
-
-        // Paginate results
-        $users = $query->paginate($perPage)->appends([
-            'search' => $search,
-            'per_page' => $perPage
-        ]);
-
-        // Process department and role names
-        $allRoleIds = collect();
-        $allDepartmentIds = collect();
-
-        foreach ($users as $user) {
-            $userDepts = data_get($user, 'departments', []);
-            $userRoles = data_get($user, 'roles', []);
-
-            if (is_array($userDepts)) {
-                $allDepartmentIds = $allDepartmentIds->merge($userDepts);
-            }
-            
-            if (is_array($userRoles)) {
-                $allRoleIds = $allRoleIds->merge($userRoles);
-            }
-        }
-
-        $allRoleIds = $allRoleIds->map(fn($id) => (string) (is_object($id) ? $id : $id))->unique()->filter();
-        $allDepartmentIds = $allDepartmentIds->map(fn($id) => (string) (is_object($id) ? $id : $id))->unique()->filter();
-
-        $departments = Department::whereIn('_id', $allDepartmentIds->toArray())
-            ->get()
-            ->keyBy(fn($dept) => (string) $dept->_id);
-
-        $roles = Role::whereIn('_id', $allRoleIds->toArray())
-            ->get()
-            ->keyBy(fn($role) => (string) $role->_id);
-
-        foreach ($users as $user) {
-            $userDepts = data_get($user, 'departments', []);
-            $userRoles = data_get($user, 'roles', []);
-
-            $user->departmentNames = collect(is_array($userDepts) ? $userDepts : [])
-                ->map(fn($id) => $departments->get((string) (is_object($id) ? $id : $id))?->name)
-                ->filter()
-                ->values();
-
-            $user->roleNames = collect(is_array($userRoles) ? $userRoles : [])
-                ->map(fn($id) => $roles->get((string) (is_object($id) ? $id : $id))?->name)
-                ->filter()
-                ->values();
-        }
-
-        return view('user.emp.emp', compact('users'));
+    if (!empty($search)) {
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+              ->orWhere('email', 'like', '%' . $search . '%')
+              ->orWhere('mobileNumber', 'like', '%' . $search . '%');
+        });
     }
 
+    // Paginate results
+    $users = $query->paginate($perPage)->appends([
+        'search' => $search,
+        'per_page' => $perPage
+    ]);
 
-    /**
-     * Update an existing employee - Fixed version
-     */
+    // The model accessors will handle departmentNames and roleNames automatically
+    
+    return view('user.emp.emp', compact('users'));
+}
 
 
     //to update an employee/user
@@ -279,6 +232,9 @@ public function addUser(Request $request)
     //2. auto assign roles based on department
     //3. find or create department and role
     //4. update user with the provided details and assigned role and department and redirect successfully
+ /**
+     * Update an existing employee
+     */
     public function updateUser(Request $request, $id)
     {
         $user = User::find($id);
@@ -290,22 +246,34 @@ public function addUser(Request $request)
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id . ',_id',
-            'mobileNumber' => [
-                'required',
-                'regex:/^[0-9]{10}$/',  // Exactly 10 digits
-            ],
-            'alternateNumber' => [
-                'nullable',
-                'regex:/^[0-9]{10}$/',  // Exactly 10 digits if provided
-            ],
+            'mobileNumber' => 'required|regex:/^[0-9]{10}$/',
+            'alternateNumber' => 'nullable|regex:/^[0-9]{10}$/',
             'branch' => 'required|string',
             'department' => 'required|string',
-        ], [
-            'mobileNumber.regex' => 'Mobile number must be exactly 10 digits.',
-            'alternateNumber.regex' => 'Alternate mobile number must be exactly 10 digits.',
+            'profile_picture' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
         ]);
 
-        // Auto-assign roles based on department
+        // Handle profile picture update
+        $profilePicturePath = $user->profile_picture;
+        
+        if ($request->hasFile('profile_picture')) {
+            try {
+                // Delete old profile picture if exists
+                if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                    Storage::disk('public')->delete($user->profile_picture);
+                }
+                
+                $file = $request->file('profile_picture');
+                $filename = 'profile_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $profilePicturePath = $file->storeAs('profile_pictures', $filename, 'public');
+                
+                Log::info('Profile picture updated', ['path' => $profilePicturePath]);
+            } catch (\Exception $e) {
+                Log::error('Error updating profile picture', ['error' => $e->getMessage()]);
+            }
+        }
+
+        // Department to role mapping
         $departmentRoleMapping = [
             'Front Office' => 'Administration',
             'Back Office' => 'Administration',
@@ -317,17 +285,8 @@ public function addUser(Request $request)
         $selectedDepartment = $request->input('department');
         $assignedRole = $departmentRoleMapping[$selectedDepartment] ?? 'Administration';
 
-        // Find or create department
-        $department = Department::where('name', $selectedDepartment)->first();
-        if (!$department) {
-            $department = Department::create(['name' => $selectedDepartment]);
-        }
-
-        // Find or create role
-        $role = Role::where('name', $assignedRole)->first();
-        if (!$role) {
-            $role = Role::create(['name' => $assignedRole]);
-        }
+        $department = Department::firstOrCreate(['name' => $selectedDepartment]);
+        $role = Role::firstOrCreate(['name' => $assignedRole]);
 
         $user->update([
             'name' => $request->input('name'),
@@ -337,6 +296,7 @@ public function addUser(Request $request)
             'branch' => $request->input('branch'),
             'roles' => [$role->_id],
             'departments' => [$department->_id],
+            'profile_picture' => $profilePicturePath,
         ]);
 
         return redirect()->route('user.emp.emp')->with('success', 'User updated successfully!');

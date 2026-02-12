@@ -42,32 +42,38 @@ class BatchController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = $request->get('per_page', 10);
-        $search = $request->get('search');
+           // Get per_page value from request, default to 10
+    $perPage = $request->input('per_page', 10);
+    
+    // Validate per_page to only allow specific values (ADDED 5 for testing)
+    if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+        $perPage = 10;
+    }
 
-        // Query the BATCH table (master.batches), not batch_assignments
-        $query = Batch::query();
+    // Get search query
+    $search = $request->input('search', '');
 
-        // Apply search filters
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('batch_id', 'like', '%' . $search . '%')
-                  ->orWhere('course', 'like', '%' . $search . '%')
-                  ->orWhere('class', 'like', '%' . $search . '%')
-                  ->orWhere('course_type', 'like', '%' . $search . '%');
-            });
-        }
+    // Build the query
+    $query = Batch::query();
 
-        // Get paginated results with course data
-        $batches = $query->orderBy('created_at', 'desc')
-                        ->paginate($perPage);
+    // Apply search filter if search term exists
+    if (!empty($search)) {
+        $query->where(function($q) use ($search) {
+            $q->where('batch_id', 'like', '%' . $search . '%')
+              ->orWhere('course', 'like', '%' . $search . '%')
+              ->orWhere('class', 'like', '%' . $search . '%')
+              ->orWhere('course_type', 'like', '%' . $search . '%');
+        });
+    }
 
-        // Preserve query parameters
-        $batches->appends($request->except('page'));
-
-        // Debug log
-        Log::info('Batch Assignment Page - Total batches: ' . $batches->total());
-        
+    // Get paginated batches
+    $batches = $query->orderBy('created_at', 'desc')
+                    ->paginate($perPage)
+                    ->appends([
+                        'search' => $search,
+                        'per_page' => $perPage
+                    ]);
+                    
         return view('master.batch.index', compact('batches'));
     }
 

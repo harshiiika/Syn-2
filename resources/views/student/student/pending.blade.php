@@ -77,7 +77,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pending Fees Students</title>
+  <title>Pending Inquiries</title>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
     <!-- Custom CSS -->
@@ -112,10 +112,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
+           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
       </div>
     </div>
   </div>
@@ -321,100 +333,174 @@ LINE 629-665: AJAX Script for Dynamic User Addition
             </div>
 
       </div>
-      <div class="whole">
-         <!-- Table controls: entries dropdown and search -->
-        <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-             <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            {{ request('per_page', 10) }}
-          </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-        </div>
-        <table class="table table-hover" id="table">
-          <thead>
-            <tr>
-              <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Student Name</th>
-              <th scope="col" id="one">Father Name</th>
-              <th scope="col" id="one">Father Contact No.</th>
-              <th scope="col" id="one">Course Name</th>
-              <th scope="col" id="one">Delivery Mode</th>
-              <th scope="col" id="one">Course Content</th>
-              <th scope="col" id="one">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-            </tr>
-          </tbody>
-<!-- Modal fillables where roles are assigned according to dept automatically -->
-
-      @foreach($students as $index => $student)
-<tr>
-   <!-- Serial number (index + 1) -->
-  <td>{{ $index + 1 }}</td>
-  <td>{{ $student->name }}</td>
-  <td>{{ $student->father }}</td>
-  <td>{{ $student->mobileNumber ?? '—' }}</td>
-<td>{{ $student->courseName ?? '—' }}</td>
-<td>{{ $student->deliveryMode ?? '—' }}</td>
-<td>{{ $student->courseContent ?? '—' }}</td>
-  <td>
+     <div class="whole">
+  <!-- Table controls: entries dropdown and search -->
+<div class="dd">
+  <div class="line">
+    <h6>Show Entries:</h6>
     <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+      <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{ request('per_page', 10) }}
       </button>
-      <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
-        <li>
-           <a href="{{ route('student.student.edit', $student->_id) }}">
-<button class="dropdown-item">
-            Edit Details
-          </button></a>
-        </li>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{{ route('student.student.pending', ['per_page' => 5, 'search' => request('search')]) }}">5</a></li>
+        <li><a class="dropdown-item" href="{{ route('student.student.pending', ['per_page' => 10, 'search' => request('search')]) }}">10</a></li>
+        <li><a class="dropdown-item" href="{{ route('student.student.pending', ['per_page' => 25, 'search' => request('search')]) }}">25</a></li>
+        <li><a class="dropdown-item" href="{{ route('student.student.pending', ['per_page' => 50, 'search' => request('search')]) }}">50</a></li>
+        <li><a class="dropdown-item" href="{{ route('student.student.pending', ['per_page' => 100, 'search' => request('search')]) }}">100</a></li>
       </ul>
     </div>
-  </td>
-</tr>
-@endforeach
+  </div>
+  <div class="search">
+    <form method="GET" action="{{ route('student.student.pending') }}" id="searchForm">
+      <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+      <input type="search" 
+             name="search" 
+             placeholder="Search by name, father, mobile, course..." 
+             class="search-holder" 
+             value="{{ request('search') }}"
+             id="searchInput">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </form>
+  </div>
+</div>
 
-        </table>
-
-
-
-      </div>
-      <div class="footer">
-        <div class="left-footer">
-          <p>Showing 1 to 10 of 10 Enteries</p>
-        </div>
-        <div class="right-footer">
-          <nav aria-label="...">
-            <ul class="pagination">
-              <li class="page-item"><a href="#" class="page-link" id="pg1">Previous</a></li>
-              <li class="page-item active">
-                <a class="page-link" href="#" aria-current="page" id="pg2">1</a>
+  <table class="table table-hover" id="table">
+    <thead>
+      <tr>
+        <th scope="col" id="one">Serial No.</th>
+        <th scope="col" id="one">Student Name</th>
+        <th scope="col" id="one">Father Name</th>
+        <th scope="col" id="one">Father Contact No.</th>
+        <th scope="col" id="one">Course Name</th>
+        <th scope="col" id="one">Delivery Mode</th>
+        <th scope="col" id="one">Course Content</th>
+        <th scope="col" id="one">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse($students as $index => $student)
+      <tr>
+        <!-- Serial number with pagination support -->
+        <td>{{ ($students->currentPage() - 1) * $students->perPage() + $index + 1 }}</td>
+        <td>{{ $student->name }}</td>
+        <td>{{ $student->father }}</td>
+        <td>{{ $student->mobileNumber ?? '—' }}</td>
+        <td>{{ $student->courseName ?? '—' }}</td>
+        <td>{{ $student->deliveryMode ?? '—' }}</td>
+        <td>{{ $student->courseContent ?? '—' }}</td>
+        <td>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+              <li>
+                <a href="{{ route('student.student.edit', $student->_id) }}">
+                  <button class="dropdown-item">Edit Details</button>
+                </a>
               </li>
-              <li class="page-item"><a class="page-link" href="/user management/emp/emp2.html" id="pg3">2</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
             </ul>
-          </nav>
-        </div>
-      </div>
+          </div>
+        </td>
+      </tr>
+      @empty
+      <tr>
+        <td colspan="8" class="text-center py-4">
+          @if(request('search'))
+            <p class="mb-0">No students found matching "{{ request('search') }}"</p>
+            <a href="{{ route('student.student.pending') }}" class="btn btn-sm btn-outline-secondary mt-2">
+              <i class="fa-solid fa-times"></i> Clear Search
+            </a>
+          @else
+            <p class="mb-0">No pending students found</p>
+          @endif
+        </td>
+      </tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <div class="left-footer">
+    <p>Showing {{ $students->firstItem() ?? 0 }} to {{ $students->lastItem() ?? 0 }} of {{ $students->total() }} entries
+      @if(request('search'))
+        <span class="text-muted">(filtered from {{ \App\Models\Student\Pending::count() }} total entries)</span>
+      @endif
+    </p>
+  </div>
+  <div class="right-footer">
+    <nav aria-label="Page navigation example" id="bottom">
+      <ul class="pagination" id="pagination">
+        {{-- Previous Page Link --}}
+        @if ($students->onFirstPage())
+          <li class="page-item disabled">
+            <span class="page-link" id="pg1">Previous</span>
+          </li>
+        @else
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $students->previousPageUrl() }}" 
+               id="pg1">Previous</a>
+          </li>
+        @endif
+
+        {{-- Pagination Elements --}}
+        @php
+          $start = max($students->currentPage() - 2, 1);
+          $end = min($start + 4, $students->lastPage());
+          $start = max($end - 4, 1);
+        @endphp
+
+        @if($start > 1)
+          <li class="page-item" id="pg2">
+            <a class="page-link" href="{{ $students->url(1) }}">1</a>
+          </li>
+          @if($start > 2)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+        @endif
+
+        @for ($i = $start; $i <= $end; $i++)
+          <li class="page-item {{ $students->currentPage() == $i ? 'active' : '' }}">
+            <a class="page-link" 
+               href="{{ $students->url($i) }}"
+               id="pg{{ $i }}">{{ $i }}</a>
+          </li>
+        @endfor
+
+        @if($end < $students->lastPage())
+          @if($end < $students->lastPage() - 1)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+          <li class="page-item">
+            <a class="page-link" href="{{ $students->url($students->lastPage()) }}">{{ $students->lastPage() }}</a>
+          </li>
+        @endif
+
+        {{-- Next Page Link --}}
+        @if ($students->hasMorePages())
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $students->nextPageUrl() }}" 
+               id="pg4">Next</a>
+          </li>
+        @else
+          <li class="page-item disabled">
+            <span class="page-link" id="pg4">Next</span>
+          </li>
+        @endif
+      </ul>
+    </nav>
+  </div>
+</div>
     </div>
   </div>
   </div>
@@ -473,6 +559,42 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       }
     });
   });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit search on Enter key
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('searchForm').submit();
+            }
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Search icon click handler
+    const searchIcon = document.querySelector('.search i.fa-magnifying-glass');
+    const searchForm = document.getElementById('searchForm');
+    
+    if (searchIcon && searchForm) {
+        searchIcon.addEventListener('click', function() {
+            searchForm.submit();
+        });
+    }
+
+    // Search input enter key handler
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+    }
+});
 </script>
 
 </html>

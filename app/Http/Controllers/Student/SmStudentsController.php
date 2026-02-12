@@ -57,55 +57,128 @@ private function getStudentActivities($student)
     /**
      * Display a listing of students
      */
+/**
+ * Display a listing of students with search and pagination
+ */
 public function index(Request $request)
-    {
-        try {
-            $courseFilter = $request->get('course_filter');
-            $collectionFilter = $request->get('collection', 'main'); // 'main', 'course', or 'all'
+{
+    try {
+        // Get per_page value from request, default to 10
+        $perPage = $request->input('per_page', 10);
+        
+        // Validate per_page to only allow specific values
+        if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
+        // Get search query
+        $search = $request->input('search', '');
+
+        $courseFilter = $request->get('course_filter');
+        $collectionFilter = $request->get('collection', 'main');
+        
+        $query = null;
+        
+        // Option 1: Show only main collection
+        if ($collectionFilter === 'main') {
+            $query = SMstudents::with(['batch', 'course', 'shift']);
+            Log::info('  Querying main collection (s_mstudents)');
+        }
+        
+        // Option 2: Show specific course collection
+        elseif ($collectionFilter === 'course' && $courseFilter) {
+            $query = SMstudents::byCourse($courseFilter)->with(['batch', 'course', 'shift']);
+            Log::info('  Querying course-specific collection', ['course' => $courseFilter]);
+        }
+        
+        // Option 3: Show ALL students from all collections (merged)
+        elseif ($collectionFilter === 'all') {
+            $students = SMstudents::getAllFromAllCollections();
             
-            $query = null;
-            
-            // Option 1: Show only main collection
-            if ($collectionFilter === 'main') {
-                $query = SMstudents::with(['batch', 'course', 'shift']);
-                Log::info('  Querying main collection (s_mstudents)');
+            // Apply search filter if search term exists
+            if (!empty($search)) {
+                $students = $students->filter(function($student) use ($search) {
+                    $searchLower = strtolower($search);
+                    return stripos($student->roll_no ?? '', $search) !== false
+                        || stripos($student->student_name ?? $student->name ?? '', $search) !== false
+                        || stripos($student->batch_name ?? '', $search) !== false
+                        || stripos($student->course_name ?? '', $search) !== false;
+                });
             }
             
-            // Option 2: Show specific course collection
-            elseif ($collectionFilter === 'course' && $courseFilter) {
-                $query = SMstudents::byCourse($courseFilter)->with(['batch', 'course', 'shift']);
-                Log::info('  Querying course-specific collection', ['course' => $courseFilter]);
-            }
+            // Manual pagination for collection
+            $page = $request->input('page', 1);
+            $offset = ($page - 1) * $perPage;
+            $paginatedStudents = $students->slice($offset, $perPage)->values();
             
-            // Option 3: Show ALL students from all collections (merged)
-            elseif ($collectionFilter === 'all') {
-                $students = SMstudents::getAllFromAllCollections();
-                $batches = Batch::where('status', 'Active')->orderBy('name')->get();
-                $courses = Courses::all();
-                $shifts = Shift::where('is_active', true)->get();
-                
-                Log::info('  Querying ALL collections', ['total_students' => $students->count()]);
-                
-                return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
-            }
+            $students = new \Illuminate\Pagination\LengthAwarePaginator(
+                $paginatedStudents,
+                $students->count(),
+                $perPage,
+                $page,
+                [
+                    'path' => $request->url(),
+                    'query' => [
+                        'search' => $search,
+                        'per_page' => $perPage,
+                        'collection' => $collectionFilter
+                    ]
+                ]
+            );
             
-            // Default: main collection
-            else {
-                $query = SMstudents::with(['batch', 'course', 'shift']);
-            }
-            
-            $students = $query->orderBy('created_at', 'desc')->get();
             $batches = Batch::where('status', 'Active')->orderBy('name')->get();
             $courses = Courses::all();
             $shifts = Shift::where('is_active', true)->get();
-
-            return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts'));
             
-        } catch (\Exception $e) {
-            Log::error('Error loading students: ' . $e->getMessage());
-            return back()->with('error', 'Failed to load students');
+            Log::info('  Querying ALL collections', ['total_students' => $students->total()]);
+            
+            return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts', 'search'));
         }
+        
+        // Default: main collection
+        else {
+            $query = SMstudents::with(['batch', 'course', 'shift']);
+        }
+        
+        // Apply search filter if search term exists
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('roll_no', 'like', '%' . $search . '%')
+                  ->orWhere('student_name', 'like', '%' . $search . '%')
+                  ->orWhere('name', 'like', '%' . $search . '%')
+                  ->orWhere('batch_name', 'like', '%' . $search . '%')
+                  ->orWhere('course_name', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Get paginated students
+        $students = $query->orderBy('created_at', 'desc')
+                          ->paginate($perPage)
+                          ->appends([
+                              'search' => $search,
+                              'per_page' => $perPage,
+                              'collection' => $collectionFilter,
+                              'course_filter' => $courseFilter
+                          ]);
+
+        $batches = Batch::where('status', 'Active')->orderBy('name')->get();
+        $courses = Courses::all();
+        $shifts = Shift::where('is_active', true)->get();
+
+        Log::info('Students loaded with pagination', [
+            'count' => $students->count(),
+            'total' => $students->total(),
+            'per_page' => $perPage,
+            'search' => $search
+        ]);
+
+        return view('student.smstudents.smstudents', compact('students', 'batches', 'courses', 'shifts', 'search'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error loading students: ' . $e->getMessage());
+        return back()->with('error', 'Failed to load students');
     }
+}
 /**
  *   Display the test series for a specific student
  */

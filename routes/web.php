@@ -99,7 +99,7 @@ Route::post('/batches/{id}/toggle-status', [BatchesController::class, 'toggleSta
 */
 Route::prefix('courses')->name('courses.')->group(function () {
         Route::get('/', [OtherFeeController::class, 'index'])->name('master.courses.index');
-
+Route::get('/api/courses/active', [CoursesController::class, 'getActiveCourses'])->name('api.courses.active');
     Route::get('/', [CoursesController::class, 'index'])->name('index');
     Route::get('/create', [CoursesController::class, 'create'])->name('create');
     Route::post('/store', [CoursesController::class, 'store'])->name('store');
@@ -164,6 +164,8 @@ Route::prefix('master/other_fees')->group(function () {
 | Branch Routes
 |--------------------------------------------------------------------------
 */
+Route::get('/api/branches/active', [BranchController::class, 'getActiveBranches']);
+
 Route::prefix('master/branch')->group(function () {
         Route::get('/', [OtherFeeController::class, 'index'])->name('master.branches.index');
 
@@ -173,7 +175,8 @@ Route::prefix('master/branch')->group(function () {
     Route::post('/{id}/toggle-status', [BranchController::class, 'toggleStatus'])->name('branches.toggleStatus');
     Route::get('/sample-download', [BranchController::class, 'downloadSample'])->name('branches.downloadSample');
     Route::post('/import', [BranchController::class, 'import'])->name('branches.import');
-});
+    
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -274,25 +277,53 @@ Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStude
 | Inquiry Management Routes
 |--------------------------------------------------------------------------
 */
+// Inquiry Management Routes
+/*
+|--------------------------------------------------------------------------
+| Inquiry Management Routes
+|--------------------------------------------------------------------------
+*/
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
+    // Main routes
     Route::get('/', [InquiryController::class, 'index'])->name('index');
     Route::get('/data', [InquiryController::class, 'data'])->name('data');
-    Route::get('/get-data', [InquiryController::class, 'getData'])->name('get-data');
-    Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
+    
     Route::post('/', [InquiryController::class, 'store'])->name('store');
-    Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('bulk-onboard');
-    Route::post('/{id}/single-onboard', [InquiryController::class, 'singleOnboard'])->name('single-onboard');
-    Route::get('/{id}/onboard', [InquiryController::class, 'showOnboardForm'])->name('onboard');
-    Route::get('/{id}/history', [InquiryController::class, 'getHistory'])->name('history');
-    Route::get('/{id}/edit', [InquiryController::class, 'edit'])->name('edit');
-    Route::get('/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])->name('scholarship.show');
-    Route::put('/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])->name('scholarship.update');
-    Route::get('/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])->name('fees-batches.show');
-    Route::put('/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])->name('fees-batches.update');
-    Route::get('/{id}/view', [InquiryController::class, 'view'])->name('view');
+    
+    // Individual inquiry routes
     Route::get('/{id}', [InquiryController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [InquiryController::class, 'edit'])->name('edit');
+    Route::get('/{id}/view', [InquiryController::class, 'view'])->name('view');
+    
     Route::put('/{id}', [InquiryController::class, 'update'])->name('update');
+    
     Route::delete('/{id}', [InquiryController::class, 'destroy'])->name('destroy');
+    
+    // Scholarship & Fees
+    Route::get('/{id}/scholarship', [InquiryController::class, 'showScholarshipDetails'])->name('scholarship.show');
+    Route::post('/{id}/scholarship', [InquiryController::class, 'updateScholarshipDetails'])->name('scholarship.update');
+    Route::get('/{id}/fees-batches', [InquiryController::class, 'showFeesBatchesDetails'])->name('fees-batches.show');
+    Route::post('/{id}/fees-batches', [InquiryController::class, 'updateFeesBatches'])->name('fees-batches.update');
+    
+    // Onboarding
+    Route::post('/{id}/onboard', [InquiryController::class, 'singleOnboard'])->name('onboard');
+    Route::post('/bulk-onboard', [InquiryController::class, 'bulkOnboard'])->name('bulk-onboard');
+    
+    // History
+    Route::get('/{id}/history', [InquiryController::class, 'getHistory'])->name('history');
+    
+    // Upload
+    Route::post('/upload', [InquiryController::class, 'upload'])->name('upload');
+});
+    Route::get('/api/branches/active', [BranchController::class, 'getActiveBranches']);
+Route::get('/api/courses/active', [CoursesController::class, 'getActiveCourses']);
+Route::get('/api/states', [InquiryController::class, 'getStates']);
+Route::get('/api/cities', [InquiryController::class, 'getCities']);
+
+// Debug route (temporary)
+Route::get('/debug/branches', function() {
+    $all = \App\Models\Master\Branch::all(['_id', 'name', 'city', 'status', 'is_active']);
+    return response()->json($all);
 });
 
 /*
