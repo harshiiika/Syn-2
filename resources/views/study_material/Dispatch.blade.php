@@ -124,8 +124,203 @@
         font-size: 12px;
     }
     
+    .badge-danger {
+        background-color: #dc3545 !important;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    
     .select-error {
         border: 2px solid #d2691e !important;
+    }
+    
+    /* Action Dropdown Styling - Production Match */
+    .action-dots-btn {
+        text-decoration: none !important;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
+    
+    .action-dots-btn i {
+        color: #2c2c2c;
+        font-size: 18px;
+    }
+    
+    .action-dots-btn:hover i {
+        color: #000;
+    }
+    
+    .action-dropdown-menu {
+        min-width: 140px;
+        padding: 4px 0;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        background: #fff;
+    }
+    
+    .action-dropdown-item {
+        padding: 8px 16px;
+        font-size: 14px;
+        color: #333;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        text-decoration: none;
+        display: block;
+    }
+    
+    .action-dropdown-item:hover {
+        background-color: #f5f5f5;
+        color: #333;
+    }
+    
+    .action-dropdown-item:active {
+        background-color: #e8e8e8;
+    }
+    
+    .dropdown-menu {
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border: 1px solid #ddd;
+        border-radius: 6px;
+    }
+    
+    .dropdown-item {
+        padding: 8px 16px;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #d2691e;
+    }
+    
+    .dropdown-item i {
+        margin-right: 8px;
+        width: 16px;
+    }
+    
+    .dropdown-divider {
+        margin: 4px 0;
+    }
+    
+    .text-danger:hover {
+        background-color: #fee;
+    }
+    
+    /* Modal Styling */
+    .modal-body strong {
+        color: #666;
+        font-size: 13px;
+    }
+    
+    .modal-body .row > div {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .btn-close-white {
+        filter: brightness(0) invert(1);
+    }
+    
+    /* Smooth Modal Animation - No Shrinking */
+    .modal.fade .modal-dialog {
+        transition: transform 0.2s ease-out;
+        transform: translate(0, -25px);
+    }
+    
+    .modal.show .modal-dialog {
+        transform: none;
+    }
+    
+    /* Student Info Grid */
+    .student-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 13px;
+    }
+    
+    .info-value {
+        color: #212529;
+        font-size: 14px;
+    }
+    
+    /* Fee Details Section */
+    .fee-details-section {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 2px solid #d2691e;
+    }
+    
+    .fee-details-title {
+        color: #d2691e;
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+    
+    /* Alert Styling */
+    .alert-warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffecb5;
+        color: #856404;
+        padding: 12px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .alert-info {
+        background-color: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+        padding: 12px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    /* Fee Table Styling */
+    .fee-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    
+    .fee-table thead {
+        background-color: #f8f9fa;
+    }
+    
+    .fee-table th {
+        padding: 10px;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border: 1px solid #dee2e6;
+    }
+    
+    .fee-table td {
+        padding: 10px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .fee-table tbody tr:hover {
+        background-color: #f8f9fa;
     }
   </style>
 </head>
@@ -253,7 +448,7 @@
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -309,8 +504,7 @@
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
           <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
-
+          <li><a class="item active" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
         </ul>
       </div>
     </div>
@@ -413,26 +607,44 @@
     </div>
   </div>
 
+  <!-- View Student Details Modal -->
+  <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="border: none; border-radius: 8px; overflow: hidden;">
+        <div class="modal-header" style="background-color: #d2691e; color: white; border: none; padding: 16px 24px;">
+          <h5 class="modal-title" id="viewModalLabel" style="font-weight: 600; font-size: 18px;">Student Fee Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: brightness(0) invert(1); opacity: 1;"></button>
+        </div>
+        <div class="modal-body" id="viewModalBody" style="padding: 24px; background-color: #fff;">
+          <!-- Details populated dynamically -->
+        </div>
+        <div class="modal-footer" style="background-color: #f8f9fa; border-top: 1px solid #dee2e6; padding: 12px 24px;">
+          <button type="button" class="btn" data-bs-dismiss="modal" style="background-color: #6c757d; color: white; padding: 8px 24px; border-radius: 4px; border: none;">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
   <script src="{{asset('js/emp.js')}}"></script>
 
   <script>
   $(document).ready(function() {
-      //   HARDCODED COURSES - Same as Units
-      const coursesData = {
-          'Anthesis 11th NEET': [],
-          'Momentum 12th NEET': [],
-          'Dynamic Target NEET': [],
-          'Impulse 11th IIT': [],
-          'Intensity 12th IIT': [],
-          'Thurst Target IIT': [],
-          'Seedling 10th': [],
-          'Plumule 9th': [],
-          'Radicle 8th': [],
-          'Nucleus 7th': [],
-          'Atom 6th': []
-      };
+      // ✅ COURSES MATCHING PRODUCTION SYSTEM - EXACT ORDER FROM SCREENSHOT
+      const coursesData = [
+          'Intensity 12th IIT',
+          'Plumule 9th',
+          'Radicle 8th',
+          'Anthesis 11th NEET',
+          'Dynamic Target NEET',
+          'Thurst Target IIT',
+          'Seedling 10th',
+          'Nucleus 7th',
+          'Momentum 12th NEET',
+          'Impulse 11th IIT',
+          'Atom 6th'
+      ];
       
       // Current selected batch name
       let currentBatchName = '';
@@ -443,218 +655,10 @@
           }
       });
 
-              <div class="accordion accordion-flush" id="accordionFlushExample">
-  <!-- User Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
-      </button>
-    </h2>
-    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Master -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
-      </button>
-    </h2>
-    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Session Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-      </button>
-    </h2>
-    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Student Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-      </button>
-    </h2>
-    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Fees Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-        id="accordion-button">
-        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-      </button>
-    </h2>
-    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Attendance Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-        id="accordion-button">
-        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
-      </button>
-    </h2>
-    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Study Material -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-        id="accordion-button">
-        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-      </button>
-    </h2>
-    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
-
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Test Series Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-        id="accordion-button">
-        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-      </button>
-    </h2>
-    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Reports -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-        id="accordion-button">
-        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
-      </button>
-    </h2>
-    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-            <div class="accordion accordion-flush" id="accordionFlushExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                            <i class="fa-solid fa-user-group"></i>User Management
-                        </button>
-                    </h2>
-                    <div id="flush-collapseOne" class="accordion-collapse collapse"
-                        data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                            <ul class="menu">
-                                <li><a href="/user management/emp/emp.html">
-                                        <i class="fa-solid fa-user"></i>Employee
-                                    </a></li>
-                                <li><a href="/user management/batches a/batchesa.html">
-                                        <i class="fa-solid fa-user-group"></i>Batches Assignment
-                                    </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
->>>>>>> 57074747fa185acdc36be8f29d3ed2f3ab99d8c1
-=======
->>>>>>> 2a9dc41185145fb5634f3ab52db0376f6d0dad60
-
       // Load courses on page load
       function loadCourses() {
           let options = '<option value="">Select Course</option>';
-          Object.keys(coursesData).forEach(function(course) {
+          coursesData.forEach(function(course) {
               options += `<option value="${course}">${course}</option>`;
           });
           $('#course_name').html(options);
@@ -662,11 +666,11 @@
 
       loadCourses();
 
-      //   DYNAMIC BATCH LOADING FROM DATABASE - EXACTLY LIKE FEES MANAGEMENT
+      // ✅ DYNAMIC BATCH LOADING FROM DATABASE - AUTOMATIC ON COURSE SELECTION
       $('#course_name').on('change', function() {
           let courseName = $(this).val();
           
-          console.log(' Course selected:', courseName);
+          console.log('🔍 Course selected:', courseName);
           
           // Clear error
           $('#course-error').hide();
@@ -685,7 +689,7 @@
               return;
           }
           
-          //   FETCH BATCHES FROM DATABASE - REAL TIME DATA
+          // ✅ FETCH BATCHES FROM DATABASE AUTOMATICALLY
           console.log('📡 Fetching batches from database...');
           $('#batch_name').html('<option value="">Loading batches...</option>').prop('disabled', true);
           
@@ -694,7 +698,7 @@
               type: 'GET',
               data: { course_name: courseName },
               success: function(response) {
-                  console.log('  Batches loaded:', response);
+                  console.log('✅ Batches loaded:', response);
                   
                   let options = '<option value="">Select Batch</option>';
                   
@@ -706,14 +710,14 @@
                           options += `<option value="${batchName}">${batchName}</option>`;
                       });
                       $('#batch_name').html(options).prop('disabled', false);
-                      console.log(' ', response.batches.length, 'batches loaded');
+                      console.log('✅', response.batches.length, 'batches loaded');
                   } else {
                       $('#batch_name').html('<option value="">No batches found</option>').prop('disabled', true);
-                      console.log('  No batches found for course:', courseName);
+                      console.log('⚠ No batches found for course:', courseName);
                   }
               },
               error: function(xhr) {
-                  console.error(' Error fetching batches:', xhr);
+                  console.error('❌ Error fetching batches:', xhr);
                   $('#batch_name').html('<option value="">Error loading batches</option>').prop('disabled', true);
                   alert('Error loading batches. Please try again.');
               }
@@ -725,15 +729,15 @@
           $('#batch-error').hide();
           $(this).removeClass('select-error');
           currentBatchName = $(this).val();
-          console.log('  Batch selected:', currentBatchName);
+          console.log('📌 Batch selected:', currentBatchName);
       });
 
-      //   Search button click - FETCH REAL DATA FROM DATABASE
+      // ✅ Search button click - FETCH REAL DATA FROM DATABASE
       $('#searchBtn').on('click', function() {
           let courseName = $('#course_name').val();
           let batchName = $('#batch_name').val();
           
-          console.log(' Search clicked:', { courseName, batchName });
+          console.log('🔍 Search clicked:', { courseName, batchName });
           
           // Reset errors
           $('#course-error').hide();
@@ -756,7 +760,7 @@
           }
           
           if (hasError) {
-              console.log(' Validation failed');
+              console.log('❌ Validation failed');
               return;
           }
           
@@ -764,7 +768,7 @@
           loadStudents(courseName, batchName);
       });
 
-      //   Load students function - REAL TIME DATA FROM DATABASE
+      // ✅ Load students function - REAL TIME DATA FROM DATABASE
       function loadStudents(courseName, batchName) {
           console.log('📡 Loading students...', { courseName, batchName });
           
@@ -788,7 +792,7 @@
                   }
                   
                   if (response.students && response.students.length > 0) {
-                      console.log('  Found', response.students.length, 'students');
+                      console.log('✅ Found', response.students.length, 'students');
                       console.log('First student:', response.students[0]);
                       if (response.students[0]._raw_fields) {
                           console.log('Raw field names:', response.students[0]._raw_fields);
@@ -818,19 +822,29 @@
                                   <td>${studentName}</td>
                                   <td>${fatherName}</td>
                                   <td>${batchNameDisplay}</td>
-                                  <td>${statusBadge}</td>
+                                  <td>
+                                      <div class="dropdown">
+                                          <button class="btn btn-link p-0 action-dots-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                              <i class="fa-solid fa-ellipsis-vertical"></i>
+                                          </button>
+                                          <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                              <li><a class="dropdown-item action-dropdown-item edit-student" href="#" data-id="${studentId}">Edit</a></li>
+                                              <li><a class="dropdown-item action-dropdown-item view-student" href="#" data-id="${studentId}" data-roll="${rollNo}" data-name="${studentName}" data-father="${fatherName}" data-batch="${batchNameDisplay}" data-dispatched="${isDispatched}">View Fees</a></li>
+                                          </ul>
+                                      </div>
+                                  </td>
                               </tr>
                           `;
                           tbody.append(row);
                       });
-                      console.log('  Table rendered with', response.students.length, 'students');
+                      console.log('✅ Table rendered with', response.students.length, 'students');
                   } else {
                       tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;">No students found for this course and batch</td></tr>');
-                      console.log('  No students found');
+                      console.log('⚠ No students found');
                   }
               },
               error: function(xhr) {
-                  console.error(' Error fetching students:', xhr);
+                  console.error('❌ Error fetching students:', xhr);
                   tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;color:red;">Error loading students. Please try again.</td></tr>');
               }
           });
@@ -839,6 +853,199 @@
       // Select all checkbox
       $('#selectAll').on('change', function() {
           $('.student-checkbox').prop('checked', $(this).prop('checked'));
+      });
+
+      // ✅ VIEW FEES - Show student fee details
+      $(document).on('click', '.view-student', function(e) {
+          e.preventDefault();
+          let studentId = $(this).data('id');
+          let rollNo = $(this).data('roll');
+          let studentName = $(this).data('name');
+          let fatherName = $(this).data('father');
+          let batchName = $(this).data('batch');
+          let isDispatched = $(this).data('dispatched');
+          
+          console.log('💰 Viewing fees for student:', studentId);
+          
+          // Show modal immediately with loading state
+          let loadingContent = `
+              <div class="student-info-grid">
+                  <div class="info-item">
+                      <span class="info-label">Roll Number:</span>
+                      <span class="info-value">${rollNo || '-'}</span>
+                  </div>
+                  <div class="info-item">
+                      <span class="info-label">Student Name:</span>
+                      <span class="info-value">${studentName || '-'}</span>
+                  </div>
+                  <div class="info-item">
+                      <span class="info-label">Father Name:</span>
+                      <span class="info-value">${fatherName || '-'}</span>
+                  </div>
+                  <div class="info-item">
+                      <span class="info-label">Batch:</span>
+                      <span class="info-value">${batchName || '-'}</span>
+                  </div>
+              </div>
+              
+              <div class="fee-details-section">
+                  <h6 class="fee-details-title">Fee Details</h6>
+                  <div class="text-center py-4">
+                      <div class="spinner-border text-warning" role="status" style="width: 2rem; height: 2rem;">
+                          <span class="visually-hidden">Loading...</span>
+                      </div>
+                      <p class="mt-3 mb-0" style="color: #6c757d;">Loading fee details...</p>
+                  </div>
+              </div>
+          `;
+          
+          $('#viewModalBody').html(loadingContent);
+          $('#viewModalLabel').text('Student Fee Details');
+          $('#viewModal').modal('show');
+          
+          // Load fee details via AJAX
+          $.ajax({
+              url: `/fees/management/student/${studentId}/fees`,
+              type: 'GET',
+              success: function(response) {
+                  console.log('✅ Fee data received:', response);
+                  
+                  let feeDetailsHtml = '';
+                  
+                  if (response.success && response.fees && response.fees.length > 0) {
+                      // Build fee table
+                      feeDetailsHtml = `
+                          <table class="fee-table">
+                              <thead>
+                                  <tr>
+                                      <th>Fee Type</th>
+                                      <th style="text-align: right;">Amount</th>
+                                      <th style="text-align: right;">Paid</th>
+                                      <th style="text-align: right;">Balance</th>
+                                      <th style="text-align: center;">Status</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                      `;
+                      
+                      let totalAmount = 0;
+                      let totalPaid = 0;
+                      let totalBalance = 0;
+                      
+                      response.fees.forEach(function(fee) {
+                          let amount = parseFloat(fee.amount || 0);
+                          let paid = parseFloat(fee.paid || 0);
+                          let balance = parseFloat(fee.balance || amount - paid);
+                          
+                          totalAmount += amount;
+                          totalPaid += paid;
+                          totalBalance += balance;
+                          
+                          let status = balance <= 0 ? 'Paid' : (paid > 0 ? 'Partial' : 'Unpaid');
+                          let statusClass = balance <= 0 ? 'badge-success' : (paid > 0 ? 'badge-warning' : 'badge-danger');
+                          
+                          feeDetailsHtml += `
+                              <tr>
+                                  <td>${fee.fee_type || fee.name || '-'}</td>
+                                  <td style="text-align: right;">₹${amount.toFixed(2)}</td>
+                                  <td style="text-align: right;">₹${paid.toFixed(2)}</td>
+                                  <td style="text-align: right;">₹${balance.toFixed(2)}</td>
+                                  <td style="text-align: center;">
+                                      <span class="${statusClass}" style="font-size: 11px; padding: 4px 10px;">${status}</span>
+                                  </td>
+                              </tr>
+                          `;
+                      });
+                      
+                      // Add total row
+                      feeDetailsHtml += `
+                              <tr style="background-color: #f8f9fa; font-weight: 600;">
+                                  <td>Total</td>
+                                  <td style="text-align: right;">₹${totalAmount.toFixed(2)}</td>
+                                  <td style="text-align: right;">₹${totalPaid.toFixed(2)}</td>
+                                  <td style="text-align: right;">₹${totalBalance.toFixed(2)}</td>
+                                  <td style="text-align: center;">-</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                      `;
+                  } else {
+                      feeDetailsHtml = '<div class="alert-info">No fee records found for this student.</div>';
+                  }
+                  
+                  // Update modal with complete data
+                  let finalContent = `
+                      <div class="student-info-grid">
+                          <div class="info-item">
+                              <span class="info-label">Roll Number:</span>
+                              <span class="info-value">${rollNo || '-'}</span>
+                          </div>
+                          <div class="info-item">
+                              <span class="info-label">Student Name:</span>
+                              <span class="info-value">${studentName || '-'}</span>
+                          </div>
+                          <div class="info-item">
+                              <span class="info-label">Father Name:</span>
+                              <span class="info-value">${fatherName || '-'}</span>
+                          </div>
+                          <div class="info-item">
+                              <span class="info-label">Batch:</span>
+                              <span class="info-value">${batchName || '-'}</span>
+                          </div>
+                      </div>
+                      
+                      <div class="fee-details-section">
+                          <h6 class="fee-details-title">Fee Details</h6>
+                          ${feeDetailsHtml}
+                      </div>
+                  `;
+                  
+                  $('#viewModalBody').html(finalContent);
+              },
+              error: function(xhr) {
+                  console.error('❌ Error loading fees:', xhr);
+                  console.error('Response:', xhr.responseText);
+                  
+                  // Show error message
+                  let errorContent = `
+                      <div class="student-info-grid">
+                          <div class="info-item">
+                              <span class="info-label">Roll Number:</span>
+                              <span class="info-value">${rollNo || '-'}</span>
+                          </div>
+                          <div class="info-item">
+                              <span class="info-label">Student Name:</span>
+                              <span class="info-value">${studentName || '-'}</span>
+                          </div>
+                          <div class="info-item">
+                              <span class="info-label">Father Name:</span>
+                              <span class="info-value">${fatherName || '-'}</span>
+                          </div>
+                          <div class="info-item">
+                              <span class="info-label">Batch:</span>
+                              <span class="info-value">${batchName || '-'}</span>
+                          </div>
+                      </div>
+                      
+                      <div class="fee-details-section">
+                          <h6 class="fee-details-title">Fee Details</h6>
+                          <div class="alert-warning">Unable to load fee details. Please try again later.</div>
+                      </div>
+                  `;
+                  
+                  $('#viewModalBody').html(errorContent);
+              }
+          });
+      });
+
+      // ✅ EDIT STUDENT (Navigate to edit page)
+      $(document).on('click', '.edit-student', function(e) {
+          e.preventDefault();
+          let studentId = $(this).data('id');
+          console.log('✏️ Editing student:', studentId);
+          
+          // Navigate to student edit page
+          window.location.href = `/smstudents/${studentId}/edit`;
       });
 
       // Dispatch button click
@@ -870,7 +1077,7 @@
                   student_ids: selectedIds
               },
               success: function(response) {
-                  console.log('  Dispatch response:', response);
+                  console.log('✅ Dispatch response:', response);
                   
                   if (response.success) {
                       alert(response.message);
@@ -887,7 +1094,7 @@
                   }
               },
               error: function(xhr) {
-                  console.error(' Dispatch error:', xhr);
+                  console.error('❌ Dispatch error:', xhr);
                   alert('Error dispatching material. Please try again.');
               },
               complete: function() {

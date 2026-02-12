@@ -865,4 +865,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<<<<<<<< HEAD:storage/framework/views/2b168cbaec8c175c78c8ab287e75b16a.php
+</html><?php /**PATH C:\Users\dhamu\Syn-2\resources\views/master/branch/branch.blade.php ENDPATH**/ ?>
+========
 </html>
+>>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:resources/views/master/branch/branch.blade.php
