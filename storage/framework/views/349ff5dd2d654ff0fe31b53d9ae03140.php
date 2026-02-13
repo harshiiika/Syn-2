@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Employee Attendance</title>
+  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+  <title>Student Attendance</title>
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="{{asset('css/emp.css')}}">
+  <link rel="stylesheet" href="<?php echo e(asset('css/emp.css')); ?>">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   
 <style>
+/* Copy all the styles from employee daily attendance */
 .right {
   background-color: #f5f5f5;
   padding: 25px;
@@ -94,7 +95,6 @@
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transition: transform 0.3s;
 }
 
 .stat-card h6 {
@@ -186,15 +186,6 @@
   background: #c82333;
 }
 
-.btn-upload {
-  background: #28a745;
-  color: white;
-}
-
-.btn-upload:hover {
-  background: #218838;
-}
-
 .table-controls {
   display: flex;
   justify-content: space-between;
@@ -252,16 +243,6 @@
 .attendance-table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.table-success {
-  background-color: #d4edda !important;
-  transition: background-color 0.3s ease;
-}
-
-.table-warning {
-  background-color: #fff3cd !important;
-  transition: background-color 0.3s ease;
 }
 
 .attendance-table thead th {
@@ -399,7 +380,7 @@
 <body>
   <div class="header">
     <div class="logo">
-      <img src="{{asset('images/logo.png.jpg')}}" class="img">
+      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img">
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -412,12 +393,11 @@
       </div>
       <i class="fa-solid fa-bell"></i>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown">
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{ route('profile.index') }}"><i class="fa-solid fa-user"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="<?php echo e(route('profile.index')); ?>"><i class="fa-solid fa-user"></i>Profile</a></li>
           <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
         </ul>
       </div>
@@ -425,12 +405,15 @@
   </div>
 
   <div class="main-container">
-    <div class="left" id="sidebar">
+     <div class="left" id="sidebar">
+
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-      <div class="accordion accordion-flush" id="accordionFlushExample">
+
+      <!-- Left side bar accordian -->
+            <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -443,8 +426,8 @@
     <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
+          <li><a class="item" href="<?php echo e(route('user.emp.emp')); ?>"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
+          <li><a class="item" href="<?php echo e(route('user.batches.batches')); ?>"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
         </ul>
       </div>
     </div>
@@ -462,12 +445,12 @@
     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
+          <li><a class="item" href="<?php echo e(route('courses.index')); ?>"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
+          <li><a class="item" href="<?php echo e(route('batches.index')); ?>"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
+          <li><a class="item" href="<?php echo e(route('master.scholarship.index')); ?>"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+          <li><a class="item" href="<?php echo e(route('fees.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="<?php echo e(route('master.other_fees.index')); ?>"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+          <li><a class="item" href="<?php echo e(route('branches.index')); ?>"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
         </ul>
       </div>
     </div>
@@ -485,8 +468,8 @@
     <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+          <li><a class="item" href="<?php echo e(route('sessions.index')); ?>"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+          <li><a class="item" href="<?php echo e(route('calendar.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
         </ul>
       </div>
@@ -505,10 +488,10 @@
     <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
+          <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+          <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
+          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -526,7 +509,7 @@
     <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+          <li><a class="item" href="<?php echo e(route('fees.management.index')); ?>"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
         </ul>
       </div>
     </div>
@@ -544,8 +527,8 @@
     <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+          <li><a class="item" href="<?php echo e(route('attendance.employee.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+          <li><a class="item" href="<?php echo e(route('attendance.student.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
         </ul>
       </div>
     </div>
@@ -563,8 +546,8 @@
     <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+          <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
+          <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
 
         </ul>
       </div>
@@ -583,7 +566,7 @@
     <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+          <li><a class="item" href="<?php echo e(route(name: 'test_series.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
         </ul>
       </div>
     </div>
@@ -601,50 +584,57 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
+          <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
         </ul>
       </div>
     </div>
   </div>
 </div>
-</div>
+    </div>
+
     <div class="right" id="right">
       <div class="attendance-header">
-        <h4 class="page-title">Employee Attendance</h4>
+        <h4 class="page-title">Student Attendance</h4>
         
         <div class="filters-container">
           <select class="filter-select" id="branchFilter">
             <option value="">Select Branch</option>
-            @foreach($branches as $branch)
-              <option value="{{ $branch->name }}">{{ $branch->name }}</option>
-            @endforeach
+            <?php $__currentLoopData = $branches; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $branch): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+              <option value="<?php echo e($branch->name); ?>"><?php echo e($branch->name); ?></option>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
           </select>
           
-          <select class="filter-select" id="roleFilter">
-            <option value="">Select Role</option>
-            @foreach($roles as $role)
-              <option value="{{ $role->name }}">{{ $role->name }}</option>
-            @endforeach
+          <select class="filter-select" id="batchFilter">
+            <option value="">Select Batch</option>
+            <?php $__currentLoopData = $batches; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $batch): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+              <option value="<?php echo e($batch->_id); ?>"><?php echo e($batch->batch_id ?? $batch->name); ?></option>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
           </select>
           
-          <input type="date" class="filter-date" id="dateFilter" value="{{ date('Y-m-d') }}">
+          <select class="filter-select" id="courseFilter">
+            <option value="">Select Course</option>
+            <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+              <option value="<?php echo e($course->_id); ?>"><?php echo e($course->name); ?></option>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+          </select>
+          
+          <input type="date" class="filter-date" id="dateFilter" value="<?php echo e(date('Y-m-d')); ?>">
         </div>
       </div>
 
-      <!-- TAB BUTTONS - DAILY IS ACTIVE, MONTHLY REDIRECTS -->
       <div class="tab-container">
         <button type="button" class="tab-btn active" id="dailyTab">Daily</button>
-        <a href="{{ route('attendance.employee.monthly') }}" class="tab-btn" id="monthlyTab">Monthly</a>
+        <a href="<?php echo e(route('attendance.student.monthly')); ?>" class="tab-btn">Monthly</a>
       </div>
 
       <div class="stats-container">
         <div class="stat-card">
-          <h6>Total Employees</h6>
-          <h2 id="totalEmployees">0</h2>
+          <h6>Total Students</h6>
+          <h2 id="totalStudents">0</h2>
         </div>
         <div class="stat-card">
           <h6>Present</h6>
@@ -658,11 +648,10 @@
 
       <div class="content-card">
         <div class="list-header-section">
-          <h6 class="list-title">List of Staff: <span id="selectedDate">{{ date('M d, Y') }}</span></h6>
+          <h6 class="list-title">List of Students: <span id="selectedDate"><?php echo e(date('M d, Y')); ?></span></h6>
           <div class="action-btns">
             <button class="btn-action btn-mark-present" id="markPresentBtn" disabled>Mark Present</button>
             <button class="btn-action btn-mark-absent" id="markAbsentBtn" disabled>Mark Absent</button>
-            <button class="btn-action btn-upload" id="uploadBtn">Upload</button>
           </div>
         </div>
 
@@ -687,7 +676,7 @@
           <div class="search-control">
             <label>Search:</label>
             <div class="search-wrapper">
-              <input type="search" class="search-input" id="searchInput" placeholder="Search employees...">
+              <input type="search" class="search-input" id="searchInput" placeholder="Search students...">
               <i class="fas fa-search search-icon"></i>
             </div>
           </div>
@@ -700,15 +689,17 @@
                 <th style="width: 50px;">
                   <input type="checkbox" id="selectAll" class="checkbox-input">
                 </th>
-                <th>Employee Name</th>
-                <th>Roles</th>
-                <th>Email</th>
+                <th>Roll No.</th>
+                <th>Student Name</th>
+                <th>Batch</th>
+                <th>Course</th>
+                <th>Shift</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody id="attendanceTableBody">
               <tr>
-                <td colspan="5" class="loading-cell">
+                <td colspan="7" class="loading-cell">
                   <div class="loading-state">
                     <div class="spinner"></div>
                     <p>Loading attendance data...</p>
@@ -734,36 +725,29 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{asset('js/emp.js')}}"></script>
+<script src="<?php echo e(asset('js/emp.js')); ?>"></script>
 
 <script>
 var currentPage = 1;
 var perPage = 10;
 var currentFilters = {
     branch: '',
-    role: '',
+    batch: '',
+    course: '',
     date: '',
     search: ''
 };
 
 $(document).ready(function() {
-    console.log('🚀 Attendance page initialized');
-    
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    if (!csrfToken) {
-        console.error(' CSRF token not found!');
-    } else {
-        console.log('  CSRF token found');
-    }
+    console.log('🚀 Student Attendance initialized');
     
     var today = new Date().toISOString().split('T')[0];
     $('#dateFilter').val(today);
     currentFilters.date = today;
-    console.log('  Date set to:', today);
     
     loadAttendanceData();
     
-    $('#branchFilter, #roleFilter, #dateFilter').on('change', function() {
+    $('#branchFilter, #batchFilter, #courseFilter, #dateFilter').on('change', function() {
         currentPage = 1;
         updateFilters();
         loadAttendanceData();
@@ -801,21 +785,13 @@ $(document).ready(function() {
         $('#attendanceTableBody input[type="checkbox"]').prop('checked', isChecked);
         updateBulkActionButtons();
     });
-    
-    $('#uploadBtn').on('click', function() {
-        Swal.fire({
-            icon: 'info',
-            title: 'Upload Feature',
-            text: 'Bulk upload feature coming soon!',
-            confirmButtonColor: '#ed5b00'
-        });
-    });
 });
 
 function updateFilters() {
     currentFilters = {
         branch: $('#branchFilter').val() || '',
-        role: $('#roleFilter').val() || '',
+        batch: $('#batchFilter').val() || '',
+        course: $('#courseFilter').val() || '',
         date: $('#dateFilter').val() || '',
         search: $('#searchInput').val() || ''
     };
@@ -832,20 +808,21 @@ function updateFilters() {
 }
 
 function loadAttendanceData() {
-    console.log('  Loading attendance data...');
+    console.log('  Loading student attendance data...');
     updateFilters();
     
     var tbody = $('#attendanceTableBody');
-    tbody.html('<tr><td colspan="5" class="loading-cell"><div class="loading-state"><div class="spinner"></div><p>Loading...</p></div></td></tr>');
+    tbody.html('<tr><td colspan="7" class="loading-cell"><div class="loading-state"><div class="spinner"></div><p>Loading...</p></div></td></tr>');
     
     $.ajax({
-        url: '{{ route("attendance.employee.data") }}',
+        url: '<?php echo e(route("attendance.student.data")); ?>',
         method: 'GET',
         data: {
             page: currentPage,
             per_page: perPage,
             branch: currentFilters.branch,
-            role: currentFilters.role,
+            batch: currentFilters.batch,
+            course: currentFilters.course,
             date: currentFilters.date,
             search: currentFilters.search
         },
@@ -861,62 +838,63 @@ function loadAttendanceData() {
         },
         error: function(xhr, status, error) {
             console.error(' AJAX Error:', error);
-            tbody.html('<tr><td colspan="5" class="text-center text-danger"><p class="mt-2">Error loading data</p></td></tr>');
+            tbody.html('<tr><td colspan="7" class="text-center text-danger"><p class="mt-2">Error loading data</p></td></tr>');
         }
     });
 }
 
 function updateStatistics(stats) {
-    $('#totalEmployees').text(stats.total || 0);
+    $('#totalStudents').text(stats.total || 0);
     $('#presentCount').text(stats.present || 0);
     $('#absentCount').text(stats.absent || 0);
 }
 
-function updateTable(employees) {
-    console.log('  Updating table with', employees.length, 'employees');
+function updateTable(students) {
+    console.log('  Updating table with', students.length, 'students');
     
     var tbody = $('#attendanceTableBody');
     tbody.empty();
     
-    if (!employees || employees.length === 0) {
-        tbody.html('<tr><td colspan="5" class="text-center text-muted"><p class="mt-2">No employees found</p></td></tr>');
+    if (!students || students.length === 0) {
+        tbody.html('<tr><td colspan="7" class="text-center text-muted"><p class="mt-2">No students found</p></td></tr>');
         return;
     }
     
-    $.each(employees, function(index, employee) {
-        var statusBadge = getStatusBadge(employee.status);
+    $.each(students, function(index, student) {
+        var statusBadge = getStatusBadge(student.status);
         
-        console.log(' ', employee.name, '| Status:', employee.status);
-        
-        var row = '<tr data-employee-id="' + employee._id + '">' +
-            '<td class="text-center"><input type="checkbox" class="checkbox-input employee-checkbox" value="' + employee._id + '"></td>' +
-            '<td><strong>' + employee.name + '</strong><br><small class="text-muted">' + employee.email + '</small></td>' +
-            '<td>' + employee.role + '</td>' +
-            '<td>' + employee.email + '</td>' +
+        var row = '<tr data-student-id="' + student._id + '">' +
+            '<td class="text-center"><input type="checkbox" class="checkbox-input student-checkbox" value="' + student._id + '"></td>' +
+            '<td><strong>' + student.roll_no + '</strong></td>' +
+            '<td>' + student.name + '</td>' +
+            '<td>' + student.batch_name + '</td>' +
+            '<td>' + student.course_name + '</td>' +
+            '<td>' + student.shift + '</td>' +
             '<td>' + statusBadge + '</td>' +
             '</tr>';
         
         tbody.append(row);
     });
     
-    $('.employee-checkbox').on('change', updateBulkActionButtons);
+    $('.student-checkbox').on('change', updateBulkActionButtons);
     console.log('  Table updated');
 }
 
 function getStatusBadge(status) {
     switch(status) {
         case 'present':
-            return '<span class="status-badge status-present">Present</span>';
+            return '<span class="status-badge status-present"><i class="fas fa-check-circle me-1"></i>Present</span>';
         case 'absent':
-            return '<span class="status-badge status-absent">Absent</span>';
+            return '<span class="status-badge status-absent"><i class="fas fa-times-circle me-1"></i>Absent</span>';
+        case 'weekend':
+            return '<span class="status-badge status-weekend"><i class="fas fa-calendar-times me-1"></i>Weekend</span>';
         default:
-            return '<span class="status-badge status-not-marked">Not-Marked</span>';
+            return '<span class="status-badge status-not-marked"><i class="fas fa-question-circle me-1"></i>Not Marked</span>';
     }
 }
 
 function updateBulkActionButtons() {
-    var checkedCount = $('.employee-checkbox:checked').length;
-    console.log('  Checked count:', checkedCount);
+    var checkedCount = $('.student-checkbox:checked').length;
     $('#markPresentBtn, #markAbsentBtn').prop('disabled', checkedCount === 0);
 }
 
@@ -948,18 +926,15 @@ function changePage(page) {
 }
 
 function markAllAttendance(status) {
-    var checkedIds = $('.employee-checkbox:checked').map(function() {
+    var checkedIds = $('.student-checkbox:checked').map(function() {
         return $(this).val();
     }).get();
-    
-    console.log(' Checked IDs:', checkedIds);
-    console.log('  Will mark as:', status);
     
     if (checkedIds.length === 0) {
         Swal.fire({
             icon: 'warning',
             title: 'No Selection',
-            text: 'Please select employees first',
+            text: 'Please select students first',
             confirmButtonColor: '#ed5b00'
         });
         return;
@@ -967,7 +942,7 @@ function markAllAttendance(status) {
     
     Swal.fire({
         title: 'Are you sure?',
-        text: 'Mark ' + checkedIds.length + ' employee(s) as ' + status + '?',
+        text: 'Mark ' + checkedIds.length + ' student(s) as ' + status + '?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: status === 'present' ? '#ed5b00' : '#dc3545',
@@ -975,8 +950,6 @@ function markAllAttendance(status) {
         confirmButtonText: 'Yes, mark as ' + status + '!'
     }).then(function(result) {
         if (result.isConfirmed) {
-            console.log('  Confirmed! Marking', checkedIds.length, 'employees');
-            
             var $presentBtn = $('#markPresentBtn');
             var $absentBtn = $('#markAbsentBtn');
             
@@ -987,90 +960,54 @@ function markAllAttendance(status) {
             var errorCount = 0;
             var totalCount = checkedIds.length;
             
-            checkedIds.forEach(function(employeeId, index) {
-                console.log('  Marking', (index + 1), '/', totalCount, ':', employeeId);
-                
+            checkedIds.forEach(function(studentId, index) {
                 $.ajax({
-                    url: '{{ route("attendance.employee.mark") }}',
+                    url: '<?php echo e(route("attendance.student.mark")); ?>',
                     method: 'POST',
                     data: {
-                        employee_id: employeeId,
+                        student_id: studentId,
                         status: status,
                         date: currentFilters.date,
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
-                        console.log('  API Response:', response);
-                        
                         if (response.success) {
                             successCount++;
-                            
-                            var $row = $('tr[data-employee-id="' + employeeId + '"]');
-                            
-                            if (!$row.length) {
-                                $row = $('.employee-checkbox[value="' + employeeId + '"]').closest('tr');
-                            }
-                            
+                            var $row = $('tr[data-student-id="' + studentId + '"]');
                             if ($row.length > 0) {
                                 var $statusCell = $row.find('td:last-child');
                                 var newBadge = getStatusBadge(status);
                                 $statusCell.html(newBadge);
-                                
-                                $row.find('.employee-checkbox').prop('checked', false);
-                                
-                                $row.addClass('bg-success bg-opacity-10');
-                                setTimeout(function() {
-                                    $row.removeClass('bg-success bg-opacity-10');
-                                }, 1500);
+                                $row.find('.student-checkbox').prop('checked', false);
                             }
                         } else {
                             errorCount++;
                         }
-                        
                         checkCompletion();
                     },
-                    error: function(xhr, textStatus, error) {
+                    error: function() {
                         errorCount++;
-                        console.error(' AJAX error for:', employeeId);
                         checkCompletion();
                     }
                 });
             });
             
             function checkCompletion() {
-                var completedCount = successCount + errorCount;
-                
-                if (completedCount === totalCount) {
+                if (successCount + errorCount === totalCount) {
                     $presentBtn.prop('disabled', false).text('Mark Present');
                     $absentBtn.prop('disabled', false).text('Mark Absent');
-                    
                     $('#selectAll').prop('checked', false);
-                    $('.employee-checkbox').prop('checked', false);
                     updateBulkActionButtons();
                     
-                    if (errorCount === 0) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: successCount + ' employee(s) marked as ' + status,
-                            timer: 2000,
-                            showConfirmButton: false,
-                            toast: true,
-                            position: 'top-end'
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Partial Success',
-                            html: '<strong>' + successCount + '</strong> succeeded<br>' + 
-                                  '<strong>' + errorCount + '</strong> failed',
-                            confirmButtonColor: '#ed5b00'
-                        });
-                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: successCount + ' student(s) marked as ' + status,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     
-                    setTimeout(function() {
-                        loadAttendanceData();
-                    }, 500);
+                    setTimeout(loadAttendanceData, 500);
                 }
             }
         }
@@ -1078,4 +1015,4 @@ function markAllAttendance(status) {
 }
 </script>
 </body>
-</html>
+</html><?php /**PATH C:\Users\DELL\Syn-2\resources\views/attendance/student/index.blade.php ENDPATH**/ ?>

@@ -647,11 +647,14 @@ public function downloadSample()
     try {
         // Define sample data
         $sampleData = [
-            ['Name', 'Mobile Number', 'Alternate Mobile', 'Email', 'Branch', 'Department', 'Password'],
-            ['John Doe', '9876543210', '9123456789', 'john.doe@example.com', 'Bikaner', 'Front Office', 'Password@123'],
-            ['Jane Smith', '9876543211', '9123456788', 'jane.smith@example.com', 'Bikaner', 'Back Office', 'Password@123'],
-            ['Mike Johnson', '9876543212', '9123456787', 'mike.johnson@example.com', 'Bikaner', 'Admin', 'Password@123'],
-        ];
+    ['Name', 'Mobile Number', 'Alternate Mobile', 'Email', 'Branch', 'Department', 'Password'],
+
+    ['Rohan Sharma', '9876543210', '9123456789', 'rohan@gmail.com', 'Bikaner', 'Front Office', 'Password@123'],
+
+    ['Meena Singh', '8765432109', '', 'meena@gmail.com', 'Bikaner', 'Back Office', 'Password@123'],
+
+    ['Amit Verma', '7654321098', '', 'amit@gmail.com', 'Bikaner', 'Admin', 'Password@123'],
+];
 
         // Create CSV content
         $filename = 'sample_users_import.csv';

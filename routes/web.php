@@ -80,7 +80,7 @@ Route::put('/users/{id}/update-password', [UserController::class, 'updatePasswor
 Route::post('/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
 Route::post('/users/store', [UserController::class, 'addUser'])->name('users.store');
 Route::get('/users/export', [UserController::class, 'exportToExcel'])->name('users.export');
-Route::get('/users/sample-download', [UserController::class, 'downloadSample'])->name('users.downloadSample');
+Route::get('/users/sample', [UserController::class, 'downloadSample'])->name('users.sample');
 Route::post('/users/import', [UserController::class, 'import'])->name('users.import');
 
 /*

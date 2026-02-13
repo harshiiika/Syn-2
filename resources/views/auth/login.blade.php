@@ -26,7 +26,7 @@
         </ul>
     </div>
 @endif
-<!-- //form to submit login credentials -->
+<!-- form to submit login credentials -->
 <form method="POST" action="{{ route('login.submit') }}" class="card">
     @csrf
     <h3>Login</h3><br>

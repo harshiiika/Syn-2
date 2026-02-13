@@ -56,7 +56,7 @@ body{
 input[type= "text"], input[type="password"]{
     border: 1px solid #ccc;
     border-radius: 10px;
-    text-align: left;
+    text-align: center;
     padding-left: 10px;
     background-color: rgb(205, 227, 251);
 }
