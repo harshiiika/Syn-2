@@ -487,7 +487,6 @@ height: 30px;
     background-color: transparent;
 }
 
-/* Fixed Action Button - Three Dots with NO background color */
 .btn-action-dots {
     background-color: transparent !important;
     border: none !important;
@@ -649,10 +648,22 @@ height: 30px;
           aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
       </div>
     </div>
   </div>
@@ -743,7 +754,7 @@ height: 30px;
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -857,28 +868,37 @@ height: 30px;
 
       <div class="whole">
         <!-- Table controls: entries dropdown and search -->
-        <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                10
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-        </div>
+<!-- Table controls: entries dropdown and search -->
+<div class="dd">
+  <div class="line">
+    <h6>Show Entries:</h6>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{ request('per_page', 10) }}
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{{ route('student.pendingfees.pending', ['per_page' => 5, 'search' => request('search')]) }}">5</a></li>
+        <li><a class="dropdown-item" href="{{ route('student.pendingfees.pending', ['per_page' => 10, 'search' => request('search')]) }}">10</a></li>
+        <li><a class="dropdown-item" href="{{ route('student.pendingfees.pending', ['per_page' => 25, 'search' => request('search')]) }}">25</a></li>
+        <li><a class="dropdown-item" href="{{ route('student.pendingfees.pending', ['per_page' => 50, 'search' => request('search')]) }}">50</a></li>
+        <li><a class="dropdown-item" href="{{ route('student.pendingfees.pending', ['per_page' => 100, 'search' => request('search')]) }}">100</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="search">
+    <form method="GET" action="{{ route('student.pendingfees.pending') }}" id="searchForm">
+      <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+      <input type="search" 
+             name="search" 
+             placeholder="Search by name, father, mobile, course..." 
+             class="search-holder" 
+             value="{{ request('search') }}"
+             id="searchInput">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </form>
+  </div>
+</div>
 
         <table class="table table-hover" id="table">
           <thead>
@@ -893,55 +913,69 @@ height: 30px;
               <th scope="col" id="one">Action</th>
             </tr>
           </thead>
-          <tbody>
-            @foreach($pendingFees as $index => $pending)
-            <tr>
-              <td>{{ $index + 1 }}</td>
-              <td>{{ $pending->name }}</td>
-              <td>{{ $pending->father }}</td>
-              <td>{{ $pending->mobileNumber ?? '—' }}</td>
-              <td>{{ $pending->courseName ?? '—' }}</td>
-              <td>{{ $pending->deliveryMode ?? '—' }}</td>
-              <td>{{ $pending->courseContent ?? '—' }}</td>
-              <td>
-                <div class="dropdown">
-                  <button class="btn-action-dots" type="button" id="actionMenuButton-{{ $index }}"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                  </button>
-                  <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="actionMenuButton-{{ $index }}">
-                    <li>
-                      <a class="dropdown-item action-item" href="{{ route('student.pendingfees.view', $pending->_id) }}">
-                        View Details
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item action-item" href="{{ route('student.pendingfees.edit', $pending->_id) }}">
-                        Edit
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item action-item" href="{{ route('student.pendingfees.pay', $pending->_id) }}">
-                        Pay Fees
-                      </a>
-                    </li>
-                    <li>
-                      <button class="dropdown-item action-item" onclick="loadStudentHistory('{{ $pending->_id }}'); return false;">
-                        History
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            @endforeach
-          </tbody>
+        <tbody>
+  @forelse($pendingFees as $index => $pending)
+  <tr>
+    <!-- Serial number with pagination support -->
+    <td>{{ ($pendingFees->currentPage() - 1) * $pendingFees->perPage() + $index + 1 }}</td>
+    <td>{{ $pending->name }}</td>
+    <td>{{ $pending->father }}</td>
+    <td>{{ $pending->mobileNumber ?? '—' }}</td>
+    <td>{{ $pending->courseName ?? '—' }}</td>
+    <td>{{ $pending->deliveryMode ?? '—' }}</td>
+    <td>{{ $pending->courseContent ?? '—' }}</td>
+    <td>
+      <div class="dropdown">
+        <button class="btn-action-dots" type="button" id="actionMenuButton-{{ $pending->_id }}"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="actionMenuButton-{{ $pending->_id }}">
+          <li>
+            <a class="dropdown-item action-item" href="{{ route('student.pendingfees.view', $pending->_id) }}">
+              View Details
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item action-item" href="{{ route('student.pendingfees.edit', $pending->_id) }}">
+              Edit
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item action-item" href="{{ route('student.pendingfees.pay', $pending->_id) }}">
+              Pay Fees
+            </a>
+          </li>
+          <li>
+            <button class="dropdown-item action-item" onclick="loadStudentHistory('{{ $pending->_id }}'); return false;">
+              History
+            </button>
+          </li>
+        </ul>
+      </div>
+    </td>
+  </tr>
+  @empty
+  <tr>
+    <td colspan="8" class="text-center py-4">
+      @if(request('search'))
+        <p class="mb-0">No students found matching "{{ request('search') }}"</p>
+        <a href="{{ route('student.pendingfees.pending') }}" class="btn btn-sm btn-outline-secondary mt-2">
+          <i class="fa-solid fa-times"></i> Clear Search
+        </a>
+      @else
+        <p class="mb-0">No pending fees students found</p>
+      @endif
+    </td>
+  </tr>
+  @endforelse
+</tbody>
         </table>
       </div>
 
       <div class="footer">
         <div class="left-footer">
-          <p>Showing 1 to 10 of 10 Enteries</p>
+          <p>Showing 1 to 10 of 10 Entries</p>
         </div>
         <div class="right-footer">
           <nav aria-label="...">
@@ -1029,7 +1063,7 @@ height: 30px;
           }
         })
         .then(response => {
-          console.log('📡 Response status:', response.status);
+          console.log('  Response status:', response.status);
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}: Failed to load history`);
           }
@@ -1163,6 +1197,28 @@ height: 30px;
         .trim()
         .replace(/\b\w/g, l => l.toUpperCase());
     }
+    document.addEventListener('DOMContentLoaded', function() {
+    // Search icon click handler
+    const searchIcon = document.querySelector('.search i.fa-magnifying-glass');
+    const searchForm = document.getElementById('searchForm');
+    
+    if (searchIcon && searchForm) {
+        searchIcon.addEventListener('click', function() {
+            searchForm.submit();
+        });
+    }
+
+    // Search input enter key handler
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+    }
+});
   </script>
 
 </body>

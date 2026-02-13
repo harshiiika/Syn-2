@@ -1,12 +1,7 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile - Synthesis Admin</title>
   <!-- Font Awesome Icons -->
@@ -143,44 +138,11 @@
       }
     }
   </style>
-========
-  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
-  <title>Session Calendar</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?php echo e(asset('css/session.css')); ?>">
-  <link rel="stylesheet" href="<?php echo e(asset('css/calendar.css')); ?>">
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
 </head>
 <body>
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
   <div class="header">
     <div class="logo">
       <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img" alt="Logo">
-========
-  <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-    <?php if(session('success')): ?>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?php echo e(session('success')); ?>
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-
-    <?php if(session('error')): ?>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?php echo e(session('error')); ?>
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-  </div>
-
-  <div class="header">
-    <div class="logo">
-      <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img">
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
       <button class="toggleBtn" id="toggleBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div class="pfp">
@@ -207,19 +169,12 @@
 
   <div class="main-container">
     <div class="left" id="sidebar">
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
       <div class="text">
         <h6>Admin</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
 
-========
-      <div class="text" id="text">
-        <h6>ADMIN</h6>
-        <p>synthesisbikaner@gmail.com</p>
-      </div>
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
-     <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -297,7 +252,7 @@
           <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -353,7 +308,8 @@
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
           <li><a class="item" href="<?php echo e(route('units.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li></li>
+          <li><a class="item" href="<?php echo e(route('dispatch.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+
         </ul>
       </div>
     </div>
@@ -389,8 +345,8 @@
     <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="#"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.walkin.index')); ?>"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+          <li><a class="item" href="<?php echo e(route('reports.attendance.student.index')); ?>"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
           <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
           <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
@@ -401,7 +357,6 @@
 </div>
     </div>
 
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
     <div class="right" id="right">
       <div class="profile-container">
         <h1 class="profile-header">Personal Information</h1>
@@ -439,48 +394,10 @@
 
           <button type="submit" class="update-btn">Update Information</button>
         </form>
-========
-    <!-- Calendar Content -->
-    <div class="calendar-container">
-      <div class="calendar-header">
-        <h3>Session Calendar</h3>
-        <div class="calendar-actions">
-          <button class="btn-mark-sunday" id="markAllSundayBtn">Mark All Sunday as Holiday</button>
-          <button class="btn-add-holiday" id="addHolidayBtn">Add Holiday</button>
-          <button class="btn-add-test" id="addTestBtn">Add Test</button>
-        </div>
-      </div>
-
-      <div class="calendar-content">
-        <!-- Calendar -->
-        <div class="calendar-main">
-          <div id="calendar"></div>
-        </div>
-
-        <!-- Right Sidebar -->
-        <div class="calendar-sidebar">
-          <!-- Holiday List -->
-          <div class="list-card">
-            <div class="list-card-header">Holiday List</div>
-            <div class="list-card-body" id="holidayList">
-              <div class="list-item-empty">No holidays added</div>
-            </div>
-          </div>
-
-          <!-- Test List -->
-          <div class="list-card">
-            <div class="list-card-header">Test List</div>
-            <div class="list-card-body" id="testList">
-              <div class="list-item-empty">No tests added</div>
-            </div>
-          </div>
-        </div>
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
       </div>
     </div>
   </div>
 
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
   <script src="<?php echo e(asset('js/emp.js')); ?>"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -529,72 +446,4 @@
     }
   </script>
 </body>
-</html><?php /**PATH C:\Users\dhamu\Syn-2\User_Management\resources\views/profile/profile.blade.php ENDPATH**/ ?>
-========
-  <!-- Add Holiday Modal (Bootstrap) -->
-  <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addHolidayModalLabel">Add Holiday</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="holidayForm">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="holiday_date" class="form-label">Holiday Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="holiday_date" name="holiday_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="holiday_description" class="form-label">Description <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="holiday_description" name="holiday_description" placeholder="Enter holiday description" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Test Modal (Bootstrap) -->
-  <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addTestModalLabel">Add Test</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="testForm" method="POST" action="<?php echo e(route('calendar.tests.store')); ?>">
-        <?php echo csrf_field(); ?>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="test_date" class="form-label">Test Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="test_date" name="test_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="test_name" class="form-label">Test Name <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="test_name" name="test_name" placeholder="Enter test name" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
-    <script src="<?php echo e(asset('js/calendar.js')); ?>"></script>
-
-</body>
-
-</html><?php /**PATH C:\Users\Priyanshi Rathore\Syn-2\resources\views/master/calendar/calendar.blade.php ENDPATH**/ ?>
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
+</html><?php /**PATH C:\Users\Priyanshi Rathore\Syn-2\resources\views/profile/profile.blade.php ENDPATH**/ ?>

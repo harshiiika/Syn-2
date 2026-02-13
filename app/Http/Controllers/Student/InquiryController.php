@@ -13,6 +13,7 @@ use App\Models\Student\Pending;
 use App\Models\Master\Courses;
 use Carbon\Carbon;
 use App\Models\Master\Batch;
+use App\Models\Master\Branch;
 
 
 class InquiryController extends Controller
@@ -20,10 +21,53 @@ class InquiryController extends Controller
     /**
      * Display the inquiry management page
      */
-    public function index(Request $request)
-    {
-        return view('inquiries.index');
+public function index(Request $request)
+{
+    // Get per_page value from request, default to 10
+    $perPage = $request->input('per_page', 10);
+    
+    // Validate per_page to only allow specific values
+    if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+        $perPage = 10;
     }
+
+    // Get search query
+    $search = $request->input('search', '');
+
+    // Build the query
+    $query = Inquiry::query();
+    
+    // Filter out transferred/onboarded inquiries
+    $query->whereNotIn('status', ['transferred', 'onboarded', 'converted']);
+
+    // Apply search filter if search term exists
+    if (!empty($search)) {
+        $query->where(function($q) use ($search) {
+            $q->where('student_name', 'like', '%' . $search . '%')
+              ->orWhere('father_name', 'like', '%' . $search . '%')
+              ->orWhere('father_contact', 'like', '%' . $search . '%')
+              ->orWhere('course_name', 'like', '%' . $search . '%')
+              ->orWhere('delivery_mode', 'like', '%' . $search . '%')
+              ->orWhere('status', 'like', '%' . $search . '%');
+        });
+    }
+
+    // Get paginated inquiries
+    $inquiries = $query->orderBy('created_at', 'desc')
+                      ->paginate($perPage)
+                      ->appends([
+                          'search' => $search,
+                          'per_page' => $perPage
+                      ]);
+
+    // Transform MongoDB _id to string for each inquiry
+    $inquiries->getCollection()->transform(function($inquiry) {
+        $inquiry->_id = (string) $inquiry->_id;
+        return $inquiry;
+    });
+
+    return view('inquiries.index', compact('inquiries', 'search'));
+}
 
     /**
      * Return paginated data for AJAX requests
@@ -619,7 +663,7 @@ public function showScholarshipDetails($id)
             'father_whatsapp' => 'nullable|string|max:20',
             'student_contact' => 'nullable|string|max:20',
             'category' => 'required|string|in:General,OBC,SC,ST',
-            'course_name' => 'nullable|string|max:255',
+        'course_name' => 'required|string|exists:courses,course_name', 
             'delivery_mode' => 'nullable|string|in:Online,Offline,Hybrid',
             'course_content' => 'nullable|string|max:255',
             'branch' => 'required|string|max:255',
@@ -1463,6 +1507,101 @@ public function edit($id)
         
         return redirect()->route('inquiries.index')
             ->with('error', 'Unable to load inquiry for editing: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Calculate default fees for a course
+ */
+private function calculateDefaultFees($courseName)
+{
+    // Course fees mapping
+    $courseFees = [
+        'Anthesis 11th NEET' => 88000,
+        'Momentum 12th NEET' => 88000,
+        'Dynamic Target NEET' => 88000,
+        'Impulse 11th IIT' => 88000,
+        'Intensity 12th IIT' => 88000,
+        'Thurst Target IIT' => 88000,
+        'Seedling 10th' => 60000,
+        'Plumule 9th' => 55000,
+        'Radicle 8th' => 50000,
+        'Nucleus 7th' => 45000,
+        'Atom 6th' => 40000,
+    ];
+
+    $baseFee = $courseFees[$courseName] ?? 88000;
+    
+    // Calculate GST (18%)
+    $gstAmount = ($baseFee * 18) / 100;
+    $totalWithGst = $baseFee + $gstAmount;
+    
+    // Calculate installments
+    $installment1 = round($totalWithGst * 0.40, 2);
+    $installment2 = round($totalWithGst * 0.30, 2);
+    $installment3 = round($totalWithGst * 0.30, 2);
+
+    return [
+        'total_fee_before_discount' => $baseFee,
+        'discount_percentage' => 0,
+        'discounted_fee' => $baseFee,
+        'fees_breakup' => 'Class room course (with test series & study material)',
+        'total_fees' => $baseFee,
+        'gst_amount' => $gstAmount,
+        'total_fees_inclusive_tax' => $totalWithGst,
+        'single_installment_amount' => $totalWithGst,
+        'installment_1' => $installment1,
+        'installment_2' => $installment2,
+        'installment_3' => $installment3,
+        'eligible_for_scholarship' => 'No',
+        'scholarship_name' => 'N/A',
+        'discretionary_discount' => 'No',
+    ];
+}
+
+/**
+ * Get cities for a state
+ */
+public function getStates()
+{
+    return response()->json([
+        'success' => true,
+        'states' => \App\Helpers\IndiaData::getStates()
+    ]);
+}
+
+/**
+ * Get cities for a state
+ */
+public function getCities(Request $request)
+{
+    $state = $request->get('state');
+    
+    return response()->json([
+        'success' => true,
+        'cities' => \App\Helpers\IndiaData::getCities($state)
+    ]);
+}
+/**
+ * Get active branches for API
+ */
+public function getActiveBranches()
+{
+    try {
+        $branches = Branch::where('status', 'Active')
+            ->orderBy('name', 'asc')
+            ->get(['_id', 'name', 'city']);
+            
+        return response()->json([
+            'success' => true,
+            'branches' => $branches
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Get active branches error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
     }
 }
 }

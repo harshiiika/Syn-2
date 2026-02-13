@@ -85,7 +85,73 @@ LINE 629-665: AJAX Script for Dynamic User Addition
    <!-- Bootstrap 5.3.6 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+<style>
+  /* Change all blue buttons to orange theme */
+.btn-primary {
+    background-color: rgb(224, 83, 1) !important;
+    border-color: rgb(224, 83, 1) !important;
+    color: white !important;
+}
 
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: rgb(200, 70, 0) !important;
+    border-color: rgb(200, 70, 0) !important;
+    color: white !important;
+}
+
+/* Change dropdown action buttons */
+#actionMenuButton {
+    background-color: transparent !important;
+    border: none !important;
+    color: rgb(224, 83, 1) !important;
+}
+
+#actionMenuButton:hover {
+    background-color: rgba(224, 83, 1, 0.1) !important;
+}
+
+/* Pagination active state */
+.pagination .page-item.active .page-link {
+    background-color: rgb(224, 83, 1) !important;
+    border-color: rgb(224, 83, 1) !important;
+    color: white !important;
+}
+
+.pagination .page-link {
+    color: rgb(224, 83, 1) !important;
+}
+
+.pagination .page-link:hover {
+    background-color: rgba(224, 83, 1, 0.1) !important;
+    color: rgb(224, 83, 1) !important;
+}
+
+/* Modal buttons */
+.modal-footer .btn-primary {
+    background-color: rgb(224, 83, 1) !important;
+    border-color: rgb(224, 83, 1) !important;
+}
+
+/* Badges */
+.badge.bg-primary {
+    background-color: rgb(224, 83, 1) !important;
+}
+
+/* Form focus states */
+.form-control:focus,
+.form-select:focus {
+    border-color: rgb(224, 83, 1) !important;
+    box-shadow: 0 0 0 0.2rem rgba(224, 83, 1, 0.25) !important;
+}
+
+/* Checkbox checked state */
+.form-check-input:checked {
+    background-color: rgb(224, 83, 1) !important;
+    border-color: rgb(224, 83, 1) !important;
+} 
+</style>
 </head>
 
 <body>
@@ -112,10 +178,22 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}""> <i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log In</a></li>
-        </ul>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
       </div>
     </div>
   </div>
@@ -207,7 +285,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -322,114 +400,192 @@ LINE 629-665: AJAX Script for Dynamic User Addition
 
 
       </div>
-      <div class="whole">
-         <!-- Table controls: entries dropdown and search -->
-        <div class="dd">
-          <div class="line">
-            <h6>Show Enteries:</h6>
-            <div class="dropdown">
-             <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            {{ request('per_page', 10) }}
-          </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item">10</a></li>
-                <li><a class="dropdown-item">25</a></li>
-                <li><a class="dropdown-item">50</a></li>
-                <li><a class="dropdown-item">100</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="search">
-            <h4 class="search-text">Search</h4>
-            <input type="search" placeholder="" class="search-holder" required>
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-        </div>
-        <table class="table table-hover" id="table">
-          <thead>
-            <tr>
-              <th scope="col" id="one">Serial No.</th>
-              <th scope="col" id="one">Student Name</th>
-              <th scope="col" id="one">Father Name</th>
-              <th scope="col" id="one">Father Contact No.</th>
-              <th scope="col" id="one">Course Name</th>
-              <th scope="col" id="one">Delivery Mode</th>
-              <th scope="col" id="one">Course Content</th>
-              <th scope="col" id="one">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-            </tr>
-          </tbody>
-<!-- Modal fillables where roles are assigned according to dept automatically -->
+<div class="whole">
+  <!-- Table controls: entries dropdown and search -->
+  <div class="dd">
+    <div class="line">
+      <h6>Show Entries:</h6>
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          {{ request('per_page', 10) }}
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="{{ route('student.onboard.onboard', ['per_page' => 5, 'search' => request('search')]) }}">5</a></li>
+          <li><a class="dropdown-item" href="{{ route('student.onboard.onboard', ['per_page' => 10, 'search' => request('search')]) }}">10</a></li>
+          <li><a class="dropdown-item" href="{{ route('student.onboard.onboard', ['per_page' => 25, 'search' => request('search')]) }}">25</a></li>
+          <li><a class="dropdown-item" href="{{ route('student.onboard.onboard', ['per_page' => 50, 'search' => request('search')]) }}">50</a></li>
+          <li><a class="dropdown-item" href="{{ route('student.onboard.onboard', ['per_page' => 100, 'search' => request('search')]) }}">100</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="search">
+      <form method="GET" action="{{ route('student.onboard.onboard') }}" id="searchForm">
+        <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+        <input type="search" 
+               name="search" 
+               placeholder="Search by name, father, mobile, course..." 
+               class="search-holder" 
+               value="{{ request('search') }}"
+               id="searchInput">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </form>
+    </div>
+  </div>
 
-@foreach($students as $index => $student)
-<tr>
-  <td>{{ $index + 1 }}</td>
-  <td>{{ $student->name }}</td>
-  <td>{{ $student->father }}</td>
-  <td>{{ $student->mobileNumber ?? '—' }}</td>
-  <td>{{ $student->courseName ?? '—' }}</td>
-  <td>{{ $student->deliveryMode ?? '—' }}</td>
-  <td>{{ $student->courseContent ?? '—' }}</td>
-  <td>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton-{{ $student->_id }}"
-              data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="actionMenuButton-{{ $student->_id }}">
-        <li>
-          <a href="{{ route('student.onboard.edit', $student->_id) }}" class="dropdown-item">
-            Edit Details
-          </a>
-        </li>
-        <li>
-          <a href="{{ route('student.onboard.show', $student->_id) }}" class="dropdown-item">
-            View Details
-          </a>
-        </li>
-        <li>
-          <form action="{{ route('student.onboard.transfer', $student->_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to transfer {{ $student->name }} to Pending Fees?')">
-            @csrf
-            <button type="submit" class="dropdown-item">
-              Transfer to Pending Fees
+  <table class="table table-hover" id="table">
+    <thead>
+      <tr>
+        <th scope="col" id="one">Serial No.</th>
+        <th scope="col" id="one">Student Name</th>
+        <th scope="col" id="one">Father Name</th>
+        <th scope="col" id="one">Father Contact No.</th>
+        <th scope="col" id="one">Course Name</th>
+        <th scope="col" id="one">Delivery Mode</th>
+        <th scope="col" id="one">Course Content</th>
+        <th scope="col" id="one">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse($students as $index => $student)
+      <tr>
+        <!-- Serial number with pagination support -->
+        <td>{{ ($students->currentPage() - 1) * $students->perPage() + $index + 1 }}</td>
+        <td>{{ $student->name }}</td>
+        <td>{{ $student->father }}</td>
+        <td>{{ $student->mobileNumber ?? '—' }}</td>
+        <td>{{ $student->courseName ?? '—' }}</td>
+        <td>{{ $student->deliveryMode ?? '—' }}</td>
+        <td>{{ $student->courseContent ?? '—' }}</td>
+        <td>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="actionMenuButton-{{ $student->_id }}"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-three-dots-vertical" style="color: #000000;"></i>
             </button>
-          </form>
-        </li>
-        <li>
-          <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#historyModal-{{ $student->_id }}">
-            History
-          </button>
-        </li>
-      </ul>
-    </div>
-  </td>
-</tr>
-@endforeach
-        </table>
-
-      </div>
-      <div class="footer">
-        <div class="left-footer">
-          <p>Showing 1 to 10 of 10 Enteries</p>
-        </div>
-        <div class="right-footer">
-          <nav aria-label="...">
-            <ul class="pagination">
-              <li class="page-item"><a href="#" class="page-link" id="pg1">Previous</a></li>
-              <li class="page-item active">
-                <a class="page-link" href="#" aria-current="page" id="pg2">1</a>
+            <ul class="dropdown-menu" aria-labelledby="actionMenuButton-{{ $student->_id }}">
+              <li>
+                <a href="{{ route('student.onboard.edit', $student->_id) }}" class="dropdown-item">
+                  Edit Details
+                </a>
               </li>
-              <li class="page-item"><a class="page-link" href="/user management/emp/emp2.html" id="pg3">2</a></li>
-              <li class="page-item"><a class="page-link" href="#" id="pg1">Next</a></li>
+              <li>
+                <a href="{{ route('student.onboard.show', $student->_id) }}" class="dropdown-item">
+                  View Details
+                </a>
+              </li>
+              <li>
+                <form action="{{ route('student.onboard.transfer', $student->_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to transfer {{ $student->name }} to Pending Fees?')">
+                  @csrf
+                  <button type="submit" class="dropdown-item">
+                    Transfer to Pending Fees
+                  </button>
+                </form>
+              </li>
+              <li>
+                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#historyModal-{{ $student->_id }}">
+                  History
+                </button>
+              </li>
             </ul>
-          </nav>
-        </div>
-      </div>
-    </div>
+          </div>
+        </td>
+      </tr>
+      @empty
+      <tr>
+        <td colspan="8" class="text-center py-4">
+          @if(request('search'))
+            <p class="mb-0">No students found matching "{{ request('search') }}"</p>
+            <a href="{{ route('student.onboard.onboard') }}" class="btn btn-sm btn-outline-secondary mt-2">
+              <i class="fa-solid fa-times"></i> Clear Search
+            </a>
+          @else
+            <p class="mb-0">No onboarded students found</p>
+          @endif
+        </td>
+      </tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
+<div class="footer">
+  <div class="left-footer">
+    <p>Showing {{ $students->firstItem() ?? 0 }} to {{ $students->lastItem() ?? 0 }} of {{ $students->total() }} entries
+      @if(request('search'))
+        <span class="text-muted">(filtered from {{ \App\Models\Student\Onboard::count() }} total entries)</span>
+      @endif
+    </p>
+  </div>
+  <div class="right-footer">
+    <nav aria-label="Page navigation example" id="bottom">
+      <ul class="pagination" id="pagination">
+        {{-- Previous Page Link --}}
+        @if ($students->onFirstPage())
+          <li class="page-item disabled">
+            <span class="page-link" id="pg1">Previous</span>
+          </li>
+        @else
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $students->previousPageUrl() }}" 
+               id="pg1">Previous</a>
+          </li>
+        @endif
+
+        {{-- Pagination Elements --}}
+        @php
+          $start = max($students->currentPage() - 2, 1);
+          $end = min($start + 4, $students->lastPage());
+          $start = max($end - 4, 1);
+        @endphp
+
+        @if($start > 1)
+          <li class="page-item" id="pg2">
+            <a class="page-link" href="{{ $students->url(1) }}">1</a>
+          </li>
+          @if($start > 2)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+        @endif
+
+        @for ($i = $start; $i <= $end; $i++)
+          <li class="page-item {{ $students->currentPage() == $i ? 'active' : '' }}">
+            <a class="page-link" 
+               href="{{ $students->url($i) }}"
+               id="pg{{ $i }}">{{ $i }}</a>
+          </li>
+        @endfor
+
+        @if($end < $students->lastPage())
+          @if($end < $students->lastPage() - 1)
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          @endif
+          <li class="page-item">
+            <a class="page-link" href="{{ $students->url($students->lastPage()) }}">{{ $students->lastPage() }}</a>
+          </li>
+        @endif
+
+        {{-- Next Page Link --}}
+        @if ($students->hasMorePages())
+          <li class="page-item">
+            <a class="page-link" 
+               href="{{ $students->nextPageUrl() }}" 
+               id="pg4">Next</a>
+          </li>
+        @else
+          <li class="page-item disabled">
+            <span class="page-link" id="pg4">Next</span>
+          </li>
+        @endif
+      </ul>
+    </nav>
+  </div>
+</div>
+
   </div>
   </div>
 
@@ -557,6 +713,28 @@ LINE 629-665: AJAX Script for Dynamic User Addition
       }
     });
   });
+  document.addEventListener('DOMContentLoaded', function() {
+    // Search icon click handler
+    const searchIcon = document.querySelector('.search i.fa-magnifying-glass');
+    const searchForm = document.getElementById('searchForm');
+    
+    if (searchIcon && searchForm) {
+        searchIcon.addEventListener('click', function() {
+            searchForm.submit();
+        });
+    }
+
+    // Search input enter key handler
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+    }
+});
 </script>
 
 </body>

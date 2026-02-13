@@ -99,6 +99,7 @@ class Inquiry extends Model
         
         // Metadata
         'branch',
+        'branch_id',
         'session',
         'history',
         'transferred_at',

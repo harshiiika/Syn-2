@@ -6,7 +6,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile - Synthesis Admin</title>
   <!-- Font Awesome Icons -->
@@ -143,7 +142,6 @@
       }
     }
   </style>
-========
   <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
   <title>Session Calendar</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
@@ -151,14 +149,11 @@
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.css" rel="stylesheet">
   <link rel="stylesheet" href="<?php echo e(asset('css/session.css')); ?>">
   <link rel="stylesheet" href="<?php echo e(asset('css/calendar.css')); ?>">
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
 </head>
 <body>
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
   <div class="header">
     <div class="logo">
       <img src="<?php echo e(asset('images/logo.png.jpg')); ?>" class="img" alt="Logo">
-========
   <div class="flash-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
     <?php if(session('success')): ?>
       <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -207,18 +202,14 @@
 
   <div class="main-container">
     <div class="left" id="sidebar">
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
       <div class="text">
         <h6>Admin</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
-
-========
       <div class="text" id="text">
         <h6>ADMIN</h6>
         <p>synthesisbikaner@gmail.com</p>
       </div>
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
      <div class="accordion accordion-flush" id="accordionFlushExample">
   <!-- User Management -->
   <div class="accordion-item">
@@ -297,7 +288,7 @@
           <li><a class="item" href="<?php echo e(route('inquiries.index')); ?>"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="<?php echo e(route('student.student.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="<?php echo e(route('student.pendingfees.pending')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="<?php echo e(route('smstudents.index')); ?>"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -401,7 +392,6 @@
 </div>
     </div>
 
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
     <div class="right" id="right">
       <div class="profile-container">
         <h1 class="profile-header">Personal Information</h1>
@@ -475,12 +465,10 @@
             </div>
           </div>
         </div>
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:storage/framework/views/f029cddc77352d5db9e8f4edf523026d.php
       </div>
     </div>
   </div>
 
-<<<<<<<< HEAD:User_Management/storage/framework/views/8b79e6e09adcda7fbc54ac5e8cbcac69.php
   <script src="<?php echo e(asset('js/emp.js')); ?>"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script>

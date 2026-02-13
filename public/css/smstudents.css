@@ -345,7 +345,7 @@ height: 30px;
 }
 
 .toast-container {
-    position: fixed !important;  /* Fixed, not absolute */
+    position: fixed !important;
     right: 20px;
     top: 20px;
     z-index: 1060;

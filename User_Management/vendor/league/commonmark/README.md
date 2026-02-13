@@ -14,7 +14,7 @@
 
 **league/commonmark** is a highly-extensible PHP Markdown parser created by [Colin O'Dell][@colinodell] which supports the full [CommonMark] spec and [GitHub-Flavored Markdown].  It is based on the [CommonMark JS reference implementation][commonmark.js] by [John MacFarlane] \([@jgm]\).
 
-## 📦 Installation & Basic Usage
+##   Installation & Basic Usage
 
 This project requires PHP 7.4 or higher with the `mbstring` extension.  To install it via [Composer] simply run:
 
@@ -155,7 +155,7 @@ $ composer test
 
 This will also test league/commonmark against the latest supported spec.
 
-## 🚀 Performance Benchmarks
+##   Performance Benchmarks
 
 You can compare the performance of **league/commonmark** to other popular parsers by running the included benchmark tool:
 

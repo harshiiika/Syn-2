@@ -487,9 +487,18 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
-        </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
@@ -579,7 +588,7 @@
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -699,7 +708,7 @@
       <div class="whole">
         <div class="dd">
           <div class="line">
-            <h6>Show Enteries:</h6>
+            <h6>Show Entries:</h6>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">10</button>
@@ -735,7 +744,7 @@
 
       <div class="footer">
         <div class="left-footer">
-          <p>Showing 0 to 0 of 0 Enteries</p>
+          <p>Showing 0 to 0 of 0 Entries</p>
         </div>
         <div class="right-footer">
           <nav aria-label="Page navigation example" id="bottom">
@@ -931,7 +940,7 @@
   function renderFooter(json) {
     const from = json.data.length ? ((json.current_page - 1) * json.per_page + 1) : 0;
     const to = json.data.length ? ((json.current_page - 1) * json.per_page + json.data.length) : 0;
-    footerLeft && (footerLeft.textContent = `Showing ${from} to ${to} of ${json.total} Enteries`);
+    footerLeft && (footerLeft.textContent = `Showing ${from} to ${to} of ${json.total} Entries`);
 
     paginationContainer.innerHTML = '';
 

@@ -1044,10 +1044,22 @@
           aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
-        </ul>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
       </div>
     </div>
   </div>
@@ -1137,7 +1149,7 @@
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -2714,7 +2726,7 @@ document.addEventListener('DOMContentLoaded', function() {
   tabButtons.forEach((button, index) => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('🔘 Tab button clicked:', this.getAttribute('data-tab'));
+      console.log('  Tab button clicked:', this.getAttribute('data-tab'));
       
       // Remove active class from all buttons
       tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -2834,7 +2846,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let attendanceChartInstance = null;
   let rateChartInstance = null;
   
-  console.log('🚀 Initializing student attendance for ID:', studentId);
+  console.log('  Initializing student attendance for ID:', studentId);
   
   // Load attendance data on page load
   loadAttendanceData();
@@ -2853,7 +2865,7 @@ document.addEventListener('DOMContentLoaded', function() {
    * Load attendance data from server
    */
   function loadAttendanceData() {
-    console.log('📡 Fetching attendance data for month:', currentMonth);
+    console.log('  Fetching attendance data for month:', currentMonth);
     
     fetch(`/smstudents/${studentId}/attendance/data?month=${currentMonth}`)
       .then(response => {

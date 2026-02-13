@@ -150,9 +150,18 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
-        </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
@@ -245,7 +254,7 @@
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -499,24 +508,21 @@
   <div class="form-section">
     <h4>Address Details</h4>
     <div class="form-row">
-      <div class="form-group">
-        <label>State</label>
-        <select name="state" class="form-select">
-          <option value="">Select State</option>
-          @php
-            $stateValue = old('state', $inquiry->state ?? '');
-          @endphp
-          <option value="Rajasthan" {{ $stateValue == 'Rajasthan' ? 'selected' : '' }}>Rajasthan</option>
-          <option value="Delhi" {{ $stateValue == 'Delhi' ? 'selected' : '' }}>Delhi</option>
-          <option value="Maharashtra" {{ $stateValue == 'Maharashtra' ? 'selected' : '' }}>Maharashtra</option>
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label>City</label>
-        <input type="text" name="city" class="form-control" 
-               value="{{ old('city', $inquiry->city ?? '') }}">
-      </div>
+<div class="form-group">
+    <label>State</label>
+    <select name="state" id="edit_state" class="form-select">
+        <option value="">Select State</option>
+        <!-- Will be populated by JavaScript -->
+    </select>
+</div>
+
+<div class="form-group">
+    <label>City</label>
+    <select name="city" id="edit_city" class="form-select">
+        <option value="">Select City</option>
+        <!-- Will be populated based on state -->
+    </select>
+</div>
       
       <div class="form-group">
         <label>Pin Code</label>
@@ -936,6 +942,75 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
     });
 });
+
+document.addEventListener('DOMContentLoaded', async function() {
+    const stateSelect = document.getElementById('edit_state');
+    const citySelect = document.getElementById('edit_city');
+    
+    // Get saved values from Blade
+    const savedState = "{{ old('state', $inquiry->state ?? '') }}";
+    const savedCity = "{{ old('city', $inquiry->city ?? '') }}";
+
+    // Load all states
+    try {
+        const response = await fetch('/api/states');
+        const data = await response.json();
+        
+        if (data.success) {
+            stateSelect.innerHTML = '<option value="">Select State</option>';
+            data.states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                if (state === savedState) option.selected = true;
+                stateSelect.appendChild(option);
+            });
+            
+            // Load cities if state was already selected
+            if (savedState) {
+                await loadCities(savedState, savedCity);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading states:', error);
+    }
+
+    // Load cities when state changes
+    stateSelect.addEventListener('change', function() {
+        loadCities(this.value);
+    });
+
+    async function loadCities(state, selectCity = null) {
+        citySelect.innerHTML = '<option value="">Select City</option>';
+        
+        if (!state) {
+            citySelect.disabled = true;
+            return;
+        }
+        
+        citySelect.disabled = false;
+
+        try {
+            const response = await fetch(`/api/cities?state=${encodeURIComponent(state)}`);
+            const data = await response.json();
+            
+            if (data.success && data.cities) {
+                data.cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    if (city === selectCity || city === savedCity) {
+                        option.selected = true;
+                    }
+                    citySelect.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading cities:', error);
+        }
+    }
+});
+
 </script>
 
 </body>

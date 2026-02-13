@@ -21,17 +21,53 @@ class OnboardController extends Controller
     /**
      * Display listing of onboarded students
      */
-    public function index()
-    {
-        try {
-            $students = Onboard::orderBy('created_at', 'desc')->get();
-            
-            return view('student.onboard.onboard', compact('students'));
-        } catch (\Exception $e) {
-            Log::error('Error loading onboarded students: ' . $e->getMessage());
-            return back()->with('error', 'Failed to load students');
+/**
+ * Display listing of onboarded students with search and pagination
+ */
+public function index(Request $request)
+{
+    try {
+        // Get per_page value from request, default to 10
+        $perPage = $request->input('per_page', 10);
+        
+        // Validate per_page to only allow specific values
+        if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+            $perPage = 10;
         }
+
+        // Get search query
+        $search = $request->input('search', '');
+
+        // Build the query - only show onboarded students
+        $query = Onboard::where('status', 'onboarded');
+
+        // Apply search filter if search term exists
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('father', 'like', '%' . $search . '%')
+                  ->orWhere('mobileNumber', 'like', '%' . $search . '%')
+                  ->orWhere('courseName', 'like', '%' . $search . '%')
+                  ->orWhere('deliveryMode', 'like', '%' . $search . '%')
+                  ->orWhere('courseContent', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Get paginated students
+        $students = $query->orderBy('created_at', 'desc')
+                          ->paginate($perPage)
+                          ->appends([
+                              'search' => $search,
+                              'per_page' => $perPage
+                          ]);
+
+        return view('student.onboard.onboard', compact('students', 'search'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error loading onboarded students: ' . $e->getMessage());
+        return back()->with('error', 'Failed to load students');
     }
+}
 
     /**
      * Display the specified onboarded student with COMPLETE details

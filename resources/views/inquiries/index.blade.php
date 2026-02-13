@@ -1,5 +1,6 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
@@ -13,27 +14,28 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         .timeline {
-    position: relative;
-}
+            position: relative;
+        }
 
-.timeline-item {
-    position: relative;
-    padding-left: 20px;
-}
+        .timeline-item {
+            position: relative;
+            padding-left: 20px;
+        }
 
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 20px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: rgb(224, 83, 1);
-    border: 2px solid white;
-    box-shadow: 0 0 0 2px rgb(224, 83, 1);
-}
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgb(224, 83, 1);
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px rgb(224, 83, 1);
+        }
 
         body {
             font-family: Arial, sans-serif;
@@ -413,17 +415,17 @@
             margin-right: 35px;
         }
 
-        .dropdown-item {
-            height: auto;
-            width: auto;
-            margin: 5px 10px;
-            border-radius: 5px;
-            justify-content: flex-start;
-            align-items: center;
-            display: flex;
-            cursor: pointer;
-            padding: 8px 12px;
-        }
+.dropdown-item {
+    height: 20px;
+    width: 70px;
+    margin: 15px;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+}
+
 
         .line {
             flex-direction: row;
@@ -531,15 +533,6 @@
             background-color: #f5f5f5;
         }
 
-        .dropdown-menu {
-            z-index: 1050 !important;
-            min-width: 120px;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
         .left::-webkit-scrollbar,
         .right::-webkit-scrollbar {
             width: 6px;
@@ -555,7 +548,21 @@
             background: #888;
             border-radius: 3px;
         }
-
+#number {
+    margin: 5px 0px 10px 5px;
+    align-items: center;
+    border: 1px solid #000;
+    background-color: #ffffff;
+    color: #000;
+}
+#dropdown-body{
+    padding: 0 !important;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 0 !important;
+}
         .left::-webkit-scrollbar-thumb:hover,
         .right::-webkit-scrollbar-thumb:hover {
             background: #555;
@@ -581,91 +588,92 @@
         }
 
         /* Simple History Timeline Styles */
-.history-timeline {
-    position: relative;
-    padding: 20px;
-}
+        .history-timeline {
+            position: relative;
+            padding: 20px;
+        }
 
-.history-item {
-    background: white;
-    border-left: 4px solid #e05301;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-}
+        .history-item {
+            background: white;
+            border-left: 4px solid #e05301;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
 
-.history-item:hover {
-    box-shadow: 0 4px 8px rgba(224, 83, 1, 0.15);
-}
+        .history-item:hover {
+            box-shadow: 0 4px 8px rgba(224, 83, 1, 0.15);
+        }
 
-.history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    margin-bottom: 10px;
-}
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
 
-.history-action {
-    font-size: 16px;
-    font-weight: 600;
-    color: #e05301;
-}
+        .history-action {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e05301;
+        }
 
-.history-date {
-    font-size: 12px;
-    color: #6c757d;
-}
+        .history-date {
+            font-size: 12px;
+            color: #6c757d;
+        }
 
-.history-user {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 8px;
-}
+        .history-user {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
 
-.history-description {
-    font-size: 14px;
-    color: #495057;
-    margin-bottom: 10px;
-}
+        .history-description {
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 10px;
+        }
 
-.history-changes {
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 4px;
-    margin-top: 10px;
-}
+        .history-changes {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
 
-.change-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 5px;
-    font-size: 13px;
-}
+        .change-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
 
-.change-label {
-    font-weight: 600;
-    min-width: 120px;
-    color: #495057;
-}
+        .change-label {
+            font-weight: 600;
+            min-width: 120px;
+            color: #495057;
+        }
 
-.change-value {
-    color: #666;
-}
+        .change-value {
+            color: #666;
+        }
 
-.empty-history {
-    text-align: center;
-    padding: 60px 20px;
-    color: #6c757d;
-}
+        .empty-history {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
 
-.empty-history i {
-    font-size: 48px;
-    margin-bottom: 15px;
-    opacity: 0.3;
-}
+        .empty-history i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="logo">
@@ -682,13 +690,23 @@
             </div>
             <i class="fa-solid fa-bell"></i>
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-user"></i>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i>Profile</a></li>
-                    <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
-                </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
             </div>
         </div>
     </div>
@@ -700,187 +718,227 @@
                 <p>synthesisbikaner@gmail.com</p>
             </div>
 
-          <div class="accordion accordion-flush" id="accordionFlushExample">
-  <!-- User Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
-      </button>
-    </h2>
-    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user" id="side-icon"></i> Employee</a></li>     
-          <li><a class="item" href="{{ route('user.batches.batches') }}"><i class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <!-- User Management -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+                            id="accordion-button">
+                            <i class="fa-solid fa-user-group" id="side-icon"></i>User Management
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route('user.emp.emp') }}"><i class="fa-solid fa-user"
+                                            id="side-icon"></i> Employee</a></li>
+                                <li><a class="item" href="{{ route('user.batches.batches') }}"><i
+                                            class="fa-solid fa-user-group" id="side-icon"></i> Batches Assignment</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Master -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i> Master
-      </button>
-    </h2>
-    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
-          <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
-          <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
-          <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
-          <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+                <!-- Master -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+                            id="accordion-button">
+                            <i class="fa-solid fa-user-group" id="side-icon"></i> Master
+                        </button>
+                    </h2>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open"
+                                            id="side-icon"></i> Courses</a></li>
+                                <li><a class="item" href="{{ route('batches.index') }}"><i
+                                            class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i>
+                                        Batches</a></li>
+                                <li><a class="item" href="{{ route('master.scholarship.index') }}"><i
+                                            class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
+                                <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card"
+                                            id="side-icon"></i> Fees Master</a></li>
+                                <li><a class="item" href="{{ route('master.other_fees.index') }}"><i
+                                            class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
+                                <li><a class="item" href="{{ route('branches.index') }}"><i
+                                            class="fa-solid fa-diagram-project" id="side-icon"></i> Branch
+                                        Management</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Session Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
-      </button>
-    </h2>
-    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('sessions.index') }}"><i class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
-          <li><a class="item" href="{{ route('calendar.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i> Student Migrate</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+                <!-- Session Management -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseThree" aria-expanded="false"
+                            aria-controls="flush-collapseThree" id="accordion-button">
+                            <i class="fa-solid fa-user-group" id="side-icon"></i>Session Management
+                        </button>
+                    </h2>
+                    <div id="flush-collapseThree" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route('sessions.index') }}"><i
+                                            class="fa-solid fa-calendar-day" id="side-icon"></i> Session</a></li>
+                                <li><a class="item" href="{{ route('calendar.index') }}"><i
+                                            class="fa-solid fa-calendar-days" id="side-icon"></i> Calendar</a></li>
+                                <li><a class="item" href="#"><i class="fa-solid fa-user-check" id="side-icon"></i>
+                                        Student Migrate</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Student Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-        id="accordion-button">
-        <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
-      </button>
-    </h2>
-    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
-          <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
-          <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+                <!-- Student Management -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseFour" aria-expanded="false"
+                            aria-controls="flush-collapseFour" id="accordion-button">
+                            <i class="fa-solid fa-user-group" id="side-icon"></i>Student Management
+                        </button>
+                    </h2>
+                    <div id="flush-collapseFour" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route('inquiries.index') }}"><i
+                                            class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a>
+                                </li>
+                                <li><a class="item" href="{{ route('student.student.pending') }}"><i
+                                            class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
+                                <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i
+                                            class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a>
+                                </li>
+                                <li><a class="item" href="{{ route('smstudents.index') }}"><i
+                                            class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Fees Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-        id="accordion-button">
-        <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
-      </button>
-    </h2>
-    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('fees.management.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+                <!-- Fees Management -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseFive" aria-expanded="false"
+                            aria-controls="flush-collapseFive" id="accordion-button">
+                            <i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Management
+                        </button>
+                    </h2>
+                    <div id="flush-collapseFive" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route('fees.management.index') }}"><i
+                                            class="fa-solid fa-credit-card" id="side-icon"></i> Fees Collection</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Attendance Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-        id="accordion-button">
-        <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
-      </button>
-    </h2>
-    <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('attendance.employee.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
-          <li><a class="item" href="{{ route('attendance.student.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+                <!-- Attendance Management -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
+                            id="accordion-button">
+                            <i class="fa-solid fa-user-check" id="side-icon"></i> Attendance Management
+                        </button>
+                    </h2>
+                    <div id="flush-collapseSix" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route('attendance.employee.index') }}"><i
+                                            class="fa-solid fa-circle-info" id="side-icon"></i> Employee</a></li>
+                                <li><a class="item" href="{{ route('attendance.student.index') }}"><i
+                                            class="fa-solid fa-circle-info" id="side-icon"></i> Student</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Study Material -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven"
-        id="accordion-button">
-        <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
-      </button>
-    </h2>
-    <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+                <!-- Study Material -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseSeven" aria-expanded="false"
+                            aria-controls="flush-collapseSeven" id="accordion-button">
+                            <i class="fa-solid fa-book-open" id="side-icon"></i> Study Material
+                        </button>
+                    </h2>
+                    <div id="flush-collapseSeven" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user"
+                                            id="side-icon"></i>Units</a></li>
+                                <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user"
+                                            id="side-icon"></i>Dispatch Material</a></li>
 
-        </ul>
-      </div>
-    </div>
-  </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Test Series Management -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight"
-        id="accordion-button">
-        <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
-      </button>
-    </h2>
-    <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+                <!-- Test Series Management -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseEight" aria-expanded="false"
+                            aria-controls="flush-collapseEight" id="accordion-button">
+                            <i class="fa-solid fa-chart-column" id="side-icon"></i> Test Series Management
+                        </button>
+                    </h2>
+                    <div id="flush-collapseEight" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route(name: 'test_series.index') }}"><i
+                                            class="fa-solid fa-user" id="side-icon"></i>Test Master</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Reports -->
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine"
-        id="accordion-button">
-        <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
-      </button>
-    </h2>
-    <div id="flush-collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <ul class="menu" id="dropdown-body">
-          <li><a class="item" href="{{ route('reports.walkin.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
-          <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test Series</a></li>
-          <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file" id="side-icon"></i>Inquiry History</a></li>
-          <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard History</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+                <!-- Reports -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseNine" aria-expanded="false"
+                            aria-controls="flush-collapseNine" id="accordion-button">
+                            <i class="fa-solid fa-square-poll-horizontal" id="side-icon"></i> Reports
+                        </button>
+                    </h2>
+                    <div id="flush-collapseNine" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="menu" id="dropdown-body">
+                                <li><a class="item" href="{{ route('reports.walkin.index') }}"><i
+                                            class="fa-solid fa-user" id="side-icon"></i>Walk In</a></li>
+                                <li><a class="item" href="{{ route('reports.attendance.student.index') }}"><i
+                                            class="fa-solid fa-calendar-days" id="side-icon"></i> Attendance</a></li>
+                                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Test
+                                        Series</a></li>
+                                <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-file"
+                                            id="side-icon"></i>Inquiry History</a></li>
+                                <li><a class="item" href="#"><i class="fa-solid fa-file" id="side-icon"></i>Onboard
+                                        History</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="right" id="right">
@@ -889,7 +947,8 @@
                     <h4>INQUIRY</h4>
                 </div>
                 <div class="buttons">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inquiryModal" id="add">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inquiryModal"
+                        id="add">
                         Create Inquiry
                     </button>
                     <button type="button" class="btn-upload" onclick="document.getElementById('fileUpload').click()">
@@ -904,18 +963,22 @@
 
             <div class="whole">
                 <div class="dd">
-                    <div class="line">
-                        <h6>Show Entries:</h6>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown" aria-expanded="false">10</button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">10</a></li>
-                                <li><a class="dropdown-item" href="#">25</a></li>
-                                <li><a class="dropdown-item" href="#">50</a></li>
-                                <li><a class="dropdown-item" href="#">100</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                      <div class="line">
+    <h6>Show Entries:</h6>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{ request('per_page', 10) }}
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" data-value="5">5</a></li>
+        <li><a class="dropdown-item" href="#" data-value="10">10</a></li>
+        <li><a class="dropdown-item" href="#" data-value="25">25</a></li>
+        <li><a class="dropdown-item" href="#" data-value="50">50</a></li>
+        <li><a class="dropdown-item" href="#" data-value="100">100</a></li>
+      </ul>
+    </div>
+  </div>
                     <div class="search">
                         <h4 class="search-text">Search</h4>
                         <input type="search" placeholder="" class="search-holder" id="searchInput">
@@ -997,19 +1060,23 @@
                                 <label class="form-label">Category</label>
                                 <div class="d-flex gap-3 mt-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="category" id="category_obc" value="OBC">
+                                        <input class="form-check-input" type="radio" name="category" id="category_obc"
+                                            value="OBC">
                                         <label class="form-check-label" for="category_obc">OBC</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="category" id="category_general" value="General" checked>
+                                        <input class="form-check-input" type="radio" name="category"
+                                            id="category_general" value="General" checked>
                                         <label class="form-check-label" for="category_general">GENERAL</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="category" id="category_sc" value="SC">
+                                        <input class="form-check-input" type="radio" name="category" id="category_sc"
+                                            value="SC">
                                         <label class="form-check-label" for="category_sc">SC</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="category" id="category_st" value="ST">
+                                        <input class="form-check-input" type="radio" name="category" id="category_st"
+                                            value="ST">
                                         <label class="form-check-label" for="category_st">ST</label>
                                     </div>
                                 </div>
@@ -1020,19 +1087,14 @@
                                 <label class="form-label">State</label>
                                 <select class="form-select" id="state">
                                     <option value="">Select State</option>
-                                    <option value="Rajasthan">Rajasthan</option>
-                                    <option value="Delhi">Delhi</option>
-                                    <option value="Maharashtra">Maharashtra</option>
-                                    <option value="Gujarat">Gujarat</option>
+                                    <!-- States will be loaded dynamically -->
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">City</label>
                                 <select class="form-select" id="city">
                                     <option value="">Select City</option>
-                                    <option value="Bikaner">Bikaner</option>
-                                    <option value="Jaipur">Jaipur</option>
-                                    <option value="Delhi">Delhi</option>
+                                    <!-- Cities will be loaded based on selected state -->
                                 </select>
                             </div>
                         </div>
@@ -1044,7 +1106,7 @@
                             <label class="form-label">Select Branch Name</label>
                             <select class="form-select" id="branch_name">
                                 <option value="">Select Branch</option>
-                                <option value="Bikaner">Bikaner</option>
+                                <!-- Branches will be loaded dynamically -->
                             </select>
                         </div>
                         <div class="row">
@@ -1086,11 +1148,13 @@
                             <label class="form-label">Do You Belong to Economic Weaker Section?</label>
                             <div class="d-flex gap-4">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="economic_weaker" id="economic_yes" value="Yes">
+                                    <input class="form-check-input" type="radio" name="economic_weaker"
+                                        id="economic_yes" value="Yes">
                                     <label class="form-check-label" for="economic_yes">Yes</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="economic_weaker" id="economic_no" value="No" checked>
+                                    <input class="form-check-input" type="radio" name="economic_weaker" id="economic_no"
+                                        value="No" checked>
                                     <label class="form-check-label" for="economic_no">No</label>
                                 </div>
                             </div>
@@ -1099,11 +1163,13 @@
                             <label class="form-label">Do You Belong to Any Army/Police/Martyr Background?</label>
                             <div class="d-flex gap-4">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="army_background" id="army_yes" value="Yes">
+                                    <input class="form-check-input" type="radio" name="army_background" id="army_yes"
+                                        value="Yes">
                                     <label class="form-check-label" for="army_yes">Yes</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="army_background" id="army_no" value="No" checked>
+                                    <input class="form-check-input" type="radio" name="army_background" id="army_no"
+                                        value="No" checked>
                                     <label class="form-check-label" for="army_no">No</label>
                                 </div>
                             </div>
@@ -1112,11 +1178,13 @@
                             <label class="form-label">Are You a Specially Abled?</label>
                             <div class="d-flex gap-4">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="specially_abled" id="specially_yes" value="Yes">
+                                    <input class="form-check-input" type="radio" name="specially_abled"
+                                        id="specially_yes" value="Yes">
                                     <label class="form-check-label" for="specially_yes">Yes</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="specially_abled" id="specially_no" value="No" checked>
+                                    <input class="form-check-input" type="radio" name="specially_abled"
+                                        id="specially_no" value="No" checked>
                                     <label class="form-check-label" for="specially_no">No</label>
                                 </div>
                             </div>
@@ -1148,45 +1216,46 @@
         </div>
     </div>
 
-<!-- History Modal -->
-<div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(135deg, #e05301 0%, #ff7733 100%);">
-                <h5 class="modal-title text-white">
-                    <i class="fa-solid fa-clock-rotate-left"></i> History
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body" id="historyModalBody" style="max-height: 500px; overflow-y: auto; background: #f8f9fa;">
-                <!-- Loading spinner -->
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-3 text-muted">Loading history...</p>
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #e05301 0%, #ff7733 100%);">
+                    <h5 class="modal-title text-white">
+                        <i class="fa-solid fa-clock-rotate-left"></i> History
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="modal-body" id="historyModalBody"
+                    style="max-height: 500px; overflow-y: auto; background: #f8f9fa;">
+                    <!-- Loading spinner -->
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading history...</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="{{asset('js/emp.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Simple History Function
-window.History = async function(id) {
-    try {
-        const modal = new bootstrap.Modal(document.getElementById('historyModal'));
-        const modalBody = document.getElementById('historyModalBody');
-        
-        // Show loading
-        modalBody.innerHTML = `
+    <script>
+        // Simple History Function
+        window.History = async function (id) {
+            try {
+                const modal = new bootstrap.Modal(document.getElementById('historyModal'));
+                const modalBody = document.getElementById('historyModalBody');
+
+                // Show loading
+                modalBody.innerHTML = `
             <div class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
@@ -1194,37 +1263,37 @@ window.History = async function(id) {
                 <p class="mt-3 text-muted">Loading history...</p>
             </div>
         `;
-        
-        modal.show();
-        
-        // Fetch history
-        const response = await fetch(`/inquiries/${id}/history`);
-        const data = await response.json();
-        
-        if (!data.success) {
-            throw new Error(data.message || 'Failed to load history');
-        }
-        
-        const history = data.data || [];
-        
-        if (history.length === 0) {
-            modalBody.innerHTML = `
+
+                modal.show();
+
+                // Fetch history
+                const response = await fetch(`/inquiries/${id}/history`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message || 'Failed to load history');
+                }
+
+                const history = data.data || [];
+
+                if (history.length === 0) {
+                    modalBody.innerHTML = `
                 <div class="empty-history">
                     <i class="fa-solid fa-clock-rotate-left"></i>
                     <h5>No History Yet</h5>
                     <p>No activity recorded for this inquiry</p>
                 </div>
             `;
-            return;
-        }
-        
-        // Render history
-        let html = '<div class="history-timeline">';
-        
-        history.forEach(item => {
-            const actionIcon = getActionIcon(item.action);
-            
-            html += `
+                    return;
+                }
+
+                // Render history
+                let html = '<div class="history-timeline">';
+
+                history.forEach(item => {
+                    const actionIcon = getActionIcon(item.action);
+
+                    html += `
                 <div class="history-item">
                     <div class="history-header">
                         <div class="history-action">
@@ -1246,15 +1315,15 @@ window.History = async function(id) {
                         ${escapeHtml(item.description)}
                     </div>
             `;
-            
-            // Show changes if present
-            if (item.changes && Object.keys(item.changes).length > 0) {
-                html += `<div class="history-changes">`;
-                html += `<strong style="font-size: 13px; color: #495057;"><i class="fa-solid fa-list"></i> Changes:</strong><br>`;
-                
-                for (const [field, change] of Object.entries(item.changes)) {
-                    if (typeof change === 'object' && change.from !== undefined) {
-                        html += `
+
+                    // Show changes if present
+                    if (item.changes && Object.keys(item.changes).length > 0) {
+                        html += `<div class="history-changes">`;
+                        html += `<strong style="font-size: 13px; color: #495057;"><i class="fa-solid fa-list"></i> Changes:</strong><br>`;
+
+                        for (const [field, change] of Object.entries(item.changes)) {
+                            if (typeof change === 'object' && change.from !== undefined) {
+                                html += `
                             <div class="change-row">
                                 <span class="change-label">${formatFieldName(field)}:</span>
                                 <span class="change-value">
@@ -1264,158 +1333,158 @@ window.History = async function(id) {
                                 </span>
                             </div>
                         `;
-                    } else {
-                        html += `
+                            } else {
+                                html += `
                             <div class="change-row">
                                 <span class="change-label">${formatFieldName(field)}:</span>
                                 <span class="change-value">${formatValue(change)}</span>
                             </div>
                         `;
+                            }
+                        }
+
+                        html += `</div>`;
                     }
-                }
-                
-                html += `</div>`;
-            }
-            
-            html += `</div>`;
-        });
-        
-        html += '</div>';
-        
-        modalBody.innerHTML = html;
-        
-    } catch (error) {
-        console.error('History error:', error);
-        document.getElementById('historyModalBody').innerHTML = `
+
+                    html += `</div>`;
+                });
+
+                html += '</div>';
+
+                modalBody.innerHTML = html;
+
+            } catch (error) {
+                console.error('History error:', error);
+                document.getElementById('historyModalBody').innerHTML = `
             <div class="empty-history">
                 <i class="fa-solid fa-exclamation-triangle text-danger"></i>
                 <h5>Error</h5>
                 <p>Failed to load history: ${error.message}</p>
             </div>
         `;
-    }
-};
-
-// Helper functions
-function getActionIcon(action) {
-    const icons = {
-        'Created': 'fa-solid fa-plus-circle',
-        'Updated': 'fa-solid fa-pen',
-        'Transferred': 'fa-solid fa-arrow-right',
-        'Deleted': 'fa-solid fa-trash'
-    };
-    return icons[action] || 'fa-solid fa-circle-info';
-}
-
-function formatFieldName(field) {
-    return field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-}
-
-function formatValue(value) {
-    if (value === null || value === undefined || value === '') {
-        return '<span class="text-muted">N/A</span>';
-    }
-    return escapeHtml(String(value));
-}
-
-function formatDate(timestamp) {
-    try {
-        const date = new Date(timestamp);
-        return date.toLocaleString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-    } catch (e) {
-        return timestamp;
-    }
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const ENDPOINT = '/inquiries';
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-        
-        let state = { page: 1, per_page: 10, search: '' };
-        const elements = {
-            tableBody: document.getElementById('tableBody'),
-            searchInput: document.getElementById('searchInput'),
-            perPage: document.getElementById('number'),
-            pagination: document.getElementById('pagination'),
-            showingInfo: document.getElementById('showingInfo'),
-            saveBtn: document.getElementById('saveBtn'),
-            form: document.getElementById('inquiryForm')
+            }
         };
 
-        const modals = {
-            inquiry: new bootstrap.Modal(document.getElementById('inquiryModal')),
-            view: new bootstrap.Modal(document.getElementById('viewModal'))
-        };
-
-        document.getElementById('toggleBtn').addEventListener('click', () => {
-            document.getElementById('sidebar').style.display = 
-                document.getElementById('sidebar').style.display === 'none' ? 'flex' : 'none';
-        });
-
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.row-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
-
-        function debounce(fn, delay) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => fn.apply(this, args), delay);
+        // Helper functions
+        function getActionIcon(action) {
+            const icons = {
+                'Created': 'fa-solid fa-plus-circle',
+                'Updated': 'fa-solid fa-pen',
+                'Transferred': 'fa-solid fa-arrow-right',
+                'Deleted': 'fa-solid fa-trash'
             };
+            return icons[action] || 'fa-solid fa-circle-info';
         }
 
-        async function loadData() {
+        function formatFieldName(field) {
+            return field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        function formatValue(value) {
+            if (value === null || value === undefined || value === '') {
+                return '<span class="text-muted">N/A</span>';
+            }
+            return escapeHtml(String(value));
+        }
+
+        function formatDate(timestamp) {
             try {
-                const url = `${ENDPOINT}/data?page=${state.page}&per_page=${state.per_page}&search=${encodeURIComponent(state.search)}`;
-                console.log('Loading data from:', url);
-                
-                const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                
-                if (!response.ok) throw new Error('Failed to load data');
-                
-                const json = await response.json();
-                console.log('Response received:', json);
-                
-                if (!json.success) throw new Error(json.message || 'Error loading data');
-                
-                renderTable(json.data || []);
-                renderPagination(json);
-                updateShowingInfo(json);
-            } catch (error) {
-                console.error('Load error:', error);
-                elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center text-danger">Failed to load data: ' + error.message + '</td></tr>';
+                const date = new Date(timestamp);
+                return date.toLocaleString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } catch (e) {
+                return timestamp;
             }
         }
 
-function renderTable(data) {
-    console.log('Rendering table with data:', data);
-    
-    if (!data || data.length === 0) {
-        elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No data available</td></tr>';
-        return;
-    }
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-    elements.tableBody.innerHTML = data.map((item, index) => {
-        const serialNo = (state.page - 1) * state.per_page + index + 1;
-        const id = item._id ? (typeof item._id === 'object' ? item._id.$oid : item._id) : '';
-        
-        console.log('Rendering item:', item, 'ID:', id);
-        
-        return `
+        document.addEventListener('DOMContentLoaded', () => {
+            const ENDPOINT = '/inquiries';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+            let state = { page: 1, per_page: 10, search: '' };
+            const elements = {
+                tableBody: document.getElementById('tableBody'),
+                searchInput: document.getElementById('searchInput'),
+                perPage: document.getElementById('number'),
+                pagination: document.getElementById('pagination'),
+                showingInfo: document.getElementById('showingInfo'),
+                saveBtn: document.getElementById('saveBtn'),
+                form: document.getElementById('inquiryForm')
+            };
+
+            const modals = {
+                inquiry: new bootstrap.Modal(document.getElementById('inquiryModal')),
+                view: new bootstrap.Modal(document.getElementById('viewModal'))
+            };
+
+            document.getElementById('toggleBtn').addEventListener('click', () => {
+                document.getElementById('sidebar').style.display =
+                    document.getElementById('sidebar').style.display === 'none' ? 'flex' : 'none';
+            });
+
+            document.getElementById('selectAll').addEventListener('change', function () {
+                const checkboxes = document.querySelectorAll('.row-checkbox');
+                checkboxes.forEach(cb => cb.checked = this.checked);
+            });
+
+            function debounce(fn, delay) {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => fn.apply(this, args), delay);
+                };
+            }
+
+            async function loadData() {
+                try {
+                    const url = `${ENDPOINT}/data?page=${state.page}&per_page=${state.per_page}&search=${encodeURIComponent(state.search)}`;
+                    console.log('Loading data from:', url);
+
+                    const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+
+                    if (!response.ok) throw new Error('Failed to load data');
+
+                    const json = await response.json();
+                    console.log('Response received:', json);
+
+                    if (!json.success) throw new Error(json.message || 'Error loading data');
+
+                    renderTable(json.data || []);
+                    renderPagination(json);
+                    updateShowingInfo(json);
+                } catch (error) {
+                    console.error('Load error:', error);
+                    elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center text-danger">Failed to load data: ' + error.message + '</td></tr>';
+                }
+            }
+
+            function renderTable(data) {
+                console.log('Rendering table with data:', data);
+
+                if (!data || data.length === 0) {
+                    elements.tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No data available</td></tr>';
+                    return;
+                }
+
+                elements.tableBody.innerHTML = data.map((item, index) => {
+                    const serialNo = (state.page - 1) * state.per_page + index + 1;
+                    const id = item._id ? (typeof item._id === 'object' ? item._id.$oid : item._id) : '';
+
+                    console.log('Rendering item:', item, 'ID:', id);
+
+                    return `
             <tr>
                 <td><input type="checkbox" class="row-checkbox" data-id="${id}"></td>
                 <td>${serialNo}</td>
@@ -1432,7 +1501,8 @@ function renderTable(data) {
                             <i class="fa-solid fa-ellipsis-vertical"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/inquiries/${id}/view">View</a></li>                            <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
+                            <li><a class="dropdown-item" href="/inquiries/${id}/view">View</a></li>                            
+                            <li><a class="dropdown-item" href="/inquiries/${id}/edit">Edit</a></li>
                             <li><a class="dropdown-item" href="#" onclick="onboardSingle('${id}'); return false;">Onboard</a></li>
                             <li><a class="dropdown-item" href="#" onclick="History('${id}'); return false;">History</a></li>
                         </ul>
@@ -1440,55 +1510,55 @@ function renderTable(data) {
                 </td>
             </tr>
         `;
-    }).join('');
-}
+                }).join('');
+            }
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-        function renderPagination(json) {
-            const currentPage = json.current_page || 1;
-            const lastPage = json.last_page || 1;
-            
-            let html = '';
-            
-            html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            function renderPagination(json) {
+                const currentPage = json.current_page || 1;
+                const lastPage = json.last_page || 1;
+
+                let html = '';
+
+                html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
                 <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>
             </li>`;
-            
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(lastPage, currentPage + 2);
-            
-            for (let i = startPage; i <= endPage; i++) {
-                html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+
+                const startPage = Math.max(1, currentPage - 2);
+                const endPage = Math.min(lastPage, currentPage + 2);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
                     <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
                 </li>`;
-            }
-            
-            html += `<li class="page-item ${currentPage === lastPage ? 'disabled' : ''}">
+                }
+
+                html += `<li class="page-item ${currentPage === lastPage ? 'disabled' : ''}">
                 <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>
             </li>`;
-            
-            elements.pagination.innerHTML = html;
-        }
 
-        function updateShowingInfo(json) {
-            const from = json.data.length ? (json.current_page - 1) * json.per_page + 1 : 0;
-            const to = json.data.length ? (json.current_page - 1) * json.per_page + json.data.length : 0;
-            elements.showingInfo.textContent = `Showing ${from} to ${to} of ${json.total || 0} entries`;
-        }
+                elements.pagination.innerHTML = html;
+            }
 
-        window.viewInquiry = async function(id) {
-            try {
-                console.log('Viewing inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
-                const json = await response.json();
-                if (!json.success) throw new Error(json.message);
-                
-                const item = json.data;
-                document.getElementById('viewModalBody').innerHTML = `
+            function updateShowingInfo(json) {
+                const from = json.data.length ? (json.current_page - 1) * json.per_page + 1 : 0;
+                const to = json.data.length ? (json.current_page - 1) * json.per_page + json.data.length : 0;
+                elements.showingInfo.textContent = `Showing ${from} to ${to} of ${json.total || 0} entries`;
+            }
+
+            window.viewInquiry = async function (id) {
+                try {
+                    console.log('Viewing inquiry:', id);
+                    const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
+                    const json = await response.json();
+                    if (!json.success) throw new Error(json.message);
+
+                    const item = json.data;
+                    document.getElementById('viewModalBody').innerHTML = `
                     <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
                         <strong>Student Name:</strong><span>${escapeHtml(item.student_name || '')}</span>
                     </div>
@@ -1541,174 +1611,174 @@ function escapeHtml(text) {
                         <strong>Status:</strong><span class="status-${item.status === 'Pending' ? 'Pending' : 'inactive'}">${item.status || 'Pending'}</span>
                     </div>
                 `;
-                modals.view.show();
-            } catch (error) {
-                console.error('View error:', error);
-                alert('Failed to load inquiry details: ' + error.message);
-            }
-        };
+                    modals.view.show();
+                } catch (error) {
+                    console.error('View error:', error);
+                    alert('Failed to load inquiry details: ' + error.message);
+                }
+            };
 
-        window.editInquiry = async function(id) {
-            try {
-                console.log('Editing inquiry:', id);
-                const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
-                const json = await response.json();
-                if (!json.success) throw new Error(json.message);
-                
-                const item = json.data;
-                document.getElementById('inquiry_id').value = id;
-                document.getElementById('student_name').value = item.student_name || '';
-                document.getElementById('father_name').value = item.father_name || '';
-                document.getElementById('father_contact').value = item.father_contact || '';
-                document.getElementById('father_whatsapp').value = item.father_whatsapp || '';
-                document.getElementById('student_contact').value = item.student_contact || '';
-                
-                const categoryValue = item.category || 'General';
-                const categoryInput = document.querySelector(`input[name="category"][value="${categoryValue}"]`);
-                if (categoryInput) categoryInput.checked = true;
-                
-                document.getElementById('state').value = item.state || '';
-                document.getElementById('city').value = item.city || '';
-                document.getElementById('address_name').value = item.address || '';
-                document.getElementById('branch_name').value = item.branch || '';
-                document.getElementById('course_name').value = item.course_name || '';
-                document.getElementById('delivery_mode').value = item.delivery_mode || 'Offline';
-                document.getElementById('course_content').value = item.course_content || 'Class Room Course';
-                
-                const economicValue = item.ews || 'No';
-                const economicInput = document.querySelector(`input[name="economic_weaker"][value="${economicValue}"]`);
-                if (economicInput) economicInput.checked = true;
-                
-                const armyValue = item.defense || 'No';
-                const armyInput = document.querySelector(`input[name="army_background"][value="${armyValue}"]`);
-                if (armyInput) armyInput.checked = true;
-                
-                const speciallyValue = item.specially_abled || 'No';
-                const speciallyInput = document.querySelector(`input[name="specially_abled"][value="${speciallyValue}"]`);
-                if (speciallyInput) speciallyInput.checked = true;
-                
-                document.getElementById('inquiryModalLabel').textContent = 'Edit Inquiry';
-                modals.inquiry.show();
-            } catch (error) {
-                console.error('Edit error:', error);
-                alert('Failed to load inquiry for editing: ' + error.message);
-            }
-        };
+            window.editInquiry = async function (id) {
+                try {
+                    console.log('Editing inquiry:', id);
+                    const response = await fetch(`${ENDPOINT}/${id}`, { headers: { 'Accept': 'application/json' } });
+                    const json = await response.json();
+                    if (!json.success) throw new Error(json.message);
 
-        // window.deleteInquiry = async function(id) {
-        //     if (!confirm('Are you sure you want to delete this inquiry?')) return;
-            
-        //     try {
-        //         console.log('Deleting inquiry:', id);
-        //         const response = await fetch(`${ENDPOINT}/${id}`, {
-        //             method: 'DELETE',
-        //             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
-        //         });
-        //         const json = await response.json();
-        //         if (!json.success) throw new Error(json.message);
-                
-        //         alert('Inquiry deleted successfully');
-        //         loadData();
-        //     } catch (error) {
-        //         console.error('Delete error:', error);
-        //         alert('Failed to delete inquiry: ' + error.message);
-        //     }
-        // };
+                    const item = json.data;
+                    document.getElementById('inquiry_id').value = id;
+                    document.getElementById('student_name').value = item.student_name || '';
+                    document.getElementById('father_name').value = item.father_name || '';
+                    document.getElementById('father_contact').value = item.father_contact || '';
+                    document.getElementById('father_whatsapp').value = item.father_whatsapp || '';
+                    document.getElementById('student_contact').value = item.student_contact || '';
 
-window.onboardSingle = async function(id) {
-    if (!confirm('Are you sure you want to onboard this student?')) {
-        return;
-    }
+                    const categoryValue = item.category || 'General';
+                    const categoryInput = document.querySelector(`input[name="category"][value="${categoryValue}"]`);
+                    if (categoryInput) categoryInput.checked = true;
 
-    try {
-        console.log('Onboarding single inquiry:', id);
-        
-        const response = await fetch('/inquiries/bulk-onboard', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ inquiry_ids: [id] })
-        });
+                    document.getElementById('state').value = item.state || '';
+                    document.getElementById('city').value = item.city || '';
+                    document.getElementById('address_name').value = item.address || '';
+                    document.getElementById('branch_name').value = item.branch || '';
+                    document.getElementById('course_name').value = item.course_name || '';
+                    document.getElementById('delivery_mode').value = item.delivery_mode || 'Offline';
+                    document.getElementById('course_content').value = item.course_content || 'Class Room Course';
 
-        const json = await response.json();
-        console.log('Onboard response:', json);
+                    const economicValue = item.ews || 'No';
+                    const economicInput = document.querySelector(`input[name="economic_weaker"][value="${economicValue}"]`);
+                    if (economicInput) economicInput.checked = true;
 
-        if (!json.success) {
-            throw new Error(json.message || 'Onboarding failed');
-        }
+                    const armyValue = item.defense || 'No';
+                    const armyInput = document.querySelector(`input[name="army_background"][value="${armyValue}"]`);
+                    if (armyInput) armyInput.checked = true;
 
-        alert(json.message);
-        
-        //   Just reload the table, no redirect
-        loadData();
+                    const speciallyValue = item.specially_abled || 'No';
+                    const speciallyInput = document.querySelector(`input[name="specially_abled"][value="${speciallyValue}"]`);
+                    if (speciallyInput) speciallyInput.checked = true;
 
-    } catch (error) {
-        console.error('Onboard error:', error);
-        alert('Failed to onboard student: ' + error.message);
-    }
-};
-// Add history modal to modals object
-modals.history = new bootstrap.Modal(document.getElementById('historyModal'));
+                    document.getElementById('inquiryModalLabel').textContent = 'Edit Inquiry';
+                    modals.inquiry.show();
+                } catch (error) {
+                    console.error('Edit error:', error);
+                    alert('Failed to load inquiry for editing: ' + error.message);
+                }
+            };
 
-// History function
-window.History = async function(id) {
-    try {
-        console.log('Loading history for inquiry:', id);
-        
-        // Show loading spinner
-        document.getElementById('historyModalBody').innerHTML = `
+            // window.deleteInquiry = async function(id) {
+            //     if (!confirm('Are you sure you want to delete this inquiry?')) return;
+
+            //     try {
+            //         console.log('Deleting inquiry:', id);
+            //         const response = await fetch(`${ENDPOINT}/${id}`, {
+            //             method: 'DELETE',
+            //             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+            //         });
+            //         const json = await response.json();
+            //         if (!json.success) throw new Error(json.message);
+
+            //         alert('Inquiry deleted successfully');
+            //         loadData();
+            //     } catch (error) {
+            //         console.error('Delete error:', error);
+            //         alert('Failed to delete inquiry: ' + error.message);
+            //     }
+            // };
+
+            window.onboardSingle = async function (id) {
+                if (!confirm('Are you sure you want to onboard this student?')) {
+                    return;
+                }
+
+                try {
+                    console.log('Onboarding single inquiry:', id);
+
+                    const response = await fetch('/inquiries/bulk-onboard', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ inquiry_ids: [id] })
+                    });
+
+                    const json = await response.json();
+                    console.log('Onboard response:', json);
+
+                    if (!json.success) {
+                        throw new Error(json.message || 'Onboarding failed');
+                    }
+
+                    alert(json.message);
+
+                    //   Just reload the table, no redirect
+                    loadData();
+
+                } catch (error) {
+                    console.error('Onboard error:', error);
+                    alert('Failed to onboard student: ' + error.message);
+                }
+            };
+            // Add history modal to modals object
+            modals.history = new bootstrap.Modal(document.getElementById('historyModal'));
+
+            // History function
+            window.History = async function (id) {
+                try {
+                    console.log('Loading history for inquiry:', id);
+
+                    // Show loading spinner
+                    document.getElementById('historyModalBody').innerHTML = `
             <div class="text-center">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
         `;
-        
-        // Show modal
-        modals.history.show();
-        
-        // Fetch history data
-        const response = await fetch(`${ENDPOINT}/${id}/history`, { 
-            headers: { 'Accept': 'application/json' } 
-        });
-        
-        if (!response.ok) throw new Error('Failed to load history');
-        
-        const json = await response.json();
-        console.log('History response:', json);
-        
-        if (!json.success) throw new Error(json.message || 'Failed to load history');
-        
-        const history = json.data || [];
-        
-        if (history.length === 0) {
-            document.getElementById('historyModalBody').innerHTML = `
+
+                    // Show modal
+                    modals.history.show();
+
+                    // Fetch history data
+                    const response = await fetch(`${ENDPOINT}/${id}/history`, {
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to load history');
+
+                    const json = await response.json();
+                    console.log('History response:', json);
+
+                    if (!json.success) throw new Error(json.message || 'Failed to load history');
+
+                    const history = json.data || [];
+
+                    if (history.length === 0) {
+                        document.getElementById('historyModalBody').innerHTML = `
                 <div class="text-center text-muted py-4">
                     <i class="fa-solid fa-history fa-3x mb-3"></i>
                     <p>No history available for this inquiry</p>
                 </div>
             `;
-            return;
-        }
-        
-        // Render history timeline
-        let historyHtml = '<div class="timeline">';
-        
-        history.forEach((item, index) => {
-            const date = new Date(item.timestamp || item.created_at);
-            const formattedDate = date.toLocaleString('en-IN', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-            
-            historyHtml += `
+                        return;
+                    }
+
+                    // Render history timeline
+                    let historyHtml = '<div class="timeline">';
+
+                    history.forEach((item, index) => {
+                        const date = new Date(item.timestamp || item.created_at);
+                        const formattedDate = date.toLocaleString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+
+                        historyHtml += `
                 <div class="timeline-item" style="padding: 15px; margin-bottom: 15px; border-left: 3px solid rgb(224, 83, 1); background-color: #f8f9fa;">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
                         <div>
@@ -1725,217 +1795,532 @@ window.History = async function(id) {
                 
                  </div>
             `;
-        });
-        
-        historyHtml += '</div>';
-        
-        document.getElementById('historyModalBody').innerHTML = historyHtml;
-        
-    } catch (error) {
-        console.error('History error:', error);
-        document.getElementById('historyModalBody').innerHTML = `
+                    });
+
+                    historyHtml += '</div>';
+
+                    document.getElementById('historyModalBody').innerHTML = historyHtml;
+
+                } catch (error) {
+                    console.error('History error:', error);
+                    document.getElementById('historyModalBody').innerHTML = `
             <div class="text-center text-danger py-4">
                 <i class="fa-solid fa-exclamation-triangle fa-3x mb-3"></i>
                 <p>Failed to load history: ${error.message}</p>
             </div>
         `;
-    }
-};
+                }
+            };
 
-        //   Save button click handler
-        elements.saveBtn.addEventListener('click', async (e) => {
+            //   Save button click handler
+            elements.saveBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+
+                console.log('Save button clicked');
+
+                const id = document.getElementById('inquiry_id').value;
+
+                const studentName = document.getElementById('student_name').value.trim();
+                const fatherName = document.getElementById('father_name').value.trim();
+                const fatherContact = document.getElementById('father_contact').value.trim();
+                const courseName = document.getElementById('course_name').value;
+
+                if (!studentName || !fatherName || !fatherContact || !courseName) {
+                    alert('Please fill all required fields (Student Name, Father Name, Father Contact, Course Name)');
+                    return;
+                }
+                const branchSelect = document.getElementById('branch_name');
+                const selectedOption = branchSelect.options[branchSelect.selectedIndex];
+                const payload = {
+                    student_name: studentName,
+                    father_name: fatherName,
+                    father_contact: fatherContact,
+                    father_whatsapp: document.getElementById('father_whatsapp').value.trim(),
+                    student_contact: document.getElementById('student_contact').value.trim(),
+                    category: document.querySelector('input[name="category"]:checked').value,
+                    state: document.getElementById('state').value,
+                    city: document.getElementById('city').value,
+                    address: document.getElementById('address_name').value.trim(),
+                    course_name: courseName,
+                    delivery_mode: document.getElementById('delivery_mode').value,
+                    course_content: document.getElementById('course_content').value,
+                    ews: document.querySelector('input[name="economic_weaker"]:checked').value,
+                    defense: document.querySelector('input[name="army_background"]:checked').value,
+                    specially_abled: document.querySelector('input[name="specially_abled"]:checked').value,
+                    status: 'Pending',
+                    branch: branchSelect.value,  // branch name
+                    branch_id: selectedOption.dataset.branchId || null,
+                };
+
+                try {
+                    const url = id ? `${ENDPOINT}/${id}` : ENDPOINT;
+                    const method = id ? 'PUT' : 'POST';
+
+                    console.log('Saving inquiry:', method, url, payload);
+
+                    elements.saveBtn.disabled = true;
+                    elements.saveBtn.textContent = 'Saving...';
+
+                    const response = await fetch(url, {
+                        method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const json = await response.json();
+                    console.log('Save response:', json);
+
+                    if (!json.success) throw new Error(json.message || 'Save failed');
+
+                    alert(id ? 'Inquiry updated successfully' : 'Inquiry created successfully');
+                    modals.inquiry.hide();
+                    elements.form.reset();
+                    document.getElementById('inquiry_id').value = '';
+                    document.getElementById('inquiryModalLabel').textContent = 'Create Inquiry';
+                    loadData();
+                } catch (error) {
+                    console.error('Save error:', error);
+                    alert('Save failed: ' + error.message);
+                } finally {
+                    elements.saveBtn.disabled = false;
+                    elements.saveBtn.textContent = 'Save Inquiry';
+                }
+
+            });
+
+            document.querySelector('.btn-onboard').addEventListener('click', async function () {
+                const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+
+                if (checkedBoxes.length === 0) {
+                    alert('Please select at least one inquiry to onboard');
+                    return;
+                }
+
+                if (!confirm(`Are you sure you want to onboard ${checkedBoxes.length} student(s)?`)) {
+                    return;
+                }
+
+                const inquiryIds = Array.from(checkedBoxes).map(cb => cb.dataset.id);
+
+                console.log('Onboarding inquiries:', inquiryIds);
+
+                try {
+                    this.disabled = true;
+                    this.textContent = 'Onboarding...';
+
+                    const response = await fetch('/inquiries/bulk-onboard', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ inquiry_ids: inquiryIds })
+                    });
+
+                    const json = await response.json();
+                    console.log('Onboard response:', json);
+
+                    if (!json.success) {
+                        throw new Error(json.message || 'Onboarding failed');
+                    }
+
+                    alert(json.message);
+
+                    //   Just reload the table, no redirect
+                    loadData();
+
+                } catch (error) {
+                    console.error('Onboard error:', error);
+                    alert('Failed to onboard students: ' + error.message);
+                } finally {
+                    this.disabled = false;
+                    this.textContent = 'Onboard';
+                }
+            });
+            window.changePage = function (page) {
+                state.page = page;
+                loadData();
+            };
+
+            elements.searchInput.addEventListener('input', debounce(() => {
+                state.search = elements.searchInput.value.trim();
+                state.page = 1;
+                loadData();
+            }, 400));
+
+            elements.perPage.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') {
+                    state.per_page = parseInt(e.target.textContent);
+                    state.page = 1;
+                    elements.perPage.textContent = state.per_page;
+                    loadData();
+                }
+            });
+
+            document.getElementById('inquiryModal').addEventListener('hidden.bs.modal', () => {
+                elements.form.reset();
+                document.getElementById('inquiry_id').value = '';
+                document.getElementById('inquiryModalLabel').textContent = 'Create Inquiry';
+            });
+
+            document.getElementById('fileUpload').addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const response = await fetch(`${ENDPOINT}/upload`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
+
+                    const json = await response.json();
+                    if (!json.success) throw new Error(json.message || 'Upload failed');
+
+                    alert('File uploaded successfully');
+                    loadData();
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    alert('Upload failed: ' + error.message);
+                } finally {
+                    e.target.value = '';
+                }
+            });
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // Initial load
+            console.log('Page loaded, loading data...');
+            loadData();
+        });
+
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            const modalStateSelect = document.getElementById('state');
+            const modalCitySelect = document.getElementById('city');
+
+            // Load states when page loads
+            async function loadModalStates() {
+                try {
+                    const response = await fetch('/api/states');
+                    const data = await response.json();
+
+                    if (data.success && data.states) {
+                        modalStateSelect.innerHTML = '<option value="">Select State</option>';
+                        data.states.forEach(state => {
+                            const option = document.createElement('option');
+                            option.value = state;
+                            option.textContent = state;
+                            modalStateSelect.appendChild(option);
+                        });
+                        console.log('Modal states loaded:', data.states.length);
+                    }
+                } catch (error) {
+                    console.error('Error loading modal states:', error);
+                }
+            }
+
+            // Load cities based on selected state
+            async function loadModalCities(selectedState, preSelectCity = null) {
+                modalCitySelect.innerHTML = '<option value="">Select City</option>';
+
+                if (!selectedState) {
+                    modalCitySelect.disabled = true;
+                    return;
+                }
+
+                modalCitySelect.disabled = false;
+
+                try {
+                    const response = await fetch(`/api/cities?state=${encodeURIComponent(selectedState)}`);
+                    const data = await response.json();
+
+                    if (data.success && data.cities) {
+                        data.cities.forEach(city => {
+                            const option = document.createElement('option');
+                            option.value = city;
+                            option.textContent = city;
+                            if (city === preSelectCity) {
+                                option.selected = true;
+                            }
+                            modalCitySelect.appendChild(option);
+                        });
+                        console.log(`Modal cities loaded for ${selectedState}:`, data.cities.length);
+                    }
+                } catch (error) {
+                    console.error('Error loading modal cities:', error);
+                }
+            }
+
+            // Event listener: When state changes in modal
+            modalStateSelect.addEventListener('change', function () {
+                const selectedState = this.value;
+                console.log('State changed to:', selectedState);
+                loadModalCities(selectedState);
+            });
+
+            // Load states on page load
+            loadModalStates();
+
+            // Reset city dropdown when modal is closed
+            document.getElementById('inquiryModal').addEventListener('hidden.bs.modal', () => {
+                modalCitySelect.disabled = true;
+                modalCitySelect.innerHTML = '<option value="">Select City</option>';
+            });
+
+            // When modal opens for editing, load the correct cities
+            document.getElementById('inquiryModal').addEventListener('shown.bs.modal', () => {
+                const selectedState = modalStateSelect.value;
+                const selectedCity = modalCitySelect.value;
+
+                if (selectedState) {
+                    loadModalCities(selectedState, selectedCity);
+                }
+            });
+        });
+        /**
+         * Load courses from database
+         */
+        async function loadCourses() {
+            try {
+                console.log('  Loading courses from database...');
+
+                const response = await fetch('/api/courses/active');
+                const data = await response.json();
+
+                if (data.success && data.courses) {
+                    const courseSelect = document.getElementById('course_name');
+
+                    // Clear existing options
+                    courseSelect.innerHTML = '<option value="">Select...</option>';
+
+                    // Group courses by course_type
+                    const groupedCourses = {};
+                    data.courses.forEach(course => {
+                        const type = course.course_type || 'Other';
+                        if (!groupedCourses[type]) {
+                            groupedCourses[type] = [];
+                        }
+                        groupedCourses[type].push(course);
+                    });
+
+                    // Add courses with optgroups
+                    Object.keys(groupedCourses).sort().forEach(courseType => {
+                        const optgroup = document.createElement('optgroup');
+                        optgroup.label = courseType;
+
+                        groupedCourses[courseType].forEach(course => {
+                            const option = document.createElement('option');
+                            option.value = course.course_name;
+                            option.textContent = `${course.course_name} (${course.class_name})`;
+                            option.dataset.courseId = course._id;
+                            optgroup.appendChild(option);
+                        });
+
+                        courseSelect.appendChild(optgroup);
+                    });
+
+                    console.log('  Courses loaded successfully:', data.courses.length, 'courses');
+                } else {
+                    console.error('  Failed to load courses:', data.message);
+                }
+            } catch (error) {
+                console.error('  Error loading courses:', error);
+            }
+        }
+
+        // Load courses when modal opens
+        document.getElementById('inquiryModal').addEventListener('shown.bs.modal', function () {
+            console.log('Modal opened, loading courses...');
+            loadCourses();
+        });
+
+        // Also load courses immediately on page load
+        loadCourses();
+
+        // ========== VALIDATION BEFORE SAVE ==========
+
+        document.getElementById('saveBtn').addEventListener('click', async function (e) {
             e.preventDefault();
-            
-            console.log('Save button clicked');
-            
-            const id = document.getElementById('inquiry_id').value;
-            
+
+            // Get form values
             const studentName = document.getElementById('student_name').value.trim();
             const fatherName = document.getElementById('father_name').value.trim();
             const fatherContact = document.getElementById('father_contact').value.trim();
             const courseName = document.getElementById('course_name').value;
-            
+            const selectedState = document.getElementById('state').value;
+            const selectedCity = document.getElementById('city').value;
+
+            // Basic validation
             if (!studentName || !fatherName || !fatherContact || !courseName) {
-                alert('Please fill all required fields (Student Name, Father Name, Father Contact, Course Name)');
+                alert('Please fill all required fields');
                 return;
             }
+
+            // VALIDATE STATE-CITY MATCH
+            if (selectedState && selectedCity) {
+                try {
+                    const response = await fetch(`/api/cities?state=${encodeURIComponent(selectedState)}`);
+                    const data = await response.json();
+
+                    if (data.success && data.cities) {
+                        if (!data.cities.includes(selectedCity)) {
+                            alert(`Error: "${selectedCity}" is not a valid city in ${selectedState}.\nPlease select a valid city.`);
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Validation error:', error);
+                }
+            }
+
+            // Rest of your save logic...
+            console.log('Validation passed, saving inquiry...');
+        });
+
+/**
+ * Load branches from database
+ */
+async function loadBranches() {
+    try {
+        console.log('  Loading branches from database...');
+
+        const response = await fetch('/api/branches/active');
+        
+        console.log('  Response status:', response.status);
+        console.log('  Response ok:', response.ok);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        console.log('  Branch API Full Response:', data);
+        console.log('  Success:', data.success);
+        console.log('  Branches array:', data.branches);
+        console.log('  Total count:', data.total_count);
+
+        if (data.success && data.branches) {
+            const branchSelect = document.getElementById('branch_name');
+
+            // Clear existing options
+            branchSelect.innerHTML = '<option value="">Select Branch</option>';
+
+            if (data.branches.length === 0) {
+                console.warn('  No branches available in response');
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No branches available - Please add branches first';
+                option.disabled = true;
+                branchSelect.appendChild(option);
+                
+                alert('No branches found! Please add branches in the Branch Management section first.');
+                return;
+            }
+
+            // Add branches
+            data.branches.forEach((branch, index) => {
+                console.log(`  Adding branch ${index + 1}:`, branch);
+                
+                const option = document.createElement('option');
+                option.value = branch.name;
+                option.textContent = `${branch.name}${branch.city ? ' - ' + branch.city : ''}`;
+                option.dataset.branchId = branch._id;
+                branchSelect.appendChild(option);
+            });
+
+            console.log('  Branches loaded successfully:', data.branches.length, 'branches');
+            console.log('  Branch names:', data.branches.map(b => b.name));
             
-            const payload = {
-                student_name: studentName,
-                father_name: fatherName,
-                father_contact: fatherContact,
-                father_whatsapp: document.getElementById('father_whatsapp').value.trim(),
-                student_contact: document.getElementById('student_contact').value.trim(),
-                category: document.querySelector('input[name="category"]:checked').value,
-                state: document.getElementById('state').value,
-                city: document.getElementById('city').value,
-                address: document.getElementById('address_name').value.trim(),
-                branch: document.getElementById('branch_name').value,
-                course_name: courseName,
-                delivery_mode: document.getElementById('delivery_mode').value,
-                course_content: document.getElementById('course_content').value,
-                ews: document.querySelector('input[name="economic_weaker"]:checked').value,
-                defense: document.querySelector('input[name="army_background"]:checked').value,
-                specially_abled: document.querySelector('input[name="specially_abled"]:checked').value,
-                status: 'Pending'
-            };
+        } else {
+            console.error('  Invalid response format:', data);
+            throw new Error(data.message || 'Invalid response format - success is false or branches is missing');
+        }
+        
+    } catch (error) {
+        console.error('  Error loading branches:', error);
+        console.error('Error details:', {
+            name: error.name,
+            message: error.message,
+            stack: error.stack
+        });
+        
+        const branchSelect = document.getElementById('branch_name');
+        branchSelect.innerHTML = '<option value="">Error loading branches - Check console</option>';
+        
+        alert('Failed to load branches. Please check:\n1. Are there any branches in the database?\n2. Check browser console for details\n3. Check Laravel logs');
+    }
+}
 
-            try {
-                const url = id ? `${ENDPOINT}/${id}` : ENDPOINT;
-                const method = id ? 'PUT' : 'POST';
-                
-                console.log('Saving inquiry:', method, url, payload);
-                
-                elements.saveBtn.disabled = true;
-                elements.saveBtn.textContent = 'Saving...';
-                
-                const response = await fetch(url, {
-                    method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
+// Load branches when modal opens
+document.getElementById('inquiryModal').addEventListener('shown.bs.modal', function () {
+    console.log('Modal opened, loading branches...');
+    loadBranches();
+});
 
-                const json = await response.json();
-                console.log('Save response:', json);
-                
-                if (!json.success) throw new Error(json.message || 'Save failed');
+// Also load branches immediately on page load
+loadBranches();
 
-                alert(id ? 'Inquiry updated successfully' : 'Inquiry created successfully');
-                modals.inquiry.hide();
-                elements.form.reset();
-                document.getElementById('inquiry_id').value = '';
-                document.getElementById('inquiryModalLabel').textContent = 'Create Inquiry';
-                loadData();
-            } catch (error) {
-                console.error('Save error:', error);
-                alert('Save failed: ' + error.message);
-            } finally {
-                elements.saveBtn.disabled = false;
-                elements.saveBtn.textContent = 'Save Inquiry';
+//show enteries per page
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownButton = document.getElementById('number');
+    const dropdownItems = document.querySelectorAll('.dropdown-item[data-value]');
+    
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectedValue = this.getAttribute('data-value');
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('per_page', selectedValue);
+            
+            const currentSearch = '{{ $search }}';
+            if (currentSearch) {
+                newUrl.searchParams.set('search', currentSearch);
+            }
+            
+            newUrl.searchParams.delete('page');
+            window.location.href = newUrl.toString();
+        });
+    });
+
+    // Search icon click handler
+    const searchIcon = document.querySelector('.search i.fa-magnifying-glass');
+    const searchForm = document.getElementById('searchForm');
+    
+    if (searchIcon && searchForm) {
+        searchIcon.addEventListener('click', function() {
+            searchForm.submit();
+        });
+    }
+
+    // Search input enter key handler
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
             }
         });
-
-document.querySelector('.btn-onboard').addEventListener('click', async function() {
-    const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
-    
-    if (checkedBoxes.length === 0) {
-        alert('Please select at least one inquiry to onboard');
-        return;
-    }
-
-    if (!confirm(`Are you sure you want to onboard ${checkedBoxes.length} student(s)?`)) {
-        return;
-    }
-
-    const inquiryIds = Array.from(checkedBoxes).map(cb => cb.dataset.id);
-    
-    console.log('Onboarding inquiries:', inquiryIds);
-
-    try {
-        this.disabled = true;
-        this.textContent = 'Onboarding...';
-        
-        const response = await fetch('/inquiries/bulk-onboard', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ inquiry_ids: inquiryIds })
-        });
-
-        const json = await response.json();
-        console.log('Onboard response:', json);
-
-        if (!json.success) {
-            throw new Error(json.message || 'Onboarding failed');
-        }
-
-        alert(json.message);
-        
-        //   Just reload the table, no redirect
-        loadData();
-
-    } catch (error) {
-        console.error('Onboard error:', error);
-        alert('Failed to onboard students: ' + error.message);
-    } finally {
-        this.disabled = false;
-        this.textContent = 'Onboard';
     }
 });
-        window.changePage = function(page) {
-            state.page = page;
-            loadData();
-        };
-
-        elements.searchInput.addEventListener('input', debounce(() => {
-            state.search = elements.searchInput.value.trim();
-            state.page = 1;
-            loadData();
-        }, 400));
-
-        elements.perPage.addEventListener('click', (e) => {
-            if (e.target.tagName === 'A') {
-                state.per_page = parseInt(e.target.textContent);
-                state.page = 1;
-                elements.perPage.textContent = state.per_page;
-                loadData();
-            }
-        });
-
-        document.getElementById('inquiryModal').addEventListener('hidden.bs.modal', () => {
-            elements.form.reset();
-            document.getElementById('inquiry_id').value = '';
-            document.getElementById('inquiryModalLabel').textContent = 'Create Inquiry';
-        });
-
-        document.getElementById('fileUpload').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const response = await fetch(`${ENDPOINT}/upload`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                });
-
-                const json = await response.json();
-                if (!json.success) throw new Error(json.message || 'Upload failed');
-
-                alert('File uploaded successfully');
-                loadData();
-            } catch (error) {
-                console.error('Upload error:', error);
-                alert('Upload failed: ' + error.message);
-            } finally {
-                e.target.value = '';
-            }
-        });
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Initial load
-        console.log('Page loaded, loading data...');
-        loadData();
-    });
 </script>
-
 </body>
+
 </html>

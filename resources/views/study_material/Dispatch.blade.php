@@ -344,10 +344,22 @@
         <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}"><i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
-        </ul>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="toggle-btn">
+        <li>
+            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                <i class="fa-solid fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                </button>
+            </form>
+        </li>
+    </ul>
       </div>
     </div>
   </div>
@@ -492,7 +504,7 @@
       <div class="accordion-body">
         <ul class="menu" id="dropdown-body">
           <li><a class="item" href="{{ route('units.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Units</a></li>
-          <li><a class="item active" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
+          <li><a class="item" href="{{ route('dispatch.index') }}"><i class="fa-solid fa-user" id="side-icon"></i>Dispatch Material</a></li>
         </ul>
       </div>
     </div>
@@ -619,7 +631,7 @@
 
   <script>
   $(document).ready(function() {
-      // ✅ COURSES MATCHING PRODUCTION SYSTEM - EXACT ORDER FROM SCREENSHOT
+      //   COURSES MATCHING PRODUCTION SYSTEM - EXACT ORDER FROM SCREENSHOT
       const coursesData = [
           'Intensity 12th IIT',
           'Plumule 9th',
@@ -654,11 +666,11 @@
 
       loadCourses();
 
-      // ✅ DYNAMIC BATCH LOADING FROM DATABASE - AUTOMATIC ON COURSE SELECTION
+      //   DYNAMIC BATCH LOADING FROM DATABASE - AUTOMATIC ON COURSE SELECTION
       $('#course_name').on('change', function() {
           let courseName = $(this).val();
           
-          console.log('🔍 Course selected:', courseName);
+          console.log('  Course selected:', courseName);
           
           // Clear error
           $('#course-error').hide();
@@ -677,8 +689,8 @@
               return;
           }
           
-          // ✅ FETCH BATCHES FROM DATABASE AUTOMATICALLY
-          console.log('📡 Fetching batches from database...');
+          //   FETCH BATCHES FROM DATABASE AUTOMATICALLY
+          console.log('  Fetching batches from database...');
           $('#batch_name').html('<option value="">Loading batches...</option>').prop('disabled', true);
           
           $.ajax({
@@ -686,7 +698,7 @@
               type: 'GET',
               data: { course_name: courseName },
               success: function(response) {
-                  console.log('✅ Batches loaded:', response);
+                  console.log('  Batches loaded:', response);
                   
                   let options = '<option value="">Select Batch</option>';
                   
@@ -698,14 +710,14 @@
                           options += `<option value="${batchName}">${batchName}</option>`;
                       });
                       $('#batch_name').html(options).prop('disabled', false);
-                      console.log('✅', response.batches.length, 'batches loaded');
+                      console.log(' ', response.batches.length, 'batches loaded');
                   } else {
                       $('#batch_name').html('<option value="">No batches found</option>').prop('disabled', true);
                       console.log('⚠ No batches found for course:', courseName);
                   }
               },
               error: function(xhr) {
-                  console.error('❌ Error fetching batches:', xhr);
+                  console.error('  Error fetching batches:', xhr);
                   $('#batch_name').html('<option value="">Error loading batches</option>').prop('disabled', true);
                   alert('Error loading batches. Please try again.');
               }
@@ -717,15 +729,15 @@
           $('#batch-error').hide();
           $(this).removeClass('select-error');
           currentBatchName = $(this).val();
-          console.log('📌 Batch selected:', currentBatchName);
+          console.log('Batch selected:', currentBatchName);
       });
 
-      // ✅ Search button click - FETCH REAL DATA FROM DATABASE
+      //   Search button click - FETCH REAL DATA FROM DATABASE
       $('#searchBtn').on('click', function() {
           let courseName = $('#course_name').val();
           let batchName = $('#batch_name').val();
           
-          console.log('🔍 Search clicked:', { courseName, batchName });
+          console.log('Search clicked:', { courseName, batchName });
           
           // Reset errors
           $('#course-error').hide();
@@ -748,7 +760,7 @@
           }
           
           if (hasError) {
-              console.log('❌ Validation failed');
+              console.log('  Validation failed');
               return;
           }
           
@@ -756,9 +768,9 @@
           loadStudents(courseName, batchName);
       });
 
-      // ✅ Load students function - REAL TIME DATA FROM DATABASE
+      //   Load students function - REAL TIME DATA FROM DATABASE
       function loadStudents(courseName, batchName) {
-          console.log('📡 Loading students...', { courseName, batchName });
+          console.log('  Loading students...', { courseName, batchName });
           
           let tbody = $('#studentsTable tbody');
           tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;">Loading students...</td></tr>');
@@ -780,7 +792,7 @@
                   }
                   
                   if (response.students && response.students.length > 0) {
-                      console.log('✅ Found', response.students.length, 'students');
+                      console.log('  Found', response.students.length, 'students');
                       console.log('First student:', response.students[0]);
                       if (response.students[0]._raw_fields) {
                           console.log('Raw field names:', response.students[0]._raw_fields);
@@ -825,14 +837,14 @@
                           `;
                           tbody.append(row);
                       });
-                      console.log('✅ Table rendered with', response.students.length, 'students');
+                      console.log('  Table rendered with', response.students.length, 'students');
                   } else {
                       tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;">No students found for this course and batch</td></tr>');
                       console.log('⚠ No students found');
                   }
               },
               error: function(xhr) {
-                  console.error('❌ Error fetching students:', xhr);
+                  console.error('  Error fetching students:', xhr);
                   tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;color:red;">Error loading students. Please try again.</td></tr>');
               }
           });
@@ -843,7 +855,7 @@
           $('.student-checkbox').prop('checked', $(this).prop('checked'));
       });
 
-      // ✅ VIEW FEES - Show student fee details
+      //   VIEW FEES - Show student fee details
       $(document).on('click', '.view-student', function(e) {
           e.preventDefault();
           let studentId = $(this).data('id');
@@ -853,7 +865,7 @@
           let batchName = $(this).data('batch');
           let isDispatched = $(this).data('dispatched');
           
-          console.log('💰 Viewing fees for student:', studentId);
+          console.log('  Viewing fees for student:', studentId);
           
           // Show modal immediately with loading state
           let loadingContent = `
@@ -896,7 +908,7 @@
               url: `/fees/management/student/${studentId}/fees`,
               type: 'GET',
               success: function(response) {
-                  console.log('✅ Fee data received:', response);
+                  console.log('  Fee data received:', response);
                   
                   let feeDetailsHtml = '';
                   
@@ -991,7 +1003,7 @@
                   $('#viewModalBody').html(finalContent);
               },
               error: function(xhr) {
-                  console.error('❌ Error loading fees:', xhr);
+                  console.error('  Error loading fees:', xhr);
                   console.error('Response:', xhr.responseText);
                   
                   // Show error message
@@ -1026,11 +1038,11 @@
           });
       });
 
-      // ✅ EDIT STUDENT (Navigate to edit page)
+      //   EDIT STUDENT (Navigate to edit page)
       $(document).on('click', '.edit-student', function(e) {
           e.preventDefault();
           let studentId = $(this).data('id');
-          console.log('✏️ Editing student:', studentId);
+          console.log('  Editing student:', studentId);
           
           // Navigate to student edit page
           window.location.href = `/smstudents/${studentId}/edit`;
@@ -1053,7 +1065,7 @@
               return;
           }
           
-          console.log('📤 Dispatching to students:', selectedIds);
+          console.log('  Dispatching to students:', selectedIds);
           
           let btn = $(this);
           btn.prop('disabled', true).text('Dispatching...');
@@ -1065,7 +1077,7 @@
                   student_ids: selectedIds
               },
               success: function(response) {
-                  console.log('✅ Dispatch response:', response);
+                  console.log('  Dispatch response:', response);
                   
                   if (response.success) {
                       alert(response.message);
@@ -1082,7 +1094,7 @@
                   }
               },
               error: function(xhr) {
-                  console.error('❌ Dispatch error:', xhr);
+                  console.error('  Dispatch error:', xhr);
                   alert('Error dispatching material. Please try again.');
               },
               complete: function() {

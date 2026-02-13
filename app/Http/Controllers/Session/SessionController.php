@@ -9,13 +9,42 @@ use App\Http\Controllers\Controller;
 
 class SessionController extends Controller 
 {     
-    /** GET /sessions */     
-    public function index()     
-    {         
-        // Get all sessions in descending order of creation
-        $sessions = AcademicSession::orderByDesc('created_at')->get();         
-        return view('session.session', compact('sessions'));     
-    }      
+ 
+
+public function index(Request $request)
+    {
+        // Get per_page value from request, default to 10
+        $perPage = $request->input('per_page', 10);
+        
+        // Validate per_page to only allow specific values
+        if (!in_array($perPage, [5, 10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
+        // Get search query
+        $search = $request->input('search', '');
+
+        // Build the query - use AcademicSession instead of Session
+        $query = AcademicSession::query();
+
+        // Apply search filter if search term exists
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('status', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Get paginated sessions
+        $sessions = $query->orderBy('created_at', 'desc')
+                          ->paginate($perPage)
+                          ->appends([
+                              'search' => $search,
+                              'per_page' => $perPage
+                          ]);
+
+        return view('session.session', compact('sessions', 'search'));
+    } 
 
     /** GET /sessions/create */     
     public function create()     

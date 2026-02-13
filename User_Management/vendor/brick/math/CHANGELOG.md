@@ -102,7 +102,7 @@ first.</sup>
 
 ## [0.9.3](https://github.com/brick/math/releases/tag/0.9.3) - 2021-08-15
 
-🚀 **Compatibility with PHP 8.1**
+  **Compatibility with PHP 8.1**
 
 - Support for custom object serialization; this removes a warning on PHP 8.1 due to the `Serializable` interface being deprecated (#60) thanks @TRowbotham
 
@@ -237,7 +237,7 @@ These methods can be used as the foundation to convert strings between different
 **Improvements**
 
 - Safer conversion from `float` when using custom locales
-- **Much faster** `NativeCalculator` implementation 🚀
+- **Much faster** `NativeCalculator` implementation  
 
 You can expect **at least a 3x performance improvement** for common arithmetic operations when using the library on systems without GMP or BCMath; it gets exponentially faster on multiplications with a high number of digits. This is due to calculations now being performed on whole blocks of digits (the block size depending on the platform, 32-bit or 64-bit) instead of digit-by-digit as before.
 

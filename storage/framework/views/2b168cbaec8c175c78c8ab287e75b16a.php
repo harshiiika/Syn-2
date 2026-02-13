@@ -216,7 +216,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -824,8 +824,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<<<<<<<< HEAD:storage/framework/views/2b168cbaec8c175c78c8ab287e75b16a.php
 </html><?php /**PATH C:\Users\dhamu\Syn-2\resources\views/master/branch/branch.blade.php ENDPATH**/ ?>
-========
-</html>
->>>>>>>> 6093940b1e7dcd0cf8eba6d2f9784ac611878590:resources/views/master/branch/branch.blade.php

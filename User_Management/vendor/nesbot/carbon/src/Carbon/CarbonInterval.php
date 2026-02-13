@@ -390,7 +390,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
      * This option allow you to opt-in for the Carbon 3 behavior where float
      * values will no longer be cast to integer (so truncated).
      *
-     * ⚠️ This settings will be applied globally, which mean your whole application
+     *   This settings will be applied globally, which mean your whole application
      * code including the third-party dependencies that also may use Carbon will
      * adopt the new behavior.
      */

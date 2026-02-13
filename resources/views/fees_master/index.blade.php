@@ -85,9 +85,18 @@
           <i class="fa-solid fa-user"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{route('profile.index') }}"><i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
-        </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
@@ -134,7 +143,7 @@
           <li><a class="item" href="{{ route('courses.index') }}"><i class="fa-solid fa-book-open" id="side-icon"></i> Courses</a></li>
           <li><a class="item" href="{{ route('batches.index') }}"><i class="fa-solid fa-user-group fa-flip-horizontal" id="side-icon"></i> Batches</a></li>
           <li><a class="item" href="{{ route('master.scholarship.index') }}"><i class="fa-solid fa-graduation-cap" id="side-icon"></i> Scholarship</a></li>
-          <li><a class="item active" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
+          <li><a class="item" href="{{ route('fees.index') }}"><i class="fa-solid fa-credit-card" id="side-icon"></i> Fees Master</a></li>
           <li><a class="item" href="{{ route('master.other_fees.index') }}"><i class="fa-solid fa-wallet" id="side-icon"></i> Other Fees Master</a></li>
           <li><a class="item" href="{{ route('branches.index') }}"><i class="fa-solid fa-diagram-project" id="side-icon"></i> Branch Management</a></li>
         </ul>
@@ -971,6 +980,28 @@
             </tr>
           </tbody>
         </table>
+        @if(session('status'))
+          <div class="alert alert-success mt-2">{{ session('status') }}</div>
+        @endif
+        @if ($errors->any())
+          <div class="alert alert-danger mt-2">
+            <ul class="mb-0">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+
+        <div class="mt-3">
+          {{ $fees->withQueryString()->links() }}
+        </div>
+
+      </div>
+      <div class="footer">
+        <div class="left-footer">
+          <p>Showing 1 to 1 of 1 Entries</p>
+        </div>
       </div>
     </div>
 
@@ -1016,7 +1047,7 @@ function clearErrors(containerId) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('✅ DOM Content Loaded - Fees Master Page');
+  console.log('  DOM Content Loaded - Fees Master Page');
   console.log('🔑 CSRF Token:', csrfToken);
   
   // CREATE MODAL CALCULATIONS
@@ -1199,7 +1230,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (editStudyInput) editStudyInput.addEventListener('input', calculateEditFees);
   if (editTestInput) editTestInput.addEventListener('input', calculateEditFees);
 
-  // ✅ EDIT BUTTON HANDLERS WITH COMPREHENSIVE ERROR HANDLING
+  //   EDIT BUTTON HANDLERS WITH COMPREHENSIVE ERROR HANDLING
   document.querySelectorAll('.btn-edit').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
@@ -1209,7 +1240,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // ✅ VIEW BUTTON HANDLERS WITH COMPREHENSIVE ERROR HANDLING
+  //   VIEW BUTTON HANDLERS WITH COMPREHENSIVE ERROR HANDLING
   document.querySelectorAll('.btn-view').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
@@ -1231,7 +1262,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// ✅ ENHANCED EDIT FEE FUNCTION WITH COMPREHENSIVE ERROR HANDLING
+//   ENHANCED EDIT FEE FUNCTION WITH COMPREHENSIVE ERROR HANDLING
 function editFee(id) {
   console.log('📝 Starting editFee for ID:', id);
   clearErrors('editErrorContainer');
@@ -1249,13 +1280,13 @@ function editFee(id) {
     }
   })
   .then(response => {
-    console.log('📡 Response status:', response.status);
-    console.log('📡 Response OK:', response.ok);
-    console.log('📡 Response headers:', [...response.headers.entries()]);
+    console.log('  Response status:', response.status);
+    console.log('  Response OK:', response.ok);
+    console.log('  Response headers:', [...response.headers.entries()]);
     
     if (!response.ok) {
       return response.text().then(text => {
-        console.error('❌ Response text:', text);
+        console.error('  Response text:', text);
         throw new Error(`HTTP ${response.status}: ${response.statusText}. ${text}`);
       });
     }
@@ -1263,7 +1294,7 @@ function editFee(id) {
     return response.json();
   })
   .then(data => {
-    console.log('✅ Edit data received:', data);
+    console.log('  Edit data received:', data);
     console.log('📊 Data type:', typeof data);
     console.log('📊 Data keys:', Object.keys(data));
     
@@ -1271,7 +1302,7 @@ function editFee(id) {
     
     // Handle different response structures
     const feeData = data.data || data;
-    console.log('📦 Fee data:', feeData);
+    console.log('  Fee data:', feeData);
     
     if (!feeData) {
       throw new Error('No fee data received from server');
@@ -1297,12 +1328,12 @@ function editFee(id) {
     var editModal = new bootstrap.Modal(document.getElementById('exampleModalTwo'));
     editModal.show();
     
-    console.log('✅ Edit modal opened successfully');
+    console.log('  Edit modal opened successfully');
   })
   .catch(error => {
     hideLoading();
-    console.error('❌ Error in editFee:', error);
-    console.error('❌ Error stack:', error.stack);
+    console.error('  Error in editFee:', error);
+    console.error('  Error stack:', error.stack);
     
     const errorMessage = `Failed to load fee details for editing: ${error.message}. Please check the console for more details.`;
     showError('editErrorContainer', errorMessage);
@@ -1316,7 +1347,7 @@ function editFee(id) {
   });
 }
 
-// ✅ ENHANCED VIEW FEE FUNCTION WITH COMPREHENSIVE ERROR HANDLING
+//   ENHANCED VIEW FEE FUNCTION WITH COMPREHENSIVE ERROR HANDLING
 function viewFee(id) {
   console.log('👁️ Starting viewFee for ID:', id);
   clearErrors('viewErrorContainer');
@@ -1334,13 +1365,13 @@ function viewFee(id) {
     }
   })
   .then(response => {
-    console.log('📡 Response status:', response.status);
-    console.log('📡 Response OK:', response.ok);
-    console.log('📡 Response headers:', [...response.headers.entries()]);
+    console.log('  Response status:', response.status);
+    console.log('  Response OK:', response.ok);
+    console.log('  Response headers:', [...response.headers.entries()]);
     
     if (!response.ok) {
       return response.text().then(text => {
-        console.error('❌ Response text:', text);
+        console.error('  Response text:', text);
         throw new Error(`HTTP ${response.status}: ${response.statusText}. ${text}`);
       });
     }
@@ -1348,7 +1379,7 @@ function viewFee(id) {
     return response.json();
   })
   .then(data => {
-    console.log('✅ View data received:', data);
+    console.log('  View data received:', data);
     console.log('📊 Data type:', typeof data);
     console.log('📊 Data keys:', Object.keys(data));
     
@@ -1356,7 +1387,7 @@ function viewFee(id) {
     
     // Handle different response structures
     const feeData = data.data || data;
-    console.log('📦 Fee data:', feeData);
+    console.log('  Fee data:', feeData);
     
     if (!feeData) {
       throw new Error('No fee data received from server');
@@ -1432,12 +1463,12 @@ function viewFee(id) {
     var viewModal = new bootstrap.Modal(document.getElementById('exampleModalThree'));
     viewModal.show();
     
-    console.log('✅ View modal opened successfully');
+    console.log('  View modal opened successfully');
   })
   .catch(error => {
     hideLoading();
-    console.error('❌ Error in viewFee:', error);
-    console.error('❌ Error stack:', error.stack);
+    console.error('  Error in viewFee:', error);
+    console.error('  Error stack:', error.stack);
     
     const errorMessage = `Failed to load fee details: ${error.message}. Please check the console for more details.`;
     showError('viewErrorContainer', errorMessage);

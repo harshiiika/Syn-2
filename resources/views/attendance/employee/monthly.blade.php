@@ -455,10 +455,19 @@
         <button class="btn btn-secondary dropdown-toggle" id="toggle-btn" type="button" data-bs-toggle="dropdown">
           <i class="fa-solid fa-user"></i>
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{{ route('profile.index') }}"><i class="fa-solid fa-user"></i>Profile</a></li>
-          <li><a class="dropdown-item"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</a></li>
-        </ul>
+<ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="{{ route('profile.index') }}">
+        <i class="fa-solid fa-user"></i> Profile
+    </a></li>
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+            </button>
+        </form>
+    </li>
+</ul>
       </div>
     </div>
   </div>
@@ -550,7 +559,7 @@
           <li><a class="item" href="{{ route('inquiries.index') }}"><i class="fa-solid fa-circle-info" id="side-icon"></i> Inquiry Management</a></li>
           <li><a class="item" href="{{ route('student.student.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Student Onboard</a></li>
           <li><a class="item" href="{{ route('student.pendingfees.pending') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Pending Fees Students</a></li>
-          <li><a class="item active" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
+          <li><a class="item" href="{{ route('smstudents.index') }}"><i class="fa-solid fa-user-check" id="side-icon"></i>Students</a></li>
         </ul>
       </div>
     </div>
@@ -686,21 +695,22 @@
       <div class="content-card">
         <div class="table-controls">
           <div class="entries-control">
-            <span>Show</span>
-            <div class="dropdown">
-              <button class="entries-btn" type="button" data-bs-toggle="dropdown">
-                <span id="entriesCount">10</span>
-                <i class="fas fa-chevron-down"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" data-value="10">10</a></li>
-                <li><a class="dropdown-item" data-value="25">25</a></li>
-                <li><a class="dropdown-item" data-value="50">50</a></li>
-                <li><a class="dropdown-item" data-value="100">100</a></li>
-              </ul>
-            </div>
-            <span>entries</span>
-          </div>
+  <span>Show</span>
+  <div class="dropdown">
+    <button class="entries-btn" type="button" data-bs-toggle="dropdown">
+      <span id="entriesCount">10</span>
+      <i class="fas fa-chevron-down"></i>
+    </button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item entries-option" data-value="5">5</a></li>
+      <li><a class="dropdown-item entries-option" data-value="10">10</a></li>
+      <li><a class="dropdown-item entries-option" data-value="25">25</a></li>
+      <li><a class="dropdown-item entries-option" data-value="50">50</a></li>
+      <li><a class="dropdown-item entries-option" data-value="100">100</a></li>
+    </ul>
+  </div>
+  <span>entries</span>
+</div>
           
           <div class="search-control">
             <label>Search:</label>
@@ -795,7 +805,7 @@ var currentFilters = {
 };
 
 $(document).ready(function() {
-    console.log('🚀 Monthly Attendance initialized');
+    console.log('  Monthly Attendance initialized');
     
     var today = new Date();
     var currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');

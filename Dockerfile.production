@@ -1,0 +1,81 @@
+# Production Dockerfile for Render deployment
+FROM php:8.2-apache
+
+WORKDIR /var/www/html
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    libssl-dev \
+    pkg-config \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install MongoDB extension (latest version for compatibility)
+RUN pecl install mongodb \
+    && docker-php-ext-enable mongodb
+
+# Install PHP extensions
+RUN docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip \
+    opcache
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy application files
+COPY . /var/www/html
+
+# Install dependencies (production mode)
+RUN composer install --optimize-autoloader --no-dev --no-interaction --prefer-dist
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
+
+# Enable Apache modules
+RUN a2enmod rewrite headers
+
+# Configure Apache
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
+# Configure PHP for production
+RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/memory.ini \
+    && echo "upload_max_filesize=50M" >> /usr/local/etc/php/conf.d/memory.ini \
+    && echo "post_max_size=50M" >> /usr/local/etc/php/conf.d/memory.ini \
+    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/memory.ini
+
+# Enable OPcache for production
+RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini
+
+# Generate application key and optimize (will be overridden by env vars in production)
+RUN php artisan config:cache || true \
+    && php artisan route:cache || true \
+    && php artisan view:cache || true
+
+# Use port 10000 for Render (Render requires this port)
+EXPOSE 10000
+
+# Start Apache on port 10000
+RUN sed -i 's/80/10000/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+
+CMD ["apache2-foreground"]
