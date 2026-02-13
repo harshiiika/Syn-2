@@ -395,7 +395,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
         </div>
       </div>
       <div class="whole">
-        {{-- GLOBAL SUCCESS MESSAGE --}}
+        <!-- {{-- GLOBAL SUCCESS MESSAGE --}}
 @if(session('success'))
   <div class="alert alert-success alert-dismissible fade show mt-3">
       {{ session('success') }}
@@ -429,10 +429,10 @@ LINE 629-665: AJAX Script for Dynamic User Addition
           </ul>
       </div>
   </div>
-@endif
+@endif -->
 
         <!-- Table controls: entries dropdown and search -->
-        <div class="dd">
+        <!-- <div class="dd">
           <div class="line">
             <h6>Show Enteries:</h6>
             <div class="dropdown">
@@ -459,7 +459,7 @@ LINE 629-665: AJAX Script for Dynamic User Addition
                id="searchInput">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
-        </div>
+        </div> -->
 
 @if(session('error'))
   <div class="alert alert-danger mt-3">

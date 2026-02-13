@@ -316,7 +316,82 @@
         </div>
       </div>
       <div class="whole">
+        <!-- 
+<?php if(session('success')): ?>
+  <div class="alert alert-success alert-dismissible fade show mt-3">
+      <?php echo e(session('success')); ?>
+
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<?php endif; ?>
+
+
+<?php if(session('error')): ?>
+  <div class="alert alert-danger alert-dismissible fade show mt-3">
+      <?php echo e(session('error')); ?>
+
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<?php endif; ?>
+
+
+<?php if(session('import_errors')): ?>
+  <div class="alert alert-warning alert-dismissible fade show mt-3 shadow-sm border-0">
+      <div class="d-flex justify-content-between align-items-center">
+          <strong>
+              ⚠ Import Issues (<?php echo e(count(session('import_errors'))); ?>)
+          </strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+
+      <div class="mt-2 small" style="max-height: 220px; overflow-y: auto;">
+          <ul class="mb-0 ps-3">
+              <?php $__currentLoopData = session('import_errors'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                  <li><?php echo e($error); ?></li>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+          </ul>
+      </div>
+  </div>
+<?php endif; ?> -->
+
         <!-- Table controls: entries dropdown and search -->
+        <!-- <div class="dd">
+          <div class="line">
+            <h6>Show Enteries:</h6>
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" id="number" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <?php echo e(request('per_page', 10)); ?>
+
+          </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item">10</a></li>
+                <li><a class="dropdown-item">25</a></li>
+                <li><a class="dropdown-item">50</a></li>
+                <li><a class="dropdown-item">100</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="search">
+                  <form method="GET" action="<?php echo e(route('user.emp.emp')); ?>" id="searchForm">
+        <input type="hidden" name="per_page" value="<?php echo e(request('per_page', 10)); ?>">
+           <input type="search" 
+               name="search" 
+               placeholder="Search" 
+               class="search-holder" 
+               value="<?php echo e(request('search')); ?>"
+               id="searchInput">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+        </div> -->
+
+<?php if(session('error')): ?>
+  <div class="alert alert-danger mt-3">
+      <?php echo e(session('error')); ?>
+
+  </div>
+<?php endif; ?>
+
     <div class="dd">
   <div class="line">
     <h6>Show Entries:</h6>
@@ -362,9 +437,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-            </tr>
-          </tbody>
+          <!-- Modal fillables where roles are assigned according to dept automatically -->
 
          <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
   <tr>
@@ -438,6 +511,7 @@
             </tr>
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
+</tbody>
         </table>
 
         <!-- Here options modals are present. -->
@@ -741,8 +815,6 @@
   </div>
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-      </div>
-<div class="footer">
   <div class="left-footer">
     <p>Showing <?php echo e($users->firstItem() ?? 0); ?> to <?php echo e($users->lastItem() ?? 0); ?> of <?php echo e($users->total()); ?> entries
       <?php if(request('search')): ?>
@@ -1113,15 +1185,23 @@ unset($__errorArgs, $__bag); ?>
 
       <div class="modal-body">
         <!-- Export Current Data Section -->
+      
         <div class="mb-3">
-          <label class="form-label fw-bold">Export Current Data</label>
-          <p class="text-muted small">Download all current employee data as Excel file.</p>
-          <a href="<?php echo e(route('users.export')); ?>?search=<?php echo e(request('search')); ?>&per_page=<?php echo e(request('per_page', 10)); ?>" 
-             class="btn btn-info w-100" style="background-color: #ffffffff ;  border-color: #ffffffff""><button type="submit" class="btn btn-success w-100" style="background-color: #ed5b00ff ; border-color: #ed5b00ff">
+  <label class="form-label fw-bold">Export Current Data</label>
+  <p class="text-muted small">Download all current employee data as Excel file.</p>
+
+  <a href="<?php echo e(route('users.export')); ?>?search=<?php echo e(request('search')); ?>&per_page=<?php echo e(request('per_page', 10)); ?>"
+     class="btn btn-success w-100"
+     style="background-color: #ed5b00ff; border-color: #ed5b00ff;">
+     
      <i class="fa-solid fa-download"></i> Download Current Employees
-            </button></a>
-          </a>
-        </div>
+  </a>
+</div>
+
+<a href="<?php echo e(route('users.sample')); ?>" 
+   class="btn btn-secondary w-100 mb-2">
+   <i class="fa-solid fa-file"></i> Download Sample File
+</a>
 
         <hr>
 
