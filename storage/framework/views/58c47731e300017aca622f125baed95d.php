@@ -749,7 +749,7 @@ var currentFilters = {
 };
 
 $(document).ready(function() {
-    console.log('🚀 Student Attendance initialized');
+    console.log('  Student Attendance initialized');
     
     var today = new Date().toISOString().split('T')[0];
     $('#dateFilter').val(today);

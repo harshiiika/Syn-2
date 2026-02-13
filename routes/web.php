@@ -277,12 +277,6 @@ Route::get('/onboard/transfer/{id}', [OnboardController::class, 'transferToStude
 | Inquiry Management Routes
 |--------------------------------------------------------------------------
 */
-// Inquiry Management Routes
-/*
-|--------------------------------------------------------------------------
-| Inquiry Management Routes
-|--------------------------------------------------------------------------
-*/
 Route::prefix('inquiries')->name('inquiries.')->group(function () {
     // Main routes
     Route::get('/', [InquiryController::class, 'index'])->name('index');
@@ -394,8 +388,12 @@ Route::prefix('attendance/student')->name('attendance.student.')->group(function
         ->name('export');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Test Series Routes
+|--------------------------------------------------------------------------
+*/
 
-// In routes/web.php
 Route::prefix('test-series')->name('test_series.')->group(function () {
     // Main index page (Test Master - Image 1)
     Route::get('/', [TestSeriesController::class, 'index'])->name('index');
@@ -494,7 +492,7 @@ Route::prefix('study_material')->name('study_material.')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Fees Management Routes - COMPLETE VERSION
+| Fees Management Routes
 |--------------------------------------------------------------------------
 */
 Route::prefix('fees-management')->group(function () {

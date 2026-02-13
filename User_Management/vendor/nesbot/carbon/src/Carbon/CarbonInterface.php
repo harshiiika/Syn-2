@@ -2835,7 +2835,7 @@ interface CarbonInterface extends DateTimeInterface, JsonSerializable
     /**
      * Determines if the instance is a long year (using calendar year).
      *
-     * ⚠️ This method completely ignores month and day to use the numeric year number,
+     *   This method completely ignores month and day to use the numeric year number,
      * it's not correct if the exact date matters. For instance as `2019-12-30` is already
      * in the first week of the 2020 year, if you want to know from this date if ISO week
      * year 2020 is a long year, use `isLongIsoYear` instead.

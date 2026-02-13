@@ -773,7 +773,7 @@ var currentFilters = {
 };
 
 $(document).ready(function() {
-    console.log('🚀 Attendance page initialized');
+    console.log('  Attendance page initialized');
     
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
     if (!csrfToken) {

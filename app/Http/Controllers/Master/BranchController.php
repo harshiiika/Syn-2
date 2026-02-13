@@ -206,7 +206,7 @@ public function getActiveBranches()
         
         // If no active branches found, return ALL branches as fallback for debugging
         if ($branches->isEmpty() && $totalBranches > 0) {
-            \Log::warning('⚠️ No active branches found, returning all branches');
+            \Log::warning('  No active branches found, returning all branches');
             $branches = $allBranches;
         }
         
@@ -227,7 +227,7 @@ public function getActiveBranches()
         ]);
         
     } catch (\Exception $e) {
-        \Log::error('❌ Get active branches error: ' . $e->getMessage());
+        \Log::error('  Get active branches error: ' . $e->getMessage());
         \Log::error('Stack trace: ' . $e->getTraceAsString());
         
         return response()->json([

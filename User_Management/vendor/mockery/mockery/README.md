@@ -282,7 +282,7 @@ Mockery 1.3 was the last version to support HHVM 3 and PHP 5. There is no suppor
 
 ## A new home for Mockery
 
-⚠️️ Update your remotes! Mockery has transferred to a new location. While it was once
+ ️ Update your remotes! Mockery has transferred to a new location. While it was once
 at `padraic/mockery`, it is now at `mockery/mockery`. While your
 existing repositories will redirect transparently for any operations, take some
 time to transition to the new URL.

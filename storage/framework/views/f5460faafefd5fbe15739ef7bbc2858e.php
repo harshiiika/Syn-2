@@ -674,7 +674,7 @@
           }
           
           //   FETCH BATCHES FROM DATABASE - REAL TIME DATA
-          console.log('📡 Fetching batches from database...');
+          console.log('  Fetching batches from database...');
           $('#batch_name').html('<option value="">Loading batches...</option>').prop('disabled', true);
           
           $.ajax({
@@ -754,7 +754,7 @@
 
       //   Load students function - REAL TIME DATA FROM DATABASE
       function loadStudents(courseName, batchName) {
-          console.log('📡 Loading students...', { courseName, batchName });
+          console.log('  Loading students...', { courseName, batchName });
           
           let tbody = $('#studentsTable tbody');
           tbody.html('<tr><td colspan="6" style="text-align:center;padding:30px;">Loading students...</td></tr>');
@@ -846,7 +846,7 @@
               return;
           }
           
-          console.log('📤 Dispatching to students:', selectedIds);
+          console.log('  Dispatching to students:', selectedIds);
           
           let btn = $(this);
           btn.prop('disabled', true).text('Dispatching...');

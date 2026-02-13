@@ -10,7 +10,7 @@
 
 **league/config** helps you define nested configuration arrays with strict schemas and access configuration values with dot notation.  It was created by [Colin O'Dell][@colinodell].
 
-## 📦 Installation
+##   Installation
 
 This project requires PHP 7.4 or higher.  To install it via [Composer] simply run:
 

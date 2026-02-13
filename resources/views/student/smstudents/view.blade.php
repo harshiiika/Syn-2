@@ -2726,7 +2726,7 @@ document.addEventListener('DOMContentLoaded', function() {
   tabButtons.forEach((button, index) => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('🔘 Tab button clicked:', this.getAttribute('data-tab'));
+      console.log('  Tab button clicked:', this.getAttribute('data-tab'));
       
       // Remove active class from all buttons
       tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -2846,7 +2846,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let attendanceChartInstance = null;
   let rateChartInstance = null;
   
-  console.log('🚀 Initializing student attendance for ID:', studentId);
+  console.log('  Initializing student attendance for ID:', studentId);
   
   // Load attendance data on page load
   loadAttendanceData();
@@ -2865,7 +2865,7 @@ document.addEventListener('DOMContentLoaded', function() {
    * Load attendance data from server
    */
   function loadAttendanceData() {
-    console.log('📡 Fetching attendance data for month:', currentMonth);
+    console.log('  Fetching attendance data for month:', currentMonth);
     
     fetch(`/smstudents/${studentId}/attendance/data?month=${currentMonth}`)
       .then(response => {

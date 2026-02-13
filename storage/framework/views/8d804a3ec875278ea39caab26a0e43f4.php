@@ -2090,7 +2090,7 @@
          */
         async function loadCourses() {
             try {
-                console.log('🔄 Loading courses from database...');
+                console.log('  Loading courses from database...');
 
                 const response = await fetch('/api/courses/active');
                 const data = await response.json();
@@ -2127,12 +2127,12 @@
                         courseSelect.appendChild(optgroup);
                     });
 
-                    console.log('✅ Courses loaded successfully:', data.courses.length, 'courses');
+                    console.log('  Courses loaded successfully:', data.courses.length, 'courses');
                 } else {
-                    console.error('❌ Failed to load courses:', data.message);
+                    console.error('  Failed to load courses:', data.message);
                 }
             } catch (error) {
-                console.error('❌ Error loading courses:', error);
+                console.error('  Error loading courses:', error);
             }
         }
 
@@ -2190,12 +2190,12 @@
  */
 async function loadBranches() {
     try {
-        console.log('🔄 Loading branches from database...');
+        console.log('  Loading branches from database...');
 
         const response = await fetch('/api/branches/active');
         
-        console.log('📡 Response status:', response.status);
-        console.log('📡 Response ok:', response.ok);
+        console.log('  Response status:', response.status);
+        console.log('  Response ok:', response.ok);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -2215,7 +2215,7 @@ async function loadBranches() {
             branchSelect.innerHTML = '<option value="">Select Branch</option>';
 
             if (data.branches.length === 0) {
-                console.warn('⚠️ No branches available in response');
+                console.warn('  No branches available in response');
                 const option = document.createElement('option');
                 option.value = '';
                 option.textContent = 'No branches available - Please add branches first';
@@ -2237,16 +2237,16 @@ async function loadBranches() {
                 branchSelect.appendChild(option);
             });
 
-            console.log('✅ Branches loaded successfully:', data.branches.length, 'branches');
-            console.log('📋 Branch names:', data.branches.map(b => b.name));
+            console.log('  Branches loaded successfully:', data.branches.length, 'branches');
+            console.log('  Branch names:', data.branches.map(b => b.name));
             
         } else {
-            console.error('❌ Invalid response format:', data);
+            console.error('  Invalid response format:', data);
             throw new Error(data.message || 'Invalid response format - success is false or branches is missing');
         }
         
     } catch (error) {
-        console.error('❌ Error loading branches:', error);
+        console.error('  Error loading branches:', error);
         console.error('Error details:', {
             name: error.name,
             message: error.message,

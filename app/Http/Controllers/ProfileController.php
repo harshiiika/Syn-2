@@ -11,7 +11,7 @@ class ProfileController extends Controller
 {
     public function index() {
         // Get the logged-in admin's profile
-        $admin = User::first(); // Modify based on your auth logic
+        $admin = User::first();
         return view('profile.profile', compact('admin'));
     }
 
@@ -35,7 +35,7 @@ class ProfileController extends Controller
 
         try {
             // Get the admin profile (modify based on your auth)
-            $admin = User::first(); // or Auth::user() if using authentication
+            $admin = User::first();
             
             if (!$admin) {
                 $admin = new User();

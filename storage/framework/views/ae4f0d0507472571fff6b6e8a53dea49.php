@@ -910,9 +910,9 @@ function loadStudentHistory(studentId) {
             }
         })
         .then(response => {
-            console.log('📡 Response status:', response.status);
+            console.log('  Response status:', response.status);
             return response.text().then(text => {
-                console.log('📡 Raw response:', text);
+                console.log('  Raw response:', text);
                 try {
                     const json = JSON.parse(text);
                     if (!response.ok) {

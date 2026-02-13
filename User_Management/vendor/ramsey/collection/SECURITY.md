@@ -31,7 +31,7 @@ this repository, we encourage you to notify us.
 
 | Version | In scope | Source code |
 | ------- | :------: | ----------- |
-| latest  | ✅        | https://github.com/ramsey/collection |
+| latest  |          | https://github.com/ramsey/collection |
 
 ## How to Submit a Report
 

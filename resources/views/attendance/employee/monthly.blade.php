@@ -805,7 +805,7 @@ var currentFilters = {
 };
 
 $(document).ready(function() {
-    console.log('🚀 Monthly Attendance initialized');
+    console.log('  Monthly Attendance initialized');
     
     var today = new Date();
     var currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');

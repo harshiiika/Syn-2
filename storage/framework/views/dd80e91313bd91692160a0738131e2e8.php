@@ -795,17 +795,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const historyModalEl = document.getElementById('historyModal');
     if (historyModalEl) {
         historyModal = new bootstrap.Modal(historyModalEl);
-        console.log('✅ History Modal initialized');
+        console.log('  History Modal initialized');
     }
 });
 
-// 🌍 GLOBAL FUNCTION - Load Student History
+//   GLOBAL FUNCTION - Load Student History
 function loadStudentHistory(studentId) {
-    console.log('📖 Loading history for student:', studentId);
+    console.log('  Loading history for student:', studentId);
 
     const historyModalBody = document.getElementById('historyModalBody');
     if (!historyModalBody) {
-        console.error('❌ historyModalBody element not found');
+        console.error('  historyModalBody element not found');
         return;
     }
 
@@ -834,9 +834,9 @@ function loadStudentHistory(studentId) {
             }
         })
         .then(response => {
-            console.log('📡 Response status:', response.status);
+            console.log('  Response status:', response.status);
             return response.text().then(text => {
-                console.log('📡 Raw response:', text);
+                console.log('  Raw response:', text);
                 try {
                     const json = JSON.parse(text);
                     if (!response.ok) {
@@ -850,7 +850,7 @@ function loadStudentHistory(studentId) {
             });
         })
         .then(json => {
-            console.log('✅ History response:', json);
+            console.log('  History response:', json);
 
             if (!json.success) {
                 throw new Error(json.message || 'Failed to load history');
@@ -945,7 +945,7 @@ function loadStudentHistory(studentId) {
 
         })
         .catch(error => {
-            console.error('❌ History error:', error);
+            console.error('  History error:', error);
             historyModalBody.innerHTML = `
                 <div class="text-center text-danger py-5">
                     <i class="fa-solid fa-exclamation-triangle fa-4x mb-3"></i>

@@ -487,7 +487,6 @@ height: 30px;
     background-color: transparent;
 }
 
-/* Fixed Action Button - Three Dots with NO background color */
 .btn-action-dots {
     background-color: transparent !important;
     border: none !important;
@@ -1053,7 +1052,7 @@ height: 30px;
           }
         })
         .then(response => {
-          console.log('📡 Response status:', response.status);
+          console.log('  Response status:', response.status);
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}: Failed to load history`);
           }

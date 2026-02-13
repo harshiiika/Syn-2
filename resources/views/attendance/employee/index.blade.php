@@ -773,7 +773,7 @@ var currentFilters = {
 };
 
 $(document).ready(function() {
-    console.log('🚀 Attendance page initialized');
+    console.log('Attendance page initialized');
     
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
     if (!csrfToken) {
@@ -811,7 +811,7 @@ $(document).on('click', '.entries-option', function(e) {
     perPage = parseInt($(this).data('value'));
     $('#entriesCount').text(perPage);
     currentPage = 1;
-    console.log('📊 Entries per page changed to:', perPage);
+    console.log(' Entries per page changed to:', perPage);
     loadAttendanceData();
 });
     

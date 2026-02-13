@@ -816,7 +816,7 @@
     function searchByStatus() {
         const status = $('#feeStatusSelect').val();
         if (!status) return alert('Please select a fee status');
-        console.log('🔍 Search:', $('#courseSelect').val(), $('#batchSelect').val(), status);
+        console.log('  Search:', $('#courseSelect').val(), $('#batchSelect').val(), status);
         $('#feeStatusResults').html('<div class="loading-state"><div class="spinner"></div><p>Loading...</p></div>');
         $.post('<?php echo e(route("fees.status.search")); ?>', {
             course_id: $('#courseSelect').val(),
@@ -825,11 +825,11 @@
         }, r => {
             console.log('📊 Response:', r);
             if (r.success && r.data && r.data.length) {
-                console.log('✅ Rendering', r.data.length, 'students');
+                console.log('  Rendering', r.data.length, 'students');
                 currentTableData = r.data;
                 renderTable('status', r.data);
             } else {
-                console.log('❌ No data');
+                console.log('  No data');
                 $('#feeStatusResults').html('<div class="empty-state"><i class="fas fa-info-circle"></i><p>No students found</p></div>');
             }
         }).fail(() => $('#feeStatusResults').html('<div class="empty-state"><i class="fas fa-times-circle"></i><p>Error loading data</p></div>'));
@@ -859,9 +859,9 @@
             const table = $(`#${type}Table`).DataTable({ pageLength: 10, order: [[0, 'asc']], destroy: true });
             if (type === 'collect') collectFeesTable = table;
             else feeStatusTable = table;
-            console.log('✅ Table rendered successfully');
+            console.log('  Table rendered successfully');
         } catch(e) {
-            console.error('❌ DataTable error:', e);
+            console.error('  DataTable error:', e);
         }
     }
 

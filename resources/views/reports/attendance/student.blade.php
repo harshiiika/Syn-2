@@ -1048,7 +1048,7 @@ function updateChartsForMonth(date) {
 }
 
 $(document).ready(function() {
-    console.log('🚀 Attendance Report System Initialized');
+    console.log('  Attendance Report System Initialized');
     
     // Course change - load batches
     $('#courseFilter').on('change', function() {

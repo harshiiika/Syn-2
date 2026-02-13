@@ -23,7 +23,7 @@ class CreateCourseCollections extends Command
      */
     public function handle()
     {
-        $this->info('🚀 Starting course collection creation...');
+        $this->info('  Starting course collection creation...');
         
         $courses = Courses::all();
         $created = 0;
