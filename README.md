@@ -19,27 +19,27 @@ Project Structure:
    - Calendar
    - Student Migrate
   
-4. Student Management (Tisha)
+4. Student Management (Priyanshi, Harshika)
    - Inquiry Management
    - Student Onboard
    - Pending Fees Student
    - Students
   
-5. Fees Management (Yet to start)
+5. Fees Management (Tisha)
    - Fees Collection
 
-6. Attendance Management (Yet to start)
+6. Attendance Management (Priyanshi)
    - Employee
    - Student
   
-7. Study Material (Yet to start)
+7. Study Material (Tisha)
    - Units
    - Dispatch Material
 
-8. Test Series Management (Yet to start)
+8. Test Series Management (Harshika)
    - Test Master
   
-9. Reports (Yet to start)
+9. Reports (Skipped)
     - Walk In/Onboarding
     - Attendance
     - Test Series
